@@ -1,0 +1,3 @@
+#!/bin/sh
+
+ssh ssokolow_${1}@ssh.phx.nearlyfreespeech.net

@@ -1,0 +1,27 @@
+set completion-ignore-case on
+set show-all-if-ambiguous on
+set match-hidden-files off
+
+# BUG: Doesn't preserve the true point across a command that's too short to set it.
+set history-preserve-point on
+
+# Reminder: Ctrl+V will cause the next key combo to be printed as an inputrc-compatible escape code rather than handled.
+
+# Reminder: The following two lines are invalid, but show what should be happening.
+#Control-Up: history-search-backward
+#Control-Down: history-search-forward
+"\e[1;5A":        history-search-backward
+"\e[1;5B":        history-search-forward
+"\e[1;5C":        forward-word
+"\e[1;5D":        backward-word
+
+$if Bash
+  Space: magic-space
+$endif
+
+# Ensure these keys behave properly.
+"\e[h": beginning-of-line
+"\e[f": end-of-line
+"\e[1~": beginning-of-line
+"\e[4~": end-of-line
+"\e[3~": delete-char

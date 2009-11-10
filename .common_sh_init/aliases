@@ -1,0 +1,66 @@
+# NOTE: The contents of this file may assume that the shell is connected to a
+# tty (unlike 'env') but shouldn't produce output. (use 'misc' for that)
+
+# Set up some defaults I like
+alias colordiff="colordiff -u"
+alias ls="ls --color=auto"
+alias mc=". /usr/share/mc/bin/mc-wrapper.sh -x"
+alias dirs="dirs -v"
+
+# A helper that makes an alias which is conditional on the lack of arguments.
+function cond_alias() { eval "function ${1}() { [ -z \"\$*\" ] && $2 || command $1 \"\$@\"; }"; }
+
+# Stuff for KIO LAN transfers
+function andre() { kioclient copy "$@" "smb://Slick.multiverse/inbound/"; }
+function mom()   { kioclient copy "$@" "smb://mom/inbound/"; }
+function nicky() { kioclient copy "$@" "smb://darkspark/inbound/"; }
+
+# Provide a "github" command for opening the browser to the github page for the current working directory
+# I forget who I got this from, but it's not my creation.
+alias github='br=$(git branch --contains HEAD | sed -rn "s/^\* //p"); if ! git ls-remote . | grep -q -e "refs/remotes/.*/${br}"; then br="master"; fi; xdg-open $(git config -l | sed -rn "s%remote.origin.url=git(@|://)(github.com)(:|/)(.+/.+).git%https://\2/\4/tree/${br}%p")'
+
+#Command remaps for extra convenience
+alias bd="cd -"	# Cycle between the two most recent directories
+cond_alias df pydf
+cond_alias date "date --rfc-3339=seconds"
+cond_alias top htop
+
+# Make documentation browsing easier
+alias info="pinfo"
+function kinfo() { konqueror info:/"$@" & }
+function kman()  { konqueror man:"$@" & }
+
+# Get rid of the annoying "nohup.out" files.
+# (Why couldn't they have a --logoutput option and no-logging default instead?)
+function nohup() { command nohup "$@" > /dev/null & }
+
+# Miscellaneous quick features
+function pngcomp() { optipng "$@"; advpng -z4 "$@"; }
+function mp3ck()   { mpck -B "$@"; mp3check -e3STBEG "$@"; }
+
+# An accompaniment to dos2unix and unix2dos
+alias mac2unix="tr '\r' '\n' "
+alias unix2mac="tr '\n' '\r' "
+
+# Since I habitually use "ls" to drill down until I hit a file, let's make an
+# alias that uses ls if given a directory and vim's less.sh macro for files.
+function l() {
+	if [ -f "$1" -a "$*" = "$1" ]; then
+		/usr/share/vim/vim72/macros/less.sh "$1"
+	else
+		ls "$@"
+	fi
+}
+
+# Set up an OSD alias which will just work to the best of its ability.
+if `which aosd_cat &> /dev/null`; then
+	alias osd="aosd_cat --font='Bitstream Vera Sans Bold 36' --fade-in=300 --fade-out=300"
+else
+	alias osd="osd_cat --font '-*-*-*-r-*-*-*-390-*-*-*-*-*-*' -p bottom -A left -o -75 -i 50 -c green"
+fi
+
+# Set up rTorrent to interact more nicely with screen's window list
+if [[ "$TERM" == screen* ]]; then
+	title() { screen -X title "$@" && echo -ne "\033_$@\033\\"; }
+	alias rtorrent="title rTorrent && exec rtorrent"
+fi

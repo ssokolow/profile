@@ -1,0 +1,9 @@
+*customization: -color
+
+*VT100*foreground: gray70
+*VT100*background: black
+
+yeahconsole*term: uxterm
+yeahconsole*toggleKey: Ctrl+F12
+yeahconsole*aniDelay: 1
+yeahconsole*consoleHeight: 60

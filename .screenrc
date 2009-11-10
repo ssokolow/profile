@@ -1,0 +1,38 @@
+# Make sure that, even if this profile roams, I won't get the annoying message
+startup_message off
+vbell off
+
+# Make sure windows default to having UTF-8 enabled
+defutf8 on
+
+# Make sure zsh is my default shell
+shell /bin/zsh
+
+# set a big scrolling buffer
+defscrollback 5000
+
+# Handle the input from my zsh hardstatus line properly
+caption always "%{wk}%?%-Lw%?%{bw}%n*%f %t%?(%u)%?%{wk}%?%+Lw%? %= %{= kw}%110`%109`%111`"
+hardstatus alwayslastline "%3n $USER@%H %t%? (%u)%?%?: %h%?"
+
+# Work around unintentional bugs in clicking on text-mode tabs in vim.
+altscreen on
+
+# TODO: Enable these once I figure out how to get my choices for the basic
+# 16-color palette back.
+## terminfo and termcap for nice 256 color terminal
+## allow bold colors - necessary for some reason
+#attrcolor b ".I"
+## tell screen how to set colors. AB = background, AF=foreground
+#termcapinfo xterm 'Co#256:AB=\E[48;5;%dm:AF=\E[38;5;%dm'
+## erase background with current bg color
+#defbce "on"
+
+# TODO: Make this work with Yakuake somehow.
+# tell screen that your term can scroll
+#termcapinfo xterm ti@:te@
+
+# Launch a mouse-enabled Midnight Commander in window 0 and zsh in window 1.
+# (And make window 1 visible by default)
+#screen 0 mc -x
+screen

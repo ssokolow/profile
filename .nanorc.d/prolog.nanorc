@@ -1,0 +1,4 @@
+# Prolog (http://osx.hyperjeff.net/MyApps/nanorc)
+syntax "prolog" "\.pro$"
+color yellow "(\(|\)|,|\.|[:-])"
+

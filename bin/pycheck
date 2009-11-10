@@ -1,0 +1,6 @@
+for X in "$@"; do
+	echo "Checking $X"
+	pyflakes "$X"
+	pychecker -Q --limit=300 "$X"
+	pylint "$X"
+done

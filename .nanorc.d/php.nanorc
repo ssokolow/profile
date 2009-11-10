@@ -1,0 +1,34 @@
+## PHP (http://hometimm.net/etc/nanorc)
+#syntax "php" "\.php[2345s~]?$"
+#color brightblue "(.*)\("
+#color cyan "\$[a-zA-Z_0-9$]*|[=!<>]"
+#color green "(var|class|function|echo|case|break|default|exit|switch|if|else|elseif|@|while)\s"
+#color green "[.,{}();]"
+#color red "('.*')|(\".*\")"
+#color yellow "(#.*|//.*)$"
+#color yellow start="/\*" end="\*/"
+#color brightblue "(<\?(php)?|\?>)"
+#color white start="\?>" end="<\?(php)?" 
+
+## PHP syntax highlighting
+## (Gentoo Wiki)
+syntax "php" "\.php$" "\.php[2345s]$" "\.phtml$"
+#special
+color white "([^A-Za-z0-9])|(<\?php|\?>|var|and|or|default|class|extends|true|false|global|function|new|switch|case|break|next|prev|elseif|if|else|foreach|for|as|do|while|exit|declare|require_once|require|include_once|include|return)([^A-Za-z0-9])"   
+#types
+color brightblue "([^A-Za-z0-9])|(null|int|string|array|float|bool|object|resource)[^A-Za-z0-9]"
+#functions (Ack! - Too many!)
+color magenta "([^A-Za-z0-9])|(setcookie|base64_encode|base64_decode|serialize|unserialize|sprintf|rmdir|move_uploaded_file|readdir|chdir|closedir|getcwd|shuffle|strpos|array_reverse|rsort|arsort|array_search|array_merge|array_slice|strnatcasecmp|strtolower|strtoupper|round|ceil|floor|filetype|fileowner|filegroup|fileperms|filesize|fileatime|filemtime|array_push|array_pop|is_dir|realpath|sort|usort|substr_count|file_get_contents|in_array|chr|opendir|substr|mktime|getdata|date|fopen|fwrite|fread|fclose|sizeof|nl2br|str_replace|strstr|preg_match_all|preg_replace|preg_match|preg_split|basename|file_exists|copy|isset|time|unlink|session_start|trim|rtrim|md5|echo|print|printf|explode|implode|array|split|join|stripslashes|addslashes|die|function|mysql_error|mysql_connect|mysql_select_db|mysql_close|mysql_query)([^A-Za-z0-9])*"
+#Etc global command ;) (added by ObsidianX)
+color blue "([^A-Za-z0-9])|(global|if|else)([^A-Za-z0-9])*"
+#Variables
+color brightcyan "\$[A-Za-z0-9_\>-]*"
+#strings
+color yellow ""(\\.|[^\"])*""
+color yellow "'(\\.|[^\'])*'"
+#color brightyellow start=""(\\.|[^\"])*\\( | )*$" end="^(\\.|[^\"])*""
+#color brightblue start="\".*" end=".*\""
+#comments
+color red "//.*"
+color red "#.*"
+color red start="/\*" end="\*/"

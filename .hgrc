@@ -1,0 +1,8 @@
+[ui]
+username="Stephan Sokolow <http://www.ssokolow.com/ContactMe>"
+
+[extensions]
+hgext.fetch=
+hgext.gpg=
+hgext.purge=
+hgext.convert=

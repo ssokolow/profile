@@ -1,0 +1,62 @@
+# NOTE: This file must not produce any output to stdout/stderr or assume a
+# tty is connected. If the shell is zsh, this will be sourced on EVERY
+# invocation... so don't put anything here which might break scripts.
+
+# Unify the bash and zsh hostname variables
+if [ -z "$HOSTNAME" ] && [ -n "$HOST" ]; then
+	export HOSTNAME="$HOST"
+elif [ -z "$HOST" ] && [ -n "$HOSTNAME" ]; then
+	export HOST="$HOSTNAME"
+fi
+
+# Set a few environment variables that the Gentoo crew doesn't.
+export BROWSER="kfmclient openURL"
+export EDITOR=/usr/bin/vim
+export VISUAL="$EDITOR"
+export MAILER=mutt
+
+# Make these available to subshells
+export COLUMNS
+export ROWS
+
+# Fix an apparent rough edge between man and my chosen PAGER settings.
+export MANPAGER='/usr/bin/less -is'
+
+# Ensure my locale settings are right
+export LANG="en_CA.utf8"
+export LC_ALL="en_CA.utf8"
+export LC_CTYPE="en_CA.utf8"
+export TZ="America/Toronto"
+
+# Configure the shell the way I like it
+export PATH="${PATH}:"~/bin
+export MAILPATH=~/.maildir:~/mbox:~/Mail:/var/spool/mail/$USER
+export MAILCHECK=60
+
+# Python-related settings
+export PYTHONDOCS="/usr/share/htmldoc_links/dev-python/python-docs-2.6/"
+export PYTHONPATH=~/src:~/src/read-only/scrapy-trunk":$PYTHONPATH"
+
+# Disable start menu icon creation in Wine
+export WINEDLLOVERRIDES="winemenubuilder.exe=d"
+
+# Set a few app-specific settings
+export ENCAOPT="-L none"
+export PYTHONSTARTUP=~/.interactive_rc.py
+
+# Provide this for later scripts
+if [ -n "$DISPLAY" ]; then
+	export IMAGE_VIEWER=gqview
+	export MUSIC_PLAYER="audacious --enqueue --play"
+else
+	export IMAGE_VIEWER=fbi
+	export MUSIC_PLAYER=mplayer
+	#TODO: Set MUSIC_PLAYER to a wrapper which can also call stuff like adplay
+fi
+
+# You might want to set the variable SCIPY_PIL_IMAGE_VIEWER
+# to your prefered image viewer if you don't like the default one. Ex:
+# export SCIPY_PIL_IMAGE_VIEWER=display
+
+# Make sure the gtk-qt gtkrc is loaded.
+export GTK2_RC_FILES="$HOME/.gtkrc-2.0:$HOME/.kde/share/config/gtkrc-2.0:/etc/gtk-2.0/gtkrc"

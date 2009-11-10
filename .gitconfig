@@ -1,0 +1,33 @@
+[user]
+	name = Stephan Sokolow
+	email = http://www.ssokolow.com/ContactMe
+[color]
+	diff = auto
+	status = auto
+	branch = auto
+	interactive = auto
+	ui = auto
+[alias]
+	st = status
+	co = checkout
+	ci = commit
+	cia = commit -a
+	di = diff
+	re = checkout HEAD --
+	staged = diff --cached
+	unstaged = diff
+	both = diff HEAD
+	oneline = log --pretty=oneline
+[branch]
+	autosetupmerge = true
+[merge]
+	tool = kdiff3
+[core]
+	excludesfile = /home/ssokolow/.gitignore
+	legacyheaders = false
+[repack]
+	usedeltabaseoffset = true
+[format]
+	numbered = auto
+[push]
+	default = matching

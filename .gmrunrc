@@ -1,0 +1,22 @@
+Terminal = konsole
+TermExec = ${Terminal} -e
+
+AlwaysInTerm = ssh telnet ftp lynx mc
+
+Width = 400
+Top = 500
+Left = 440
+
+History = 256
+
+ShowLast = 1
+TabTimeout = 0
+
+URL_ftp = kfmclient openURL %u
+URL_http = kfmclient openURL %u
+URL_https = kfmclient openURL %u
+URL_info = kfmclient openURL %u
+URL_sftp = kfmclient openURL %u
+
+EXT:mp3,mp2,ogg,mpc,wav,stm,s3m,it,xm,mod,hsc = /home/ssokolow/bin/ap %s
+EXT:c,cc,cpp,css,htm,html,js,php,pl,py,sh,rb,xml,xsl = gvim --remote-tab %s

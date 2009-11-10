@@ -1,0 +1,25 @@
+# Easier to put these here than to keep uncommenting them in dispatch-conf
+#set autoindent
+set const
+set nowrap
+set smarthome
+set smooth
+
+# Hold shift to get normal mouse behaviour (copy and paste)
+set mouse
+
+## Store backups in a directory that I've previously created
+## (Disabled until I check whether sudoed nano inherits this setting)
+#set backup
+#set backupdir "/tmp/ssokolow-nanobackups"
+
+# I'll have to find some way to make this conditional on file format.
+# (tabsize 4 also makes mismatched tab-space pairs more obvious)
+set tabsize 4
+#set tabstospaces
+
+
+include "~/.nanorc.d/php.nanorc"
+include "~/.nanorc.d/prolog.nanorc"
+include "~/.nanorc.d/xorg.nanorc"
+include "~/.nanorc.d/xml.nanorc"

@@ -1,0 +1,11 @@
+# Compiled objects
+*.py[co]
+*.class
+*.[oa]
+*.l[oa]
+
+# Vim swap files
+.*.swp
+
+# Backup files
+*~
