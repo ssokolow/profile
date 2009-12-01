@@ -1,4 +1,7 @@
 # gentoo prompt theme
+# customized by Stephan Sokolow for git branch display based on:
+# http://www.jukie.net/~bart/blog/20071219221358
+# http://www.simplisticcomplexity.com/2008/03/13/show-your-git-branch-name-in-your-prompt/#comment-4166
 
 prompt_gentoo_help () {
   cat <<'EOF'
@@ -7,6 +10,19 @@ This prompt is color-scheme-able.  You can invoke it thus:
   prompt gentoo [<promptcolor> [<usercolor> [<rootcolor>]]]
 
 EOF
+}
+
+function parse_git_branch() {
+	ref=$(git symbolic-ref HEAD 2> /dev/null) || return
+	echo " [${ref#refs/heads/}]"
+}
+
+prompt_gentoo_precmd() {
+  git_branch_prompt="$(parse_git_branch)"
+  path_prompt="%B%F{$prompt_gentoo_prompt}%1~$git_branch_prompt"
+  PS1="$base_prompt$path_prompt %# $post_prompt"
+  PS2="$base_prompt$path_prompt %_> $post_prompt"
+  PS3="$base_prompt$path_prompt ?# $post_prompt"
 }
 
 prompt_gentoo_setup () {
@@ -23,11 +39,7 @@ prompt_gentoo_setup () {
   post_prompt="%b%f%k"
 
   #setopt noxtrace localoptions
-
-  path_prompt="%B%F{$prompt_gentoo_prompt}%1~"
-  PS1="$base_prompt$path_prompt %# $post_prompt"
-  PS2="$base_prompt$path_prompt %_> $post_prompt"
-  PS3="$base_prompt$path_prompt ?# $post_prompt"
+  precmd_functions+='prompt_gentoo_precmd'
 }
 
 prompt_gentoo_setup "$@"

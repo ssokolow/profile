@@ -10,6 +10,11 @@ if [[ $- != *i* ]]; then
 	return
 fi
 
+# Set up the on-action arrays for use
+typeset -ga preexec_functions
+typeset -ga precmd_functions
+typeset -ga chpwd_functions
+
 ##############
 # Completion #
 ##############
@@ -18,7 +23,7 @@ fi
 autoload -U compinit promptinit
 compinit -C
 promptinit
-[[ `prompt -l` == *gentoo* ]] && prompt gentoo || source .zshrc.d/prompt_gentoo_setup
+source ~/.zshrc.d/prompt_gentoo_setup
 zstyle ':completion::complete:*' use-cache 1
 zstyle ':completion:*' matcher-list 'm:{a-z}={A-Z}'
 zstyle ':completion:*:processes' command 'ps x'
@@ -158,11 +163,12 @@ function title {
 	fi
 }
 
-function precmd {
+function zsh_hardstatus_precmd {
 	title zsh "$PWD"
 }
+precmd_functions+='zsh_hardstatus_precmd'
 
-function preexec {
+function zsh_hardstatus_preexec {
 	emulate -L zsh
 	local -a cmd; cmd=(${(z)1})
 
@@ -194,6 +200,7 @@ function preexec {
 	        cmd=(${(z)${(e):-\$jt$num}})
 	        title $cmd[1]:t "$cmd[2,-1]") 2>/dev/null
 }
+preexec_functions+='zsh_hardstatus_preexec'
 
 # TODO: Look into offloading this into a different file with autoload.
 # Set up a nice little function to encourage use of sudoedit
