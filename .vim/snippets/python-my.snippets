@@ -1,0 +1,34 @@
+snippet boilerpy
+	#!/usr/bin/env python
+	# -*- coding: utf-8 -*-
+	"""${1:[application description here]}"""
+
+	__appname__ = "${2:[application name here]}"
+	__author__  = "Stephan Sokolow (deitarion/SSokolow)"
+	__version__ = "0.0pre0"
+	__license__ = "GNU GPL 3.0 or later"
+
+	import logging
+
+	# Set up INFO logging
+	logging.basicConfig(level=logging.INFO, format='%(levelname)s: %(message)s')
+
+	${5:# -- Code Here --}
+
+	if __name__ == '__main__':
+		from optparse import OptionParser
+		parser = OptionParser(description=__doc__, version="%%prog v%s" % __version__)
+		#parser.add_option('-v', '--verbose', action="store_true", dest="verbose",
+		#    default=False, help="Increase verbosity")
+
+		opts, args = parser.parse_args()
+
+snippet while
+	while ${1:condition}:
+		${2:# code...}
+
+snippet class
+	class ${1:ClassName}(${2:object}):
+		"""${3:docstring for $1}"""
+		def __init__(self, ${4:arg}):
+			${6}

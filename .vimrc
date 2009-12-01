@@ -103,6 +103,9 @@ if has("autocmd") && exists("+filetype")
 
 	" Make sure that I don't accidentally cause myself problems with Makefiles
 	autocmd FileType make set noexpandtab
+
+	" Fix the extension binding for the mako syntax plugin
+	autocmd BufNewFile,BufRead *.mako set filetype=mako
 endif
 
 if exists(":let") == 2
