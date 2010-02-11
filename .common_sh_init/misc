@@ -9,7 +9,9 @@ stty start undef
 if [[ -f ~/.dir_colors ]]; then
 	eval `dircolors -b ~/.dir_colors`
 else
-	eval `dircolors -b /etc/DIR_COLORS`
+	if [[ -f /etc/DIR_COLORS ]]; then
+		eval `dircolors -b /etc/DIR_COLORS`
+	fi
 fi
 
 # Use pygmentize as the code colorizer for less if it and lesspipe.sh are installed.

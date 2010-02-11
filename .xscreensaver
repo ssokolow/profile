@@ -1,5 +1,5 @@
 # XScreenSaver Preferences File
-# Written by xscreensaver-demo 5.08 for ssokolow on Mon Nov  9 22:50:46 2009.
+# Written by xscreensaver-demo 5.07 for ssokolow on Wed Feb 10 22:03:00 2010.
 # http://www.jwz.org/xscreensaver/
 
 timeout:	0:10:00
@@ -11,7 +11,7 @@ visualID:	default
 installColormap:    True
 verbose:	False
 timestamp:	True
-splash:		True
+splash:		False
 splashDuration:	0:00:05
 demoCommand:	xscreensaver-demo
 prefsCommand:	xscreensaver-demo -prefs
@@ -28,10 +28,10 @@ dpmsEnabled:	True
 dpmsStandby:	0:20:00
 dpmsSuspend:	0:25:00
 dpmsOff:	0:30:00
-grabDesktopImages:  False
-grabVideoFrames:    True
-chooseRandomImages: False
-imageDirectory:	/usr/share/wallpapers
+grabDesktopImages:  True
+grabVideoFrames:    False
+chooseRandomImages: True
+imageDirectory:	/usr/share/backgrounds
 
 mode:		random
 selected:	-1
@@ -52,7 +52,7 @@ programs:								      \
 -				helix -root				    \n\
 -				hopalong -root				    \n\
 -				hypercube -root				    \n\
-				imsmap -root				    \n\
+-				imsmap -root				    \n\
 -				maze -root				    \n\
 -				noseguy -root				    \n\
 -				pyro -root				    \n\
@@ -126,8 +126,7 @@ programs:								      \
 				kumppa -root				    \n\
 - GL: 				lament -root				    \n\
 -				moire2 -root				    \n\
--				sonar -root -ping			      \
-				  /etc/hosts,$HOME/.ssh/known_hosts,$HOME/.ssh/known_hosts2 \n\
+-				sonar -root				    \n\
 - GL: 				stairs -root				    \n\
 -				truchet -root				    \n\
 -				vidwhacker -root			    \n\
@@ -186,7 +185,7 @@ programs:								      \
 - GL: 				glblur -root				    \n\
 - GL: 				glforestfire -root			    \n\
   GL: 				glsnake -root				    \n\
-				halftone -root				    \n\
+-				halftone -root				    \n\
 -				juggle -root				    \n\
 - GL: 				lavalite -root				    \n\
 -				polyominoes -root			    \n\
@@ -228,11 +227,12 @@ programs:								      \
 -				fireworkx -root				    \n\
 -				fuzzyflakes -root			    \n\
 				interaggregate -root			    \n\
-				intermomentary -root			    \n\
+				intermomentary -root -draw-delay 9756	      \
+				  -num-discs 170			    \n\
 -				memscroller -root			    \n\
 -				mismunch -root				    \n\
   GL: 				noof -root				    \n\
-				pacman -root				    \n\
+-				pacman -root				    \n\
   GL: 				pinion -root				    \n\
   GL: 				polyhedra -root				    \n\
 - GL: 				providence -root			    \n\
@@ -250,9 +250,9 @@ programs:								      \
   GL: 				glhanoi -root				    \n\
 - GL: 				juggler3d -root				    \n\
   GL: 				tangram -root				    \n\
-  GL: 				timetunnel -root -no-logo		    \n\
+  GL: 				timetunnel -root			    \n\
   GL: 				glschool -root				    \n\
-  GL: 				topblock -root				    \n\
+- GL: 				topblock -root				    \n\
   GL: 				cubicgrid -root				    \n\
 				cwaves -root				    \n\
   GL: 				gears -root				    \n\
@@ -262,31 +262,8 @@ programs:								      \
   GL: 				moebiusgears -root			    \n\
   GL: 				voronoi -root				    \n\
   GL: 				hypnowheel -root			    \n\
-				lcdscrub -root				    \n\
+-				lcdscrub -root				    \n\
 - GL: 				skytentacles -root			    \n\
-  GL: 				cyclone --root				    \n\
-  GL: 				euphoria -r -p 1			    \n\
-  GL: 				fieldlines --root			    \n\
-  GL: 				flocks -r -p 2				    \n\
-  GL: 				flux --root				    \n\
-  GL: 				helios --root				    \n\
-  GL: 				hyperspace --root			    \n\
-  GL: 				lattice --root				    \n\
-  GL: 				plasma --root				    \n\
-  GL: 				skyrocket --root			    \n\
-  GL: 				solarwinds --root			    \n\
-  GL: 				colorfire --root			    \n\
-  GL: 		 "Hufos Smoke" 	hufo_smoke --root			    \n\
-  GL: 		"Hufos Tunnel" 	hufo_tunnel --root			    \n\
-  GL: 				sundancer2 --root			    \n\
-  GL: 			"BioF" 	biof --root				    \n\
-  GL: 		 "BusySpheres" 	busyspheres --root			    \n\
-  GL: 		 "SpirographX" 	spirographx --root			    \n\
-  GL: 		  "MatrixView" 	matrixview --root			    \n\
-  GL: 				lorenz --root				    \n\
-  GL: 				drempels --root				    \n\
-  GL: 				feedback --root				    \n\
-  GL: 				photopile -root				    \n\
 
 
 pointerPollTime:    0:00:05

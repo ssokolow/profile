@@ -53,6 +53,7 @@ endif
 set tabstop=4
 set softtabstop=4
 set shiftwidth=4
+set expandtab
 
 " Only word-wrap comments and word-wrap them at 79 characters.
 set formatoptions-=t	" No word-wrap inside code.

@@ -1,22 +1,56 @@
+# gmrun configuration file
+# gmrun is (C) Mihai Bazon, <mishoo@infoiasi.ro>
+# GPL v2.0 applies
+
+# Set terminal
+#Terminal = gnome-terminal --start-factory-server --use-factory
+# TODO: Get xdg-terminal working and use it here
 Terminal = konsole
 TermExec = ${Terminal} -e
+AlwaysInTerm = ftp info less links links2 lynx man mc mutt nano ncftp perldoc pinfo ssh telnet vi vim
 
-AlwaysInTerm = ssh telnet ftp lynx mc
-
+# Set window geometry (except height)
 Width = 400
 Top = 500
 Left = 440
 
+# History size
 History = 256
 
+# Shows last history line selected when invoked
 ShowLast = 1
+
+# Show files starting with '.'
+# Default is 0 (off), set it to 1 if you want "hidden" files to show up
+# in the completion window
+ShowDotFiles = 0
+
+# Timeout (in milliseconds) after which gmrun will simulate a TAB press
+# Set this to NULL if don't like this feature.
 TabTimeout = 0
 
-URL_ftp = kfmclient openURL %u
-URL_http = kfmclient openURL %u
-URL_https = kfmclient openURL %u
-URL_info = kfmclient openURL %u
-URL_sftp = kfmclient openURL %u
+# URL handlers
+# If the entered text is "http://www.google.com" then:
+#   - %u gets replaced with the whole URL ("http://www.google.com")
+#   - %s gets replaced with "//www.google.com".  This is useful for URL-s
+#     like "man:printf" --> %s will get replaced with "printf"
+URL_file = pcmanfm %s
+URL_ftp = xdg-open %u
+URL_http = xdg-open %u
+URL_https = xdg-open %u
+URL_info = xdg-open %u
+URL_man = xdg-open %u
+URL_mailto = xdg-email %u
+URL_pd = ${TermExec} 'perldoc %s'
+URL_readme = ${TermExec} 'less /usr/share/doc/%s/README'
+URL_sftp = xdg-open %u
+URL_sh = sh -c '%s'
+URL_smb = xdg-open %u
 
+# extension handlers
+EXT:doc,odt,rtf = AbiWord %s
+EXT:am,c,cc,cpp,css,epl,h,htm,html,java,js,latex,tex,txt,xml,xsl = gvim --remote-tab %s
+EXT:chm,djvu,pdf,ps = okular %u
 EXT:mp3,mp2,ogg,mpc,wav,stm,s3m,it,xm,mod,hsc = /home/ssokolow/bin/ap %s
-EXT:c,cc,cpp,css,htm,html,js,php,pl,py,sh,rb,xml,xsl = gvim --remote-tab %s
+EXT:avi,divx,flv,m4v,mkv,mpg,mp4,ogm,ogv,wmv = mplayer %s
+EXT:bmp,gif,ico,jpe,jpeg,jpg,png,tga = gqview %s

@@ -13,6 +13,10 @@ if [[ $- != *i* ]]; then
 	return
 fi
 
+# -- A copy of how Ubuntu does the above... just in case I need it. --
+# If not running interactively, don't do anything
+#[ -z "$PS1" ] && return
+
 # Support for figuring out how my .bashrc ran
 function do_debug() { export BASHRC_DEBUG="$BASHRC_DEBUG"$'\n'"${BASHRC_DEBUG_INDENT}$@"; }
 
@@ -25,6 +29,32 @@ if [[ "$TERM" != screen* ]] && [[ "$TERMCAP" != *\|screen\|* ]] && [ "$NO_SCREEN
 else
 	do_debug "	    -- Already running inside screen --"
 fi
+
+# --== Begin Ubuntu stuff not yet integrated ==--
+# TODO: Finish integrating this.
+
+# make less more friendly for non-text input files, see lesspipe(1)
+#[ -x /usr/bin/lesspipe ] && eval "$(lesspipe)"
+
+# set variable identifying the chroot you work in (used in the prompt below)
+#if [ -z "$debian_chroot" ] && [ -r /etc/debian_chroot ]; then
+#    debian_chroot=$(cat /etc/debian_chroot)
+#fi
+
+# set a fancy prompt (non-color, unless we know we "want" color)
+#case "$TERM" in
+#xterm-color)
+#    PS1='${debian_chroot:+($debian_chroot)}\[\033[01;32m\]\u@\h\[\033[00m\]:\[\033[01;34m\]\w\[\033[00m\]\$ '
+#    ;;
+#*)
+#    PS1='${debian_chroot:+($debian_chroot)}\u@\h:\w\$ '
+#    ;;
+#esac
+
+# Comment in the above and uncomment this below for a color prompt
+#PS1='${debian_chroot:+($debian_chroot)}\[\033[01;32m\]\u@\h\[\033[00m\]:\[\033[01;34m\]\w\[\033[00m\]\$ '
+
+# --== End Ubuntu stuff not yet integrated ==--
 
 # Change the window title of X terminals (Customized from the Gentoo version)
 case $TERM in

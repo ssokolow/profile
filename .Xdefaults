@@ -2,6 +2,7 @@
 
 *VT100*foreground: gray70
 *VT100*background: black
+*VT100*geometry: 160x50
 
 yeahconsole*term: uxterm
 yeahconsole*toggleKey: Ctrl+F12
