@@ -217,4 +217,6 @@ function sudo() {
 }
 
 # I prefer to have a fortune from any new shell, not just login ones.
-fortune
+if `which fortune` &> /dev/null; then
+    fortune
+fi

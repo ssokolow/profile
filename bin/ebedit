@@ -37,6 +37,8 @@ def toOverlay(srcAtom, targetName=None):
     pkg_suffix = os.sep.join(pkg_path.rsplit(os.sep)[-3:])
 
     if targetName:
+        if os.sep in targetName or (os.altsep and os.altsep in targetName):
+            raise ValueError("Target name must not contain path separators")
         pkg_suffix = os.path.split(pkg_suffix)[0] + os.sep + targetName.rstrip('.ebuild') + '.ebuild'
     overlay_path = os.path.join(PORTDIR_LOCAL, pkg_suffix)
 

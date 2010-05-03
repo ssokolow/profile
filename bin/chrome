@@ -1,7 +1,7 @@
 #!/bin/sh
 
 if which google-chrome &> /dev/null; then
-    exec google-chrome "$@"
+    exec google-chrome --enable-extension-timeline-api "$@"
 else
-    exec chromium --enable-user-scripts "$@"
+    exec chromium  --enable-extension-timeline-api "$@"
 fi
