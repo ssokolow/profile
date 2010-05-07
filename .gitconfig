@@ -25,9 +25,15 @@
 [core]
 	excludesfile = /home/ssokolow/.gitignore
 	legacyheaders = false
+[sendemail]
+	aliasesfile = /home/ssokolow/.gitaliases
+	aliasfiletype = mailrc
+	smtpssl = true
 [repack]
 	usedeltabaseoffset = true
 [format]
 	numbered = auto
+[github]
+	user = ssokolow
 [push]
 	default = matching
