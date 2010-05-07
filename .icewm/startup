@@ -1,0 +1,18 @@
+#!/bin/bash
+
+xrdb -merge ~/.Xdefaults
+pcmanfm -d &
+yeahconsole -e screen &
+xscreensaver &
+parcellite &
+
+# Something seems to be undoing this, so putting it on a delay should hopefully work around that.
+sh -c 'sleep 5; amixer -c 0 -- sset Master playback 74% unmute; amixer -c 0 -- sset Master\ Mono playback 74% unmute' &
+
+# At the moment, this seems to be broken anyway
+#if ssh-add; then
+#	# "ssh -f -N -L localhost:24800:monolith:24800 monolith" may not work with $!
+#	ssh -N -L localhost:24800:monolith:24800 monolith &
+#	echo "$!" > ~/.icewm/synergy_ssh.pid
+#	synergyc monolith
+#fi

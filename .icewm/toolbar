@@ -1,0 +1,5 @@
+prog Run... run gmrun
+prog Home folder pcmanfm
+prog Chrome web-browser google-chrome
+prog Terminal xterm xterm
+#prog Vim vim gvim --servername GVIM
