@@ -1,0 +1,39 @@
+[default]
+
+# This interferes with my joystick evdev bindings (causes each button to do two different things in one push)
+nojoystick=yes
+
+vo=gl2,gl,xv,x11,ggi,fbdev,fbdev2
+ao=alsa,openal,pulse,oss
+
+# This enables screenshots but disables the hardware scaling
+#vf=screenshot
+
+cache-min=2.0
+cache-seek-min=25
+
+sid=0
+slang=eng
+alang=eng
+
+tv=driver=v4l:width=640:height=480:fps=30:forceaudio=1:alsa=1:adevice=webcam
+#tv=driver=v4l2:width=640:height=480:fps=30:device=/dev/video1
+
+stop-xscreensaver=yes
+
+af=volnorm
+
+# Something else to try for especially dirty videos
+[dirty]
+profile-desc="Post-Processing for Tiny, Dirty videos"
+vf=denoise3d,pp=hb/vb/dr/al
+
+# Works because mplayerplug-in.conf has profile=plugin
+[plugin]
+demuxer=lavf
+
+[gnome-mplayer]
+ao=alsa
+alang=English,eng,en
+slang=English,eng,en
+msglevel=all=5

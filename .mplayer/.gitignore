@@ -1,0 +1,4 @@
+# Don't roam MRUs
+/gui.history
+/gui.pl
+/gui.url
