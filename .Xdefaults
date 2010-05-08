@@ -7,4 +7,5 @@
 yeahconsole*term: uxterm
 yeahconsole*toggleKey: Ctrl+F12
 yeahconsole*aniDelay: 1
+yeahconsole*stepSize: 50
 yeahconsole*consoleHeight: 60

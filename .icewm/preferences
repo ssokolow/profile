@@ -105,6 +105,7 @@
 
 #  Opaque window resize
 # OpaqueResize=1 # 0/1
+OpaqueResize=0 # 0/1
 
 #  Windows initially placed manually by user
 # ManualPlacement=0 # 0/1
