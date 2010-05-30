@@ -1,0 +1,3 @@
+@nitrogen --restore
+@parcellite
+@sh -c 'exec ~/bin/neap'

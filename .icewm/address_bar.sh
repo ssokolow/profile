@@ -6,7 +6,7 @@ if which $1; then
 elif [ -e "$1" ]; then
 	exec pcmanfm "$@"
 elif [[ "$1" == http** ]]; then
-	exec firefox "$@"
+	exec chrome "$@"
 else
 	# This won't be necessary once the above TODO is implemented.
 	exec "$@"

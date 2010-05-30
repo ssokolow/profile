@@ -4,6 +4,13 @@
 *VT100*background: black
 *VT100*geometry: 160x50
 
+XTerm*saveLines: 5120
+XTerm*scrollKey: true
+XTerm*scrollTtyOutput: false
+
+*VT100.Translations: #override Shift <Key>Up: scroll-back(1) \n\
+                     Shift <Key>Down: scroll-forw(1)
+
 yeahconsole*term: uxterm
 yeahconsole*toggleKey: Ctrl+F12
 yeahconsole*aniDelay: 1

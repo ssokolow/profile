@@ -1,0 +1,475 @@
+#!/usr/bin/env python
+
+#  Copyright (c) 2010, Philip Busch <philip@0xe3.com>
+#  See License.txt for details.
+
+
+import sys
+import os
+from datetime import datetime
+import gtk
+import gobject
+from Xlib import X, display, error, Xatom, Xutil
+import Xlib.protocol.event
+from optparse import OptionParser
+
+name = "neap"
+version = "0.4.1"
+author = ["Philip Busch <philip@0xe3.com>"]
+website = "http://code.google.com/p/neap/"
+
+class neap:
+	def __init__(self):
+		'''Initialization.'''
+		# program info
+		self.name = name
+		self.version = version
+		self.author = author
+		self.website = website
+
+		# default config
+		self.conf = {}
+		self.conf['padding'] = 3
+		self.conf['spacing'] = 1
+		self.conf['color_active'] = "red"
+		self.conf['color_inactive'] = "green"
+		self.conf['color_background'] = "yellow"
+		self.conf['rows'] = 2
+		self.conf['columns'] = 3
+		grid = []
+
+		# menus
+		self.menu_about = None
+
+		self.display = display.Display()
+		self.screen  = self.display.screen()
+		self.root    = self.screen.root
+
+		# notify about and handle workspace switches
+		screen = gtk.gdk.screen_get_default()
+		root = screen.get_root_window()
+		root.set_events(gtk.gdk.SUBSTRUCTURE_MASK)
+		root.add_filter(self.event_filter)
+
+
+		self.desktop = self.get_desktop_names()
+
+		self.pixbuf = gtk.gdk.Pixbuf(gtk.gdk.COLORSPACE_RGB, True, 8, 20, 20)
+		self.pixbuf.fill(0xffffffff)
+
+		self.icon = gtk.StatusIcon()
+		self.icon.set_from_pixbuf(self.pixbuf)
+		self.update_pixbuf(self.get_current_desktop())
+
+		self.icon.connect("activate", self.left)
+		self.icon.connect("popup-menu", self.right)
+		self.icon.connect("scroll-event", self.scroll)
+
+		self.get_desktop_tasks(0)
+
+
+	def event_filter(event, user_data):
+		'''Handles incoming gtk.gdk.Events.'''
+		# we only registered for SUBSTRUCTURE_MASK events, so
+		# we just update the pixbuf
+		neap.update_pixbuf(neap.get_current_desktop())
+		return gtk.gdk.FILTER_CONTINUE
+
+	def get_desktop_tasks(self, num):
+		'''Returns a list of tasks for desktop num.'''
+		return self.root.get_full_property(self.display.intern_atom("_NET_CLIENT_LIST"), Xatom.WINDOW).value
+
+
+	def get_current_desktop(self):
+		'''Returns the index of the currently active desktop.'''
+		return self.root.get_full_property(self.display.intern_atom("_NET_CURRENT_DESKTOP"), 0).value[0]
+
+
+	def get_desktop_count(self):
+		'''Returns the current number of desktops.'''
+		return self.root.get_full_property(self.display.intern_atom("_NET_NUMBER_OF_DESKTOPS"), 0).value[0]
+
+
+	def get_desktop_names(self):
+		'''Returns a list containing desktop names.'''
+		count = self.get_desktop_count()
+		names = self.root.get_full_property(self.display.intern_atom("_NET_DESKTOP_NAMES"), 0)
+		if hasattr(names, "value"):
+			names = names.value.strip("\x00").split("\x00")
+		else:
+			names = []
+			for i in range(count):
+				names.append(str(i))
+
+		if len(names) < count:
+			for i in range(len(names), count):
+				names.append(str(i))
+
+		return names
+
+
+	def update_grid(self):
+		'''Updates internal grid structure.'''
+		w, h = self.pixbuf.get_width(), self.pixbuf.get_height()
+		rows = self.conf['rows']
+		cols = self.conf['columns']
+		padding = self.conf['padding']
+		spacing = self.conf['spacing']
+
+		n = max(rows, cols)
+		c = (w - 2 * padding - (n - 1) * spacing) / cols
+
+		grid_width = cols * c + (cols - 1) * spacing
+		grid_height = rows * c + (rows - 1) * spacing
+
+		off_x = (w - 2*padding - grid_width) / 2
+		off_y = (h - 2*padding - grid_height) / 2
+
+		grid = []
+		for i in range(rows):
+			for j in range(cols):
+				x = off_x + padding + j*(c + spacing)
+				y = off_y + padding + i*(c + spacing)
+
+				if i * cols + j < len(self.desktop) :
+					grid.append((x, y, c, c))
+
+		self.grid = grid
+
+
+	def update_pixbuf(self, active = -1):
+		'''Updates internal icon pixbuf.'''
+		self.update_grid()
+		w, h = self.pixbuf.get_width(), self.pixbuf.get_height()
+
+		map = gtk.gdk.Colormap(gtk.gdk.visual_get_best(), False)
+		color_active       = map.alloc_color(self.conf['color_active'])
+		color_inactive     = map.alloc_color(self.conf['color_inactive'])
+		color_background   = map.alloc_color(self.conf['color_background'])
+
+		pixmap = gtk.gdk.Pixmap(None, w, h, 32)
+		gc = pixmap.new_gc()
+
+		#---ACTUAL DRAWING CODE---
+		gc.set_foreground(color_background)
+		pixmap.draw_rectangle(gc, True, 0, 0, w, h)
+
+		gc.set_foreground(color_inactive)
+
+		i = 0
+		for cell in self.grid:
+			if(i == active):
+				gc.set_foreground(color_active)
+			else:
+				gc.set_foreground(color_inactive)
+
+			i = i + 1
+
+			x, y, size_x, size_y = cell
+			pixmap.draw_rectangle(gc, True, x, y, size_x, size_y)
+		#-------------------------
+
+		self.pixbuf.get_from_drawable(pixmap, map, 0, 0, 0, 0, w, h)
+		self.pixbuf = self.pixbuf.add_alpha(True, chr(0x23), chr(0x57), chr(0xbd))
+		self.icon.set_from_pixbuf(self.pixbuf)
+
+
+	def get_screen(self):
+		'''Returns the clicked grid box number.'''
+		pointer_x, pointer_y, mods = self.icon.get_screen().get_root_window().get_pointer()
+
+		screen, rectangle, orientation = self.icon.get_geometry()
+		width, height, size_x, size_y = rectangle;
+
+		pos_x = pointer_x - width
+		pos_y = pointer_y - height
+
+		i = 0
+		for cell in self.grid:
+			x, y, size_x, size_y = cell
+			if pos_x >= x and pos_x <= x + size_x and pos_y >= y and pos_y <= y + size_y:
+				return i
+			i = i + 1
+
+		return -1
+
+
+	def left(self, status_icon):
+		'''Callback for left-clicks.'''
+		num = self.get_screen()
+
+		if 0 <= num <= len(self.desktop):
+			self.update_pixbuf(num)
+			gobject.idle_add(self.switch_desktop, num)
+
+	def scroll(self, status_icon, event):
+		if event.direction == gtk.gdk.SCROLL_UP:
+			target = self.get_current_desktop() - 1
+		elif event.direction == gtk.gdk.SCROLL_DOWN:
+			target = self.get_current_desktop() + 1
+		else:
+			return
+
+		self.switch_desktop(target % self.get_desktop_count())
+
+	def switch_desktop(self, num):
+		'''Sets the active desktop to num.'''
+		win = self.root
+		ctype = self.display.intern_atom("_NET_CURRENT_DESKTOP")
+		data = [num]
+
+		self.send_event(win, ctype, data)
+		self.display.flush()
+
+
+	def send_event(self, win, ctype, data, mask=None):
+		'''Sends a ClientMessage event to the root window.'''
+		data = (data+[0]*(5-len(data)))[:5]
+		ev = Xlib.protocol.event.ClientMessage(window=win, client_type=ctype, data=(32,(data)))
+
+		if not mask:
+			mask = (X.SubstructureRedirectMask|X.SubstructureNotifyMask)
+		self.root.send_event(ev, event_mask=mask)
+
+
+	def desktop_callback(self, widget, data=None):
+		'''Callback for the menu's desktop selector.'''
+		if widget.get_active():
+			self.switch_desktop(data)
+
+
+	def get_menu_about(self):
+		'''Returns a menu for the right-click action.'''
+		menu = gtk.Menu()
+
+		submenu = gtk.Menu()
+		group = None
+		i = 0
+		for desktop in self.get_desktop_names():
+			item = gtk.RadioMenuItem(group, desktop)
+
+			if group == None:
+				item.set_active(True)
+
+			group = item
+			item.connect("toggled", self.desktop_callback, i)
+			i = i+1
+			submenu.add(item)
+
+		item = gtk.MenuItem("Desktops")
+		item.set_submenu(submenu)
+		menu.add(item)
+
+
+		sep = gtk.SeparatorMenuItem()
+		menu.add(sep)
+
+		item = gtk.ImageMenuItem(gtk.STOCK_ABOUT)
+		item.connect("activate", self.about)
+		menu.add(item)
+
+		#item = gtk.ImageMenuItem(gtk.STOCK_QUIT)
+		#item.connect("activate", gtk.main_quit)
+		#menu.add(item)
+
+		self.menu = menu
+		menu.show_all()
+		return menu
+
+
+	def right(self, status_icon, button, activate_time):
+		'''Callback for right-clicks.'''
+		if self.menu_about == None:
+			self.menu_about = self.get_menu_about()
+
+		self.menu_about.popup(None, None, gtk.status_icon_position_menu, 1, activate_time, self.icon)
+
+
+	def about(self, menu_item):
+		'''Shows an about dialog.'''
+		about = gtk.AboutDialog()
+
+		about.set_name(self.name)
+		about.set_version(self.version)
+		about.set_authors(self.author)
+		about.set_comments("notification area / systray pager")
+		about.set_copyright("Copyright (c) 2010 Philip Busch")
+		about.set_website(self.website)
+		about.set_logo(self.pixbuf)
+		about.set_program_name(self.name)
+		about.run()
+		about.hide()
+
+
+	def write_configfile(self):
+		'''Creates config file.'''
+
+		home = os.path.expanduser('~')
+		tmp = os.path.join(home, ".config/")
+		if os.path.exists(tmp):
+			basedir = os.path.join(tmp, "neap")
+			if not os.path.exists(basedir):
+				if os.mkdir(basedir, 0755) < 0:
+					print "{0}: cannot create directory {1}".format(self.name, basedir)
+					return -1
+		else:
+			basedir = home
+
+		print "now: {0}".format(basedir)
+
+		return 0
+
+
+	def read_configfile(self, path):
+		'''Reads config file from path.'''
+		try:
+			f = open(path, "r")
+		except IOError as (errno, strerror):
+			print "{0}: {1}: {2}".format(self.name, path, strerror)
+			return -1
+
+		lineno = 0
+		conf = {}
+
+		for line in f:
+			lineno += 1
+
+			# remove comments
+			line = line.split(";", 1)[0].strip()
+
+			# check syntax
+			if len(line) == 0: continue
+			if line.find("=") == -1:
+				print "{0}: {1}: line {2}: syntax error".format(self.name, path, lineno)
+				return -1
+
+			# read
+			key, val = line.split("=", 1)
+			key = key.strip()
+			val = val.strip()
+
+			# check semantics
+			if self.set(key, val) < 0:
+				print "{0}: {1}: line {2}: illegal identifier \"{3}\"".format(self.name, path, lineno, key)
+				return -1
+
+		return 0
+
+
+	def set(self, key, val):
+		'''Sets config variable key to val.'''
+		if val == None:
+			return 1
+
+		try:
+			val = int(val)
+		except ValueError:
+			pass
+
+		if val == 'transparent':
+			val = '#2357bd'
+
+		if key not in self.conf.keys():
+			return -1
+
+		self.conf[key] = val
+
+		return 0
+
+
+	def get(self, key):
+		'''Returns the value of config variable key.'''
+		return self.conf[key]
+
+
+	def main(self):
+		'''Starts the main GTK loop.'''
+		num = self.get_current_desktop()
+		self.update_pixbuf(num)
+		gtk.main()
+
+
+
+if __name__ == '__main__':
+	parser = OptionParser()
+
+	parser.add_option("-p", "--padding", dest="padding",
+			  help="number of pixels between outer edge and grid",
+			  metavar="N")
+
+	parser.add_option("-s", "--spacing", dest="spacing",
+			  help="number of pixels between rows/cols in the grid",
+			  metavar="N")
+
+	parser.add_option("-a", "--active-color", dest="color_active",
+			  help="color of active desktop",
+			  metavar="C")
+
+	parser.add_option("-i", "--inactive-color", dest="color_inactive",
+			  help="color of inactive desktop(s)",
+			  metavar="C")
+
+	parser.add_option("-b", "--background-color", dest="color_background",
+			  help="background color",
+			  metavar="C")
+
+	parser.add_option("-r", "--rows", dest="rows",
+			  help="number of grid rows",
+			  metavar="N")
+
+	parser.add_option("-c", "--columns", dest="columns",
+			  help="number of grid columns",
+			  metavar="N")
+
+	(opts, args) = parser.parse_args()
+
+
+	cfile = os.path.expanduser('~/.neaprc')
+	if not os.path.exists(cfile):
+		try:
+			f = open(cfile, 'w')
+			f.write(""";{0} v{1} config file generated {2}
+
+;number of pixels between outer border and the actual grid
+padding = 2
+
+;number of pixels between grid boxes
+spacing = 1
+
+;foreground color (inactive desktops)
+color_inactive = #333333
+
+;highlight color (the active desktop)
+color_active = #999999
+
+;background color ("transparent" for transparent background)
+color_background = transparent
+
+;number of rows in desktop grid
+rows = 2
+
+;number of columns in desktop grid
+columns = 2
+""".format(name, version, datetime.now().strftime("%Y-%m-%d %H:%M:%S")))
+			f.close()
+		except IOError as (errno, strerror):
+			print "{0}: {1}: {2}".format(name, cfile, strerror)
+			sys.exit(-1)
+
+	neap = neap()
+
+	if neap.read_configfile(cfile) < 0:
+		sys.exit(-1)
+
+	neap.set('padding', opts.padding)
+	neap.set('spacing', opts.spacing)
+	neap.set('color_active', opts.color_active)
+	neap.set('color_inactive', opts.color_inactive)
+	neap.set('color_background', opts.color_background)
+	neap.set('rows', opts.rows)
+	neap.set('columns', opts.columns)
+
+	neap.main()
+
+
+
