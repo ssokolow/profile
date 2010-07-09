@@ -105,7 +105,7 @@
 
        use obconf if you want to change these without having to log out
        and back in -->
-    <number>2</number>
+    <number>4</number>
     <firstdesk>1</firstdesk>
     <names>
       <!-- set names up here if you want to, like this:
@@ -148,12 +148,12 @@
     <!-- (Top|Bottom)(Left|Right|)|Top|Bottom|Left|Right|Floating -->
     <floatingX>0</floatingX>
     <floatingY>0</floatingY>
-    <noStrut>no</noStrut>
+    <noStrut>yes</noStrut>
     <stacking>Above</stacking>
     <!-- 'Above', 'Normal', or 'Below' -->
     <direction>Vertical</direction>
     <!-- 'Vertical' or 'Horizontal' -->
-    <autoHide>no</autoHide>
+    <autoHide>yes</autoHide>
     <hideDelay>300</hideDelay>
     <!-- in milliseconds (1000 = 1 second) -->
     <showDelay>300</showDelay>
@@ -297,6 +297,17 @@
         <command>gmrun</command>
       </action>
     </keybind>
+    <keybind key="C-A-Escape">
+      <action name="Execute">
+        <command>xkill</command>
+      </action>
+    </keybind>
+    <keybind key="XF86ScrollDown">
+      <action name="DesktopPrevious"/>
+    </keybind>
+    <keybind key="XF86ScrollUp">
+      <action name="DesktopNext"/>
+    </keybind>
   </keyboard>
   <mouse>
     <dragThreshold>8</dragThreshold>
@@ -348,6 +359,24 @@
       </mousebind>
       <mousebind button="A-S-Down" action="Click">
         <action name="SendToDesktopNext"/>
+      </mousebind>
+      <!-- User Bindings -->
+      <mousebind button="Button8" action="Press">
+        <action name="DesktopNext"/>
+      </mousebind>
+      <mousebind button="Button9" action="Press">
+        <action name="DesktopPrevious"/>
+      </mousebind>
+      <!-- User Menus -->
+      <mousebind button="W-Button8" action="Press">
+        <action name="ShowMenu">
+          <menu>client-list-combined-menu</menu>
+        </action>
+      </mousebind>
+      <mousebind button="W-Right" action="Press">
+        <action name="ShowMenu">
+          <menu>root-menu</menu>
+        </action>
       </mousebind>
     </context>
     <context name="Titlebar">
@@ -597,6 +626,13 @@
         <action name="Focus"/>
         <action name="Raise"/>
       </mousebind>
+      <!-- User Bindings -->
+      <mousebind button="Button8" action="Press">
+        <action name="DesktopNext"/>
+      </mousebind>
+      <mousebind button="Button9" action="Press">
+        <action name="DesktopPrevious"/>
+      </mousebind>
     </context>
     <context name="Root">
       <!-- Menus -->
@@ -644,8 +680,7 @@
     <manageDesktops>yes</manageDesktops>
     <!-- show the manage desktops section in the client-list-(combined-)menu -->
   </menu>
-  <applications>
-    <!--
+  <applications><!--
   # this is an example with comments through out. use these to make your
   # own rules, but without the comments of course.
 
@@ -715,6 +750,7 @@
   </application>
 
   # end of the example
--->
+  -->
+  "New Record"
   </applications>
 </openbox_config>
