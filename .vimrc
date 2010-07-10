@@ -77,8 +77,11 @@ set lcs+=trail:· "show trailing spaces
 " Make my sessions a bit more like projects and less like vimrc overrides.
 set sessionoptions=blank,curdir,folds,help,tabpages,resize,slash,unix,winpos,winsize
 
+" Use 'ack' as my grep program since it's more comfortable for me
+set grepprg=ack\ -a
+
+" Enable all filetype-specific features
 if exists("+filetype")
-	" Enable all filetype-specific features
 	filetype plugin indent on
 endif
 
@@ -87,6 +90,7 @@ if has("autocmd") && exists("+omnifunc")
     autocmd Filetype * if &omnifunc == "" | setlocal omnifunc=syntaxcomplete#Complete | endif
 endif
 
+" Filetype-specific autocommands
 if has("autocmd") && exists("+filetype")
 	" Automatically strip trailing whitespace from lines when saving non-M4 files.
 	autocmd BufWritePre * if index(['m4', 'diff', 'make', 'mail'], &ft) < 0 | exe 'normal m`' | %s/\s\+$//e | exe 'normal ``' | endif

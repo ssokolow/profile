@@ -1,0 +1,13 @@
+# Use "less -R" as my pager but pretend I'm not when the results fit one screen
+--pager=less -R -F -X
+
+# Shockingly, there is no JSON in the default type map
+--type-add
+js=.json
+
+# --== Let's not forget common Pylons types ==--
+--type-set
+cfg=.cfg,.ini
+
+--type-set
+mako=.mako,.html
