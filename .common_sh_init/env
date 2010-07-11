@@ -10,7 +10,7 @@ elif [ -z "$HOST" ] && [ -n "$HOSTNAME" ]; then
 fi
 
 # Set a few environment variables that the Gentoo crew doesn't.
-export BROWSER="kfmclient openURL"
+export BROWSER=~/bin/chrome
 export EDITOR=/usr/bin/vim
 export VISUAL="$EDITOR"
 export MAILER=mutt
