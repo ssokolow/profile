@@ -4,6 +4,8 @@
 " - I've rebound the up/down arrows and home/end to take soft-wrap into account
 "   because it's what I'm already used to and, in the case of home/end,
 "   it'll always be a simpler motion than g0 and g$.
+" - Whenever it can be done suitably reliably, I let Vim do things for me.
+"   (eg. stripping trailing whitespace and using the DetectIndent plugin)
 
 " TODO:
 " * http://www.vex.net/~x/python_and_vim.html
@@ -24,40 +26,13 @@
 " ab TODO: ssokolow :r!date +\%Y-\%m-\%dkJA TODO:
 " ab FIXME: ssokolow :r!date +\%Y-\%m-\%dkJA FIXME:
 
+" ----==== Configuration ====----
+
 set nocompatible
 set modeline
 
 " I don't like my apps to bug me about donations.
 set shortmess+=I
-
-" Set up more comfortable filesystem navigation
-set wildmenu
-set wildignore+=.pyc,.pyo,.class
-"set suffixes+=.pyc,.pyo,.class
-
-" Make searching more efficient
-set incsearch
-set hlsearch
-" TODO: Consider enabling ignorecase and smartcase
-" Set up Ctrl-L to turn off search result highlights.
-noremap <c-l> :nohls<CR><c-l>
-
-" I want full mouse support when using a Yakuake-->screen-->vim stack.
-if exists("+mouse")
-	set ttymouse=xterm2
-	set mouse=a
-endif
-
-" I prefer 4-character space indentation
-let g:detectindent_preferred_expandtab = 1
-let g:detectindent_preferred_indent = 4
-
-" Only word-wrap comments and word-wrap them at 79 characters.
-set formatoptions-=t	" No word-wrap inside code.
-set textwidth=80
-"set formatoptions+=can	" TODO: Get these cooperating.
-"	(n seems to require t while I use c and a messes my lists)
-"set formatlistpat="^\s*\(\d\+[\]:.)}\t ]\|[-*]\)\s*"
 
 " Don't treat word-wrapped lines as an 'all or nothing' thing when displaying.
 set display+=lastline
@@ -68,17 +43,75 @@ set showcmd      " Show in-progress commands so I can figure out what the heck I
 
 " Make tabs and trailing whitespace visible
 set list
-set lcs=tab:»·   "show tabs
-set lcs+=trail:· "show trailing spaces
+set listchars=tab:»·,trail:· " show tabs and trailing spaces
+
+" Only word-wrap comments and word-wrap them at 80 characters.
+set formatoptions-=t     " No word-wrap inside code.
+set formatoptions+=croql " Make the behaviour I'm used to explicit
+set textwidth=80
+
+" TODO: Get these cooperating. (n seems to require t)
+"set formatoptions+=n
+"set formatlistpat="^\s*\(\d\+[\]:.)}\t ]\|[-*]\)\s*"
 
 " Make my sessions a bit more like projects and less like vimrc overrides.
-set sessionoptions=blank,curdir,folds,help,tabpages,resize,slash,unix,winpos,winsize
+set sessionoptions=blank,curdir,folds,help,resize,slash,tabpages,unix,winpos,winsize
 
 " Use 'ack' as my grep program since it's more comfortable for me
+" TODO: See if I can find a way to switch this based on whether PATH has ack
 set grepprg=ack\ -a
 
+" ----==== Configuration (Optional Vim Features) ====----
+
+" I prefer 4-character space indentation
+if exists(":let")
+	let g:detectindent_preferred_expandtab = 1
+	let g:detectindent_preferred_indent = 4
+else
+	set expandtab
+	set tabstop=4
+	set softtabstop=4
+	set shiftwidth=4
+endif
+
+if exists(":let")
+	" TODO: Make sure this is actually working.
+	let python_highlight_all = 1
+endif
+
+" Make searching more efficient
+if exists("+extra_search")
+	set incsearch
+	set hlsearch
+	" TODO: Consider enabling smartcase (what I use in zsh)
+endif
+
+if exists("+folding")
+	" TODO: Figure out how to make this just work based on the detected language.
+	" set foldmethod=indent
+	" set foldcolumn=1
+endif
+
+" I want full mouse support when using a Yakuake-->screen-->vim stack.
+if exists("+mouse")
+	set ttymouse=xterm2
+	set mouse=a
+endif
+
+" Set up more comfortable filesystem navigation
+if exists("+wildmenu")
+	set wildmenu
+endif
+if exists("+wildignore")
+	set wildignore+=.pyc,.pyo,.class
+else
+	set suffixes+=.pyc,.pyo,.class
+endif
+
+" ----==== Load Plugin Bundles ====----
+
 " Explicitly disable filetype-specific features before loading pathogen in case
-" we're on a Debian-based distro.
+" we're on a Debian-based distro. (To force a rescan when re-enabled)
 if exists("+filetype")
 	filetype off
 endif
@@ -91,6 +124,8 @@ if exists("+filetype")
 	filetype plugin indent on
 endif
 
+" ----==== Define Autocommands ====----
+
 " Enable the syntax-based fallback for omni-completion
 if has("autocmd") && exists("+omnifunc")
 	autocmd Filetype * if &omnifunc == "" | setlocal omnifunc=syntaxcomplete#Complete | endif
@@ -98,38 +133,32 @@ endif
 
 " Filetype-specific autocommands
 if has("autocmd") && exists("+filetype")
-	" Automatically strip trailing whitespace from lines when saving non-M4 files.
-	autocmd BufWritePre * if index(['m4', 'diff', 'make', 'mail'], &ft) < 0 | exe 'normal m`' | %s/\s\+$//e | exe 'normal ``' | endif
-
 	" Run the DetectIndent plugin automatically
 	autocmd BufReadPost * :DetectIndent
 
-	" Set up my preferred behaviour for auto-formatting in Python.
-	autocmd FileType python set expandtab
-	autocmd BufReadPost SCons* set syntax=python
+	" Automatically strip trailing whitespace from lines when saving non-M4 files.
+	autocmd BufWritePre * if index(['m4', 'diff', 'make', 'mail'], &ft) < 0 | exe 'normal m`' | %s/\s\+$//e | exe 'normal ``' | endif
+
+	" Make sure that I don't accidentally cause myself problems with Makefiles
+	" TODO: Make absolutely sure this overrides my call to DetectIndent
+	autocmd FileType make set noexpandtab
 
 	" Support the jQuery syntax extension from
 	" http://www.vim.org/scripts/script.php?script_id=2416
 	autocmd BufRead,BufNewFile *.js set filetype=javascript syntax=jquery
 
-	" Fix an apparent oversight in Gentoo's configuration with regards to sudoedit
-	autocmd BufNewFile,BufRead *.ebuild.* set filetype=ebuild
-
-	" Make sure that I don't accidentally cause myself problems with Makefiles
-	autocmd FileType make set noexpandtab
-
-	" Fix the extension binding for the mako syntax plugin
+	" Fix a few apparent oversights in filetype detection
+	autocmd BufNewFile,BufRead SCons* set syntax=python
 	autocmd BufNewFile,BufRead *.mako set filetype=mako
-endif
-
-if exists(":let") == 2
-	" TODO: Make sure this is actually working.
-	let python_highlight_all = 1
+	" ...and work around a sudoedit-vim interaction quirk
+	autocmd BufNewFile,BufRead *.ebuild.* set filetype=ebuild
 endif
 
 " Work around a very annoying bug in the PHP filetype's indent profile.
 " FIXME: I'm just gonna have to fix the PHP indent script. This won't do.
 " autocmd FileType php filetype indent off | runtime! $VIM/vim71/indent/html.vim
+
+" ----==== Key Bindings ====----
 
 " Make Up, Down, Home, and End move in a more visually-intuitive fashion when
 " dealing with soft-wrapped text. g0 and g$ are unacceptable. I use these
@@ -145,21 +174,18 @@ imap <down> <C-o>gj
 imap <home> <C-o>g<home>
 imap <end> <C-o>g<end>
 
+" Reminder: Vim's omni-completion is on C-P when it'd conflict with snipMate.
+
 " Set up Ctrl-N Ctrl-N to toggle the line numbers column.
 nmap <C-N><C-N> :set invnumber<CR>
+
+" Set up Ctrl-L to turn off search result highlights.
+noremap <c-l> :nohls<CR><c-l>
 
 " Set up quick shortcuts for saving and switching sessions
 nmap <C-S> :wa<Bar>exe "mksession! " . v:this_session<CR>
 nmap <C-A> :wa<Bar>exe "mksession! " . v:this_session<CR>:so ~/*.vim
 
-" Duplicate vim's Ctrl-P completion onto Ctrl-Tab
-" Reminder: I've got TextMate-style completion on <Tab>
-imap <C-Tab> <C-P>
-
 " Provide a more concise way to toggle NERDTree
 map <F2> :NERDTreeToggle<CR>
-
-" TODO: Figure out how to make this just work based on the detected language.
-" set foldmethod=indent
-" set foldcolumn=1
 
