@@ -8,6 +8,31 @@
 "   (eg. stripping trailing whitespace and using the DetectIndent plugin)
 
 " TODO:
+" * Set up some concise prev/next tab keybindings
+" * Choose a different color scheme for the ncurses omni-completion popup
+" * Decide how I want NERDTree to behave relative to cd.
+" * Set up and memorize a suitable set of snipMate snippets.
+" * Figure out how to solve my disagreement with Vim over what constitutes
+"   an acceptable response to existing swap files.
+" * Adjust my session-saving keybinding so it asks for confirmation somehow
+"   if no prior session was saved rather than dumping a Session.vim into the
+"   working directory.
+" ----
+" * http://vim.wikia.com/wiki/Integration_with_PyUnit_testing_framework
+" * http://vim.wikia.com/wiki/Git_grep
+" * http://www.vim.org/scripts/script.php?script_id=90
+" * http://vim.wikia.com/wiki/VimTip224
+" * http://vim.wikia.com/wiki/GNU_Screen_integration
+" * http://vim.wikia.com/wiki/Automatically_create_and_update_cscope_database
+" * http://www.vim.org/scripts/script.php?script_id=2448
+" * http://www.vim.org/scripts/script.php?script_id=3010
+" * http://vim.wikia.com/wiki/Simple_programmers_TODO_list_using_grep_and_quickfix
+" * http://www.vim.org/scripts/script.php?script_id=1577
+" * http://vim.wikia.com/wiki/Switch_between_Vim_window_splits_easily
+" * Look into merging tag_signature.vim with
+"   http://vim.wikia.com/wiki/Use_balloonexpr_effectively
+" ----
+" * http://vimdoc.sourceforge.net/htmldoc/quickfix.html#quickfix
 " * http://www.vex.net/~x/python_and_vim.html
 " * http://vimdoc.sourceforge.net/htmldoc/options.html#modeline
 " * http://vimdoc.sourceforge.net/htmldoc/usr_40.html#40.1
@@ -21,20 +46,12 @@
 " * http://www.gentoo.org/doc/en/vi-guide.xml
 " * http://www.vim.org/scripts/script.php?script_id=2120
 " * http://vim.wikia.com/wiki/Best_Vim_Tips
-" ----
-" * Look into merging tag_signature.vim with
-"   http://vim.wikia.com/wiki/Use_balloonexpr_effectively
-" * http://vim.wikia.com/wiki/VimTip224
-" * http://vim.wikia.com/wiki/GNU_Screen_integration
-" * http://vim.wikia.com/wiki/Automatically_create_and_update_cscope_database
-" * http://www.vim.org/scripts/script.php?script_id=2448
-" * http://www.vim.org/scripts/script.php?script_id=3010
-" * http://vim.wikia.com/wiki/Simple_programmers_TODO_list_using_grep_and_quickfix
-" * http://www.vim.org/scripts/script.php?script_id=1577
-" * http://vim.wikia.com/wiki/Switch_between_Vim_window_splits_easily
 
 " Stuff to build habits for:
 " * http://www.catonmat.net/series/vim-plugins-you-should-know-about
+" * Splitting and unsplitting:
+"  - http://blogs.sourceallies.com/2009/11/vim-splits-an-introduction/
+"  - http://jmcpherson.org/windows.html
 
 " Just as a reminder of how to do this.
 " Originally from:
