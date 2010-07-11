@@ -38,7 +38,7 @@ set wildignore+=.pyc,.pyo,.class
 " Make searching more efficient
 set incsearch
 set hlsearch
-" TODO: Consider inabling ignorecase and smartcase
+" TODO: Consider enabling ignorecase and smartcase
 " Set up Ctrl-L to turn off search result highlights.
 noremap <c-l> :nohls<CR><c-l>
 
@@ -48,12 +48,9 @@ if exists("+mouse")
 	set mouse=a
 endif
 
-" I prefer 4-character indentation
-" TODO: Should I set tabstop=8?
-set tabstop=4
-set softtabstop=4
-set shiftwidth=4
-set expandtab
+" I prefer 4-character space indentation
+let g:detectindent_preferred_expandtab = 1
+let g:detectindent_preferred_indent = 4
 
 " Only word-wrap comments and word-wrap them at 79 characters.
 set formatoptions-=t	" No word-wrap inside code.
@@ -96,13 +93,16 @@ endif
 
 " Enable the syntax-based fallback for omni-completion
 if has("autocmd") && exists("+omnifunc")
-    autocmd Filetype * if &omnifunc == "" | setlocal omnifunc=syntaxcomplete#Complete | endif
+	autocmd Filetype * if &omnifunc == "" | setlocal omnifunc=syntaxcomplete#Complete | endif
 endif
 
 " Filetype-specific autocommands
 if has("autocmd") && exists("+filetype")
 	" Automatically strip trailing whitespace from lines when saving non-M4 files.
 	autocmd BufWritePre * if index(['m4', 'diff', 'make', 'mail'], &ft) < 0 | exe 'normal m`' | %s/\s\+$//e | exe 'normal ``' | endif
+
+	" Run the DetectIndent plugin automatically
+	autocmd BufReadPost * :DetectIndent
 
 	" Set up my preferred behaviour for auto-formatting in Python.
 	autocmd FileType python set expandtab
