@@ -19,6 +19,22 @@
 " * /home/ssokolow/incoming/vimbook-OPL.pdf
 " * http://www.viemu.com/a-why-vi-vim.html
 " * http://www.gentoo.org/doc/en/vi-guide.xml
+" * http://www.vim.org/scripts/script.php?script_id=2120
+" * http://vim.wikia.com/wiki/Best_Vim_Tips
+" ----
+" * Look into merging tag_signature.vim with
+"   http://vim.wikia.com/wiki/Use_balloonexpr_effectively
+" * http://vim.wikia.com/wiki/VimTip224
+" * http://vim.wikia.com/wiki/GNU_Screen_integration
+" * http://vim.wikia.com/wiki/Automatically_create_and_update_cscope_database
+" * http://www.vim.org/scripts/script.php?script_id=2448
+" * http://www.vim.org/scripts/script.php?script_id=3010
+" * http://vim.wikia.com/wiki/Simple_programmers_TODO_list_using_grep_and_quickfix
+" * http://www.vim.org/scripts/script.php?script_id=1577
+" * http://vim.wikia.com/wiki/Switch_between_Vim_window_splits_easily
+
+" Stuff to build habits for:
+" * http://www.catonmat.net/series/vim-plugins-you-should-know-about
 
 " Just as a reminder of how to do this.
 " Originally from:
@@ -75,15 +91,18 @@ else
 endif
 
 if exists(":let")
-	" TODO: Make sure this is actually working.
-	let python_highlight_all = 1
+	let g:ragtag_global_maps = 1
+	let g:pcs_check_when_saving = 1
+	let g:SuperTabDefaultCompletionType = "context"
+	let python_highlight_all = 1 " TODO: Make sure this is actually working.
 endif
 
 " Make searching more efficient
-if exists("+extra_search")
+if has("extra_search")
 	set incsearch
 	set hlsearch
-	" TODO: Consider enabling smartcase (what I use in zsh)
+	set ignorecase
+	set smartcase
 endif
 
 if exists("+folding")
