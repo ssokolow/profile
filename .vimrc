@@ -80,6 +80,15 @@ set sessionoptions=blank,curdir,folds,help,tabpages,resize,slash,unix,winpos,win
 " Use 'ack' as my grep program since it's more comfortable for me
 set grepprg=ack\ -a
 
+" Explicitly disable filetype-specific features before loading pathogen in case
+" we're on a Debian-based distro.
+if exists("+filetype")
+	filetype off
+endif
+
+" Use Pathogen to handle vim plugins as bundles
+call pathogen#runtime_append_all_bundles()
+
 " Enable all filetype-specific features
 if exists("+filetype")
 	filetype plugin indent on
@@ -101,7 +110,7 @@ if has("autocmd") && exists("+filetype")
 
 	" Support the jQuery syntax extension from
 	" http://www.vim.org/scripts/script.php?script_id=2416
-	autocmd BufRead,BufNewFile *.js set filetype=javascript.jquery
+	autocmd BufRead,BufNewFile *.js set filetype=javascript syntax=jquery
 
 	" Fix an apparent oversight in Gentoo's configuration with regards to sudoedit
 	autocmd BufNewFile,BufRead *.ebuild.* set filetype=ebuild
@@ -146,6 +155,9 @@ nmap <C-A> :wa<Bar>exe "mksession! " . v:this_session<CR>:so ~/*.vim
 " Duplicate vim's Ctrl-P completion onto Ctrl-Tab
 " Reminder: I've got TextMate-style completion on <Tab>
 imap <C-Tab> <C-P>
+
+" Provide a more concise way to toggle NERDTree
+map <F2> :NERDTreeToggle<CR>
 
 " TODO: Figure out how to make this just work based on the detected language.
 " set foldmethod=indent

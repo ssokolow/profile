@@ -9,3 +9,7 @@
 
 # Backup files
 *~
+
+# Revision control directories for vim bundles
+.vim/bundle/web-indent/.svn/
+.vim/bundle/web-indent/indent/.svn/
