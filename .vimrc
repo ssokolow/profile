@@ -6,12 +6,17 @@
 "   it'll always be a simpler motion than g0 and g$.
 " - Whenever it can be done suitably reliably, I let Vim do things for me.
 "   (eg. stripping trailing whitespace and using the DetectIndent plugin)
+" - Whenever it can be done quickly and without being overly nitpicky, I let vim
+"   run static analysis on files on save and display the results in the quickfix
+"   window.
 
 " TODO:
+" * Fix the PyFlakes-quickfix integration so the quickfix lines are clickable
 " * Set up some concise prev/next tab keybindings
 " * Choose a different color scheme for the ncurses omni-completion popup
 " * Decide how I want NERDTree to behave relative to cd.
 " * Set up and memorize a suitable set of snipMate snippets.
+" * Set up on-save quickfix lint for CSS
 " * Figure out how to solve my disagreement with Vim over what constitutes
 "   an acceptable response to existing swap files.
 " * Adjust my session-saving keybinding so it asks for confirmation somehow
@@ -112,6 +117,13 @@ if exists(":let")
 	let g:pcs_check_when_saving = 1
 	let g:SuperTabDefaultCompletionType = "context"
 	let python_highlight_all = 1 " TODO: Make sure this is actually working.
+
+	let g:checksyntax_auto_php = 1
+	let g:checksyntax_auto_javascript = 1
+	let g:checksyntax_auto_lua = 1
+	let g:checksyntax_auto_html = 1
+	"let g:checksyntax_auto_xml = 1  " TODO: Fix this so it actually recognizes errors
+	" Note: The ruby checker currently calls the ruby "compiler"... do not want.
 endif
 
 " Make searching more efficient
