@@ -79,7 +79,7 @@ function! Bufsize_prettyprint()
 	let unit = unit_list[unit_idx]
 
 	" Pretty-print it
-	if type(bufsize) == type(0.0) && version > 700
+	if type(bufsize) == type(0.0) && has('float')
 		return printf('%.1f%s', bufsize, unit)
 	else
 		return bufsize . unit
