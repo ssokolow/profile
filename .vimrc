@@ -158,12 +158,6 @@ if has("extra_search")
 	set smartcase
 endif
 
-if exists("+folding")
-	" TODO: Figure out how to make this just work based on the detected language.
-	" set foldmethod=indent
-	" set foldcolumn=1
-endif
-
 " I want full mouse support when using a Yakuake-->screen-->vim stack.
 if exists("+mouse")
 	set ttymouse=xterm2
