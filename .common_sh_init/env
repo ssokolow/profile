@@ -36,6 +36,7 @@ export MAILCHECK=60
 # Python-related settings
 export PYTHONDOCS="/usr/share/htmldoc_links/dev-python/python-docs-2.6/"
 export PYTHONPATH=~/src:~/src/read-only/scrapy-trunk":$PYTHONPATH"
+export VIRTUALENV_USE_DISTRIBUTE=1
 
 # Disable start menu icon creation in Wine
 export WINEDLLOVERRIDES="winemenubuilder.exe=d"

@@ -23,6 +23,7 @@
 " * Decide how I want NERDTree to behave relative to cd.
 " * Set up and memorize a suitable set of snipMate snippets.
 " * Set up on-save quickfix lint for CSS
+" * Consider using signs for inline handling of things like diff, quickfix, etc.
 " * Figure out how to properly handle spaces in filepaths for makeprg. (eg. tidy)
 " * Set up filetype-specific equalprg strings for HTMLTidy, CSSTidy, etc.
 "   and/or figure out the keybinding to reformat based on the vim indent defs.
@@ -136,9 +137,8 @@ if exists(":let")
 	let g:ragtag_global_maps = 1
 	let g:pcs_check_when_saving = 1
 	let g:SuperTabDefaultCompletionType = "context"
-	let python_highlight_all = 1 " TODO: Make sure this is actually working.
 
-	let g:checksyntax_auto_php = 1
+	let g:checksyntax_auto_php = 0
 	let g:checksyntax_auto_javascript = 1
 	let g:checksyntax_auto_lua = 1
 	let g:checksyntax_auto_html = 1
@@ -146,6 +146,7 @@ if exists(":let")
 	" Note: The ruby checker currently calls the ruby "compiler"... do not want.
 
 	" Things to double-check the efficacy of:
+	let python_highlight_all = 1
 	let g:PHP_default_indenting = 1
 endif
 
