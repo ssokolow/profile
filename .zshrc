@@ -107,7 +107,7 @@ bindkey ' '       magic-space
 ###########
 
 # Make history work
-setopt HIST_FCNTL_LOCK
+setopt HIST_FCNTL_LOCK 2>/dev/null
 setopt HIST_ALLOW_CLOBBER
 setopt HIST_IGNORE_ALL_DUPS HIST_FIND_NO_DUPS
 setopt HIST_REDUCE_BLANKS
@@ -217,6 +217,6 @@ function sudo() {
 }
 
 # I prefer to have a fortune from any new shell, not just login ones.
-if `which fortune` &> /dev/null; then
+if command -v fortune >/dev/null; then
     fortune
 fi

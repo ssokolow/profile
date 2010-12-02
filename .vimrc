@@ -181,8 +181,10 @@ endif
 
 " Filetype-specific autocommands
 if has("autocmd") && exists("+filetype")
-	" Run the DetectIndent plugin automatically
-	autocmd BufReadPost * :DetectIndent
+	if exists(":DetectIndent")
+		" Run the DetectIndent plugin automatically
+		autocmd BufReadPost * :DetectIndent
+	endif
 
 	" Automatically strip trailing whitespace from lines when saving non-M4 files.
 	autocmd BufWritePre * if index(['m4', 'diff', 'make', 'mail'], &ft) < 0 | exe 'normal m`' | %s/\s\+$//e | exe 'normal ``' | endif
