@@ -1,9 +1,10 @@
+
 [default]
 
 # This interferes with my joystick evdev bindings (causes each button to do two different things in one push)
 nojoystick=yes
 
-vo=gl2,gl,xv,x11,ggi,fbdev,fbdev2
+vo=xv,gl2,gl,x11,ggi,fbdev,fbdev2
 ao=alsa,openal,pulse,oss
 
 # This enables screenshots but disables the hardware scaling
