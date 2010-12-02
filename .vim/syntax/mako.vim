@@ -13,6 +13,8 @@
 
 " For version 5.x: Clear all syntax items
 " For version 6.x: Quit when a syntax file was already loaded
+"
+" TODO: Submit my namespaced tag patch to the author.
 if version < 600
   syntax clear
 elseif exists("b:current_syntax")
@@ -54,8 +56,8 @@ syn region makoAttributeValue containedin=makoTag contained start=/"/ skip=/\\"/
 syn region makoAttributeValue containedin=MakoTag contained start=/'/ skip=/\\'/ end=/'/
 
 " Tags
-syn region makoTag matchgroup=makoDelim start="<%\(def\|call\|page\|include\|namespace\|inherit\)\>" end="/\?>"
-syn match makoDelim "</%\(def\|call\|namespace\)>"
+syn region makoTag matchgroup=makoDelim start="<%\(def\|call\|page\|include\|namespace\|inherit\|[a-zA-Z0-9]\+:[a-zA-Z0-9]\+\)\>" end="/\?>"
+syn match makoDelim "</%\(def\|call\|namespace\|[a-zA-Z0-9]\+:[a-zA-Z0-9]\+\)>"
 
 " Newline Escapes
 syn match makoEscape /\\$/
