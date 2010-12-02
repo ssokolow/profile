@@ -11,3 +11,6 @@ cfg=.cfg,.ini
 
 --type-set
 mako=.mako,.html
+
+--type-set
+cakephp=.ctp,.tpl
