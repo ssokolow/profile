@@ -25,6 +25,10 @@ cond_alias df pydf
 cond_alias date "date --rfc-3339=seconds"
 cond_alias top htop
 
+# I want my damn Vim to open things in tabs
+alias vim="vim -p"
+alias gvim="gvim -p"
+
 # Make documentation browsing easier
 alias info="pinfo"
 function kinfo() { konqueror info:/"$@" & }
