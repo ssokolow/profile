@@ -11,12 +11,21 @@
 "   window.
 
 " TODO:
+" * Figure out why, with comment formatting enabled, formatoptions wants to
+"   word-wrap after every word in this file.
+" * Kill whatever plugin forces folding with extreme prejudice.
+" * Report to Ciaran McCreesh that DetectIndent trips over /*\n*\n*\n*/
 " * Fix the PyFlakes-quickfix integration so the quickfix lines are clickable
+" * Find or write a script which strips the former next line's indenting when
+"   I remove a newline character with the Delete key.
 " * Set up some concise prev/next tab keybindings
 " * Choose a different color scheme for the ncurses omni-completion popup
 " * Decide how I want NERDTree to behave relative to cd.
 " * Set up and memorize a suitable set of snipMate snippets.
 " * Set up on-save quickfix lint for CSS
+" * Figure out how to properly handle spaces in filepaths for makeprg. (eg. tidy)
+" * Set up filetype-specific equalprg strings for HTMLTidy, CSSTidy, etc.
+"   and/or figure out the keybinding to reformat based on the vim indent defs.
 " * Figure out how to solve my disagreement with Vim over what constitutes
 "   an acceptable response to existing swap files.
 " * Adjust my session-saving keybinding so it asks for confirmation somehow
@@ -24,6 +33,9 @@
 "   working directory.
 " ----
 " * http://vim.wikia.com/wiki/Integration_with_PyUnit_testing_framework
+" * http://www.vim.org/scripts/script.php?script_id=974
+" * http://www.vim.org/scripts/script.php?script_id=1881
+" * http://vim.wikia.com/wiki/VimTip1
 " * http://vim.wikia.com/wiki/Git_grep
 " * http://www.vim.org/scripts/script.php?script_id=90
 " * http://vim.wikia.com/wiki/VimTip224
@@ -36,8 +48,12 @@
 " * http://vim.wikia.com/wiki/Switch_between_Vim_window_splits_easily
 " * Look into merging tag_signature.vim with
 "   http://vim.wikia.com/wiki/Use_balloonexpr_effectively
+" * http://www.vim.org/scripts/script.php?script_id=1218
+" * http://www.vim.org/scripts/script_search_results.php?keywords=php+indent&script_type=&order_by=rating&direction=descending&search=search
+" * http://stackoverflow.com/questions/313359/annoying-vim-unindent-rules
 " ----
 " * http://vimdoc.sourceforge.net/htmldoc/quickfix.html#quickfix
+" * http://vim.runpaint.org/
 " * http://www.vex.net/~x/python_and_vim.html
 " * http://vimdoc.sourceforge.net/htmldoc/options.html#modeline
 " * http://vimdoc.sourceforge.net/htmldoc/usr_40.html#40.1
@@ -51,6 +67,11 @@
 " * http://www.gentoo.org/doc/en/vi-guide.xml
 " * http://www.vim.org/scripts/script.php?script_id=2120
 " * http://vim.wikia.com/wiki/Best_Vim_Tips
+" * http://vim.runpaint.org/navigation/bookmarking-lines-with-visible-markers/
+" * http://vimdoc.sourceforge.net/htmldoc/quickfix.html#errorformat
+" * http://vim.wikia.com/wiki/Folding
+" * http://amix.dk/blog/post/19132
+" * https://sites.google.com/site/linuxpebbles/cool-tricks/some-of-my-favorite-vim-tips/vim-folding-commands#TOC-Using-the-mouse
 
 " Stuff to build habits for:
 " * http://www.catonmat.net/series/vim-plugins-you-should-know-about
@@ -102,14 +123,13 @@ set grepprg=ack\ -a
 " ----==== Configuration (Optional Vim Features) ====----
 
 " I prefer 4-character space indentation
+set expandtab
+set tabstop=4
+set softtabstop=4
+set shiftwidth=4
 if exists(":let")
 	let g:detectindent_preferred_expandtab = 1
 	let g:detectindent_preferred_indent = 4
-else
-	set expandtab
-	set tabstop=4
-	set softtabstop=4
-	set shiftwidth=4
 endif
 
 if exists(":let")
@@ -122,8 +142,11 @@ if exists(":let")
 	let g:checksyntax_auto_javascript = 1
 	let g:checksyntax_auto_lua = 1
 	let g:checksyntax_auto_html = 1
-	"let g:checksyntax_auto_xml = 1  " TODO: Fix this so it actually recognizes errors
+	let g:checksyntax_auto_xml = 1
 	" Note: The ruby checker currently calls the ruby "compiler"... do not want.
+
+	" Things to double-check the efficacy of:
+	let g:PHP_default_indenting = 1
 endif
 
 " Make searching more efficient
