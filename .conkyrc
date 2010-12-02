@@ -142,7 +142,7 @@ use_spacer none
 # ${tcp_portmon 1 65535 rhost 5} ${alignr} ${tcp_portmon 1 65535 lservice 5}
 
 TEXT
-$loadavg ${alignr}IP: ${texeci 900 curl -s http://whatismyip.com/automation/n09230945.asp}
+$loadavg ${alignr}
 $stippled_hr
 CPU:${color #cc2222} ${cpu cpu0}% ${cpubar cpu0}
 ${color #cc2222}${cpubar cpu1 6,75} ${cpu cpu1}% ${alignc}${color lightgrey}Cores${color #cc2222}${alignr}${cpu cpu2}% ${cpubar cpu2 6,75}

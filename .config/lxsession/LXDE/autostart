@@ -1,8 +1,11 @@
 @nitrogen --restore
-@xrdb ~/.Xdefaults
-@setxkbmap -option -option nbsp:level3,lv3:ralt_switch_multikey,compose:rctrl,eurosign:e,altwin:super_win
-@xmodmap ~/.Xmodmap
-@xbindkeys
-@~/bin/neap
+@sh -c "exec ~/bin/neap"
 @parcellite
 @basket
+@sh -c "exec ~/bin/setkeys"
+@sh -c "exec ~/bin/timeclock"
+@knotes
+@audacious2
+@thunderbird
+@pidgin
+@conky
