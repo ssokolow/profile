@@ -15,6 +15,14 @@ typeset -ga preexec_functions
 typeset -ga precmd_functions
 typeset -ga chpwd_functions
 
+#################
+# Misc. Modules #
+#################
+
+autoload -U zrecompile # Generate and cache compiled versions of initscripts
+autoload -U run-help   # Enable Meta-H (Alt/Esc-h/H) to read the manpage for the current partially typed command
+
+
 ##############
 # Completion #
 ##############
@@ -127,6 +135,8 @@ setopt AUTO_PUSHD
 setopt PUSHD_SILENT
 setopt NUMERIC_GLOB_SORT
 setopt LIST_PACKED
+setopt SHORT_LOOPS
+setopt AUTO_RESUME
 
 # Set shopts equivalent to stuff in my .bashrc
 setopt nolistambiguous autolist
