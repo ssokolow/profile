@@ -1,5 +1,7 @@
 # Make sure that, even if this profile roams, I won't get the annoying message
 startup_message off
+
+# Ensure that "bell is urgent" settings for WM-term interaction are effective
 vbell off
 
 # Make sure windows default to having UTF-8 enabled

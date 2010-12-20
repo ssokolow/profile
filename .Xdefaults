@@ -4,6 +4,7 @@
 *VT100*background: black
 *VT100*geometry: 160x50
 
+XTerm*bellIsUrgent:  true
 XTerm*saveLines: 5120
 XTerm*scrollKey: true
 XTerm*scrollTtyOutput: false
