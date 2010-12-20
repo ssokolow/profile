@@ -1,7 +1,25 @@
-" Notes on my rationale:
+" Stephan Sokolow's .vimrc (WIP)
+
+" If you are unfamiliar with vim's folding commands, type zR to expand all
+" folds.
+
+" {{{ Quick Reference
+"
+" ========== My Additions ==========
 " \]         Toggle MiniBufExplorer
 " \[         Toggle NERDTree
+" <C-N><C-N> Toggle line numbers
+" <C-L>      Hide search result highlights
+" :rename
 "
+" ========== Stuff I'm Still Getting Used To =========
+" zo Open fold
+" zc Close fold
+" zR Open all folds
+" zM Close all folds
+"
+" }}}
+" {{{ Notes on my rationale:
 " - I keep Select mode off because Visual mode is more useful and I can get
 "   Select-mode behaviour by just typing an extra c after selecting.
 " - I've rebound the up/down arrows and home/end to take soft-wrap into account
@@ -12,11 +30,8 @@
 " - Whenever it can be done quickly and without being overly nitpicky, I let vim
 "   run static analysis on files on save and display the results in the quickfix
 "   window.
-
-" TODO:
-" * Figure out why, with comment formatting enabled, formatoptions wants to
-"   word-wrap after every word in this file.
-" * Kill whatever plugin forces folding with extreme prejudice.
+" }}}
+" {{{ TODO:
 " * Report to Ciaran McCreesh that DetectIndent trips over /*\n*\n*\n*/
 " * Fix the PyFlakes-quickfix integration so the quickfix lines are clickable
 " * Find or write a script which strips the former next line's indenting when
@@ -30,11 +45,13 @@
 " * Figure out how to properly handle spaces in filepaths for makeprg. (eg. tidy)
 " * Set up filetype-specific equalprg strings for HTMLTidy, CSSTidy, etc.
 "   and/or figure out the keybinding to reformat based on the vim indent defs.
-" * Figure out how to solve my disagreement with Vim over what constitutes
+" * Figure out how to solve my disagreement with gVim over what constitutes
 "   an acceptable response to existing swap files.
 " * Adjust my session-saving keybinding so it asks for confirmation somehow
 "   if no prior session was saved rather than dumping a Session.vim into the
 "   working directory.
+" * Figure out why, with comment formatting enabled, formatoptions wants to
+"   word-wrap after every word in this file.
 " ----
 " * http://vim.wikia.com/wiki/Integration_with_PyUnit_testing_framework
 " * http://www.vim.org/scripts/script.php?script_id=974
@@ -77,11 +94,13 @@
 " * http://amix.dk/blog/post/19132
 " * https://sites.google.com/site/linuxpebbles/cool-tricks/some-of-my-favorite-vim-tips/vim-folding-commands#TOC-Using-the-mouse
 
-" Stuff to build habits for:
+" }}}
+" {{{ Stuff to build habits for:
 " * http://www.catonmat.net/series/vim-plugins-you-should-know-about
 " * Splitting and unsplitting:
 "  - http://blogs.sourceallies.com/2009/11/vim-splits-an-introduction/
 "  - http://jmcpherson.org/windows.html
+" }}}
 
 " Just as a reminder of how to do this.
 " Originally from:
@@ -89,7 +108,7 @@
 " ab TODO: ssokolow :r!date +\%Y-\%m-\%dkJA TODO:
 " ab FIXME: ssokolow :r!date +\%Y-\%m-\%dkJA FIXME:
 
-" ----==== Configuration ====----
+" {{{ Configuration
 
 set nocompatible
 set modeline
@@ -124,7 +143,8 @@ set sessionoptions=blank,curdir,folds,help,resize,slash,tabpages,unix,winpos,win
 " TODO: See if I can find a way to switch this based on whether PATH has ack
 set grepprg=ack\ -a
 
-" ----==== Configuration (Optional Vim Features) ====----
+" }}}
+" {{{ Configuration (Optional Vim Features)
 
 " I prefer 4-character space indentation
 set expandtab
@@ -136,11 +156,13 @@ if exists(":let")
 	let g:detectindent_preferred_indent = 4
 endif
 
+" Plugin settings
 if exists(":let")
 	let g:ragtag_global_maps = 1
 	let g:pcs_check_when_saving = 1
 	let g:SuperTabDefaultCompletionType = "context"
 
+    " TODO: Figure out why checksyntax seems to be broken (at least for PHP and Lua)
 	let g:checksyntax_auto_php = 0
 	let g:checksyntax_auto_javascript = 1
 	let g:checksyntax_auto_lua = 1
@@ -181,7 +203,8 @@ else
 	set suffixes+=.pyc,.pyo,.class
 endif
 
-" ----==== Load Plugin Bundles ====----
+" }}}
+" {{{ Load Plugin Bundles
 
 " Explicitly disable filetype-specific features before loading pathogen in case
 " we're on a Debian-based distro. (To force a rescan when re-enabled)
@@ -197,7 +220,8 @@ if exists("+filetype")
 	filetype plugin indent on
 endif
 
-" ----==== Define Autocommands ====----
+" }}}
+" {{{ Define Autocommands
 
 " Enable the syntax-based fallback for omni-completion
 if has("autocmd") && exists("+omnifunc")
@@ -233,7 +257,8 @@ endif
 " FIXME: I'm just gonna have to fix the PHP indent script. This won't do.
 " autocmd FileType php filetype indent off | runtime! $VIM/vim71/indent/html.vim
 
-" ----==== Key Bindings ====----
+" }}}
+" {{{ Key Bindings
 
 " Make Up, Down, Home, and End move in a more visually-intuitive fashion when
 " dealing with soft-wrapped text. g0 and g$ are unacceptable. I use these
@@ -266,3 +291,5 @@ map <unique> <Leader>nt :NERDTreeToggle<CR>
 map <unique> <Leader>[ :NERDTreeToggle<CR>
 map <unique> <Leader>] :TMiniBufExplorer<CR>
 
+" }}}
+" vim:ft=vim:fdm=marker:ff=unix:noexpandtab
