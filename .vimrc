@@ -1,4 +1,7 @@
 " Notes on my rationale:
+" \]         Toggle MiniBufExplorer
+" \[         Toggle NERDTree
+"
 " - I keep Select mode off because Visual mode is more useful and I can get
 "   Select-mode behaviour by just typing an extra c after selecting.
 " - I've rebound the up/down arrows and home/end to take soft-wrap into account
@@ -145,6 +148,10 @@ if exists(":let")
 	let g:checksyntax_auto_xml = 1
 	" Note: The ruby checker currently calls the ruby "compiler"... do not want.
 
+	" Open MiniBufExplorer as a sidebar more like I got used to with Kate
+	let g:miniBufExplVSplit=25
+	let g:miniBufExplUseSingleClick = 1
+
 	" Things to double-check the efficacy of:
 	let python_highlight_all = 1
 	let g:PHP_default_indenting = 1
@@ -255,5 +262,7 @@ nmap <C-S> :wa<Bar>exe "mksession! " . v:this_session<CR>
 nmap <C-A> :wa<Bar>exe "mksession! " . v:this_session<CR>:so ~/*.vim
 
 " Provide a more concise way to toggle NERDTree
-map <F2> :NERDTreeToggle<CR>
+map <unique> <Leader>nt :NERDTreeToggle<CR>
+map <unique> <Leader>[ :NERDTreeToggle<CR>
+map <unique> <Leader>] :TMiniBufExplorer<CR>
 
