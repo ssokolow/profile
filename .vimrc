@@ -6,11 +6,12 @@
 " {{{ Quick Reference
 "
 " ========== My Additions ==========
+" \p         Open Session Manager
 " \]         Toggle MiniBufExplorer
 " \[         Toggle NERDTree
 " <C-N><C-N> Toggle line numbers
 " <C-L>      Hide search result highlights
-" :rename
+" :Rename    Rename file attached to the current buffer
 "
 " ========== Stuff I'm Still Getting Used To =========
 " zo Open fold
@@ -282,14 +283,12 @@ nmap <C-N><C-N> :set invnumber<CR>
 " Set up Ctrl-L to turn off search result highlights.
 noremap <c-l> :nohls<CR><c-l>
 
-" Set up quick shortcuts for saving and switching sessions
-nmap <C-S> :wa<Bar>exe "mksession! " . v:this_session<CR>
-nmap <C-A> :wa<Bar>exe "mksession! " . v:this_session<CR>:so ~/*.vim
-
-" Provide a more concise way to toggle NERDTree
+" Provide a convenient, concise way to work beyond single files
 map <unique> <Leader>nt :NERDTreeToggle<CR>
 map <unique> <Leader>[ :NERDTreeToggle<CR>
 map <unique> <Leader>] :TMiniBufExplorer<CR>
+map <unique> <Leader>p :SessionList<CR>
+map <unique> <C-S> :SessionSave<CR>
 
 " }}}
 " vim:ft=vim:fdm=marker:ff=unix:noexpandtab
