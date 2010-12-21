@@ -1,23 +1,85 @@
 " Stephan Sokolow's .vimrc (WIP)
-
-" If you are unfamiliar with vim's folding commands, type zR to expand all
-" folds.
+" If you are unfamiliar with vim's folding commands, type zR.
 
 " {{{ Quick Reference
 "
-" ========== My Additions ==========
-" \p         Open Session Manager
-" \]         Toggle MiniBufExplorer
-" \[         Toggle NERDTree
-" <C-N><C-N> Toggle line numbers
-" <C-L>      Hide search result highlights
-" :Rename    Rename file attached to the current buffer
+" File Navigation And Management:
+"  \p         Open Session Manager
+"  \s         Save Current Session
+"  \[         Toggle MiniBufExplorer
+"  \]         Toggle NERDTree
 "
-" ========== Stuff I'm Still Getting Used To =========
-" zo Open fold
-" zc Close fold
-" zR Open all folds
-" zM Close all folds
+"  :Rename    Rename file attached to the current buffer
+"
+"  :A         Switch between source and header file
+"  :AS/:AV    Split horiz/vert and switch to matching source/header
+"
+" Navigation:
+"  */#        Jump to next/previous instance of exact word under cursor
+"  g*/g#      Jump to next/previous instance of word under cursor as substring
+"
+"  %          Jump to next if/then clause or matching paren
+"  g%         Jump to previous if/then clause or matching paren
+"
+"  ]m         Jump to start of next method/class
+"  [m         Jump to start of previous method/class
+"  ]M         Jump to end of next method/class
+"  [M         Jump to end of previous method/class
+"
+"  zo         Open fold
+"  zc         Close fold
+"  zr         Reduce folding (open one level of folds)
+"  zm         More folding (close one level of folds)
+"  zR         Open all folds
+"  zM         Close all folds
+"
+"  TODO: Find or set an insert-mode binding for moving word-by-word
+"
+" Editing:
+"  Tab        Snippets/Omni-Completion (Smart)
+"  <C-P>      Omni-Completion (when Smart isn't smart enough)
+"
+"  \cc        Comment selected lines
+"  \cu        Uncomment selected lines"
+"
+"  >>         Indent selected lines
+"  <<         Unindent selected lines
+"
+"  gg=G       Reindent the entire file according to the current indent setup
+"             (Assuming 'equalprg' hasn't redefined the meaning of =)
+"
+"  :Loremipsum [words]
+"             Insert placeholder text
+"
+"  Surround:
+"   Where X and Y are quotes, parens, or HTML tags...
+"   Normal Mode:
+"    dsX    Delete containing X
+"    csXY   Replace containing X with Y
+"    cstY   Replace containing tag with Y
+"    cspY   Wrap current paragraph with Y
+"    yssY   Wrap current line's contents with Y
+"    ySSY   Indent current line and wrap with Y on their own lines
+"   Visual Mode:
+"    SY     Wrap selection with Y
+"   Insert ModE:
+"    <C-S>X Insert paired X and position the cursor in between
+"
+" Display Control:
+"  [count] <C-W> +/-/</> Resize the current pane
+"  <C-W> _    Maximize current pane
+"  <C-W> =    Make all panes equal size
+"
+"  <C-W><C-W> Cycle pane focus (Backwards to allow easy flipping between two)
+"  <C-W><dir> Move focus to adjoining pane
+"
+"  <C-W> s/v  Split Horizontally/Vertically
+"  <C-W> c    Close current pane if it wouldn't discard unsaved contents (:clo)
+"  <C-w> ]    Split window and jump to tag under cursor
+"  <C-w> i    Split window and jump to declaration of identifier under cursor
+"
+"  <C-N><C-N> Toggle line numbers
+"  <C-L>      Hide search result highlights
 "
 " }}}
 " {{{ Notes on my rationale:
@@ -35,6 +97,7 @@
 " {{{ TODO:
 " * Report to Ciaran McCreesh that DetectIndent trips over /*\n*\n*\n*/
 " * Fix the PyFlakes-quickfix integration so the quickfix lines are clickable
+" * Decide whether to use PyChecker or PyLint for Python :make
 " * Find or write a script which strips the former next line's indenting when
 "   I remove a newline character with the Delete key.
 " * Set up some concise prev/next tab keybindings
@@ -114,7 +177,7 @@
 set nocompatible
 set modeline
 
-" I don't like my apps to bug me about donations.
+" I don't like my apps bugging me about donations.
 set shortmess+=I
 
 " Don't treat word-wrapped lines as an 'all or nothing' thing when displaying.
@@ -122,7 +185,7 @@ set display+=lastline
 set scrolloff=2 " I like to have a two-line 'preview' when scrolling
 
 " I want a decent status line
-set showcmd      " Show in-progress commands so I can figure out what the heck I accidentally hit.
+set showcmd     " Show in-progress commands so I can figure out what the heck I accidentally hit.
 
 " Make tabs and trailing whitespace visible
 set list
@@ -133,6 +196,12 @@ set formatoptions-=t     " No word-wrap inside code.
 set formatoptions+=croql " Make the behaviour I'm used to explicit
 set textwidth=80
 
+" I prefer 4-space indentation by default
+set expandtab
+set tabstop=4
+set softtabstop=4
+set shiftwidth=4
+
 " TODO: Get these cooperating. (n seems to require t)
 "set formatoptions+=n
 "set formatlistpat="^\s*\(\d\+[\]:.)}\t ]\|[-*]\)\s*"
@@ -140,45 +209,8 @@ set textwidth=80
 " Make my sessions a bit more like projects and less like vimrc overrides.
 set sessionoptions=blank,curdir,folds,help,resize,slash,tabpages,unix,winpos,winsize
 
-" Use 'ack' as my grep program since it's more comfortable for me
-" TODO: See if I can find a way to switch this based on whether PATH has ack
-set grepprg=ack\ -a
-
 " }}}
 " {{{ Configuration (Optional Vim Features)
-
-" I prefer 4-character space indentation
-set expandtab
-set tabstop=4
-set softtabstop=4
-set shiftwidth=4
-if exists(":let")
-	let g:detectindent_preferred_expandtab = 1
-	let g:detectindent_preferred_indent = 4
-endif
-
-" Plugin settings
-if exists(":let")
-	let g:ragtag_global_maps = 1
-	let g:pcs_check_when_saving = 1
-	let g:SuperTabDefaultCompletionType = "context"
-
-    " TODO: Figure out why checksyntax seems to be broken (at least for PHP and Lua)
-	let g:checksyntax_auto_php = 0
-	let g:checksyntax_auto_javascript = 1
-	let g:checksyntax_auto_lua = 1
-	let g:checksyntax_auto_html = 1
-	let g:checksyntax_auto_xml = 1
-	" Note: The ruby checker currently calls the ruby "compiler"... do not want.
-
-	" Open MiniBufExplorer as a sidebar more like I got used to with Kate
-	let g:miniBufExplVSplit=25
-	let g:miniBufExplUseSingleClick = 1
-
-	" Things to double-check the efficacy of:
-	let python_highlight_all = 1
-	let g:PHP_default_indenting = 1
-endif
 
 " Make searching more efficient
 if has("extra_search")
@@ -186,6 +218,11 @@ if has("extra_search")
 	set hlsearch
 	set ignorecase
 	set smartcase
+endif
+
+" Let's default to syntax-based folding since it's the most automatic
+if exists("+folding")
+	set foldmethod=indent
 endif
 
 " I want full mouse support when using a Yakuake-->screen-->vim stack.
@@ -203,6 +240,49 @@ if exists("+wildignore")
 else
 	set suffixes+=.pyc,.pyo,.class
 endif
+
+" Use 'ack' as my grep program since it's more comfortable for me
+if executable("ack")
+	set grepprg=ack\ -a
+endif
+
+" }}}
+" {{{ Configuration (Plugins)
+if exists(":let")
+	let g:ragtag_global_maps = 1
+	let g:pcs_check_when_saving = 1
+	let g:SuperTabDefaultCompletionType = "context"
+
+	" I prefer 4-character space indentation as my default for DetectIndent too
+	let g:detectindent_preferred_expandtab = 1
+	let g:detectindent_preferred_indent = 4
+
+	" Open MiniBufExplorer as a sidebar more like I got used to with Kate
+	let g:miniBufExplVSplit=25
+	"let g:miniBufExplUseSingleClick = 1
+	"let g:miniBufExplForceSyntaxEnable = 1
+
+	" Make sure NERDTree always opens with the right dimensions
+	let NERDTreeQuitOnOpen = 1
+	let NERDTreeWinSize = 30
+
+    " TODO: Figure out why checksyntax seems to be broken (at least for PHP and Lua)
+	let g:checksyntax_auto_php = 0
+	let g:checksyntax_auto_javascript = 1
+	let g:checksyntax_auto_lua = 1
+	let g:checksyntax_auto_html = 1
+	let g:checksyntax_auto_xml = 1
+	" Note: The ruby checker currently calls the ruby "compiler"... do not want.
+
+	" Things to double-check the efficacy of:
+	let python_highlight_all = 1
+	let g:PHP_default_indenting = 1
+
+	" Set up Conque to match my workflow better
+	let g:ConqueTerm_CWInsert = 1
+	let g:ConqueTerm_InsertOnEnter = 1
+endif
+
 
 " }}}
 " {{{ Load Plugin Bundles
@@ -275,8 +355,6 @@ imap <down> <C-o>gj
 imap <home> <C-o>g<home>
 imap <end> <C-o>g<end>
 
-" Reminder: Vim's omni-completion is on C-P when it'd conflict with snipMate.
-
 " Set up Ctrl-N Ctrl-N to toggle the line numbers column.
 nmap <C-N><C-N> :set invnumber<CR>
 
@@ -284,11 +362,11 @@ nmap <C-N><C-N> :set invnumber<CR>
 noremap <c-l> :nohls<CR><c-l>
 
 " Provide a convenient, concise way to work beyond single files
-map <unique> <Leader>nt :NERDTreeToggle<CR>
-map <unique> <Leader>[ :NERDTreeToggle<CR>
-map <unique> <Leader>] :TMiniBufExplorer<CR>
 map <unique> <Leader>p :SessionList<CR>
-map <unique> <C-S> :SessionSave<CR>
+map <unique> <Leader>s :SessionSave<CR>
+map <unique> <Leader>[ :TMiniBufExplorer<CR>
+map <unique> <Leader>] :NERDTreeToggle<CR>
+map <unique> <Leader>nt :NERDTreeToggle<CR>
 
 " }}}
 " vim:ft=vim:fdm=marker:ff=unix:noexpandtab
