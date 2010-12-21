@@ -1,1 +1,3 @@
-autoload/repeat.vim is used by the surround and unimpaired bundles.
+- autoload/repeat.vim is used by the surround and unimpaired bundles.
+- All extensions comprising more than a single file are stored in overlays under
+  .vim/bundle/

@@ -234,7 +234,9 @@
 "
 "                 let g:miniBufExplCloseOnSelect = 1
 "
-"               into your .vimrc.
+"               into your .vimrc. You may also want to pair it with this:
+"
+"                 let g:miniBufExplToggleRefocuses = 1
 "
 "               MBE has had a basic debugging capability for quite some time.
 "               However, it has not been very friendly in the past. As of 6.0.8,
@@ -574,6 +576,13 @@ endif " }}}
 if !exists('g:miniBufExplCloseOnSelect')
   let g:miniBufExplCloseOnSelect = 0
 endif "}}}
+" Should calling ToggleExplorer leave focus on MBE? {{{
+" Flag that can be set to 1 in a users .vimrc to hide
+" the explorer when a user selects a buffer.
+"
+if !exists('g:miniBufExplToggleRefocuses')
+  let g:miniBufExplToggleRefocuses = 0
+endif "}}}
 
 " Variables used internally
 "
@@ -771,7 +780,9 @@ function! <SID>ToggleExplorer()
     call <SID>StopExplorer(1)
   else
     call <SID>StartExplorer(1, -1)
-    wincmd p
+    if g:miniBufExplToggleRefocuses != 1
+        wincmd p
+    endif
   endif
 
   call <SID>DEBUG('===========================',10)

@@ -4,10 +4,10 @@
 " {{{ Quick Reference
 "
 " File Navigation And Management:
-"  \p           Open Session Manager
 "  \s           Save Current Session
-"  \[           Toggle MiniBufExplorer
-"  \]           Toggle NERDTree
+"  \p           Open Session Manager
+"  \[           Toggle NERDTree
+"  \]           Toggle MiniBufExplorer
 "
 "  :Rename      Rename file attached to the current buffer
 "
@@ -184,7 +184,6 @@
 "  - http://blogs.sourceallies.com/2009/11/vim-splits-an-introduction/
 "  - http://jmcpherson.org/windows.html
 " }}}
-
 " {{{ HOWTO Reminders for Things I May Eventually Want
 " Originally from:
 " http://the-shaolin.blogspot.com/2004/12/my-own-2-cent-vim-tip.html
@@ -279,7 +278,9 @@ if exists(":let")
 
 	" Open MiniBufExplorer as a sidebar more like I got used to with Kate
 	let g:miniBufExplVSplit=25
+	let g:miniBufExplorerMoreThanOne=9999
 	let g:miniBufExplCloseOnSelect = 1
+	let g:miniBufExplToggleRefocuses = 1
 	"let g:miniBufExplUseSingleClick = 1
 	"let g:miniBufExplForceSyntaxEnable = 1
 
@@ -385,9 +386,9 @@ noremap <c-l> :nohls<CR><c-l>
 " Provide a convenient, concise way to work beyond single files
 map <unique> <Leader>p :SessionList<CR>
 map <unique> <Leader>s :SessionSave<CR>
-map <unique> <Leader>[ :TMiniBufExplorer<CR>
-map <unique> <Leader>] :NERDTreeToggle<CR>
 map <unique> <Leader>nt :NERDTreeToggle<CR>
+map <unique> <Leader>[ :NERDTreeToggle<CR>
+map <unique> <Leader>] :TMiniBufExplorer<CR>
 
 " }}}
 " vim:ft=vim:fdm=marker:ff=unix:noexpandtab
