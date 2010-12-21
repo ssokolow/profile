@@ -4,52 +4,71 @@
 " {{{ Quick Reference
 "
 " File Navigation And Management:
-"  \p         Open Session Manager
-"  \s         Save Current Session
-"  \[         Toggle MiniBufExplorer
-"  \]         Toggle NERDTree
+"  \p           Open Session Manager
+"  \s           Save Current Session
+"  \[           Toggle MiniBufExplorer
+"  \]           Toggle NERDTree
 "
-"  :Rename    Rename file attached to the current buffer
+"  :Rename      Rename file attached to the current buffer
 "
-"  :A         Switch between source and header file
-"  :AS/:AV    Split horiz/vert and switch to matching source/header
+"  :A           Switch between source and header file
+"  :AS/:AV      Split horiz/vert and switch to matching source/header
+"
+"  <C-]>        Jump to tag under cursor.
+"  <C-T>        Undo the most recent jump to tag.
+"
+"  [o           Open previous file in the directory. (alphabetically)
+"  ]o           Open next file in the directory. (alphabetically)
 "
 " Navigation:
-"  */#        Jump to next/previous instance of exact word under cursor
-"  g*/g#      Jump to next/previous instance of word under cursor as substring
+"  */#          Jump to next/previous instance of exact word under cursor
+"  g*/g#        Jump to next/previous instance of word under cursor as substring
 "
-"  %          Jump to next if/then clause or matching paren
-"  g%         Jump to previous if/then clause or matching paren
+"  %            Jump to next if/then clause or matching paren
+"  g%           Jump to previous if/then clause or matching paren
 "
-"  ]m         Jump to start of next method/class
-"  [m         Jump to start of previous method/class
-"  ]M         Jump to end of next method/class
-"  [M         Jump to end of previous method/class
+"  ]m           Jump to start of next method/class
+"  [m           Jump to start of previous method/class
+"  ]M           Jump to end of next method/class
+"  [M           Jump to end of previous method/class
 "
-"  zo         Open fold
-"  zc         Close fold
-"  zr         Reduce folding (open one level of folds)
-"  zm         More folding (close one level of folds)
-"  zR         Open all folds
-"  zM         Close all folds
+"  zo           Open fold
+"  zc           Close fold
+"  zr           Reduce folding (open one level of folds)
+"  zm           More folding (close one level of folds)
+"  zR           Open all folds
+"  zM           Close all folds
 "
 "  TODO: Find or set an insert-mode binding for moving word-by-word
 "
 " Editing:
-"  Tab        Snippets/Omni-Completion (Smart)
-"  <C-P>      Omni-Completion (when Smart isn't smart enough)
+"  Tab          Snippets/Omni-Completion (Smart)
+"  <C-P>        Omni-Completion (when Smart isn't smart enough)
 "
-"  \cc        Comment selected lines
-"  \cu        Uncomment selected lines"
+"  <C-X> /      Close the last open HTML/PHP/Django/eRuby tag
+"  <C-X> Space  Create tag pair from the typed word (single line)
+"  <C-X> Enter  Create tag pair from the typed word (multi-line)
 "
-"  >>         Indent selected lines
-"  <<         Unindent selected lines
+"  \cc          Comment selected lines
+"  \cu          Uncomment selected lines"
 "
-"  gg=G       Reindent the entire file according to the current indent setup
-"             (Assuming 'equalprg' hasn't redefined the meaning of =)
+"  >>           Indent selected lines
+"  <<           Unindent selected lines
+"
+"  [xx          XML Encode line/selection
+"  ]xx          XML Decode line/selection
+"  [uu          URL Encode line/selection
+"  [uu          URL Encode line/selection
+"  ]yy          C String Escape line/selection
+"  ]yy          C String Unescape line/selection
+"
+"
+"
+"  gg=G         Reindent the entire file according to the current indent setup
+"               (Assuming 'equalprg' hasn't redefined the meaning of =)
 "
 "  :Loremipsum [words]
-"             Insert placeholder text
+"               Insert placeholder text
 "
 "  Surround:
 "   Where X and Y are quotes, parens, or HTML tags...
@@ -166,11 +185,12 @@
 "  - http://jmcpherson.org/windows.html
 " }}}
 
-" Just as a reminder of how to do this.
+" {{{ HOWTO Reminders for Things I May Eventually Want
 " Originally from:
 " http://the-shaolin.blogspot.com/2004/12/my-own-2-cent-vim-tip.html
 " ab TODO: ssokolow :r!date +\%Y-\%m-\%dkJA TODO:
 " ab FIXME: ssokolow :r!date +\%Y-\%m-\%dkJA FIXME:
+" }}}
 
 " {{{ Configuration
 
