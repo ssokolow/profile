@@ -230,6 +230,12 @@
 "
 "                 let g:miniBufExplForceSyntaxEnable = 1
 "
+"               If you would like MBE to close when you select a buffer, put:
+"
+"                 let g:miniBufExplCloseOnSelect = 1
+"
+"               into your .vimrc.
+"
 "               MBE has had a basic debugging capability for quite some time.
 "               However, it has not been very friendly in the past. As of 6.0.8, 
 "               you can put one of each of the following into your .vimrc:
@@ -561,6 +567,13 @@ if g:miniBufExplUseSingleClick == 1
     exec s:m
   endif
 endif " }}}
+" Close on Select? {{{
+" Flag that can be set to 1 in a users .vimrc to hide
+" the explorer when a user selects a buffer.
+"
+if !exists('g:miniBufExplCloseOnSelect')
+  let g:miniBufExplCloseOnSelect = 0
+endif "}}}
 
 " Variables used internally
 "
@@ -1406,6 +1419,10 @@ function! <SID>MBESelectBuffer(split)
   let &report  = l:save_rep
   let &showcmd = l:save_sc
 
+  if g:miniBufExplCloseOnSelect == 1
+    call <SID>StopExplorer(1)
+  endif
+
   call <SID>DEBUG('===========================',10)
   call <SID>DEBUG('Completed MBESelectBuffer()',10)
   call <SID>DEBUG('===========================',10)
@@ -1835,7 +1852,7 @@ endfunc " }}}
 "                       opened again unless you do a \mbe (or restart VIM).
 "                     o Removed spaces between "tabs" (even more mini :)
 "                     o Simplified MBE tab processing 
-"               6.0.6 o Fixed register overwrite bug found by Sébastien Pierre
+"               6.0.6 o Fixed register overwrite bug found by SÃ©bastien Pierre
 "               6.0.5 o Fixed an issue with window sizing when we run out of 
 "                       buffers.  
 "                     o Fixed some weird commenting bugs.  

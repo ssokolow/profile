@@ -259,6 +259,7 @@ if exists(":let")
 
 	" Open MiniBufExplorer as a sidebar more like I got used to with Kate
 	let g:miniBufExplVSplit=25
+	let g:miniBufExplCloseOnSelect = 1
 	"let g:miniBufExplUseSingleClick = 1
 	"let g:miniBufExplForceSyntaxEnable = 1
 
