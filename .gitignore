@@ -10,6 +10,9 @@
 # Backup files
 *~
 
+# Vim stuff that shouldn't be replicated
+.vim/.netrwhist
+
 # Revision control directories for vim bundles
 .vim/bundle/web-indent/.svn/
 .vim/bundle/web-indent/indent/.svn/

@@ -1,0 +1,6 @@
+#compdef wine
+
+_arguments \
+  '--version[print version info]' \
+  '--help[show help]' \
+  '*:windows executable:_files -g "*.(#i)(exe|com|bat|cmd|pif)(-.)"'
