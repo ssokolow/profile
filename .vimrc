@@ -107,6 +107,11 @@
 "   Insert ModE:
 "    <C-S>X Insert paired X and position the cursor in between
 "
+"  Vis:
+"   Use visual mode to select and then...
+"    :B <cmd>   Apply a command to selected region
+"    :S <pat>   Search only selected region
+"
 " Display Control:
 "  [count] <C-W> +/-/</> Resize the current pane
 "  <C-W> _    Maximize current pane
