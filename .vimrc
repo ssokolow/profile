@@ -21,6 +21,8 @@
 "  ]o           Open next file in the directory. (alphabetically)
 "
 " Navigation:
+"  gv           Re-select contents of previous visual-mode selection.
+"
 "  */#          Jump to next/previous instance of exact word under cursor
 "  g*/g#        Jump to next/previous instance of word under cursor as substring
 "
@@ -41,16 +43,33 @@
 "
 "  TODO: Find or set an insert-mode binding for moving word-by-word
 "
+" Noteworthy Motions:
+"  i {char}     Everything inside paired {char} centered on the cursor
+"  f/F {char}   Move forward/backward onto [count]'th occurrence of {char}
+"  t/T {char}   Move forward/backward 'til before/after [count]'th occurrence of {char}
+"  ;/,          Repeat previous same/opposite f/t/F/T motion [count] times.
+"
+"  w/W/b/B      [count] words forward/back, land on start (by non-word/space chars)
+"  e/E/ge/gE    [count] words forward/back, land on end (by non-word/space chars)
+"
+"  (/)          [count] sentences back/forward.
+"  {/}          [count] paragraphs back/forward.
+"
+"  G            Go to line [count]
+"  %            Go to [count] percent of the way through the file
+"  go           Go to byte [count] of the file
+"
 " Editing:
 "  Tab          Snippets/Omni-Completion (Smart)
 "  <C-P>        Omni-Completion (when Smart isn't smart enough)
+"  <C-V>        Visual Block mode (A.K.A. column mode)
 "
 "  <C-X> /      Close the last open HTML/PHP/Django/eRuby tag
 "  <C-X> Space  Create tag pair from the typed word (single line)
 "  <C-X> Enter  Create tag pair from the typed word (multi-line)
 "
 "  \cc          Comment selected lines
-"  \cu          Uncomment selected lines"
+"  \cu          Uncomment selected lines
 "
 "  >>           Indent selected lines
 "  <<           Unindent selected lines
@@ -62,13 +81,17 @@
 "  ]yy          C String Escape line/selection
 "  ]yy          C String Unescape line/selection
 "
-"
+"  zf           Create fold  (Inserts markers around selection if foldmethod=marker)
 "
 "  gg=G         Reindent the entire file according to the current indent setup
 "               (Assuming 'equalprg' hasn't redefined the meaning of =)
 "
 "  :Loremipsum [words]
 "               Insert placeholder text
+"
+"  Motions Requiring Operator Or Visual Mode:
+"   at          HTML/XML element (tags) at cursor plus contents (eg. dat)
+"   it          Just contents of HTML/XML element (tags) at cursor (eg. dit)
 "
 "  Surround:
 "   Where X and Y are quotes, parens, or HTML tags...
@@ -99,6 +122,14 @@
 "
 "  <C-N><C-N> Toggle line numbers
 "  <C-L>      Hide search result highlights
+"
+" }}}
+" {{{ Non-QuickRef Notes on This Configuration:
+"
+" - A plugin provides "Smart Home/End" (like in Visual C++, apparently)
+" - Saving non-M4/Make/diff/mail files automatically removes trailing whitespace
+" - In supported file formats, saving automatically runs a syntax check
+" - TODO: Complete this list
 "
 " }}}
 " {{{ Notes on my rationale:
