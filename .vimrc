@@ -60,7 +60,7 @@
 "  go           Go to byte [count] of the file
 "
 " Editing:
-"  Tab          Snippets/Omni-Completion (Smart)
+"  Tab          Indent/Snippets/Omni-Completion (Smart)
 "  <C-P>        Omni-Completion (when Smart isn't smart enough)
 "  <C-V>        Visual Block mode (A.K.A. column mode)
 "
@@ -86,8 +86,15 @@
 "  gg=G         Reindent the entire file according to the current indent setup
 "               (Assuming 'equalprg' hasn't redefined the meaning of =)
 "
-"  :Loremipsum [words]
+"  :Loremipsum [word count]
 "               Insert placeholder text
+"
+"  Build An Incremented Sequence From A Selected Column In Visual Block Mode:
+"  :I  [#]      Left-Justified  (Supply # for non-default increment)
+"  :II [#] [F]  Right-Justified (Supply F for non-default padding character)
+"
+"  Note: Variants also allow incrementing of dates, day names, and hexadecimal,
+"  octal, and roman numerals.
 "
 "  Motions Requiring Operator Or Visual Mode:
 "   at          HTML/XML element (tags) at cursor plus contents (eg. dat)
