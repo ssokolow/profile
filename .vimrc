@@ -331,13 +331,8 @@ if exists(":let")
 	let NERDTreeQuitOnOpen = 1
 	let NERDTreeWinSize = 30
 
-    " TODO: Figure out why checksyntax seems to be broken (at least for PHP and Lua)
-	let g:checksyntax_auto_php = 0
-	let g:checksyntax_auto_javascript = 1
-	let g:checksyntax_auto_lua = 1
-	let g:checksyntax_auto_html = 1
-	let g:checksyntax_auto_xml = 1
-	" Note: The ruby checker currently calls the ruby "compiler"... do not want.
+	" Show a jump list automatically on save if errors are found
+	let g:syntastic_auto_loc_list = 1
 
 	" Things to double-check the efficacy of:
 	let python_highlight_all = 1
