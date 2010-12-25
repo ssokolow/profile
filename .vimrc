@@ -63,15 +63,10 @@
 "  go           Go to byte [count] of the file
 "
 " Editing:
-"  Tab          Indent/Snippets/Omni-Completion (Smart)
-"  <C-P>        Omni-Completion (when Smart isn't smart enough)
 "  <C-V>        Visual Block mode (A.K.A. column mode)
 "
 "  <C-A>/<C-X>  Increment/decrement number/date/time/numeral under cursor.
 "               (Also supports letters of the alphabet in visual mode)
-"  <C-X> /      Close the last open HTML/PHP/Django/eRuby tag
-"  <C-X> Space  Create tag pair from the typed word (single line)
-"  <C-X> Enter  Create tag pair from the typed word (multi-line)
 "
 "  \cc          Comment selected lines
 "  \cu          Uncomment selected lines
@@ -93,6 +88,15 @@
 "
 "  :Loremipsum [word count]
 "               Insert placeholder text
+"
+"  Insert Mode:
+"   Tab          Indent/Snippets/Omni-Completion (Smart)
+"   <C-P>        Omni-Completion (when Smart isn't smart enough)
+"
+"   <C-X> /      Close the last open HTML/PHP/Django/eRuby tag
+"   <C-X> Space  Create tag pair from the typed word (single line)
+"   <C-X> Enter  Create tag pair from the typed word (multi-line)
+"
 "
 "  Build An Incremented Sequence From A Selected Column In Visual Block Mode:
 "  :I  [#]      Left-Justified  (Supply # for non-default increment)
@@ -162,8 +166,7 @@
 "   window.
 " }}}
 " {{{ TODO:
-" * Report to Ciaran McCreesh that DetectIndent trips over /*\n*\n*\n*/
-" * Fix the PyFlakes-quickfix integration so the quickfix lines are clickable
+" * Fix the DetectIndent problem with tripping over /*\n*\n*\n*/
 " * Decide whether to use PyChecker or PyLint for Python :make
 " * Find or write a script which strips the former next line's indenting when
 "   I remove a newline character with the Delete key.
@@ -171,7 +174,7 @@
 " * Choose a different color scheme for the ncurses omni-completion popup
 " * Decide how I want NERDTree to behave relative to cd.
 " * Set up and memorize a suitable set of snipMate snippets.
-" * Set up on-save quickfix lint for CSS
+" * Set up syntastic linting for CSS
 " * Consider using signs for inline handling of things like diff, quickfix, etc.
 " * Figure out how to properly handle spaces in filepaths for makeprg. (eg. tidy)
 " * Set up filetype-specific equalprg strings for HTMLTidy, CSSTidy, etc.
@@ -186,44 +189,18 @@
 " ----
 " * http://vim.wikia.com/wiki/Integration_with_PyUnit_testing_framework
 " * http://www.vim.org/scripts/script.php?script_id=974
-" * http://www.vim.org/scripts/script.php?script_id=1881
-" * http://vim.wikia.com/wiki/VimTip1
-" * http://vim.wikia.com/wiki/Git_grep
-" * http://www.vim.org/scripts/script.php?script_id=90
-" * http://vim.wikia.com/wiki/VimTip224
 " * http://vim.wikia.com/wiki/GNU_Screen_integration
-" * http://vim.wikia.com/wiki/Automatically_create_and_update_cscope_database
-" * http://www.vim.org/scripts/script.php?script_id=2448
 " * http://www.vim.org/scripts/script.php?script_id=3010
-" * http://vim.wikia.com/wiki/Simple_programmers_TODO_list_using_grep_and_quickfix
-" * http://www.vim.org/scripts/script.php?script_id=1577
 " * http://vim.wikia.com/wiki/Switch_between_Vim_window_splits_easily
-" * Look into merging tag_signature.vim with
-"   http://vim.wikia.com/wiki/Use_balloonexpr_effectively
-" * http://www.vim.org/scripts/script.php?script_id=1218
+" * http://vim.runpaint.org/navigation/bookmarking-lines-with-visible-markers/
 " * http://www.vim.org/scripts/script_search_results.php?keywords=php+indent&script_type=&order_by=rating&direction=descending&search=search
 " * http://stackoverflow.com/questions/313359/annoying-vim-unindent-rules
+" * Look into merging tag_signature.vim with
+"   http://vim.wikia.com/wiki/Use_balloonexpr_effectively
 " ----
 " * http://vimdoc.sourceforge.net/htmldoc/quickfix.html#quickfix
-" * http://vim.runpaint.org/
-" * http://www.vex.net/~x/python_and_vim.html
-" * http://vimdoc.sourceforge.net/htmldoc/options.html#modeline
-" * http://vimdoc.sourceforge.net/htmldoc/usr_40.html#40.1
-" * http://vim.wikia.com/wiki/Main_Page
-" * http://vimdoc.sourceforge.net/vimfaq.html
-" * http://vimdoc.sourceforge.net/htmldoc/usr_toc.html
-" * http://www.sm.luth.se/csee/courses/smd/139/smd139_vi.pdf
 " * http://vimdoc.sourceforge.net/htmldoc/motion.html#operator
-" * /home/ssokolow/incoming/vimbook-OPL.pdf
-" * http://www.viemu.com/a-why-vi-vim.html
-" * http://www.gentoo.org/doc/en/vi-guide.xml
-" * http://www.vim.org/scripts/script.php?script_id=2120
-" * http://vim.wikia.com/wiki/Best_Vim_Tips
-" * http://vim.runpaint.org/navigation/bookmarking-lines-with-visible-markers/
 " * http://vimdoc.sourceforge.net/htmldoc/quickfix.html#errorformat
-" * http://vim.wikia.com/wiki/Folding
-" * http://amix.dk/blog/post/19132
-" * https://sites.google.com/site/linuxpebbles/cool-tricks/some-of-my-favorite-vim-tips/vim-folding-commands#TOC-Using-the-mouse
 
 " }}}
 " {{{ Stuff to build habits for:
