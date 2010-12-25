@@ -20,6 +20,9 @@
 "  [o           Open previous file in the directory. (alphabetically)
 "  ]o           Open next file in the directory. (alphabetically)
 "
+"  :G           'git grep' on the provided string
+"  <C-X> G      'git grep' on the word under the cursor
+"
 " Navigation:
 "  gv           Re-select contents of previous visual-mode selection.
 "
@@ -430,5 +433,27 @@ map <unique> <Leader>nt :NERDTreeToggle<CR>
 map <unique> <Leader>[ :NERDTreeToggle<CR>
 map <unique> <Leader>] :TMiniBufExplorer<CR>
 
+" }}}
+" {{{ Command: Git Grep (:G)
+" http://vim.wikia.com/wiki/Git_grep
+" TODO: Figure out how to make this open as a jump/quickfix list pane
+func GitGrep(...)
+  let save = &grepprg
+  set grepprg=git\ grep\ -n\ $*
+  let s = 'grep'
+  for i in a:000
+    let s = s . ' ' . i
+  endfor
+  exe s
+  let &grepprg = save
+endfun
+command -nargs=? G call GitGrep(<f-args>)
+
+" 'Ctrl+X G' to run GitGrep on the word under the cursor
+func GitGrepWord()
+  normal! "zyiw
+  call GitGrep('-w -e ', getreg('z'))
+endf
+nmap <C-x>G :call GitGrepWord()<CR>
 " }}}
 " vim:ft=vim:fdm=marker:ff=unix:noexpandtab
