@@ -64,6 +64,8 @@
 "  <C-P>        Omni-Completion (when Smart isn't smart enough)
 "  <C-V>        Visual Block mode (A.K.A. column mode)
 "
+"  <C-A>/<C-X>  Increment/decrement number/date/time/numeral under cursor.
+"               (Also supports letters of the alphabet in visual mode)
 "  <C-X> /      Close the last open HTML/PHP/Django/eRuby tag
 "  <C-X> Space  Create tag pair from the typed word (single line)
 "  <C-X> Enter  Create tag pair from the typed word (multi-line)
