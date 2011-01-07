@@ -1,11 +1,11 @@
 @nitrogen --restore
-@sh -c "exec ~/bin/neap"
 @parcellite
 @basket
 @sh -c "exec ~/bin/setkeys"
 @sh -c "exec ~/bin/timeclock"
 @knotes
-@audacious2
 @thunderbird
 @pidgin
 @conky
+@sh -c "exec ~/.dropbox-dist/dropbox"
+@sh -c "sleep 5; exec audacious2"
