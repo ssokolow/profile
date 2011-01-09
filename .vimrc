@@ -408,7 +408,7 @@ map <unique> <Leader>p :SessionList<CR>
 map <unique> <Leader>s :SessionSave<CR>
 map <unique> <Leader>nt :NERDTreeToggle<CR>
 map <unique> <Leader>[ :NERDTreeToggle<CR>
-map <unique> <Leader>] :TMiniBufExplorer<CR>
+map <unique> <Leader>] <Plug>TMiniBufExplorer
 
 " }}}
 " {{{ Command: Git Grep (:G)
