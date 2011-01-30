@@ -37,12 +37,10 @@
 "  ]M           Jump to end of next method/class
 "  [M           Jump to end of previous method/class
 "
-"  zo           Open fold
-"  zc           Close fold
-"  zr           Reduce folding (open one level of folds)
-"  zm           More folding (close one level of folds)
-"  zR           Open all folds
-"  zM           Close all folds
+"  zo/zc        Open/Close fold
+"  zO/zC        Open/Close fold and all child folds
+"  zr/zm        Reduced/More folding (open/close one level of folds)
+"  zR/zM        Open/Close all folds
 "
 "  TODO: Find or set an insert-mode binding for moving word-by-word
 "
@@ -166,6 +164,8 @@
 "   window.
 " }}}
 " {{{ TODO:
+" * Figure out how to use find and folding together so find doesn't open all my
+"   folds and then leave them opened.
 " * Fix the DetectIndent problem with tripping over /*\n*\n*\n*/
 " * Decide whether to use PyChecker or PyLint for Python :make
 " * Find or write a script which strips the former next line's indenting when
@@ -220,6 +220,7 @@
 
 set nocompatible
 set modeline
+set hidden
 
 " I don't like my apps bugging me about donations.
 set shortmess+=I
@@ -365,6 +366,9 @@ if has("autocmd") && exists("+filetype")
 	" TODO: Make absolutely sure this overrides my call to DetectIndent
 	autocmd FileType make set noexpandtab
 
+	" Set indent folding for Python files since foldmethod=syntax does nothing
+	autocmd FileType python set foldmethod=indent
+
 	" Support the jQuery syntax extension from
 	" http://www.vim.org/scripts/script.php?script_id=2416
 	autocmd BufRead,BufNewFile *.js set filetype=javascript syntax=jquery
@@ -432,5 +436,21 @@ func GitGrepWord()
   call GitGrep('-w -e ', getreg('z'))
 endf
 nmap <C-x>G :call GitGrepWord()<CR>
+" }}}
+" {{{ Command: Diff Unsaved Changes (:DiffSaved)
+" http://vim.wikia.com/wiki/Diff_current_buffer_and_the_original_file
+" (Use :diffoff to leave diff mode)
+"
+" Plain alternative:
+"   :w !diff % -
+"
+function! s:DiffWithSaved()
+  let filetype=&ft
+  diffthis
+  vnew | r # | normal! 1Gdd
+  diffthis
+  exe "setlocal bt=nofile bh=wipe nobl noswf ro ft=" . filetype
+endfunction
+com! DiffSaved call s:DiffWithSaved()
 " }}}
 " vim:ft=vim:fdm=marker:ff=unix:noexpandtab
