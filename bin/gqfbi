@@ -87,7 +87,7 @@ if __name__ == '__main__':
         tmp_file.write('\n'.join(paths))
         tmp_file.close()
 
-        subprocess.call(['fbi', '-a', 'readahead', '-l', tmp_path])
+        subprocess.call(['fbi', '-a', '-readahead', '-l', tmp_path])
     finally:
-        os.remove(tmp_file)
+        os.remove(tmp_path)
 
