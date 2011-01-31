@@ -9,11 +9,12 @@ XTerm*saveLines: 5120
 XTerm*scrollKey: true
 XTerm*scrollTtyOutput: false
 
-*VT100.Translations: #override Shift <Key>Up: scroll-back(1) \n\
-                     Shift <Key>Down: scroll-forw(1)
+*VT100.Translations: #override
+                    Shift <Key>Up:              scroll-back(1) \n\
+                    Shift <Key>Down:            scroll-forw(1) \n\
 
 yeahconsole*term: uxterm
 yeahconsole*toggleKey: Ctrl+F12
 yeahconsole*aniDelay: 1
-yeahconsole*stepSize: 50
+yeahconsole*stepSize: 0
 yeahconsole*consoleHeight: 60
