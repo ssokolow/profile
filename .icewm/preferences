@@ -528,7 +528,7 @@ NetStatusClassHint="netstat.XTerm"
 
 #  Command to run for address bar entries
 # AddressBarCommand=""
-AddressBarCommand="/home/ssokolow/.icewm/address_bar.sh"
+AddressBarCommand="/home/ssokolow/.icewm/address_bar.py"
 
 #  Network device to show status for
 # NetworkStatusDevice="ppp0 eth0"
