@@ -164,8 +164,10 @@
 "   window.
 " }}}
 " {{{ TODO:
-" * Figure out how to use find and folding together so find doesn't open all my
-"   folds and then leave them opened.
+" * Folding:
+"   * A newly created fold shouldn't start collapsed. (PitA with fdm=indent)
+"   * Figure out how to use find and folding together so find doesn't open all
+"     my folds and then leave them opened.
 " * Fix the DetectIndent problem with tripping over /*\n*\n*\n*/
 " * Decide whether to use PyChecker or PyLint for Python :make
 " * Find or write a script which strips the former next line's indenting when
@@ -186,6 +188,7 @@
 "   working directory.
 " * Figure out why, with comment formatting enabled, formatoptions wants to
 "   word-wrap after every word in this file.
+" * Explore alternate Vim color schemes.
 " ----
 " * http://vim.wikia.com/wiki/Integration_with_PyUnit_testing_framework
 " * http://www.vim.org/scripts/script.php?script_id=974

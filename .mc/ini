@@ -97,7 +97,7 @@ filetype_mode=1
 free_space=1
 
 [Dirs]
-other_dir=/home/ssokolow/incoming/torrents/complete
+other_dir=/home/ssokolow
 current_is_left=1
 
 [Misc]
