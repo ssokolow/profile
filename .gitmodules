@@ -1,33 +1,33 @@
 [submodule ".vim/bundle/detectindent"]
 	path = .vim/bundle/detectindent
-	url = \thttp://github.com/ciaranm/detectindent.git
+	url = http://github.com/ciaranm/detectindent.git
 [submodule ".vim/bundle/minibufexpl.vim"]
 	path = .vim/bundle/minibufexpl.vim
-	url = \tgit@github.com:ssokolow/minibufexpl.vim.git
+	url = git@github.com:ssokolow/minibufexpl.vim.git
 [submodule ".vim/bundle/nerdcommenter"]
 	path = .vim/bundle/nerdcommenter
-	url = \thttps://github.com/scrooloose/nerdcommenter.git
+	url = https://github.com/scrooloose/nerdcommenter.git
 [submodule ".vim/bundle/nerdtree"]
 	path = .vim/bundle/nerdtree
-	url = \thttp://github.com/scrooloose/nerdtree.git
+	url = http://github.com/scrooloose/nerdtree.git
 [submodule ".vim/bundle/snipmate.vim"]
 	path = .vim/bundle/snipmate.vim
-	url = \tgit://github.com/msanders/snipmate.vim.git
+	url = git://github.com/msanders/snipmate.vim.git
 [submodule ".vim/bundle/supertab"]
 	path = .vim/bundle/supertab
-	url = \thttp://github.com/ervandew/supertab.git
+	url = http://github.com/ervandew/supertab.git
 [submodule ".vim/bundle/syntastic"]
 	path = .vim/bundle/syntastic
-	url = \thttps://github.com/scrooloose/syntastic.git
+	url = https://github.com/scrooloose/syntastic.git
 [submodule ".vim/bundle/vim-ragtag"]
 	path = .vim/bundle/vim-ragtag
-	url = \thttp://github.com/tpope/vim-ragtag.git
+	url = http://github.com/tpope/vim-ragtag.git
 [submodule ".vim/bundle/vim-speeddating"]
 	path = .vim/bundle/vim-speeddating
-	url = \thttps://github.com/tpope/vim-speeddating.git
+	url = https://github.com/tpope/vim-speeddating.git
 [submodule ".vim/bundle/vim-surround"]
 	path = .vim/bundle/vim-surround
-	url = \thttp://github.com/tpope/vim-surround.git
+	url = http://github.com/tpope/vim-surround.git
 [submodule ".vim/bundle/vim-unimpaired"]
 	path = .vim/bundle/vim-unimpaired
-	url = \thttp://github.com/tpope/vim-unimpaired.git
+	url = http://github.com/tpope/vim-unimpaired.git
