@@ -1,0 +1,93 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+"""GQView Collection loader & tree walker for the fbi framebuffer image viewer.
+
+A simple "just do what I mean" loader for viewing any mixture of files, folders,
+and GQview collections in fbi.
+
+(Good for por... er... scans of reference cards when your video drivers act up.)
+"""
+
+__appname__ = "GQfbi"
+__author__  = "Stephan Sokolow (deitarion/SSokolow)"
+__version__ = "0.1"
+__license__ = "GNU GPL 3.0 or later"
+
+import logging, os, subprocess, tempfile
+
+# Set up INFO logging
+logging.basicConfig(level=logging.INFO, format='%(levelname)s: %(message)s')
+
+# -- Code Here --
+def check_ftype(path):
+    """Check whether the image is something fbi can load.
+
+    @todo: Check by header, not extension
+    """
+    return os.path.exists(path) and os.path.splitext(path.lower())[1] in ('.png', '.gif', '.jpg', '.jpe', '.jpeg', '.bmp')
+
+def filter_recurse(root):
+    """Walk a directory tree and collect all fbi-compatible images.
+
+    @todo: Actually do the filtering
+    """
+    results = []
+
+    for fldr, dirs, files in os.walk(root):
+        dirs.sort()
+
+        for fname in files:
+            fpath = os.path.join(fldr, fname)
+            # TODO: Filter by header, not extension.
+            if check_ftype(fpath):
+                results.append(fpath)
+
+def parse_gqview_collection(path, keep_missing=False):
+    """Parse a GQview collection into a list of paths.
+
+    Discards nonexistant paths unless keep_missing=True.
+    """
+    with open(path, 'rU') as fh:
+        if not fh.readline() == "#GQview collection\n":
+            logging.error("Not a GQview collection: %s", path)
+            return []
+
+        lines = [x.strip().strip('"') for x in fh
+                if not x.lstrip().startswith('#')]
+
+        results = []
+        for line in lines:
+            if os.path.exists(line) or keep_missing:
+                results.append(line)
+            else:
+                logging.warn("File in collection not found: %s -> %s", line, path)
+        return results
+
+if __name__ == '__main__':
+    from optparse import OptionParser
+    parser = OptionParser(description=__doc__, version="%%prog v%s" % __version__)
+    #parser.add_option('-v', '--verbose', action="store_true", dest="verbose",
+    #    default=False, help="Increase verbosity")
+
+    opts, args = parser.parse_args()
+
+    paths = []
+    for arg in args:
+        if os.path.isdir(arg):
+            paths.extend(filter_recurse(arg))
+        elif os.path.isfile(arg):
+            if check_ftype(arg):
+                paths.append(arg)
+            else:
+                paths.extend(parse_gqview_collection(arg))
+
+    tmp_fd, tmp_path = tempfile.mkstemp(text=True)
+    try:
+        tmp_file = os.fdopen(tmp_fd, 'w')
+        tmp_file.write('\n'.join(paths))
+        tmp_file.close()
+
+        subprocess.call(['fbi', '-a', 'readahead', '-l', tmp_path])
+    finally:
+        os.remove(tmp_file)
+
