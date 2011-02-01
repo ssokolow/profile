@@ -1,5 +1,4 @@
 ! TODO:
-! - Rename this file to .Xresources (See Xsession(5))
 ! - Think about whether printerCommand could be repurposed.
 ! - Consider http://dmr.ath.cx/notes/xterm.html
 
