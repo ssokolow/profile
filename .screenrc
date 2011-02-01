@@ -1,3 +1,65 @@
+# {{{ Quick Reference (All commands must be prefixed with C-a)
+#
+#  Session Manipulation:
+#    D   Detach the current screen session
+#    z   Suspend screen (Restore with the usual "fg" command)
+#    x   Lock the screen session
+#
+#  Window Manipulation:
+#    s   Create new window with shell
+#    k   Kill current window (Good for hung SSH connections)
+#    A   Rename current window (Good for long-running Vim sessions)
+#
+#  Window Switching:
+#    a            Cycle two most recently viewed windows
+#    <Enter>      Next window
+#    <Backspace>  Previous Window
+#    <#>          Switch to window number <#>
+#    '            Prompt for window to switch to (Good instead of <#> for 10+)
+#    "            Window list
+#
+#  Splitting:
+#    S      Split Top/Bottom
+#    X      Unsplit This (Remove the selected region)
+#    Q      Unsplit All (Leave only the selected region)
+#    <Tab>  Cycle focus between regions
+#
+#  Monitoring:
+#    _   Monitor current window for inactivity (Displays a message)
+#    m   Redisplay Last message from screen
+#
+#  Copy/Paste:
+#    [ or <Esc>  Enter copy mode (Basic Vi movements apply)
+#    ]           Paste contents of cut buffer
+#    h           Hardcopy (Save textual screenshot to file without color codes)
+#
+#  {{{ Copy/Scrollback Mode: (No C-a needed, Basic vi movements available)
+#
+#    <Space>     Set begin/end mark for copy region at cursor (Exit copy on end)
+#    A           Like <Space> but append to cut buffer rather than overwriting
+#
+#    x           Swap positions of already-placed begin mark and cursor
+#    J           Toggle line break conversion between (off, spaces, commas)
+#    / or ?      Vi-like search forward/back in buffer
+#
+#    Quick Grabs:
+#     y          Set begin/end mark at end of current line
+#     Y or W     Copy current line/word and exit copy mode
+#  }}}
+#
+#  Miscellany:
+#    ?   Show Keybinding Help
+#    Z   Reset the virtual terminal as if power-cycled
+#    :   Enter a command vim-style
+#
+# }}}
+# {{{ TODO:
+# - Verify that the "ti@:te@" scroll-enabler line no longer mucks up Yakuake.
+# - Enable 256-color once I know how to get my preferred colors back.
+# - Figure out how to properly operate the Emacs-style incremental search
+#
+# }}}
+# {{{ Screen Configuration
 # Make sure that, even if this profile roams, I won't get the annoying message
 startup_message off
 
@@ -20,21 +82,28 @@ hardstatus alwayslastline "%3n $USER@%H %t%? (%u)%?%?: %h%?"
 # Work around unintentional bugs in clicking on text-mode tabs in vim.
 altscreen on
 
+# tell screen that your term can scroll
+termcapinfo xterm* ti@:te@
+
 # TODO: Enable these once I figure out how to get my choices for the basic
 # 16-color palette back.
+# https://bugs.launchpad.net/ubuntu/+source/screen/+bug/87966
 ## terminfo and termcap for nice 256 color terminal
 ## allow bold colors - necessary for some reason
 #attrcolor b ".I"
 ## tell screen how to set colors. AB = background, AF=foreground
-#termcapinfo xterm 'Co#256:AB=\E[48;5;%dm:AF=\E[38;5;%dm'
+#termcapinfo xterm* 'Co#256:AB=\E[48;5;%dm:AF=\E[38;5;%dm'
 ## erase background with current bg color
 #defbce "on"
 
-# TODO: Make this work with Yakuake somehow.
-# tell screen that your term can scroll
-#termcapinfo xterm ti@:te@
+# }}}
+# {{{ Windows to launch on startup
 
 # Launch a mouse-enabled Midnight Commander in window 0 and zsh in window 1.
-# (And make window 1 visible by default)
 #screen 0 mc -x
+
+# Open the usual bare terminal in window 1 and start with it visible
 screen
+
+# }}}
+# vim:fdm=marker
