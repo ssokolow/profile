@@ -1,20 +1,52 @@
-*customization: -color
+! TODO:
+! - Rename this file to .Xresources (See Xsession(5))
+! - Think about whether printerCommand could be repurposed.
+! - Consider http://dmr.ath.cx/notes/xterm.html
 
-*VT100*foreground: gray70
-*VT100*background: black
+! Operate terminals in utf8 mode whether or not uxterm was called
+*VT100.utf8:	1
+
+! Plenty of room for things like Vim's :vsplit
 *VT100*geometry: 160x50
 
+! Set the Urgent hint on bell for console apps without notify-send
 XTerm*bellIsUrgent:  true
-XTerm*saveLines: 5120
-XTerm*scrollKey: true
-XTerm*scrollTtyOutput: false
+UXTerm*bellIsUrgent:  true
 
+! ---=== Defaults for a nice mix of Linux console and Konsole ===---
+
+! White on Black without being eye-straining.
+*customization: -color
+*VT100*foreground: gray70
+*VT100*background: black
+
+! Make the scrollbar look a little less 1980s on all Athena-based VT100s.
+*VT100.scrollbar.background:    gray60
+*VT100.scrollbar.foreground:    white
+*rightScrollBar: true
+
+! More Konsole/Yakuake-like keybindings
 *VT100.Translations: #override
                     Shift <Key>Up:              scroll-back(1) \n\
                     Shift <Key>Down:            scroll-forw(1) \n\
 
+! Make selection of URLs and ebuild names behave more naturally
+*charClass: 33:48,35:48,37-38:48,43-47:48,58:48,61:48,63-64:48,95:48,126:48
+
+! Keep 5K of scrollback and only reset the scroll position on keypresses.
+XTerm*saveLines: 5120
+XTerm*scrollKey: true
+XTerm*scrollTtyOutput: false
+
+! ---=== Make yeahconsole the best lightweight Yakuake substitute possible ===---
+
+! Make yeahconsole more like the Yakuake default setup.
 yeahconsole*term: uxterm
 yeahconsole*toggleKey: Ctrl+F12
-yeahconsole*aniDelay: 1
-yeahconsole*stepSize: 0
+
+! I like my slide-down terminal to take 3/4 to 4/5 of a 1280x1024 monitor.
 yeahconsole*consoleHeight: 60
+
+! Animation is too slow if I am on a computer where Yakuake is inappropriate.
+yeahconsole*aniDelay: 0
+yeahconsole*stepSize: 0
