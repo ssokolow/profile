@@ -90,8 +90,9 @@ def which(name, flags=os.X_OK):
     On MS-Windows the only flag that has any meaning is os.F_OK. Any other
     flags will be ignored.
 
-    Note: The original version of this would return directories. That has now
-    been fixed.
+    Changes from Original:
+    - Don't return matches for directories.
+    - Call expanduser() on "name" too.
 
     @type name: C{str}
     @param name: The name for which to search.
@@ -113,6 +114,7 @@ def which(name, flags=os.X_OK):
     exts = filter(None, os.environ.get('PATHEXT', '').split(os.pathsep))
 
     for bindir in os.environ['PATH'].split(os.pathsep):
+        name = os.path.expanduser(name)
         binpath = os.path.join(os.path.expanduser(bindir), name)
         if os.access(binpath, flags) and os.path.isfile(binpath):
             result.append(binpath)
