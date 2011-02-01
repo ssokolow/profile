@@ -1,11 +1,31 @@
-! TODO:
+! {{{ Quick Reference
+!
+! Scrolling:
+!   Scroll Wheel
+!   Shift-PgUp/PgDn
+!
+! Copy/Paste:
+!   Mouse-Select        : Copy to PRIMARY
+!   Shift + Mouse-Select: Copy to CLIPBOARD
+!
+!   Middle-Click        : Paste from PRIMARY
+!   Shift + Middle-Click: Paste from CLIPBOARD
+!
+!   Ctrl+Shift+V        : Paste from CLIPBOARD
+!   Ctrl+Alt+Shift+V    : Paste from PRIMARY
+!
+! }}}
+! {{{ TODO:
 ! - Think about whether printerCommand could be repurposed.
+! - Experiment with http://manac.wordpress.com/2007/01/07/xterm-default-fonts-truetype/
 ! - Consider http://dmr.ath.cx/notes/xterm.html
+!
+! }}}
 
 ! Operate terminals in utf8 mode whether or not uxterm was called
 *VT100.utf8:	1
 
-! Plenty of room for things like Vim's :vsplit
+! Plenty of room for things like Vim :vsplit
 *VT100*geometry: 160x50
 
 ! Set the Urgent hint on bell for console apps without notify-send
@@ -24,10 +44,16 @@ UXTerm*bellIsUrgent:  true
 *VT100.scrollbar.foreground:    white
 *rightScrollBar: true
 
-! More Konsole/Yakuake-like keybindings
-*VT100.Translations: #override
+! More Konsole/Yakuake-like keybindings:
+*VT100.Translations: #override \
                     Shift <Key>Up:              scroll-back(1) \n\
                     Shift <Key>Down:            scroll-forw(1) \n\
+                    ~Meta Shift Ctrl <Key>V:    insert-selection(CLIPBOARD) \n\
+                     Meta Shift Ctrl <Key>V:    insert-selection(PRIMARY) \n\
+                    ~Shift <Btn1Up>:            select-end(PRIMARY, CUT_BUFFER0) \n\
+                     Shift <Btn1Up>:            select-end(CLIPBOARD, CUT_BUFFER1) \n\
+                    ~Shift ~Ctrl ~Meta <Btn2Up>:insert-selection(PRIMARY, CUT_BUFFER0) \n\
+                     Shift ~Ctrl ~Meta <Btn2Up>:insert-selection(CLIPBOARD, CUT_BUFFER1)
 
 ! Make selection of URLs and ebuild names behave more naturally
 *charClass: 33:48,35:48,37-38:48,43-47:48,58:48,61:48,63-64:48,95:48,126:48
@@ -49,3 +75,5 @@ yeahconsole*consoleHeight: 60
 ! Animation is too slow if I am on a computer where Yakuake is inappropriate.
 yeahconsole*aniDelay: 0
 yeahconsole*stepSize: 0
+
+! vim:fdm=marker
