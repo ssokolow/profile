@@ -68,6 +68,7 @@ XTerm*scrollTtyOutput: false
 ! Make yeahconsole more like the Yakuake default setup.
 yeahconsole*term: uxterm
 yeahconsole*toggleKey: Ctrl+F12
+yeahconsole*restart: 1
 
 ! I like my slide-down terminal to take 3/4 to 4/5 of a 1280x1024 monitor.
 yeahconsole*consoleHeight: 60
