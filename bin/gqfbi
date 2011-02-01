@@ -6,6 +6,9 @@ A simple "just do what I mean" loader for viewing any mixture of files, folders,
 and GQview collections in fbi.
 
 (Good for por... er... scans of reference cards when your video drivers act up.)
+
+@todo: Extend this to handle Zip/CBZ files for emergency comic-reading.
+@todo: Decide on a way to pass option flags to fbi for things like shuffle.
 """
 
 __appname__ = "GQfbi"
@@ -41,6 +44,7 @@ def filter_recurse(root):
             # TODO: Filter by header, not extension.
             if check_ftype(fpath):
                 results.append(fpath)
+    return results
 
 def parse_gqview_collection(path, keep_missing=False):
     """Parse a GQview collection into a list of paths.
