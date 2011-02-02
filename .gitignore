@@ -12,6 +12,7 @@
 
 # Vim stuff that shouldn't be replicated
 .vim/.netrwhist
+.vim/view
 
 # Revision control directories for vim bundles
 .vim/bundle/web-indent/.svn/

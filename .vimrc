@@ -257,6 +257,9 @@ set shiftwidth=4
 "set formatoptions+=n
 "set formatlistpat="^\s*\(\d\+[\]:.)}\t ]\|[-*]\)\s*"
 
+" Make my saved views portable and rely on modeline for saving options
+set viewoptions=cursor,folds,slash,unix
+
 " Make my sessions a bit more like projects and less like vimrc overrides.
 set sessionoptions=blank,curdir,folds,help,resize,slash,tabpages,unix,winpos,winsize
 
@@ -352,6 +355,12 @@ endif
 
 " }}}
 " {{{ Define Autocommands
+
+" Save folding status automatically
+if has("autocmd")
+	autocmd BufWinLeave * mkview
+	autocmd BufWinEnter * silent loadview
+endif
 
 " Enable the syntax-based fallback for omni-completion
 if has("autocmd") && exists("+omnifunc")
