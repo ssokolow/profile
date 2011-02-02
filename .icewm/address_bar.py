@@ -7,6 +7,7 @@ Run without arguments for usage.
 Included (somewhat slapdash but fairly comprehensive) test suite may be run
 with `nosetests <name of this file>`.
 
+@todo: Refactor to allow cleaner, more thorough unit tests.
 @todo: Use notify_error to display exceptions.
 @todo: Make sure the URL handling is robust in the face of lazy-escaped URLs.
 @todo: Add support for using a config file of some sort (.gmrunrc?) to specify
@@ -21,7 +22,7 @@ __author__  = "Stephan Sokolow (deitarion/SSokolow)"
 __version__ = "0.1"
 __license__ = "MIT"
 
-import logging, os, re, shlex, string, subprocess, sys
+import logging, os, re, shlex, string, subprocess, sys, time
 from xml.sax.saxutils import escape as xmlescape
 
 #{ Configuration
@@ -152,6 +153,31 @@ def notify_error(text, title='Alert'):
 
 #{ Main Functionality
 
+def execute(args):
+    """Wrapper to abstract the behavior of os.exec* away.
+
+    (and allow easy experimentation with alternate behaviours)
+    """
+    os.execvp(args[0], args)
+    sys.exit(3)
+
+def call_timeout(cmd, *args, **kwargs):
+    """check_call-like wrapper which times out after 30 seconds.
+
+    (So this process doesn't lie around wasting resources needlessly but
+    CalledProcessException can still be thrown for bad commands.)
+    """
+    start = time.time()
+    proc = subprocess.Popen(cmd, *args, **kwargs)
+
+    while proc.poll() is None and time.time() - start < 30:
+        time.sleep(1)
+
+    if proc.returncode:
+        raise subprocess.CalledProcessError(proc.returncode, cmd)
+    else:
+        return proc.returncode
+
 def run(args):
     """Heuristically guess how to handle the given commandline."""
 
@@ -181,33 +207,33 @@ def run(args):
         if which(cmd):
             # Valid command (shell execute for versatility)
             logging.info("Running as command: %r" % argv)
-            subprocess.call(longcmd, shell=True, executable=shell_cmd)
+            execute([shell_cmd, '-c', longcmd])
         elif os.path.isdir(cmd):
             # Local Directory (open in file manager)
             logging.info("Opening directory: %s" % cmd)
-            subprocess.call(BROWSE_CMD + [cmd])
+            execute(BROWSE_CMD + [cmd])
         elif os.path.isfile(cmd):
             # Local File (open in desired application)
             logging.info("Opening file: %s" % cmd)
-            subprocess.call(OPEN_CMD + [cmd])
+            execute(OPEN_CMD + [cmd])
         elif cmd.startswith('file://'):
             # Local path as URL (let file manager decide)
-            subprocess.call(BROWSE_CMD + [cmd])
+            execute(BROWSE_CMD + [cmd])
         elif uri_re.match(cmd):
             # Likely URI (open in desired URL handler)
             logging.info("Opening URL: %s" % cmd)
-            subprocess.call(OPEN_CMD + [cmd])
+            execute(OPEN_CMD + [cmd])
         else:
             continue # No match, try the alternate interpretation.
         break # Match found, don't try the alternate interpretation.
     else:
-        # No match found with either interpretation. Maybe it's a shell builtin?
+        # Fall back to letting the shell try to make sense of it.
         try:
             logging.info("Attempting shell fallback: %r" % argv)
             if _useterm():
-                subprocess.check_call(TERMINAL_CMD + [shell_cmd, '-c', longcmd])
+                call_timeout(TERMINAL_CMD + [shell_cmd, '-c', longcmd])
             else:
-                subprocess.check_call(longcmd, shell=True, executable=shell_cmd)
+                call_timeout(longcmd, shell=True, executable=shell_cmd)
         except subprocess.CalledProcessError:
             notify_error(repr(argv), title="Command not found")
             notify_error(repr(longcmd), title="Command not found")
@@ -216,87 +242,67 @@ def run(args):
 
 #{ Test Routines for python-nose
 
-def _check_run(args): assert run(args), repr(args)
-def _check_run_fail(args): assert not run(args), repr(args)
+def _check_core(args, all_mocks=False):
+    mok = all_mocks and '--use-all-mocks' or '--use-mocks'
+    return subprocess.call([__file__, mok, '--'] + args,
+            stdout = open(os.devnull, 'w'),
+            stderr = subprocess.STDOUT)
+
+def _check_run(args): assert _check_core(args) == 0, repr(args)
+def _check_run_fail(args): assert _check_core(args) != 0, repr(args)
+def _check_run_term(args): assert _check_core(args, True) == 0, repr(args)
 
 def test_commands():
     """Testing simple commands"""
     os.environ['TEST_ECHO'] = 'echo'
     for cmd in ('echo', '/bin/echo', 'echo Success "" ...verily', "$TEST_ECHO"):
-        for variant in (cmd, [cmd], shlex.split(cmd)):
+        for variant in ([cmd], shlex.split(cmd)):
             yield _check_run, variant
-
-    # Test with TERMINAL_CMD
-    global TERMINAL_CMD, _useterm
-    _term_cmd, _use_term = TERMINAL_CMD, _useterm
-    TERMINAL_CMD, _useterm = ['echo'], lambda: True
-    try:
-        os.environ['TEST_ECHO'] = 'echo'
-        for cmd in ('echo', '/bin/echo', 'echo Success "" ...verily', "$TEST_ECHO"):
-            for variant in (cmd, [cmd], shlex.split(cmd)):
-                yield _check_run, variant
-    finally:
-        TERMINAL_CMD, _useterm = _term_cmd, _use_term
+            yield _check_run_term, variant
 
 def test_builtins():
     """Testing shell script builtins"""
     cmd = 'for X in Success1 Success2; do echo $X "echo in for loop" > /dev/null; done'
-    for variant in (cmd, [cmd]):
-        yield _check_run, variant
+    yield _check_run, [cmd]
 
 def test_paths():
     """Testing non-command paths (files and directories) and URLs"""
-    global BROWSE_CMD, OPEN_CMD
-    browse_cmd, open_cmd = BROWSE_CMD, OPEN_CMD
-    BROWSE_CMD, OPEN_CMD = ['echo', 'pcmanfm'], ['echo', 'xdg-open']
-
-    try:
-        for cmd in ('/etc', '/etc/resolv.conf', 'file:///etc/resolv.conf', 'http://www.example.com'):
-            for variant in (cmd, [cmd], shlex.split(cmd)):
-                yield _check_run, variant
-    finally:
-        BROWSE_CMD, OPEN_CMD = browse_cmd, open_cmd
+    for cmd in ('/etc', '/etc/resolv.conf', 'file:///etc/resolv.conf', 'http://www.example.com'):
+        for variant in ([cmd], shlex.split(cmd)):
+            yield _check_run, variant
 
 def test_spaced_paths():
     """Testing non-command paths (files and directories) and URLs with spaces"""
-    global BROWSE_CMD, OPEN_CMD
-    browse_cmd, open_cmd = BROWSE_CMD, OPEN_CMD
-    BROWSE_CMD, OPEN_CMD = ['echo', 'pcmanfm'], ['echo', 'xdg-open']
-
+    import shutil, tempfile, urllib
+    tmp_path = tempfile.mkdtemp()
     try:
-        import shutil, tempfile, urllib
-        tmp_path = tempfile.mkdtemp()
-        try:
-            test_dir = os.path.join(tmp_path, 'Foo Bar')
-            test_file = os.path.join(test_dir, 'baz.html')
+        test_dir = os.path.join(tmp_path, 'Foo Bar')
+        test_file = os.path.join(test_dir, 'baz.html')
 
-            os.mkdir(test_dir)
-            open(test_file, 'w').close()
+        os.mkdir(test_dir)
+        open(test_file, 'w').close()
 
-            for cmd in (
-                    test_dir, test_file,
-                    'file://' + test_dir, 'file://' + test_file,
-                    'file://' + urllib.pathname2url(test_dir),
-                    'file://' + urllib.pathname2url(test_file),
-                    'http://127.0.0.1' + test_dir):
-                for variant in (cmd, [cmd], shlex.split(cmd)):
-                    yield _check_run, variant
-        finally:
-            shutil.rmtree(tmp_path)
+        for cmd in (
+                test_dir, test_file,
+                'file://' + test_dir, 'file://' + test_file,
+                'file://' + urllib.pathname2url(test_dir),
+                'file://' + urllib.pathname2url(test_file),
+                'http://127.0.0.1' + test_dir):
+            for variant in ([cmd], shlex.split(cmd)):
+                yield _check_run, variant
     finally:
-        BROWSE_CMD, OPEN_CMD = browse_cmd, open_cmd
+        shutil.rmtree(tmp_path)
 
 def test_failure():
     """Testing failure conditions"""
-    for empty in (None, '', []):
-        yield _check_run_fail, empty
+    yield _check_run_fail, []
 
     for nonsense in ('rijwoigjrwo', 'for foo in', 'for foo in x y; done'):
-        for variant in (nonsense, [nonsense], shlex.split(nonsense)):
+        for variant in ([nonsense], shlex.split(nonsense)):
             yield _check_run_fail, variant
 
     os.environ['TEST_ECHO'] = 'ecoh'
-    yield _check_run_fail, '$TEST_ECHO'
+    yield _check_run_fail, ['$TEST_ECHO']
 #}
 
 if __name__ == '__main__':
@@ -310,7 +316,21 @@ if __name__ == '__main__':
                 , title="Usage")
         sys.exit(2)
     else:
-        outcome = run(sys.argv[1:])
+        args = sys.argv[1:]
+        use_mocks = False
+
+        if args[0:2] == ['--use-all-mocks', '--']:
+            _useterm = lambda: True
+
+        if args[0:2] in (['--use-mocks', '--'], ['--use-all-mocks', '--']):
+            args = args[2:]
+
+            BROWSE_CMD = ['echo', 'pcmanfm']
+            OPEN_CMD = ['echo', 'xdg-open']
+            TERMINAL_CMD = ['env']
+            use_mocks = True
+
+        outcome = run(args)
 
         # Exit with a return code of 1 on failure
         sys.exit(int(not outcome))
