@@ -1,3 +1,14 @@
+# {{{ Quick Reference:
+#
+# Ctrl-<Left/Right>  Move word-by-word
+# Ctrl-<Up/Down>     Cycle history entries matching typed prefix
+#
+# History:
+#  Ctrl-S  Incremental history search (forward)
+#  Ctrl-R  Incremental history search (backward)
+#
+# }}}
+
 # Don't let /etc/zsh/zprofile override my ~/.zshenv
 source ${ZDOTDIR:-~}/.zshenv
 
@@ -15,16 +26,10 @@ typeset -ga preexec_functions
 typeset -ga precmd_functions
 typeset -ga chpwd_functions
 
-#################
-# Misc. Modules #
-#################
-
 autoload -U zrecompile # Generate and cache compiled versions of initscripts
 autoload -U run-help   # Enable Meta-H (Alt/Esc-h/H) to read the manpage for the current partially typed command
 
-##############
-# Completion #
-##############
+# {{{ Completion:
 
 fpath=(~/.zsh/functions $fpath)
 
@@ -71,9 +76,8 @@ zstyle ':completion:*:*files' ignored-patterns '*?.o' '*?.pyc' '*?.pyo' '*?~' '*
 #zstyle ':completion:*:messages' format '%d'
 #zstyle ':completion:*:warnings' format 'No matches for: %d'
 
-##########
-# Common #
-##########
+# }}}
+# {{{ Load Definitions Shared With Bash:
 
 # Pull in the stuff common to both bash and zsh
 source ~/.common_sh_init/aliases
@@ -86,9 +90,8 @@ zstyle ':completion:*:*:kill:*:processes' list-colors '=(#b) #([0-9]#)*=0=01;31'
 # Make sure there are no duplicate entries in PATH or PYTHONPATH
 typeset -U PATH PYTHONPATH
 
-###############
-# Keybindings #
-###############
+# }}}
+# {{{ Keybindings:
 
 # Use EMACS-style keybindings despite my having EDITOR set to vim
 bindkey -e
@@ -122,9 +125,8 @@ bindkey "\e[3~"   delete-char
 bindkey '^r'      history-incremental-search-backward
 bindkey ' '       magic-space
 
-###########
-# History #
-###########
+# }}}
+# {{{ History:
 
 # Make history work
 setopt HIST_FCNTL_LOCK 2>/dev/null
@@ -138,9 +140,8 @@ HISTFILE=$HOME/.zhistory
 HISTSIZE=1000
 SAVEHIST=1000
 
-#################
-# Shell Options #
-#################
+# }}}
+# {{{ Shell Options:
 
 # Set shopts which bash doesn't support
 setopt AUTO_PUSHD
@@ -168,9 +169,8 @@ alias -s {avi,AVI,Avi,divx,DivX,mkv,mpg,mpeg,wmv,WMV,mov,rm,flv,ogm,ogv,mp4}=mpl
 alias -s {aac,ape,au,hsc,flac,gbs,gym,it,lds,ogg,m4a,mod,mp2,mp3,MP3,Mp3,mpc,nsf,nsfe,psf,sid,spc,stm,s3m,vgm,vgz,wav,wma,wv,xm}="$MUSIC_PLAYER"
 # TODO: Find a way to make these suffix aliases case-insensitive.
 
-##############
-# HardStatus #
-##############
+# }}}
+# {{{ HardStatus
 
 # Set up a hardstatus line like I had in bash
 function title {
@@ -242,3 +242,6 @@ function sudo() {
 if command -v fortune >/dev/null; then
     fortune
 fi
+
+#}}}
+# vim:fdm=marker

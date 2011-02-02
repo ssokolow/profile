@@ -371,8 +371,8 @@ endif
 
 " Save folding status automatically
 if has("autocmd")
-	autocmd BufWinLeave * mkview
-	autocmd BufWinEnter * silent loadview
+	autocmd BufWinLeave ?* silent mkview
+	autocmd BufWinEnter ?* silent loadview
 endif
 
 " Enable the syntax-based fallback for omni-completion
