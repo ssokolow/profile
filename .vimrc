@@ -3,9 +3,17 @@
 
 " {{{ Quick Reference
 "
+"  :e {file}    Edit {file} in new buffer
+"  :ene         Edit new (empty) file in new buffer
+"
 "  ZZ           Write changes and quit (alias for :wq)
 "  ZQ           Quit, discarding changes (alias for :q!)
 "
+" External Commands:
+"   !{command}   Filter specified lines using {command}
+"  :!{command}   Run {command}
+"
+"  :sh           Open a shell (hides Vim until exited)
 "   \c           Open the shell in a :split console
 "
 " File Navigation And Management:
@@ -50,10 +58,21 @@
 "   zr/zm       Reduced/More folding (open/close one level of folds)
 "   zR/zM       Open/Close all folds
 "
-"  Marks:
+"  Marks: (Tip: Marks are global. You can use them to switch buffers.)
 "   m{a-zA-Z}   Set mark
-"   `{a-zA-Z}   Jump to mark
-"   '{a-zA-Z}   Jump to first non-blank character on marked line
+"   `{mark}     Jump to mark
+"   '{mark}     Jump to first non-blank character on marked line
+"   `.          Jump to position of last edit (Good for recovering from 'peek-scrolling')
+"
+"   :marks      List currently-set marks
+"
+"   Mark Types:
+"    a - z    Local marks (unique to each file)
+"    A - Z    Global marks (let you jump between files)
+"    0 - 9    Last position of the cursor {#} sessions ago
+"    [   ]    First/Last character of previously yanked text
+"    <   >    First/Last character of most recent Visual-mode selection
+"
 "
 "  TODO: Find or set insert-mode bindings for moving and deleting word-by-word
 "
@@ -138,18 +157,19 @@
 "    ySSY   Indent current line and wrap with Y on their own lines
 "   Visual Mode:
 "    SY     Wrap selection with Y
-"   Insert ModE:
+"   Insert Mode:
 "    <C-S>X Insert paired X and position the cursor in between
 "
 "  Vis:
 "   Use visual mode to select and then...
-"    :B <cmd>   Apply a command to selected region
-"    :S <pat>   Search only selected region
+"    :B {cmd}   Apply an editor command to selected region
+"    :S {pat}   Search only selected region
 "
 " Display Control:
 "  [count] <C-W> +/-/</> Resize the current pane
 "  <C-W> _    Maximize current pane
 "  <C-W> =    Make all panes equal size
+"  <C-W> r/R  Rotate pane positions to the right/left.
 "
 "  <C-W><C-W> Cycle pane focus (Backwards to allow easy flipping between two)
 "  <C-W><dir> Move focus to adjoining pane
@@ -182,6 +202,9 @@
 " - Whenever it can be done quickly and without being overly nitpicky, I let vim
 "   run static analysis on files on save and display the results in the quickfix
 "   window.
+" - My quick reference is half for me and half for anyone reading this, so it's
+"   thorough but well-organized and I omit obvious stuff like :w unless it's for
+"   comparison or I use it infrequently.
 " }}}
 " {{{ TODO:
 " * Folding:
