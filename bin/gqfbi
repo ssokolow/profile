@@ -1,9 +1,11 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-"""GQView Collection loader & tree walker for the fbi framebuffer image viewer.
+"""Simple 'do what I mean' wrapper for for the fbi framebuffer image viewer.
 
-A simple "just do what I mean" loader for viewing any mixture of files, folders,
-and GQview collections in fbi.
+Takes any combination of the following and feeds the resulting file list to fbi:
+- Image files
+- Directories (explored recursively)
+- GQView collection files (*.gqv)
 
 (Good for por... er... scans of reference cards when your video drivers act up.)
 
@@ -30,10 +32,7 @@ def check_ftype(path):
     return os.path.exists(path) and os.path.splitext(path.lower())[1] in ('.png', '.gif', '.jpg', '.jpe', '.jpeg', '.bmp')
 
 def filter_recurse(root):
-    """Walk a directory tree and collect all fbi-compatible images.
-
-    @todo: Actually do the filtering
-    """
+    """Walk a directory tree and collect all fbi-compatible images."""
     results = []
 
     for fldr, dirs, files in os.walk(root):
@@ -41,7 +40,6 @@ def filter_recurse(root):
 
         for fname in files:
             fpath = os.path.join(fldr, fname)
-            # TODO: Filter by header, not extension.
             if check_ftype(fpath):
                 results.append(fpath)
     return results
@@ -61,7 +59,7 @@ def parse_gqview_collection(path, keep_missing=False):
 
         results = []
         for line in lines:
-            if os.path.exists(line) or keep_missing:
+            if (os.path.exists(line) and check_ftype(line)) or keep_missing:
                 results.append(line)
             else:
                 logging.warn("File in collection not found: %s -> %s", line, path)
