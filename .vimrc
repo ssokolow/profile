@@ -18,6 +18,8 @@
 "
 "  :A           Switch between source and header file
 "  :AS/:AV      Split horiz/vert and switch to matching source/header
+"  :find {X}    Find file {X} and edit it.
+"  gf           Find file named under cursor and edit it.
 "
 "  <C-]>        Jump to tag under cursor.
 "  <C-T>        Undo the most recent jump to tag.
@@ -398,6 +400,9 @@ if has("autocmd") && exists("+filetype")
 
 	" Set indent folding for Python files since foldmethod=syntax does nothing
 	autocmd FileType python set foldmethod=indent
+
+	" Make gf search installed Python modules
+	autocmd FileType python set path+=/usr/lib/python2.6/**,
 
 	" Support the jQuery syntax extension from
 	" http://www.vim.org/scripts/script.php?script_id=2416
