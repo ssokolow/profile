@@ -24,9 +24,12 @@
 "
 "  :Rename      Rename file attached to the current buffer
 "
+"  <C-^>        Cycle between most recent two buffers
 "  :A           Switch between source and header file
+"
 "  :AS/:AV      Split horiz/vert and switch to matching source/header
 "  :find {X}    Find file {X} and edit it.
+"  :sf {X}      Find file {X} and edit it in a new :split.
 "  gf           Find file named under cursor and edit it.
 "
 "  <C-]>        Jump to tag under cursor.
@@ -52,27 +55,35 @@
 "  ]M           Jump to end of next method/class/fold
 "  [M           Jump to end of previous method/class/fold
 "
-"  Folds:
-"   zo/zc       Open/Close fold
-"   zO/zC       Open/Close fold and all child folds
-"   zr/zm       Reduced/More folding (open/close one level of folds)
-"   zR/zM       Open/Close all folds
+" Folds:
+"  zo/zc       Open/Close fold
+"  zO/zC       Open/Close fold and all child folds
+"  zr/zm       Reduced/More folding (open/close one level of folds)
+"  zR/zM       Open/Close all folds
 "
-"  Marks: (Tip: Marks are global. You can use them to switch buffers.)
-"   m{a-zA-Z}   Set mark
-"   `{mark}     Jump to mark
-"   '{mark}     Jump to first non-blank character on marked line
-"   `.          Jump to position of last edit (Good for recovering from 'peek-scrolling')
+" Marks: (Tip: Marks are global. You can use them to switch buffers.)
+"  m{a-zA-Z}   Set mark
+"  `{mark}     Jump to mark
+"  '{mark}     Jump to first non-blank character on marked line
+"  `.          Jump to position of last edit (Good for recovering from 'peek-scrolling')
 "
-"   :marks      List currently-set marks
+"  :marks      List currently-set marks
 "
-"   Mark Types:
-"    a - z    Local marks (unique to each file)
-"    A - Z    Global marks (let you jump between files)
-"    0 - 9    Last position of the cursor {#} sessions ago
-"    [   ]    First/Last character of previously yanked text
-"    <   >    First/Last character of most recent Visual-mode selection
+"  Mark Types:
+"   a - z    Local marks (unique to each file)
+"   A - Z    Global marks (let you jump between files)
+"   0 - 9    Last position of the cursor {#} sessions ago
+"   [   ]    First/Last character of previously yanked text
+"   <   >    First/Last character of most recent Visual-mode selection
 "
+" Paste Registers:
+"   ".       Last inserted text
+"   "%       Name of file in current buffer
+"   "#       Name of file in previous buffer
+"   "*       X11 SELECTION buffer
+"   "+       X11 CLIPBOARD buffer
+"   "~       Contents of last drag-and-drop (Keybind <Drop> to catch the event)
+"   "/       Last search pattern
 "
 "  TODO: Find or set insert-mode bindings for moving and deleting word-by-word
 "
