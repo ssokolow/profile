@@ -35,23 +35,26 @@
 "  %            Jump to next if/then clause or matching paren
 "  g%           Jump to previous if/then clause or matching paren
 "
-"  ]m           Jump to start of next method/class
-"  [m           Jump to start of previous method/class
-"  ]M           Jump to end of next method/class
-"  [M           Jump to end of previous method/class
+"  ]m           Jump to start of next method/class/fold
+"  [m           Jump to start of previous method/class/fold
+"  ]M           Jump to end of next method/class/fold
+"  [M           Jump to end of previous method/class/fold
 "
-"  zo/zc        Open/Close fold
-"  zO/zC        Open/Close fold and all child folds
-"  zr/zm        Reduced/More folding (open/close one level of folds)
-"  zR/zM        Open/Close all folds
+"  Folds:
+"   zo/zc       Open/Close fold
+"   zO/zC       Open/Close fold and all child folds
+"   zr/zm       Reduced/More folding (open/close one level of folds)
+"   zR/zM       Open/Close all folds
 "
-"  TODO: Find or set an insert-mode binding for moving word-by-word
+"  Marks:
+"   m{a-zA-Z}   Set mark
+"   `{a-zA-Z}   Jump to mark
+"   '{a-zA-Z}   Jump to first non-blank character on marked line
+"
+"  TODO: Find or set insert-mode bindings for moving and deleting word-by-word
 "
 " Noteworthy Motions:
-"  i {char}     Everything inside paired {char} centered on the cursor
-"  f/F {char}   Move forward/backward onto [count]'th occurrence of {char}
-"  t/T {char}   Move forward/backward 'til before/after [count]'th occurrence of {char}
-"  ;/,          Repeat previous same/opposite f/t/F/T motion [count] times.
+"  i {char}     Everything in paired {char} centered on cursor (operator req'd)
 "
 "  w/W/b/B      [count] words forward/back, land on start (by non-word/space chars)
 "  e/E/ge/gE    [count] words forward/back, land on end (by non-word/space chars)
@@ -62,6 +65,16 @@
 "  G            Go to line [count]
 "  %            Go to [count] percent of the way through the file
 "  go           Go to byte [count] of the file
+"
+"  Within Line Only:
+"   f/F {char}   Move forward/back onto [count]'th occurrence of {char}
+"   t/T {char}   Move forward/back 'til before/after [count]'th occurrence of {char}
+"   ;/,          Repeat previous same/opposite f/t/F/T motion [count] times.
+"
+"  For CUA Arrow Key Junkies:
+"   h/j/k/l      Left/Down/Up/Right (Character/Linewise)
+"   gj/gk        Down/Up (Visually)
+"   g<Home/End>  Home/End (Visually)
 "
 " Editing:
 "  <C-V>        Visual Block mode (A.K.A. column mode)
