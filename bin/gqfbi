@@ -9,8 +9,15 @@ Takes any combination of the following and feeds the resulting file list to fbi:
 
 (Good for por... er... scans of reference cards when your video drivers act up.)
 
-@todo: Extend this to handle Zip/CBZ files for emergency comic-reading.
 @todo: Decide on a way to pass option flags to fbi for things like shuffle.
+@todo: Extend this to handle Zip/CBZ files for emergency comic-reading.
+
+    * http://docs.python.org/library/zipfile.html#zipfile.ZipFile.extractall
+    * http://packages.python.org/fs/getting_started.html
+    * http://packages.python.org/fs/zipfs.html#module-fs.zipfs
+    * http://packages.python.org/fs/expose/fuse.html#module-fs.expose.fuse
+    * http://sourceforge.net/apps/mediawiki/fuse/index.php?title=FUSE_Python_tutorial
+    * http://fuse4bsd.creo.hu/README.new_fusepy_api.html
 """
 
 __appname__ = "GQfbi"
