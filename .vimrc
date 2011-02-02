@@ -3,6 +3,9 @@
 
 " {{{ Quick Reference
 "
+"  ZZ           Write changes and quit (alias for :wq)
+"  ZQ           Quit, discarding changes (alias for :q!)
+"
 " File Navigation And Management:
 "  \s           Save Current Session
 "  \p           Open Session Manager
@@ -416,6 +419,15 @@ map <unique> <Leader>s :SessionSave<CR>
 map <unique> <Leader>nt :NERDTreeToggle<CR>
 map <unique> <Leader>[ :NERDTreeToggle<CR>
 map <unique> <Leader>] <Plug>TMiniBufExplorer
+
+" }}}
+" {{{ Aliases to work around "physical race conditions" on some keyboards
+
+" On keyboards which take more prssure for keys to register, when I type :
+" quickly, I sometimes don't release Shift fast enough.
+com! Q q
+com! W w
+com! Wq wq
 
 " }}}
 " {{{ Command: Git Grep (:G)
