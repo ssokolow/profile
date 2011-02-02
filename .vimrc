@@ -6,6 +6,8 @@
 "  ZZ           Write changes and quit (alias for :wq)
 "  ZQ           Quit, discarding changes (alias for :q!)
 "
+"   \c           Open the shell in a :split console
+"
 " File Navigation And Management:
 "  \s           Save Current Session
 "  \p           Open Session Manager
@@ -436,6 +438,7 @@ nmap <C-N><C-N> :set invnumber<CR>
 noremap <c-l> :nohls<CR><c-l>
 
 " Provide a convenient, concise way to work beyond single files
+map <unique> <Leader>c :exe "silent ConqueTermSplit " . &shell<CR>
 map <unique> <Leader>p :SessionList<CR>
 map <unique> <Leader>s :SessionSave<CR>
 map <unique> <Leader>nt :NERDTreeToggle<CR>
