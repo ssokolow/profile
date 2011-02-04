@@ -73,9 +73,10 @@ yeahconsole*restart: 1
 
 ! I like my slide-down terminal to take 3/4 to 4/5 of a 1280x1024 monitor.
 yeahconsole*consoleHeight: 60
+yeahconsole*screenWidth: 1280
 
 ! Animation is too slow if I am on a computer where Yakuake is inappropriate.
 yeahconsole*aniDelay: 0
-yeahconsole*stepSize: 0
+yeahconsole*stepSize: 1
 
 ! vim:fdm=marker
