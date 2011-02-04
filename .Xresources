@@ -76,7 +76,7 @@ yeahconsole*consoleHeight: 60
 yeahconsole*screenWidth: 1280
 
 ! Animation is too slow if I am on a computer where Yakuake is inappropriate.
-yeahconsole*aniDelay: 0
-yeahconsole*stepSize: 1
+yeahconsole*aniDelay: 1
+yeahconsole*stepSize: 0
 
 ! vim:fdm=marker
