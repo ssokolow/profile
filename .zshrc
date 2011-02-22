@@ -176,9 +176,13 @@ alias -s {aac,ape,au,hsc,flac,gbs,gym,it,lds,ogg,m4a,mod,mp2,mp3,MP3,Mp3,mpc,nsf
 function title {
 	if [[ $TERM == "screen" ]]; then
 		# Use these two for GNU Screen:
-		print -nR $'\033k'$1$'\033'\\
+		if [[ "$1" == "zsh" ]]; then
+			print -nR $'\033k'${PWD##*/}/$'\033'\\
+		else
+			print -nR $'\033k'$1$'\033'\\
+		fi
 
-		print -nR $'\033]0;'$2$'\a'
+		print -nR $'\033]0;'$1: $2$'\a'
 	elif [[ $TERM == "xterm" || $TERM == "rxvt" ]]; then
 		# Use this one instead for XTerms:
 		print -nR $'\033]0;'$*$'\a'

@@ -77,7 +77,8 @@ defscrollback 5000
 
 # Handle the input from my zsh hardstatus line properly
 caption always "%{wk}%?%-Lw%?%{bw}%n*%f %t%?(%u)%?%{wk}%?%+Lw%? %= %{= kw}%110`%109`%111`"
-hardstatus alwayslastline "%3n $USER@%H %t%? (%u)%?%?: %h%?"
+#hardstatus alwayslastline "%3n $USER@%H %t%? (%u)%?%?: %h%?"
+hardstatus alwayslastline "%3n $USER@%H %?(%u) %?%?%h%?"
 
 # Work around unintentional bugs in clicking on text-mode tabs in vim.
 altscreen on
