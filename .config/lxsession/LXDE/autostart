@@ -2,10 +2,10 @@
 @parcellite
 @basket
 @sh -c "exec ~/bin/setkeys"
-@sh -c "exec ~/bin/timeclock"
+@sh -c "exec ~/bin/timeclock --ui compact"
 @knotes
 @thunderbird
 @pidgin
 @conky
 @sh -c "exec ~/.dropbox-dist/dropbox"
-@sh -c "sleep 5; exec audacious2"
+@sh -c "sleep 10; exec audacious2"

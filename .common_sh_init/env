@@ -50,7 +50,7 @@ if [ -n "$DISPLAY" ]; then
 	export IMAGE_VIEWER=gqview
 	export MUSIC_PLAYER="audacious --enqueue --play"
 else
-	export IMAGE_VIEWER=fbi
+	export IMAGE_VIEWER=~/bin/gqfbi
 	export MUSIC_PLAYER=mplayer
 	#TODO: Set MUSIC_PLAYER to a wrapper which can also call stuff like adplay
 fi
