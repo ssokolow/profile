@@ -203,7 +203,7 @@ def run(args):
         longcmd, argv = _unsplit(args), args
 
     # Flexible quoting for maximum versatility. (Order minimizes mistakes)
-    for cmd in (longcmd, argv[0]):
+    for cmd in (longcmd, os.path.expanduser(argv[0])):
         if which(cmd):
             # Valid command (shell execute for versatility)
             logging.info("Running as command: %r" % argv)
