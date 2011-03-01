@@ -25,9 +25,13 @@ cond_alias df pydf
 cond_alias date "date --rfc-3339=seconds"
 cond_alias top htop
 
+# Quick shortcut to open a file browser in the current directory without
+# cluttering up the terminal with messages from it.
+alias here="pcmanfm . &>/dev/null &"
+
 # I want my damn Vim to open things in tabs
 alias vim="vim -p"
-alias gvim="gvim -p"
+alias gvim="gvim -p &>/dev/null"
 
 # Make documentation browsing easier
 alias info="pinfo"

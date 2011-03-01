@@ -16,6 +16,8 @@
 "  :sh           Open a shell (hides Vim until exited)
 "   \c           Open the shell in a :split console
 "
+"   TODO: Figure out the command for "open current path in {command}"
+"
 " File Navigation And Management:
 "  \s           Save Current Session
 "  \p           Open Session Manager
