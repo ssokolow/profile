@@ -1,6 +1,6 @@
 @nitrogen --restore
 @parcellite
-@basket
+@basket -h
 @sh -c "exec ~/bin/setkeys"
 @sh -c "exec ~/bin/timeclock --ui compact"
 @knotes
@@ -8,4 +8,5 @@
 @pidgin
 @conky
 @sh -c "exec ~/.dropbox-dist/dropbox"
-@sh -c "sleep 10; exec audacious2"
+@sh -c "sleep 60; exec audacious2"
+@numlockx
