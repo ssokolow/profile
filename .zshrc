@@ -177,7 +177,11 @@ function title {
 	if [[ $TERM == "screen" ]]; then
 		# Use these two for GNU Screen:
 		if [[ "$1" == "zsh" ]]; then
-			print -nR $'\033k'${PWD##*/}/$'\033'\\
+			if [[ "$PWD" == "$HOME" ]]; then
+				print -nR $'\033k'~/$'\033'\\
+			else
+				print -nR $'\033k'${PWD##*/}/$'\033'\\
+			fi
 		else
 			print -nR $'\033k'$1$'\033'\\
 		fi
