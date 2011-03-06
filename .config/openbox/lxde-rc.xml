@@ -754,6 +754,16 @@
 
   # end of the example
   -->
-  "New Record"
+  <application name="basket" class="Basket" role="MainWindow">
+    <position>
+      <x>center</x>
+      <y>center</y>
+      <monitor>1</monitor>
+    </position>
+  </application>
+  <application class="net-minecraft-LauncherFrame">
+    <maximized>true</maximized>
+    <decor>no</decor>
+  </application>
   </applications>
 </openbox_config>
