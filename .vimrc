@@ -295,10 +295,10 @@ set showcmd     " Show in-progress commands so I can figure out what the heck I 
 set list
 set listchars=tab:»·,trail:· " show tabs and trailing spaces
 
-" Only word-wrap comments and word-wrap them at 80 characters.
+" Only word-wrap comments and word-wrap them at 79 characters.
 set formatoptions-=t     " No word-wrap inside code.
 set formatoptions+=croql " Make the behaviour I'm used to explicit
-set textwidth=80
+set textwidth=79
 
 " I prefer 4-space indentation by default
 set expandtab
