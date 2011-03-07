@@ -13,6 +13,6 @@ fi
 # Load up screen if it's not already present
 if [[ "$TERM" != screen* ]] && [[ "$TERMCAP" != *\|screen\|* ]] && [ "$NO_SCREEN" = "" ]; then
 	screen -RR
-	read "?Press Enter to quit or Ctrl+C to continue without GNU Screen" && exit
+	read -t 5 "?Press Enter to continue without GNU Screen" || exit
 	clear
 fi
