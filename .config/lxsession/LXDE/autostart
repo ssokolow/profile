@@ -3,6 +3,7 @@
 @basket -h
 @sh -c "exec ~/bin/setkeys"
 @sh -c "exec ~/bin/timeclock --ui compact"
+@sh -c "exec ~/bin/quicktile -b"
 @knotes
 @thunderbird
 @pidgin
