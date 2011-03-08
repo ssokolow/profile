@@ -17,3 +17,8 @@
 # Revision control directories for vim bundles
 .vim/bundle/web-indent/.svn/
 .vim/bundle/web-indent/indent/.svn/
+
+# See also:
+# - http://help.github.com/git-ignore/
+# - https://github.com/github/gitignore
+
