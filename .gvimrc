@@ -1,3 +1,7 @@
+" TODO:
+" - Consider setting guioptions+=c
+" - Consider reworking my menus and toolbars
+
 " Turn on spell-checking since syntax highlighting keeps it limited to
 " human-targeted text. Do it here because it doesn't look good in terminals.
 set spell spelllang=en_ca

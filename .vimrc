@@ -118,8 +118,11 @@
 "  <C-A>/<C-X>  Increment/decrement number/date/time/numeral under cursor.
 "               (Also supports letters of the alphabet in visual mode)
 "
+"  \c<Space>    Toggle comment state for selected lines
+"  \cy          Yank then comment selected lines
 "  \cc          Comment selected lines
 "  \cu          Uncomment selected lines
+"  \cA          Begin end-of-line comment
 "
 "  >>           Indent selected lines
 "  <<           Unindent selected lines
