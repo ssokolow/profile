@@ -19,23 +19,16 @@ function parse_git_branch() {
 
 prompt_gentoo_precmd() {
   git_branch_prompt="$(parse_git_branch)"
-  path_prompt="%B%F{$prompt_gentoo_prompt}%1~$git_branch_prompt"
-  PS1="$base_prompt$path_prompt %# $post_prompt"
-  PS2="$base_prompt$path_prompt %_> $post_prompt"
-  PS3="$base_prompt$path_prompt ?# $post_prompt"
+  path_prompt="%B%F{blue}%1~$git_branch_prompt"
+
+  PS1="$base_prompt$path_prompt $pre_prompt%# $post_prompt"
+  PS2="$base_prompt$path_prompt $pre_prompt%_> $post_prompt"
+  PS3="$base_prompt$path_prompt $pre_prompt?# $post_prompt"
 }
 
 prompt_gentoo_setup () {
-  prompt_gentoo_prompt=${1:-'blue'}
-  prompt_gentoo_user=${2:-'green'}
-  prompt_gentoo_root=${3:-'red'}
-
-  if [ "$USER" = 'root' ]
-  then
-    base_prompt="%B%F{$prompt_gentoo_root}%m%k "
-  else
-    base_prompt="%B%F{$prompt_gentoo_user}%n@%m%k "
-  fi
+  base_prompt="%k%B%(!.%F{red}.%F{green}%n@)%m "
+  pre_prompt="%(0?..%F{yellow})%(1j.%%.)"
   post_prompt="%b%f%k"
 
   #setopt noxtrace localoptions
