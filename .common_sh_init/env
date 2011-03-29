@@ -13,7 +13,8 @@ fi
 export BROWSER=firefox
 export EDITOR=vim
 export VISUAL="$EDITOR"
-export MAILER=mutt
+# Don't even have mutt installed at the moment
+#export MAILER=mutt
 
 # Make these available to subshells
 export COLUMNS
@@ -36,6 +37,7 @@ export MAILCHECK=60
 # Python-related settings
 export PYTHONDOCS="/usr/share/htmldoc_links/dev-python/python-docs-2.6/"
 export PYTHONPATH=~/src:~/src/read-only/scrapy-trunk":$PYTHONPATH"
+export PYTHONWARNINGS=default
 export VIRTUALENV_USE_DISTRIBUTE=1
 
 # Disable start menu icon creation in Wine
@@ -44,6 +46,7 @@ export WINEDLLOVERRIDES="winemenubuilder.exe=d"
 # Set a few app-specific settings
 export ENCAOPT="-L none"
 export PYTHONSTARTUP=~/.interactive_rc.py
+export SCIPY_PIL_IMAGE_VIEWER=display
 
 # Provide this for later scripts
 if [ -n "$DISPLAY" ]; then
@@ -54,10 +57,6 @@ else
 	export MUSIC_PLAYER=mplayer
 	#TODO: Set MUSIC_PLAYER to a wrapper which can also call stuff like adplay
 fi
-
-# You might want to set the variable SCIPY_PIL_IMAGE_VIEWER
-# to your prefered image viewer if you don't like the default one. Ex:
-# export SCIPY_PIL_IMAGE_VIEWER=display
 
 # Make sure the gtk-qt gtkrc is loaded.
 export GTK2_RC_FILES="$HOME/.gtkrc-2.0:$HOME/.kde/share/config/gtkrc-2.0:/etc/gtk-2.0/gtkrc"

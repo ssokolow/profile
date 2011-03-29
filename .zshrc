@@ -1,5 +1,7 @@
 # {{{ Quick Reference:
 #
+# cd +/-n            Change to a different directory in the pushd/popd stack
+#
 # Ctrl-<Left/Right>  Move word-by-word
 # Ctrl-<Up/Down>     Cycle history entries matching typed prefix
 #
@@ -144,6 +146,7 @@ SAVEHIST=1000
 # {{{ Shell Options:
 
 # Set shopts which bash doesn't support
+setopt MULTIBYTE
 setopt AUTO_PUSHD
 setopt PUSHD_SILENT
 setopt NUMERIC_GLOB_SORT
