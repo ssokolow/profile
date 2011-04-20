@@ -43,6 +43,9 @@ export VIRTUALENV_USE_DISTRIBUTE=1
 # Disable start menu icon creation in Wine
 export WINEDLLOVERRIDES="winemenubuilder.exe=d"
 
+# Fix desktop-spanning games with my new head layout
+export SDL_VIDEO_FULLSCREEN_HEAD=2
+
 # Set a few app-specific settings
 export ENCAOPT="-L none"
 export PYTHONSTARTUP=~/.interactive_rc.py
