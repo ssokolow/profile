@@ -32,6 +32,9 @@
 XTerm*bellIsUrgent:  true
 UXTerm*bellIsUrgent:  true
 
+! Make Tk applications slightly less ugly
+*TkTheme: clam
+
 ! ---=== Defaults for a nice mix of Linux console and Konsole ===---
 
 ! White on Black without being eye-straining.
