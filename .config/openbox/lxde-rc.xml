@@ -754,6 +754,9 @@
 
   # end of the example
   -->
+  <application name="gmrun" class="Gmrun">
+    <layer>above</layer>
+  </application>
   <application name="basket" class="Basket" role="MainWindow">
     <position>
       <x>center</x>
