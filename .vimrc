@@ -223,6 +223,8 @@
 "   comparison or I use it infrequently.
 " }}}
 " {{{ TODO:
+" * ~/.vim/view quickly becomes an I/O-bound drain on startup time. I'll need
+"   to either disable it or automate flushing unnecessary entries somehow.
 " * Folding:
 "   * A newly created fold shouldn't start collapsed. (PitA with fdm=indent)
 "   * Figure out how to use find and folding together so find doesn't open all
