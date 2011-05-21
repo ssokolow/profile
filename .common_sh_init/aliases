@@ -4,7 +4,6 @@
 # Set up some defaults I like
 alias colordiff="colordiff -u"
 alias ls="ls --color=auto"
-alias mc=". /usr/share/mc/bin/mc-wrapper.sh -x"
 alias dirs="dirs -v"
 
 # A helper that makes an alias which is conditional on the lack of arguments.
@@ -59,6 +58,13 @@ function l() {
 		ls "$@"
 	fi
 }
+
+# Make Midnight Commander exit into the current directory if installed.
+if [ -e "/usr/libexec/mc/mc.sh" ]; then
+    alias mc=". /usr/libexec/mc/mc.sh -x"
+elif [ -e "/usr/share/mc/bin/mc-wrapper.sh" ]; then
+    alias mc=". /usr/share/mc/bin/mc-wrapper.sh -x"
+fi
 
 # Set up an OSD alias which will just work to the best of its ability.
 if `which aosd_cat &> /dev/null`; then
