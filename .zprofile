@@ -11,8 +11,8 @@ if [[ $- != *i* ]]; then
 fi
 
 # Load up screen if it's not already present
-if [[ "$TERM" != screen* ]] && [[ "$TERMCAP" != *\|screen\|* ]] && [ "$NO_SCREEN" = "" ]; then
-	screen -RR
+if [[ $STY = '' ]] && [ "$NO_SCREEN" = "" ]; then
+    screen -RR
 	read -t 5 "?Press Enter to continue without GNU Screen" || exit
 	clear
 fi

@@ -21,7 +21,7 @@ fi
 function do_debug() { export BASHRC_DEBUG="$BASHRC_DEBUG"$'\n'"${BASHRC_DEBUG_INDENT}$@"; }
 
 # Let's make use of screen for increased efficiency.
-if [[ "$TERM" != screen* ]] && [[ "$TERMCAP" != *\|screen\|* ]] && [ "$NO_SCREEN" == "" ]; then
+if [[ "$STY" == "" ]] && [ "$NO_SCREEN" == "" ]; then
 	do_debug "	    -- Calling screen subshell --"
 	export BASHRC_DEBUG_INDENT="		"
 		read -t 1 -p "Calling screen... (Press enter to cancel)" || exec screen -RR
