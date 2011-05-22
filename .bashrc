@@ -100,9 +100,3 @@ export -f which
 # Run fortune for maximum wittiness
 fortune
 
-# The following line is included in ~/.common_sh_init/env but has to remain here
-# so the KCM module for gtk-qt can see it.
-
-# This line was appended by KDE
-# Make sure our customised gtkrc file is loaded.
-export GTK2_RC_FILES="$HOME/.gtkrc-2.0:$HOME/.kde/share/config/gtkrc-2.0:/etc/gtk-2.0/gtkrc"

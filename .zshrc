@@ -51,7 +51,7 @@ zstyle ':completion:*' accept-exact '*(N)'
 # Set up some comfy completion exemptions
 zstyle ':completion:*:functions' ignored-patterns '_*'                     # hide completion functions from the completer
 zstyle ':completion:*:cd:*' ignored-patterns '(*/)#lost+found'             # hide the lost+found directory from cd
-zstyle ':completion:*:(rm|kill|diff|scp):*' ignore-line yes          # commands like rm don't want the same completion multiple times
+zstyle ':completion:*:(rm|kill|diff|scp):*' ignore-line yes                # commands like rm don't want the same completion multiple times
 zstyle ':completion:*:complete:-command-::commands' ignored-patterns '*\~' # don't complete backup files as executables
 zstyle ':completion:*:*:*:users' ignored-patterns \
     adm apache bin daemon games gdm halt ident junkbust lp mail mailnull \
@@ -253,6 +253,17 @@ function sudo() {
 if command -v fortune >/dev/null; then
     fortune
 fi
+
+#}}}
+#{{{ url-encode
+# Source:
+# http://stackoverflow.com/questions/171563/whats-in-your-zshrc/187853#187853
+
+# URL encode something and print it.
+function url-encode; {
+    setopt extendedglob
+    echo "${${(j: :)@}//(#b)(?)/%$[[##16]##${match[1]}]}"
+}
 
 #}}}
 # vim:fdm=marker
