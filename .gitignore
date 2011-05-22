@@ -18,6 +18,13 @@
 .vim/bundle/web-indent/.svn/
 .vim/bundle/web-indent/indent/.svn/
 
+# Midnight Commander caches
+.mc/Tree
+.mc/filepos
+.mc/history
+.mc/hotlist
+.mc/hotlist.bak
+
 # See also:
 # - http://help.github.com/git-ignore/
 # - https://github.com/github/gitignore
