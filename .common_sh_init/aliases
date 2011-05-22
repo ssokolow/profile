@@ -60,10 +60,12 @@ function l() {
 }
 
 # Make Midnight Commander exit into the current directory if installed.
-if [ -e "/usr/libexec/mc/mc.sh" ]; then
-    alias mc=". /usr/libexec/mc/mc.sh -x"
+if [ -e "/usr/libexec/mc/mc-wrapper.sh" ]; then
+    alias mc=". /usr/libexec/mc/mc-wrapper.sh -x"
 elif [ -e "/usr/share/mc/bin/mc-wrapper.sh" ]; then
     alias mc=". /usr/share/mc/bin/mc-wrapper.sh -x"
+else
+    alias mc="mc -x"
 fi
 
 # Set up an OSD alias which will just work to the best of its ability.
