@@ -452,6 +452,7 @@ if has("autocmd") && exists("+filetype")
 	" Fix a few apparent oversights in filetype detection
 	autocmd BufNewFile,BufRead SCons* set syntax=python
 	autocmd BufNewFile,BufRead *.mako set filetype=mako
+	autocmd BufNewFile,BufRead *.django set filetype=htmldjango
 	" ...and work around a sudoedit-vim interaction quirk
 	autocmd BufNewFile,BufRead *.ebuild.* set filetype=ebuild
 endif
