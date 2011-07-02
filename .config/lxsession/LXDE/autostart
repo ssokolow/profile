@@ -11,3 +11,4 @@
 @sh -c "exec ~/.dropbox-dist/dropbox"
 @sh -c "sleep 60; exec audacious2"
 @numlockx
+@xpad
