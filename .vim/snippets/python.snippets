@@ -41,15 +41,3 @@ snippet logging
 	console.setFormatter(formatter)
 	logging.getLogger('').addHandler(console)
 
-# New Class (super()-free version)
-# - http://fuhm.net/super-harmful/
-# - I doubt I'll remember to call super() in every class I write
-# - I might sometimes WANT to skip a parent's __init__.
-# - I doubt I could write a more trustworthy super() without subtle bugs
-snippet cl
-	class ${1:ClassName}(${2:object}):
-		"""${3:docstring for $1}"""
-		def __init__(self, ${4:arg}):
-			${5:$2.__init__(self)}
-			self.$4 = $4
-			${6}
