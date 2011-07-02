@@ -286,8 +286,10 @@ set nocompatible
 set modeline
 set hidden
 
-" I don't like my apps bugging me about donations.
-set shortmess+=I
+" I don't like my apps bugging me about donations or flooding me with recover
+" alerts when I restore a session. If I need to recover, I'll do it manually.
+" TODO: Figure out how to reimplement "still running" warnings manually.
+set shortmess+=IA
 
 " Don't treat word-wrapped lines as an 'all or nothing' thing when displaying.
 set display+=lastline
