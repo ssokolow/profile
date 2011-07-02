@@ -1,37 +1,47 @@
 snippet boiler
 	#!/usr/bin/env python
 	# -*- coding: utf-8 -*-
-	"""${1:[application description here]}"""
+	"""${4:[application description here]}"""
 
-	__appname__ = "${2:[application name here]}"
+	__appname__ = "${1:[application name here]}"
 	__author__  = "Stephan Sokolow (deitarion/SSokolow)"
-	__version__ = "0.0pre0"
-	__license__ = "GNU GPL 3.0 or later"
+	__version__ = "${2:0.0pre0}"
+	__license__ = "${3:GNU GPL 3.0 or later}"
 
 	import logging
+	log = logging.getLogger(__name__)
 
-	# Set up INFO logging
-	logging.basicConfig(level=logging.INFO, format='%(levelname)s: %(message)s')
-
-	${3:# -- Code Here --}
+	${5:# -- Code Here --}
 
 	if __name__ == '__main__':
 		from optparse import OptionParser
 		parser = OptionParser(description=__doc__, version="%%prog v%s" % __version__)
-		#parser.add_option('-v', '--verbose', action="store_true", dest="verbose",
-		#    default=False, help="Increase verbosity")
+		parser.add_option('-v', '--verbose', action="count", dest="verbose",
+			default=2, help="Increase the verbosity. Can be used twice for extra effect.")
+		parser.add_option('-q', '--verbose', action="count", dest="quiet",
+			default=0, help="Decrease the verbosity. Can be used twice for extra effect.")
+
+		opts, args  = parser.parse_args()
+
+		# Set up clean logging to stderr
+		log_levels = [logging.CRITICAL, logging.ERROR, logging.WARNING, logging.INFO, logging.DEBUG]
+		opts.verbose = min(opts.verbose - opts.quiet, len(log_levels) - 1)
+		opts.verbose = max(opts.verbose, 0)
+		logging.basicConfig(level=log_levels[opts.verbose],
+							format='%(asctime)s %(levelname)s %(message)s')
 
 		opts, args = parser.parse_args()
 
-		${4}
+		${6}
 
 snippet logging
 	import logging
+	log = logging.getLogger(__name__)
 
 	# Set up debug logging to file
 	logging.basicConfig(level=logging.DEBUG,
 						format='%(asctime)s %(levelname)s %(message)s',
-						filename='errors.log',
+						filename='debug.log',
 						filemode='w')
 
 	# Also send INFO and up to console
@@ -41,3 +51,12 @@ snippet logging
 	console.setFormatter(formatter)
 	logging.getLogger('').addHandler(console)
 
+snippet super
+	super(${1:ClassName}, self).__init__(${2})
+
+snippet useragent
+	import urllib2
+
+	opener = urllib2.build_opener()
+	opener.addheaders = [('User-Agent', '%s/%s +${1:Project URL Here}' % (__appname__, __version__))]
+	urllib2.install_opener(opener)
