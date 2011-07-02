@@ -102,9 +102,11 @@ permission_mode=0
 quick_search_case_sensitive=2
 ignore_ftp_chattr_errors=true
 
+filepos_max_saved_entries=1024
+
 [Layout]
 equal_split=1
-first_panel_size=89
+first_panel_size=90
 message_visible=1
 keybar_visible=1
 xterm_title=1
@@ -195,6 +197,9 @@ mouse_move_pages=true
 filetype_mode=true
 permission_mode=false
 quick_search_mode=2
+
+[HotlistConfig]
+expanded_view_of_groups=0
 
 [Panelize]
 Find *.orig after patching=find . -name \\*.orig -print
