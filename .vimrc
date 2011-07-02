@@ -223,8 +223,10 @@
 "   comparison or I use it infrequently.
 " }}}
 " {{{ TODO:
-" * ~/.vim/view quickly becomes an I/O-bound drain on startup time. I'll need
-"   to either disable it or automate flushing unnecessary entries somehow.
+" * Django:
+"   * https://github.com/chronossc/my-vim-confs/blob/master/.vimrc
+"     (http://chronosbox.org/blog/read-to-work-vim-confs-for-python-and-django)
+"   * http://stackoverflow.com/questions/5078592/configuring-django-snipmate-snippets-only-for-django-projects
 " * Folding:
 "   * A newly created fold shouldn't start collapsed. (PitA with fdm=indent)
 "   * Figure out how to use find and folding together so find doesn't open all
@@ -443,9 +445,10 @@ if has("autocmd") && exists("+filetype")
 
 	" Set indent folding for Python files since foldmethod=syntax does nothing
 	autocmd FileType python set foldmethod=indent
+	autocmd FileType python set foldlevel=99
 
 	" Make gf search installed Python modules
-	autocmd FileType python set path+=/usr/lib/python2.6/**,
+	autocmd FileType python set path+=/usr/lib/python2.7/**,
 
 	" Support the jQuery syntax extension from
 	" http://www.vim.org/scripts/script.php?script_id=2416
