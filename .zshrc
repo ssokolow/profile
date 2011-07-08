@@ -4,6 +4,8 @@
 #
 # Ctrl-<Left/Right>  Move word-by-word
 # Ctrl-<Up/Down>     Cycle history entries matching typed prefix
+# Ctrl-<BkSpc/Del>   Delete word-by-word (path components count)
+# Alt-<BkSpc/Del>    Alternate binding for word-by-word delete
 #
 # History:
 #  Ctrl-S  Incremental history search (forward)
@@ -109,9 +111,17 @@ bindkey '\e[F'    end-of-line        # xterm
 bindkey '\eOF'    end-of-line        # gnome-terminal
 bindkey '\eOw'    end-of-line        # PuTTy in rxvt mode
 
-# Make word-by-word movement work for Ctrl+Left/Right
+# Make word-by-word movement work for Ctrl+Left/Right/Backspace/Delete
 bindkey "\e[1;5C" forward-word
 bindkey "\e[1;5D" backward-word
+bindkey "\e[3;5~" kill-word
+bindkey "^H" backward-kill-word
+
+# Set up Alt-Del to match Alt-Backspace if I'm ever stuck on VTE.
+bindkey "\e[3;3~" kill-word
+
+# Adjust WORDCHARS so word-by-word basically means "until a space or slash"
+WORDCHARS='*?+_-.[]~=&;!#$%^(){}<>:@,\\'
 
 # Rebind Up/Down arrows to get what I like about bash's cmdhist option
 # (ensure that 3 keypresses will move 3 commands up/down the history)

@@ -48,9 +48,13 @@ UXTerm*bellIsUrgent:  true
 *rightScrollBar: true
 
 ! More Konsole/Yakuake-like keybindings:
+! NOTE: in Konsole/Yakuake, bind Ctrl+Backspace to \b
 *VT100.Translations: #override \
              Shift <Key>Up:         scroll-back(1) \n\
              Shift <Key>Down:       scroll-forw(1) \n\
+\
+            ~Ctrl<Key>BackSpace:     string(0x7F)  \n\
+             Ctrl<Key>BackSpace:     string(0x08)  \n\
 \
       ~Meta  Shift  Ctrl <Key>V:    insert-selection(CLIPBOARD) \n\
        Meta  Shift  Ctrl <Key>V:    insert-selection(PRIMARY) \n\
