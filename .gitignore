@@ -5,7 +5,7 @@
 *.l[oa]
 
 # Vim swap files
-.*.swp
+.*.sw[nop]
 
 # Backup files
 *~

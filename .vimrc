@@ -450,6 +450,9 @@ if has("autocmd") && exists("+filetype")
 	" Make gf search installed Python modules
 	autocmd FileType python set path+=/usr/lib/python2.7/**,
 
+	" Until I think of something better, enable Django snippets for all Python
+	autocmd FileType python set ft=python.django
+
 	" Support the jQuery syntax extension from
 	" http://www.vim.org/scripts/script.php?script_id=2416
 	autocmd BufRead,BufNewFile *.js set filetype=javascript syntax=jquery
