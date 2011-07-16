@@ -56,6 +56,9 @@ UXTerm*bellIsUrgent:  true
             ~Ctrl<Key>BackSpace:     string(0x7F)  \n\
              Ctrl<Key>BackSpace:     string(0x08)  \n\
 \
+            ~Ctrl<Key>Tab:     string(0x09)  \n\
+             Ctrl<Key>Tab:     string(0x1b) string("r") \n\
+\
       ~Meta  Shift  Ctrl <Key>V:    insert-selection(CLIPBOARD) \n\
        Meta  Shift  Ctrl <Key>V:    insert-selection(PRIMARY) \n\
             ~Shift ~Ctrl <Btn2Up>:  insert-selection(PRIMARY, CUT_BUFFER0) \n\

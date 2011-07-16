@@ -111,11 +111,12 @@ bindkey '\e[F'    end-of-line        # xterm
 bindkey '\eOF'    end-of-line        # gnome-terminal
 bindkey '\eOw'    end-of-line        # PuTTy in rxvt mode
 
-# Make word-by-word movement work for Ctrl+Left/Right/Backspace/Delete
+# Make word-by-word movement work for Ctrl+Left/Right/Backspace/Delete/Tab
 bindkey "\e[1;5C" forward-word
 bindkey "\e[1;5D" backward-word
 bindkey "\e[3;5~" kill-word
-bindkey "^H" backward-kill-word
+bindkey "^H"      backward-kill-word
+bindkey "\er"     reverse-menu-complete
 
 # Set up Alt-Del to match Alt-Backspace if I'm ever stuck on VTE.
 bindkey "\e[3;3~" kill-word
