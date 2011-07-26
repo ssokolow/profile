@@ -457,6 +457,9 @@ if has("autocmd") && exists("+filetype")
 	" http://www.vim.org/scripts/script.php?script_id=2416
 	autocmd BufRead,BufNewFile *.js set filetype=javascript syntax=jquery
 
+	" Automatically compile CoffeeScript on save
+	autocmd BufWritePost, *.coffee silent CoffeeMake!
+
 	" Fix a few apparent oversights in filetype detection
 	autocmd BufNewFile,BufRead SCons* set syntax=python
 	autocmd BufNewFile,BufRead *.mako set filetype=mako
