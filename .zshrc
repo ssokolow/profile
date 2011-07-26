@@ -49,6 +49,7 @@ zstyle ':completion:*:processes' command 'ps x'
 
 # Speed up completions by reducing the fuzziness of the matching
 zstyle ':completion:*' accept-exact '*(N)'
+# TODO: Forget fuzziness. It's too much hassle and too slow sometimes.
 
 # Set up some comfy completion exemptions
 zstyle ':completion:*:functions' ignored-patterns '_*'                     # hide completion functions from the completer
@@ -67,11 +68,6 @@ zstyle ':completion:*:*:*:users' ignored-patterns \
 zstyle ':completion:*:*files' ignored-patterns '*?.o' '*?.pyc' '*?.pyo' '*?~' '*?.bak'
 # TODO: Make this work
 #zstyle ':completion:*:*:(^rm):*:*files' ignored-patterns '*?.o' '*?.pyc' '*?.pyo' '*?~' '*?.bak'
-
-# Recognize completions even if I mistype one character
-#zstyle ':completion:*' completer _complete _match _approximate
-#zstyle ':completion:*:approximate:*' max-errors 1 numeric
-# TODO: Find a way to allow _approximate to add or transpose but not delete
 
 # Set up some pretty verbose formatting for completion
 #zstyle ':completion:*:descriptions' format '%B%d%b'

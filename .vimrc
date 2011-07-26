@@ -227,6 +227,11 @@
 "   * https://github.com/chronossc/my-vim-confs/blob/master/.vimrc
 "     (http://chronosbox.org/blog/read-to-work-vim-confs-for-python-and-django)
 "   * http://stackoverflow.com/questions/5078592/configuring-django-snipmate-snippets-only-for-django-projects
+"   * Set up the Python side of https://github.com/robhudson/snipmate_for_django
+"   * Figure out how to prevent Omni-completion for Python from being so slow.
+"   * https://code.djangoproject.com/wiki/UsingVimWithDjango
+"   * http://blog.fluther.com/django-vim/ (Omni-completion)
+"   * http://rope.sourceforge.net/ropevim.html (Refactoring)
 " * Folding:
 "   * A newly created fold shouldn't start collapsed. (PitA with fdm=indent)
 "   * Figure out how to use find and folding together so find doesn't open all
