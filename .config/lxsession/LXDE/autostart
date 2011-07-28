@@ -1,14 +1,14 @@
 @nitrogen --restore
+@tilda
+@conky
+@numlockx
 @parcellite
-@basket -h
 @sh -c "exec ~/bin/setkeys"
 @sh -c "exec ~/bin/timeclock --ui compact"
 @sh -c "exec ~/bin/quicktile -b"
-@knotes
+@basket -h
 @thunderbird
 @pidgin
-@conky
 @sh -c "exec ~/.dropbox-dist/dropbox"
-@sh -c "sleep 60; exec audacious2"
-@numlockx
+@sh -c "sleep 60; exec audacious"
 @xpad
