@@ -20,15 +20,17 @@ fi
 # Support for figuring out how my .bashrc ran
 function do_debug() { export BASHRC_DEBUG="$BASHRC_DEBUG"$'\n'"${BASHRC_DEBUG_INDENT}$@"; }
 
-# Let's make use of screen for increased efficiency.
-if [[ "$STY" == "" ]] && [ "$NO_SCREEN" == "" ]; then
-	do_debug "	    -- Calling screen subshell --"
-	export BASHRC_DEBUG_INDENT="		"
-		read -t 1 -p "Calling screen... (Press enter to cancel)" || exec screen -RR
-	unset BASHRC_DEBUG_INDENT
-else
-	do_debug "	    -- Already running inside screen --"
-fi
+## Let's make use of screen for increased efficiency.
+## DISABLED: I'll just let Yakuake/yeahconsole/Tilda/etc. do this so I can have
+##           a reliable non-screen shell for embedded terminals
+#if [[ "$STY" == "" ]] && [ "$NO_SCREEN" == "" ]; then
+#	do_debug "	    -- Calling screen subshell --"
+#	export BASHRC_DEBUG_INDENT="		"
+#		read -t 1 -p "Calling screen... (Press enter to cancel)" || exec screen -RR
+#	unset BASHRC_DEBUG_INDENT
+#else
+#	do_debug "	    -- Already running inside screen --"
+#fi
 
 # --== Begin Ubuntu stuff not yet integrated ==--
 # TODO: Finish integrating this.

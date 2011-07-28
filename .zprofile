@@ -10,9 +10,11 @@ if [[ $- != *i* ]]; then
 	unset GA_PID
 fi
 
-# Load up screen if it's not already present
-if [[ $STY = '' ]] && [ "$NO_SCREEN" = "" ]; then
-    screen -RR
-	read -t 5 "?Press Enter to continue without GNU Screen" || exit
-	clear
-fi
+## Load up screen if it's not already present
+## DISABLED: I'll just let Yakuake/yeahconsole/Tilda/etc. do this so I can have
+##           a reliable non-screen shell for embedded terminals
+#if [[ $STY = '' ]] && [ "$NO_SCREEN" = "" ]; then
+#    screen -RR
+#	read -t 5 "?Press Enter to continue without GNU Screen" || exit
+#	clear
+#fi
