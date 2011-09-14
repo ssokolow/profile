@@ -7,6 +7,8 @@ Takes any combination of the following and feeds the resulting file list to fbi:
 - Directories (explored recursively)
 - GQView collection files (*.gqv)
 
+--snip--
+
 (Good for por... er... scans of reference cards when your video drivers act up.)
 
 @todo: Decide on a way to pass option flags to fbi for things like shuffle.
@@ -72,23 +74,31 @@ def parse_gqview_collection(path, keep_missing=False):
                 logging.warn("File in collection not found: %s -> %s", line, path)
         return results
 
+def resolve_file_list(entries):
+    """Turn a list of images, directories, and GQView collections into a simple
+    list of image files using L{filter_recurse} and L{parse_gqview_collection}.
+    """
+    out = []
+    for path in entries:
+        if os.path.isdir(path):
+            out.extend(filter_recurse(path))
+        elif os.path.isfile(path):
+            if check_ftype(path):
+                out.append(path)
+            else:
+                out.extend(parse_gqview_collection(path))
+    return out
+
 if __name__ == '__main__':
     from optparse import OptionParser
-    parser = OptionParser(description=__doc__, version="%%prog v%s" % __version__)
+    parser = OptionParser(version="%%prog v%s" % __version__,
+            usage="%prog <path to image, directory, or GQView collection> ...",
+            description=__doc__.replace('\r\n','\n').split('\n--snip--\n')[0])
     #parser.add_option('-v', '--verbose', action="store_true", dest="verbose",
     #    default=False, help="Increase verbosity")
 
     opts, args = parser.parse_args()
-
-    paths = []
-    for arg in args:
-        if os.path.isdir(arg):
-            paths.extend(filter_recurse(arg))
-        elif os.path.isfile(arg):
-            if check_ftype(arg):
-                paths.append(arg)
-            else:
-                paths.extend(parse_gqview_collection(arg))
+    paths = resolve_file_list(args)
 
     tmp_fd, tmp_path = tempfile.mkstemp(text=True)
     try:

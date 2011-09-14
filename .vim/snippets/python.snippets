@@ -11,15 +11,18 @@ snippet boiler
 	import logging
 	log = logging.getLogger(__name__)
 
-	${5:# -- Code Here --}
+	${7:# -- Code Here --}
 
 	if __name__ == '__main__':
 		from optparse import OptionParser
-		parser = OptionParser(description=__doc__, version="%%prog v%s" % __version__)
+		parser = OptionParser(version="%%prog v%s" % __version__,
+				usage="%prog ${5:[options] <argument> ...}",
+				description=__doc__.replace('\r\n','\n').split('\n--snip--\n')[0])
 		parser.add_option('-v', '--verbose', action="count", dest="verbose",
 			default=2, help="Increase the verbosity. Can be used twice for extra effect.")
 		parser.add_option('-q', '--quiet', action="count", dest="quiet",
 			default=0, help="Decrease the verbosity. Can be used twice for extra effect.")
+		#Reminder: %default can be used in help strings.
 
 		opts, args  = parser.parse_args()
 
