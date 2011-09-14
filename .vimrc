@@ -320,6 +320,10 @@ set tabstop=4
 set softtabstop=4
 set shiftwidth=4
 
+" Put swapfiles all together in one of the system temporary directories so it's
+" easy for me to flush them if need be.
+set dir-=.
+
 " TODO: Get these cooperating. (n seems to require t)
 "set formatoptions+=n
 "set formatlistpat="^\s*\(\d\+[\]:.)}\t ]\|[-*]\)\s*"
