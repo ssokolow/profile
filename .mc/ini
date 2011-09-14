@@ -173,6 +173,8 @@ base_color=
 screen=
 color_terminals=
 
+xterm=
+
 [terminal:screen]
 complete=\e^i
 kpplus=\eOl

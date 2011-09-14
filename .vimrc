@@ -121,6 +121,7 @@
 "  \c<Space>    Toggle comment state for selected lines
 "  \cy          Yank then comment selected lines
 "  \cc          Comment selected lines
+"  \cl          Comment selected lines (aligned)
 "  \cu          Uncomment selected lines
 "  \cA          Begin end-of-line comment
 "

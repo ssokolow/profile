@@ -80,6 +80,7 @@ def sh_quote(file):
             c = '\\' + c
         res = res + c
     return '"' + res + '"'
+
 def which(name, flags=os.X_OK):
     """Search PATH for executable files with the given name.
 
@@ -124,6 +125,7 @@ def which(name, flags=os.X_OK):
             if os.access(pext, flags) and os.path.isfile(pext):
                 result.append(pext)
     return result
+
 def notify_error(text, title='Alert'):
     """Error-display wrapper for various notification/dialog backends.
 
