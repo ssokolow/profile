@@ -44,15 +44,17 @@ locate_command = ['locate', '-i']
 
 # ========== Configuration Ends ==========
 
-import fnmatch, optparse, os, subprocess, sys
-from dbus import Bus, DBusException
+import fnmatch, optparse, os, sys
+from dbus import Bus #TODO: , DBusException
 
 # TODO: Support audtool as a fallback but don't depend on it
 try: import subprocess
 except ImportError: pass
 
 # Use readline if available but don't depend on it
-try: import readline
+try:
+    import readline
+    readline # Shut PyFlakes up
 except ImportError: pass
 
 # connect to DBus
@@ -95,7 +97,12 @@ def parseChoice(inString):
         choices = []
         for x in inString.replace(',',' ').split():
             try: choices.append(int(x))
-            except ValueError: print "Not an integer: %s" % x
+            except ValueError:
+                try:
+                    first, last = [int(y) for y in x.split(':', 1)]
+                    choices.extend(range(first, last+1))
+                except ValueError:
+                    print "Not an integer or range: %s" % x
         return choices
 
 def doLocate():
