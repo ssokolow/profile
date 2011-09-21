@@ -1,3 +1,4 @@
+#!/bin/sh
 # NOTE: The contents of this file may assume that the shell is connected to a
 # tty (unlike 'env') but shouldn't produce output. (use 'misc' for that)
 
@@ -5,6 +6,14 @@
 alias colordiff="colordiff -u"
 alias ls="ls --color=auto"
 alias dirs="dirs -v"
+
+function cwdiff() {
+    if `which dwdiff &>/dev/null`; then
+        dwdiff -R "$@" | command colordiff
+    else
+        wdiff -n "$@" | command colordiff
+    fi
+}
 
 # A helper that makes an alias which is conditional on the lack of arguments.
 function cond_alias() { eval "function ${1}() { [ -z \"\$*\" ] && $2 || command $1 \"\$@\"; }"; }
