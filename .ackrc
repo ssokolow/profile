@@ -10,7 +10,7 @@ js=.json
 cfg=.cfg,.ini
 
 --type-set
-mako=.mako,.html
+mako=.mako,.html,.incl
 
 --type-set
 cakephp=.ctp,.tpl
