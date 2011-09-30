@@ -107,9 +107,9 @@ URxvt.urgentOnBell: true
 URxvt.iso14755: false
 URxvt.copyCommand:  xclip -i -selection clipboard
 URxvt.pasteCommand: xclip -o -selection clipboard
-urxvt.keysym.C-S-C: perl:clipboard:copy
-urxvt.keysym.C-S-V: perl:clipboard:paste
-urxvt.keysym.M-v: perl:clipboard:paste_escaped
+URxvt.keysym.S-C-C: perl:clipboard:copy
+URxvt.keysym.S-C-V: perl:clipboard:paste
+URxvt.keysym.M-v: perl:clipboard:paste_escaped
 
 ! Unbreak zsh keys in URxvt
 URxvt*keysym.Home: \033[1~
