@@ -1,5 +1,5 @@
 @nitrogen --restore
-@tilda
+@sh -c "exec ~/bin/urxvt_kuake"
 @conky
 @numlockx
 @parcellite

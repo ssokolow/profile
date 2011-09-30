@@ -96,22 +96,26 @@ typeset -U PATH PYTHONPATH
 # Use EMACS-style keybindings despite my having EDITOR set to vim
 bindkey -e
 
-# Make Home/End/Ins/Del work
+# Make Home/End/Ins/Del work explicitly
 bindkey '\e[1~'   beginning-of-line  # Linux console, PuTTY
+bindkey '\e[7'    beginning-of-line  # urxvt
 bindkey '\e[H'    beginning-of-line  # xterm
 bindkey '\eOH'    beginning-of-line  # gnome-terminal
-bindkey '\e[2~'   overwrite-mode     # Linux console, xterm, gnome-terminal
-bindkey '\e[3~'   delete-char        # Linux console, xterm, gnome-terminal
+bindkey '\e[2~'   overwrite-mode     # Linux console, xterm, gnome-terminal, urxvt
+bindkey '\e[3~'   delete-char        # Linux console, xterm, gnome-terminal, urxvt
 bindkey '\e[4~'   end-of-line        # Linux console, PuTTY
+bindkey '\e[8'    end-of-line        # urxvt
 bindkey '\e[F'    end-of-line        # xterm
 bindkey '\eOF'    end-of-line        # gnome-terminal
 bindkey '\eOw'    end-of-line        # PuTTy in rxvt mode
 
 # Make word-by-word movement work for Ctrl+Left/Right/Backspace/Delete/Tab
-bindkey "\e[1;5C" forward-word
-bindkey "\e[1;5D" backward-word
-bindkey "\e[3;5~" kill-word
-bindkey "^H"      backward-kill-word
+bindkey "\eOc"    forward-word  # urxvt
+bindkey "\e[1;5C" forward-word  # everything else
+bindkey "\eOd"    backward-word # urxvt
+bindkey "\e[1;5D" backward-word # everything else
+bindkey "\e[3\^"  kill-word # urxvt
+bindkey "\e[3;5~" kill-word # everything else
 bindkey "\er"     reverse-menu-complete
 
 # Set up Alt-Del to match Alt-Backspace if I'm ever stuck on VTE.
@@ -128,8 +132,10 @@ bindkey "^[[A" up-history
 bindkey "^[[B" down-history
 
 # The rest of the stuff from my .inputrc
-bindkey "\e[1;5A" history-beginning-search-backward
-bindkey "\e[1;5B" history-beginning-search-forward
+bindkey "\eOa"   history-beginning-search-backward  # urxvt
+bindkey "\e[1;5A" history-beginning-search-backward # everything else
+bindkey "\eOb"   history-beginning-search-forward   # urxvt
+bindkey "\e[1;5B" history-beginning-search-forward  # everything else
 bindkey "\e[3~"   delete-char
 bindkey '^r'      history-incremental-search-backward
 bindkey ' '       magic-space

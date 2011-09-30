@@ -22,6 +22,11 @@
 !
 ! }}}
 
+! Make Tk applications slightly less ugly
+*TkTheme: clam
+
+! ---=== XTerm Defaults for a nice mix of Linux console and Konsole ===---
+
 ! Operate terminals in utf8 mode whether or not uxterm was called
 *VT100.utf8:	1
 
@@ -31,11 +36,6 @@
 ! Set the Urgent hint on bell for console apps without notify-send
 XTerm*bellIsUrgent:  true
 UXTerm*bellIsUrgent:  true
-
-! Make Tk applications slightly less ugly
-*TkTheme: clam
-
-! ---=== Defaults for a nice mix of Linux console and Konsole ===---
 
 ! White on Black without being eye-straining.
 *customization: -color
@@ -53,8 +53,8 @@ UXTerm*bellIsUrgent:  true
              Shift <Key>Up:         scroll-back(1) \n\
              Shift <Key>Down:       scroll-forw(1) \n\
 \
-            ~Ctrl<Key>BackSpace:     string(0x7F)  \n\
-             Ctrl<Key>BackSpace:     string(0x08)  \n\
+            ~Ctrl<Key>BackSpace:     string(0x08)  \n\
+             Ctrl<Key>BackSpace:     string(0x1b) string(0x08)  \n\
 \
             ~Ctrl<Key>Tab:     string(0x09)  \n\
              Ctrl<Key>Tab:     string(0x1b) string("r") \n\
@@ -74,10 +74,81 @@ XTerm*saveLines: 5120
 XTerm*scrollKey: true
 XTerm*scrollTtyOutput: false
 
+! ---=== urxvt Defaults for a nice mix of Linux console and Konsole ===---
+
+! URL integration
+! TODO: Consider this: http://www.jukie.net/bart/blog/urxvt-url-yank
+URxvt.perl-lib: /home/ssokolow/.urxvt
+URxvt.perl-ext-common: default,matcher,clipboard
+URxvt.urlLauncher: firefox
+
+urxvt_kuake.perl-ext-common: default,matcher,clipboard,kuake<F12>
+urxvt_kuake.geometry: 212x60+0+0
+urxvt_kuake.borderLess: true
+
+! White on Black without being eye-straining.
+Rxvt.background: #000000
+Rxvt.foreground: #B3B3B3
+
+! Make the scrollbar look a little less 1980s.
+URxvt*scrollstyle: plain
+URxvt*scrollBar_right: true
+
+! Keep 5K of scrollback and only reset the scroll position on keypresses.
+URxvt.saveLines: 5120
+URxvt.scrollTtyOutput: false
+URxvt.scrollTtyKeypress: true
+
+! Set the Urgent hint on bell for console apps without notify-send
+URxvt.urgentOnBell: true
+
+! More Konsole/Yakuake-like clipboard keybindings
+! TODO: Why did this suddenly break?
+URxvt.iso14755: false
+URxvt.copyCommand:  xclip -i -selection clipboard
+URxvt.pasteCommand: xclip -o -selection clipboard
+urxvt.keysym.C-S-C: perl:clipboard:copy
+urxvt.keysym.C-S-V: perl:clipboard:paste
+urxvt.keysym.M-v: perl:clipboard:paste_escaped
+
+! Unbreak zsh keys in URxvt
+URxvt*keysym.Home: \033[1~
+URxvt*keysym.End: \033[4~
+
+! Match my XTerm additions
+URxvt*keysym.C-BackSpace: \033\010
+URxvt*keysym.C-Tab: \033r
+! TODO: Finish translating keybindings from XTerm
+
+! Stuff to explore:
+! http://pod.tst.eu/http://cvs.schmorp.de/rxvt-unicode/doc/rxvt.7.pod
+! http://awesome.naquadah.org/wiki/Urxvt
+! https://wiki.archlinux.org/index.php/Rxvt-unicode
+!URxvt.mapAlert: true
+URxvt.geometry: 160x50
+URxvt.pastableTabs: true
+
+!URxvt*font:		xft:Bitstream Vera Sans Mono:style=Regular:pixelsize=13
+
+!TODO: Links:
+! - http://en.gentoo-wiki.com/wiki/Rxvt-Unicode
+! - https://kmandla.wordpress.com/2009/12/21/cool-and-fun-screen-vs-inside-yakuake/#comment-41235
+! - http://www.brain-dump.org/projects/dvtm
+!TODO: Extend my scrollback buffer to at least 5000 lines.
+!TODO: Fix my urxvt keymappings so things like Ctrl+Up work again.
+!TODO: Try to fix the urxvt scrollbar in a urxvt+screen+vim stack.
+!TODO: Experiment with tmux
+
+!TODO: Figure out where the weight is in my zsh RC files and prune it away.
+!With urxvt making the terminal start fast, it is embarassing for it to stay
+!on a blinking cursor for ages with a cold cache.
+
+!TODO: Figure out what is making completions for things like less so sluggish.
+
 ! ---=== Make yeahconsole the best lightweight Yakuake substitute possible ===---
 
 ! Make yeahconsole more like the Yakuake default setup.
-yeahconsole*term: uxterm
+yeahconsole*term: urxvt
 yeahconsole*toggleKey: Ctrl+F12
 yeahconsole*restart: 1
 
