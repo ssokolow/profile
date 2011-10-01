@@ -103,7 +103,6 @@ URxvt.scrollTtyKeypress: true
 URxvt.urgentOnBell: true
 
 ! More Konsole/Yakuake-like clipboard keybindings
-! TODO: Why did this suddenly break?
 URxvt.iso14755: false
 URxvt.copyCommand:  xclip -i -selection clipboard
 URxvt.pasteCommand: xclip -o -selection clipboard
@@ -118,7 +117,7 @@ URxvt*keysym.End: \033[4~
 ! Match my XTerm additions
 URxvt*keysym.C-BackSpace: \033\010
 URxvt*keysym.C-Tab: \033r
-! TODO: Finish translating keybindings from XTerm
+! TODO: Look into translating button bindings.
 
 ! Stuff to explore:
 ! http://pod.tst.eu/http://cvs.schmorp.de/rxvt-unicode/doc/rxvt.7.pod
@@ -134,8 +133,6 @@ URxvt.pastableTabs: true
 ! - http://en.gentoo-wiki.com/wiki/Rxvt-Unicode
 ! - https://kmandla.wordpress.com/2009/12/21/cool-and-fun-screen-vs-inside-yakuake/#comment-41235
 ! - http://www.brain-dump.org/projects/dvtm
-!TODO: Extend my scrollback buffer to at least 5000 lines.
-!TODO: Fix my urxvt keymappings so things like Ctrl+Up work again.
 !TODO: Try to fix the urxvt scrollbar in a urxvt+screen+vim stack.
 !TODO: Experiment with tmux
 
