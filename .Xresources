@@ -85,6 +85,7 @@ URxvt.urlLauncher: firefox
 urxvt_kuake.perl-ext-common: default,matcher,clipboard,kuake<F12>
 urxvt_kuake.geometry: 212x60+0+0
 urxvt_kuake.borderLess: true
+URxvt.kuake.toggleFocusesIfVisible: true
 
 ! White on Black without being eye-straining.
 Rxvt.background: #000000

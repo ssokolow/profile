@@ -1,0 +1,79 @@
+#! perl
+
+my $has_which = eval "use File::Which; 1";
+
+sub on_start {
+   my ($self) = @_;
+
+   $self->{key} = $self->{argv}[0] || "F10";
+   $self->{hide_on_lose_focus} = $self->x_resource('kuake.hideOnLoseFocus') || 0;
+   $self->{toggle_focuses_if_visible} = $self->x_resource('kuake.toggleFocusesIfVisible') || 0;
+
+   $self->{keysym} = $self->XStringToKeysym ($self->{key})
+      or urxvt::fatal "cannot convert requested kuake wake-up key '$self->{key}' to keysym, unable to continue.\n";
+
+   $self->{keycode} = $self->XKeysymToKeycode ($self->{keysym})
+      or urxvt::fatal "cannot convert requested kuake wake-up key '$self->{key}' to keycode, unable to continue.\n";
+
+   $self->{wmctrl_path} = $has_which ? which('wmctrl') : 0;
+
+   $self->XGrabKey ($self->{keycode}, urxvt::AnyModifier, $self->DefaultRootWindow);
+
+   $self->XUnmapWindow ($self->parent);
+
+   $self->{unmap_me} = 1;
+
+   ()
+}
+
+sub on_focus_out {
+    my ($self) = @_;
+
+    $self->XUnmapWindow($self->parent)
+        if $self->{hide_on_lose_focus}
+}
+
+sub on_map_notify {
+   my ($self) = @_;
+
+   # suppress initial map event
+   $self->XUnmapWindow ($self->parent)
+      if delete $self->{unmap_me};
+
+   ()
+}
+
+sub on_root_event {
+   my ($self, $event) = @_;
+
+   return unless $event->{type} == urxvt::KeyPress && $event->{keycode} == $self->{keycode};
+
+   # XXX: Is there any way to instruct URxvt to focus itself via Perl?
+   # urxvtperl(3) doesn't even mention things like $term->XMapWindow.
+   if (not $self->focus and $self->mapped and $self->{toggle_focuses_if_visible}) {
+      if ($self->{wmctrl_path}) {
+          my $cmd = $self->{wmctrl_path} . " -i -a " . int($self->parent);
+          print($cmd);
+         `$cmd`;
+      } else {
+         $self->XUnmapWindow ($self->parent);
+         $self->XMapWindow ($self->parent);
+      }
+   } else {
+      $self->mapped
+        ? $self->XUnmapWindow ($self->parent)
+        : $self->XMapWindow ($self->parent);
+   }
+
+   1
+}
+
+sub on_destroy {
+   my ($self) = @_;
+
+   $self->XUngrabKey ($self->XKeysymToKeycode ($self->{keysym}), 0, $self->DefaultRootWindow)
+      if $self->{keysym};
+
+   ()
+}
+
