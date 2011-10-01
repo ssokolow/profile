@@ -119,6 +119,10 @@ URxvt*keysym.C-BackSpace: \033\010
 URxvt*keysym.C-Tab: \033r
 ! TODO: Look into translating button bindings.
 
+! Extend smart selection for the zsh and Python interactive interpreter prompts
+URxvt.selection.pattern-0: >>>[ ]+(.+)
+URxvt.selection.pattern-1: .+?@.+? .+? %%?[ ]+(.+)
+
 ! Stuff to explore:
 ! http://pod.tst.eu/http://cvs.schmorp.de/rxvt-unicode/doc/rxvt.7.pod
 ! http://awesome.naquadah.org/wiki/Urxvt
