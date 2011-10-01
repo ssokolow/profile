@@ -96,6 +96,7 @@ URxvt*scrollBar_right: true
 
 ! Keep 5K of scrollback and only reset the scroll position on keypresses.
 URxvt.saveLines: 5120
+URxvt.scrollWithBuffer: true
 URxvt.scrollTtyOutput: false
 URxvt.scrollTtyKeypress: true
 
