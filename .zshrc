@@ -119,7 +119,9 @@ bindkey "\eOd"    backward-word # urxvt
 bindkey "\e[1;5D" backward-word # everything else
 bindkey "\e[3\^"  kill-word # urxvt
 bindkey "\e[3;5~" kill-word # everything else
-bindkey "\er"     reverse-menu-complete
+bindkey "\e[Z"    reverse-menu-complete # urxvt
+bindkey "\er"     reverse-menu-complete # everything else
+
 
 # Set up Alt-Del to match Alt-Backspace if I'm ever stuck on VTE.
 bindkey "\e[3;3~" kill-word
