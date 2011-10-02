@@ -13,8 +13,9 @@
 #
 # }}}
 
-# Don't let /etc/zsh/zprofile override my ~/.zshenv
-source ${ZDOTDIR:-~}/.zshenv
+# Source all environment settings common to both zsh and bash and don't let
+# /etc/zsh/zprofile override env (Don't run it twice like `. .zshenv` would be)
+source ~/.common_sh_init/env
 
 # zsh-internal equivalent to "export SHELL=`which zsh`"
 # So things like 'exec zsh' work as I intend.
