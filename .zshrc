@@ -16,8 +16,9 @@
 # Don't let /etc/zsh/zprofile override my ~/.zshenv
 source ${ZDOTDIR:-~}/.zshenv
 
+# zsh-internal equivalent to "export SHELL=`which zsh`"
 # So things like 'exec zsh' work as I intend.
-export SHELL=`which zsh`
+export SHELL==zsh
 
 # Not sure if I need this, but it can't hurt. Fix for rcp and scp.
 # See the copy in .bashrc for a full explanation of its purpose
@@ -262,10 +263,17 @@ function sudo() {
 	esac
 }
 
+# }}}
+# {{{ fortune command
+
 # I prefer to have a fortune from any new shell, not just login ones.
 if command -v fortune >/dev/null; then
     fortune
 fi
+
+# Do the deferred heavy stuff here
+# TODO: See if I can make this lighter without losing cdr<Tab>
+setopt hashcmds hashdirs hashlistall
 
 #}}}
 #{{{ url-encode
