@@ -87,14 +87,14 @@
       <slant>normal</slant>
       <!-- 'italic' or 'normal' -->
     </font>
-    <font place="OnScreenDisplay">
-      <name>sans</name>
-      <size>10</size>
-      <!-- font size in points -->
-      <weight>bold</weight>
-      <!-- 'bold' or 'normal' -->
-      <slant>normal</slant>
-      <!-- 'italic' or 'normal' -->
+    <font place="ActiveOnScreenDisplay">
+      <name/>
+    </font>
+    <font place="InactiveOnScreenDisplay">
+      <name>Sans</name>
+      <size>8</size>
+      <weight/>
+      <slant/>
     </font>
   </theme>
   <desktops>
@@ -684,7 +684,8 @@
     <manageDesktops>yes</manageDesktops>
     <!-- show the manage desktops section in the client-list-(combined-)menu -->
   </menu>
-  <applications><!--
+  <applications>
+    <!--
   # this is an example with comments through out. use these to make your
   # own rules, but without the comments of course.
 
@@ -755,19 +756,19 @@
 
   # end of the example
   -->
-  <application name="gmrun" class="Gmrun">
-    <layer>above</layer>
-  </application>
-  <application name="basket" class="Basket" role="MainWindow">
-    <position>
-      <x>center</x>
-      <y>center</y>
-      <monitor>1</monitor>
-    </position>
-  </application>
-  <application class="net-minecraft-LauncherFrame">
-    <maximized>true</maximized>
-    <decor>no</decor>
-  </application>
+    <application name="gmrun" class="Gmrun">
+      <layer>above</layer>
+    </application>
+    <application name="basket" class="Basket" role="MainWindow">
+      <position>
+        <x>center</x>
+        <y>center</y>
+        <monitor>1</monitor>
+      </position>
+    </application>
+    <application class="net-minecraft-LauncherFrame">
+      <maximized>true</maximized>
+      <decor>no</decor>
+    </application>
   </applications>
 </openbox_config>
