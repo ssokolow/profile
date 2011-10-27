@@ -6,6 +6,12 @@
 "  :e {file}    Edit {file} in new buffer
 "  :ene         Edit new (empty) file in new buffer
 "
+"  :tabe {file} Edit {file} in new tab
+"  :tabnew      Edit new (empty) file in new tab
+"
+"  gt           Go to next tab
+"  gT           Go to previous tab
+"
 "  ZZ           Write changes and quit (alias for :wq)
 "  ZQ           Quit, discarding changes (alias for :q!)
 "
