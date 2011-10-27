@@ -88,7 +88,7 @@ urxvt_kuake.borderLess: true
 URxvt.kuake.toggleFocusesIfVisible: true
 
 ! White on Black without being eye-straining.
-Rxvt.background: #000000
+Rxvt.background: #010101
 Rxvt.foreground: #B3B3B3
 
 ! Make the scrollbar look a little less 1980s.
