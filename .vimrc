@@ -463,6 +463,9 @@ if has("autocmd") && exists("+filetype")
 	" Until I think of something better, enable Django snippets for all Python
 	autocmd FileType python set ft=python.django
 
+	" Autocomplete </ for closing tags in HTML/XML files
+	autocmd FileType html,xml,xsl iabbrev <buffer> </ </
+
 	" Support the jQuery syntax extension from
 	" http://www.vim.org/scripts/script.php?script_id=2416
 	autocmd BufRead,BufNewFile *.js set filetype=javascript syntax=jquery
