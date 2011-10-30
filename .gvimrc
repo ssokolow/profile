@@ -21,7 +21,7 @@ map <silent> <C-F2> @=<SID>ToggleGUIBars()<cr>
 :aunmenu Help.Sponsor/Register
 
 if has("gui_gtk2")
-    set guifont=Bitstream Vera Sans Mono 10,DejaVu Sans Mono 10,Monospace 10
+    set guifont=Bitstream\ Vera\ Sans\ Mono\ 10,DejaVu\ Sans\ Mono\ 10,Monospace\ 10
 elseif has("gui_win32")
     set guifont=Courier_New:h10:cANSI,Courier:h10:cANSI
 endif
