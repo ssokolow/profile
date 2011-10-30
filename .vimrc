@@ -300,6 +300,10 @@ set nocompatible
 set modeline
 set hidden
 
+" Stuff that gVimPortable revealed to be necessary
+set enc=utf-8
+syntax on
+
 " I don't like my apps bugging me about donations or flooding me with recover
 " alerts when I restore a session. If I need to recover, I'll do it manually.
 " TODO: Figure out how to reimplement "still running" warnings manually.
