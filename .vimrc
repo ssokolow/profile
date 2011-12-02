@@ -410,7 +410,6 @@ if exists(":let")
 
 	" Things to double-check the efficacy of:
 	let python_highlight_all = 1
-	let g:PHP_default_indenting = 1
 
 	" Set up Conque to match my workflow better
 	let g:ConqueTerm_CWInsert = 1
