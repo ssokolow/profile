@@ -439,10 +439,10 @@ endif
 " {{{ Define Autocommands
 
 " Save folding status automatically
-if has("autocmd")
-	autocmd BufWinLeave ?* silent mkview
-	autocmd BufWinEnter ?* silent loadview
-endif
+"if has("autocmd")
+"	autocmd BufWinLeave ?* silent mkview
+"	autocmd BufWinEnter ?* silent loadview
+"endif
 
 " Enable the syntax-based fallback for omni-completion
 if has("autocmd") && exists("+omnifunc")
