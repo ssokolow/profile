@@ -457,7 +457,9 @@ if has("autocmd") && exists("+filetype")
 	endif
 
 	" Automatically strip trailing whitespace from lines when saving non-M4 files.
-	autocmd BufWritePre * if index(['m4', 'diff', 'make', 'mail'], &ft) < 0 | exe 'normal m`' | %s/\s\+$//e | exe 'normal ``' | endif
+	" Also, exclude SQL because I often have check constraints which this would
+	" mangle.
+	autocmd BufWritePre * if index(['m4', 'diff', 'make', 'mail', 'sql'], &ft) < 0 | exe 'normal m`' | %s/\s\+$//e | exe 'normal ``' | endif
 
 	" Make sure that I don't accidentally cause myself problems with Makefiles
 	" TODO: Make absolutely sure this overrides my call to DetectIndent
