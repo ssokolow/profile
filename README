@@ -1,0 +1,16 @@
+This is all the parts of my roaming profile that are safe to share.
+
+To set it up, run the following commands:
+
+    git clone https://github.com/ssokolow/profile.git ~/.profile_repo
+    ~/.profile_repo/install.py --dry-run
+    [ Make any adjustments you want ]
+    ~/.profile_repo/install.py
+
+Because $HOME/.git and the .git folder inside a repository are different
+things, you can't just clone it into your home directory.
+
+install.py handles symlinking things in a quick and orderly fashion.
+
+In the future, I may also include some kind of function to pull in all the
+utilities and apps I need on, at least, Debian-based Linux distros.
