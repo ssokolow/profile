@@ -100,5 +100,6 @@ which () {
 export -f which
 
 # Run fortune for maximum wittiness
-fortune
-
+if command -v fortune >/dev/null; then
+    fortune
+fi
