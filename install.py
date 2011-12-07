@@ -12,7 +12,7 @@ log = logging.getLogger(__name__)
 
 # Files not to link in
 EXCLUDES = [
-        __file__, # This file
+        os.path.abspath(__file__), # This file
         '.git',   # The reason we can't just make ~ itself the repo.
         'README', # A README file, if present
 ]
@@ -74,12 +74,12 @@ def symlink_path(source, target, dry_run=False, overwrite=False):
     return True
 
 
-def symlink_profile(root, dry_run=False, overwrite=False, home_root=None):
+def symlink_profile(root, home_root, dry_run=False, overwrite=False):
     """
     @param home_root: Target equivalent to C{root} used for recusive calling.
     """
     root = os.path.normpath(root)
-    home = os.path.normpath(home_root or os.environ['HOME'])
+    home = os.path.normpath(home_root)
 
     for name in sorted(os.listdir(root)):
         src = os.path.join(root, name)
@@ -96,22 +96,23 @@ def symlink_profile(root, dry_run=False, overwrite=False, home_root=None):
             log.debug("Skipping excluded file: %s", src)
         elif os.path.isdir(src) and name in RECURSE:
             log.debug("Recursing: %s", src)
-            symlink_profile(src, dry_run, overwrite, tgt)
+            symlink_profile(src, tgt, dry_run, overwrite)
         else:
             symlink_path(src, tgt, dry_run, overwrite)
 
 if __name__ == '__main__':
     from optparse import OptionParser
     parser = OptionParser(version="%%prog v%s" % __version__,
-            usage="%prog [options] <argument> ...",
+            usage="%prog [options]",
             description=__doc__.replace('\r\n','\n').split('\n--snip--\n')[0])
     parser.add_option('-n', '--dry-run', action="store_true", dest="dry_run",
-        default=False, help="Don't make changes. (Best used with -vv)")
+        default=False, help="Don't make changes. (Best used with -v)")
     parser.add_option('-v', '--verbose', action="count", dest="verbose",
-        default=3, help="Increase the verbosity. Can be used twice for extra effect.")
+        default=3, help="Increase the verbosity.")
     parser.add_option('-q', '--quiet', action="count", dest="quiet",
-        default=0, help="Decrease the verbosity. Can be used twice for extra effect.")
-    #Reminder: %default can be used in help strings.
+        default=0, help="Decrease the verbosity. Can be repeated for extra effect.")
+    parser.add_option('--prefix', action="store", dest="home",
+        default=os.environ['HOME'], help="Specify a location other than %default to install to.")
 
     opts, args  = parser.parse_args()
 
@@ -127,4 +128,6 @@ if __name__ == '__main__':
     if not os.path.isdir(os.path.join(root, '.git')):
         log.warning("You aren't running me on a valid git repository!")
 
-    symlink_profile(root, dry_run=opts.dry_run)
+    symlink_profile(root, opts.home, dry_run=opts.dry_run)
+
+# vim: sw=4 sts=4 expandtab
