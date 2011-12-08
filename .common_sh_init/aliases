@@ -84,6 +84,11 @@ else
 	alias osd="osd_cat --font '-*-*-*-r-*-*-*-390-*-*-*-*-*-*' -p bottom -A left -o -75 -i 50 -c green"
 fi
 
+# Work around smartypants Debian packagers
+if `which ack-grep &> /dev/null`; then
+    alias ack=ack-grep
+fi
+
 # Set up rTorrent to interact more nicely with screen's window list
 if [[ "$TERM" == screen* ]]; then
 	title() { screen -X title "$@" && echo -ne "\033_$@\033\\"; }
