@@ -1,6 +1,11 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-"""Simple unattended script for linking my roaming profile into a new $HOME."""
+"""Simple unattended script for linking my roaming profile into a new $HOME.
+
+@todo:
+- Consider including an option to install my base set of packages on apt-based
+  distros and chsh to zsh.
+"""
 
 __appname__ = "ssokolow/profile symlink setup script"
 __author__  = "Stephan Sokolow (deitarion/SSokolow)"
@@ -54,7 +59,7 @@ def symlink_path(source, target, dry_run=False, overwrite=False):
 
     if os.path.exists(target):
         if overwrite:
-            log.info("Replace with Symlink: %s -> %s", src, target)
+            log.info("Replace with Symlink: %s -> %s", source, target)
             os.unlink(target)
         else:
             log.warning("Skipping already existing target: %s", target)
@@ -111,6 +116,8 @@ if __name__ == '__main__':
         default=3, help="Increase the verbosity.")
     parser.add_option('-q', '--quiet', action="count", dest="quiet",
         default=0, help="Decrease the verbosity. Can be repeated for extra effect.")
+    parser.add_option('--overwrite', action="store_true", dest="overwrite",
+        default=False, help="Overwrite existing files if necessary.")
     parser.add_option('--prefix', action="store", dest="home",
         default=os.environ['HOME'], help="Specify a location other than %default to install to.")
 
@@ -128,6 +135,8 @@ if __name__ == '__main__':
     if not os.path.isdir(os.path.join(root, '.git')):
         log.warning("You aren't running me on a valid git repository!")
 
-    symlink_profile(root, opts.home, dry_run=opts.dry_run)
+    symlink_profile(root, opts.home,
+        dry_run=opts.dry_run,
+        overwrite=opts.overwrite)
 
 # vim: sw=4 sts=4 expandtab
