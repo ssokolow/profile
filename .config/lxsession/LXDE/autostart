@@ -9,6 +9,5 @@
 @basket -h
 @thunderbird
 @pidgin
-@sh -c "exec ~/.dropbox-dist/dropbox"
 @sh -c "sleep 60; exec audacious"
 @xpad

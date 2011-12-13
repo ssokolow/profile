@@ -1,2 +1,0 @@
-@sh -c "exec ~/src/timeclock/timeclock.py --ui compact"
-@yeahconsole -e screen -RR

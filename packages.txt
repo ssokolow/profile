@@ -1,13 +1,15 @@
 # Base set of desired packages (Debian/Ubuntu package names)
+# Can be installed using this quick hack:
+#  egrep -v '^#' packages.txt | xargs sudo apt-get install -y
 
 # Still need to be installed in Porteus:
 ack-grep
-chromium
-dropbox
+chromium-browser
+colordiff
+nautilus-dropbox
 fortune-mod
 gaffitter
 ncdu
-nvidia-drivers
 pychecker
 pyflakes
 pylint
@@ -20,11 +22,10 @@ sqlite3
 tellico
 thunderbird
 tig
-virtualenvwrapper
 xclip
 xpad
 
-# Already in my Porteus:
+# Already in my Porteus or not necessary:
 audacious
 comix
 curl
@@ -38,6 +39,7 @@ k3b
 mc
 p7zip-full
 p7zip-rar
+parcellite
 pv
 pydf
 python-imaging
@@ -53,6 +55,8 @@ evince
 gimp
 inkscape
 libreoffice
+nitrogen
+numlockx
 okular
 
 # Porteus Status Unknown:
