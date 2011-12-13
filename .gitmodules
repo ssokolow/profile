@@ -1,0 +1,42 @@
+[submodule "home/.vim/bundle/detectindent"]
+	path = home/.vim/bundle/detectindent
+	url = http://github.com/ciaranm/detectindent.git
+[submodule "home/.vim/bundle/minibufexpl.vim"]
+	path = home/.vim/bundle/minibufexpl.vim
+	url = git@github.com:ssokolow/minibufexpl.vim.git
+[submodule "home/.vim/bundle/nerdcommenter"]
+	path = home/.vim/bundle/nerdcommenter
+	url = https://github.com/scrooloose/nerdcommenter.git
+[submodule "home/.vim/bundle/nerdtree"]
+	path = home/.vim/bundle/nerdtree
+	url = http://github.com/scrooloose/nerdtree.git
+[submodule "home/.vim/bundle/snipmate.vim"]
+	path = home/.vim/bundle/snipmate.vim
+	url = git://github.com/msanders/snipmate.vim.git
+[submodule "home/.vim/bundle/supertab"]
+	path = home/.vim/bundle/supertab
+	url = http://github.com/ervandew/supertab.git
+[submodule "home/.vim/bundle/syntastic"]
+	path = home/.vim/bundle/syntastic
+	url = https://github.com/scrooloose/syntastic.git
+[submodule "home/.vim/bundle/vim-ragtag"]
+	path = home/.vim/bundle/vim-ragtag
+	url = http://github.com/tpope/vim-ragtag.git
+[submodule "home/.vim/bundle/vim-speeddating"]
+	path = home/.vim/bundle/vim-speeddating
+	url = https://github.com/tpope/vim-speeddating.git
+[submodule "home/.vim/bundle/vim-surround"]
+	path = home/.vim/bundle/vim-surround
+	url = http://github.com/tpope/vim-surround.git
+[submodule "home/.vim/bundle/vim-unimpaired"]
+	path = home/.vim/bundle/vim-unimpaired
+	url = http://github.com/tpope/vim-unimpaired.git
+[submodule "home/.vim/bundle/vim-coffee-script"]
+	path = home/.vim/bundle/vim-coffee-script
+	url = https://github.com/kchmck/vim-coffee-script.git
+[submodule "home/.vim/bundle/snipmate_for_django"]
+	path = home/.vim/bundle/snipmate_for_django
+	url = https://github.com/robhudson/snipmate_for_django.git
+[submodule "home/.vim/bundle/vim-virtualenv"]
+	path = home/.vim/bundle/vim-virtualenv
+	url = https://github.com/jmcantrell/vim-virtualenv.git
