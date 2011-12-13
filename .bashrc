@@ -93,12 +93,6 @@ shopt -s histappend      # Append command history, don't overwrite
 source ~/.common_sh_init/env
 source ~/.common_sh_init/aliases
 
-# Make the bash `which` command more like its zsh counterpart.
-which () {
-  (alias; declare -f) | /usr/bin/which --tty-only --read-alias --read-functions --show-tilde --show-dot $@
-}
-export -f which
-
 # Run fortune for maximum wittiness
 if command -v fortune >/dev/null; then
     fortune
