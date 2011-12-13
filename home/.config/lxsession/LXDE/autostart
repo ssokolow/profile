@@ -1,4 +1,5 @@
 @nitrogen --restore
+@setxkbmap -option compose:rctrl
 @sh -c "exec ~/bin/urxvt_kuake"
 @conky
 @numlockx
