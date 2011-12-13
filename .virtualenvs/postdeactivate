@@ -1,0 +1,16 @@
+#!/usr/bin/zsh
+# This hook is run after every virtualenv is deactivated.
+# Source: http://www.doughellmann.com/docs/virtualenvwrapper/tips.html
+
+# Undo "show the currently active virtualenv in the prompt"
+RPROMPT="$_OLD_RPROMPT"
+
+# Undo "automatically CD to the project directory if set"
+# Source: http://hmarr.com/2010/jan/19/making-virtualenv-play-nice-with-git/
+if [ $PRE_VENV_ACTIVATE_DIR ]; then
+    cd $PRE_VENV_ACTIVATE_DIR
+    unset PRE_VENV_ACTIVATE_DIR
+fi
+
+# Ensure zsh updates its command path cache
+rehash

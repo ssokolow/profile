@@ -1,0 +1,15 @@
+#!/usr/bin/zsh
+# This hook is run after every virtualenv is activated.
+# Source: http://www.doughellmann.com/docs/virtualenvwrapper/tips.html
+
+# Show the currently active virtualenv in the prompt
+PS1="$_OLD_VIRTUAL_PS1"
+_OLD_RPROMPT="$RPROMPT"
+RPROMPT="[%F{green}${VIRTUAL_ENV##*/}%f] $RPROMPT"
+
+# Automatically CD to the project directory if set
+export PRE_VENV_ACTIVATE_DIR=`pwd`
+cdproject
+
+# Ensure zsh updates its command path cache
+rehash

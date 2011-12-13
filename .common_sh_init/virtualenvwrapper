@@ -1,0 +1,23 @@
+# Set up virtualenvwrapper if available
+
+export WORKON_HOME=$HOME/.virtualenvs
+export PROJECT_HOME=$HOME/src
+
+# Make PIP automatically use the active virtualenv without -E
+export PIP_RESPECT_VIRTUALENV=true
+
+# TODO: Use this to make things easier for .profile_repo/install.py to handle.
+#export VIRTUALENVWRAPPER_HOOK_DIR=$HOME/.virtualenvwrapper
+
+# I almost exclusively user virtualenv for web apps where site-packages is
+# more trouble than its worth.
+export VIRTUALENVWRAPPER_VIRTUALENV_ARGS='--no-site-packages'
+
+if VENV_WRAP=`which virtualenvwrapper.sh`; then
+    source "$VENV_WRAP"
+elif [ -f /etc/bash_completion.d/virtualenvwrapper ]; then
+    # Work around Debian/Ubuntu help that's not helpful unless you use bash only
+    source /etc/bash_completion.d/virtualenvwrapper
+fi
+
+# vim: ft=zsh

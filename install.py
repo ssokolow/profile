@@ -3,6 +3,7 @@
 """Simple unattended script for linking my roaming profile into a new $HOME.
 
 @todo:
+- Should recurse if not --overwrite and os.path.isdir()
 - Consider including an option to install my base set of packages on apt-based
   distros and chsh to zsh.
 """
@@ -20,12 +21,14 @@ EXCLUDES = [
         os.path.abspath(__file__), # This file
         '.git',   # The reason we can't just make ~ itself the repo.
         'README', # A README file, if present
-        'packages.txt', # List of packages needed on fresh systems
+        'packages.txt', # List of apt packages needed on fresh systems
+        'requirements.txt', # List of pip packages needed on fresh systems
 ]
 
 #TODO: Make this support paths to be exploded for clean and specific syntax.
 RECURSE = [
     'bin',
+    '.virtualenvs',
     '.config',
     'lxsession',
     'LXDE',

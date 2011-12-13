@@ -26,6 +26,9 @@ fi
 # (Patched to work with both bash and zsh)
 [ -f ~/bin/cdargs-zsh.sh ] && source ~/bin/cdargs-zsh.sh
 
+# Virtualenvwrapper integration
+source ~/.common_sh_init/virtualenvwrapper
+
 # Load my SSH key into my global ssh-agent if it's an interactive session
 if [[ $- == *i* ]]; then
 	GA_PID=${GPG_AGENT_INFO#*:}
@@ -37,3 +40,4 @@ if [[ $- == *i* ]]; then
 	unset GA_PID
 fi
 
+# vim: ft=zsh
