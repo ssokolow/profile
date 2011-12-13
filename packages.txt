@@ -16,6 +16,7 @@ pychecker
 pyflakes
 pylint
 python-nose
+python-notify
 python-pip
 python-tidylib
 python-tz
@@ -48,6 +49,7 @@ p7zip-rar
 parcellite
 pv
 pydf
+python-gtk2
 python-imaging
 python-lxml
 unrar
@@ -70,5 +72,10 @@ okular
 links
 lynx
 normalize-audio
+python-dbus
+python-setuptools
+python-xlib
+python-xpyb
 screen
 sox
+sshfs
