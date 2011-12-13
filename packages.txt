@@ -9,12 +9,14 @@ colordiff
 nautilus-dropbox
 fortune-mod
 gaffitter
+gmrun
 ncdu
 pychecker
 pyflakes
 pylint
 python-nose
 python-pip
+python-tidylib
 python-tz
 python-virtualenv
 rxvt-unicode
@@ -24,6 +26,9 @@ thunderbird
 tig
 xclip
 xpad
+
+# Note: python-tidylib must be here so it can pull in tidylib for virtualenvs
+# which install their own copies of PyTidyLib.
 
 # Already in my Porteus or not necessary:
 audacious
@@ -44,7 +49,6 @@ pv
 pydf
 python-imaging
 python-lxml
-python-tidylib
 unrar
 vim-doc
 vim-gtk
