@@ -301,9 +301,20 @@
         <command>gmrun</command>
       </action>
     </keybind>
+    <!-- Launch Task Manager with Ctrl+Alt+Del -->
+    <keybind key="A-C-Delete">
+      <action name="Execute">
+        <command>lxtask</command>
+      </action>
+    </keybind>
     <keybind key="C-A-Escape">
       <action name="Execute">
         <command>xkill</command>
+      </action>
+    </keybind>
+    <keybind key="W-F7">
+      <action name="Execute">
+        <execute>sh -c 'sleep 2;xset dpms force off'</execute>
       </action>
     </keybind>
     <keybind key="XF86ScrollDown">
