@@ -16,15 +16,6 @@ __license__ = "GNU GPL 2.0 or later"
 import logging, os, shutil
 log = logging.getLogger(__name__)
 
-# Files not to link in
-EXCLUDES = [
-        os.path.abspath(__file__), # This file
-        '.git',   # The reason we can't just make ~ itself the repo.
-        'README', # A README file, if present
-        'packages.txt', # List of apt packages needed on fresh systems
-        'requirements.txt', # List of pip packages needed on fresh systems
-]
-
 #TODO: Make this support paths to be exploded for clean and specific syntax.
 RECURSE = [
     'bin',
@@ -61,7 +52,7 @@ def relpath(path, start=os.curdir):
 def symlink_path(source, target, dry_run=False, overwrite=False):
     tgt_dir = os.path.dirname(target)
 
-    if os.path.exists(target):
+    if os.path.exists(target) or os.path.islink(target):
         if overwrite:
             log.info("Replace with Symlink: %s -> %s", source, target)
             if os.path.isdir(target):
@@ -104,8 +95,6 @@ def symlink_profile(root, home_root, dry_run=False, overwrite=False):
 
         if tgt_link == src:
             log.debug("Skipping already-linked path: %s", tgt)
-        elif name in EXCLUDES or src in EXCLUDES:
-            log.debug("Skipping excluded file: %s", src)
         elif os.path.isdir(src) and name in RECURSE:
             log.debug("Recursing: %s", src)
             symlink_profile(src, tgt, dry_run, overwrite)
@@ -142,7 +131,7 @@ if __name__ == '__main__':
     if not os.path.isdir(os.path.join(root, '.git')):
         log.warning("You aren't running me on a valid git repository!")
 
-    symlink_profile(root, opts.home,
+    symlink_profile(os.path.join(root, 'home'), opts.home,
         dry_run=opts.dry_run,
         overwrite=opts.overwrite)
 
