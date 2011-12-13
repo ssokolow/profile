@@ -38,3 +38,4 @@ ao=alsa
 alang=English,eng,en
 slang=English,eng,en
 msglevel=all=5
+vo=xv
