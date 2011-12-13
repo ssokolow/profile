@@ -1,0 +1,63 @@
+# Base set of desired packages (Debian/Ubuntu package names)
+
+# Still need to be installed in Porteus:
+ack-grep
+chromium
+dropbox
+fortune-mod
+gaffitter
+ncdu
+nvidia-drivers
+pychecker
+pyflakes
+pylint
+python-nose
+python-pip
+python-tz
+python-virtualenv
+rxvt-unicode
+sqlite3
+tellico
+thunderbird
+tig
+virtualenvwrapper
+xclip
+xpad
+
+# Already in my Porteus:
+audacious
+comix
+curl
+filelight
+firefox
+git
+git-gui
+gqview
+htop
+k3b
+mc
+p7zip-full
+p7zip-rar
+pv
+pydf
+python-imaging
+python-lxml
+unrar
+vim-doc
+vim-gtk
+xchat
+zsh
+
+# May exclude from Porteus:
+evince
+gimp
+inkscape
+libreoffice
+okular
+
+# Porteus Status Unknown:
+links
+lynx
+normalize-audio
+screen
+sox

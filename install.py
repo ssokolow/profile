@@ -20,6 +20,7 @@ EXCLUDES = [
         os.path.abspath(__file__), # This file
         '.git',   # The reason we can't just make ~ itself the repo.
         'README', # A README file, if present
+        'packages.txt', # List of packages needed on fresh systems
 ]
 
 #TODO: Make this support paths to be exploded for clean and specific syntax.
