@@ -35,7 +35,7 @@ RECURSE = [
 ]
 
 #TODO: Hook this in
-def relpath(path, start=os.getcwd()):
+def relpath(path, start=os.curdir):
     """Return a relative version of a path
     Borrowed from Python 2.7's posixpath.py for compatibility with Slax.
     """
@@ -51,7 +51,7 @@ def relpath(path, start=os.getcwd()):
 
     rel_list = [os.pardir] * (len(start_list)-i) + path_list[i:]
     if not rel_list:
-        return curdir
+        return os.curdir
     return os.path.join(*rel_list)
 
 def symlink_path(source, target, dry_run=False, overwrite=False):
