@@ -13,7 +13,7 @@ __author__  = "Stephan Sokolow (deitarion/SSokolow)"
 __version__ = "0.1"
 __license__ = "GNU GPL 2.0 or later"
 
-import logging, os
+import logging, os, shutil
 log = logging.getLogger(__name__)
 
 # Files not to link in
@@ -64,7 +64,10 @@ def symlink_path(source, target, dry_run=False, overwrite=False):
     if os.path.exists(target):
         if overwrite:
             log.info("Replace with Symlink: %s -> %s", source, target)
-            os.unlink(target)
+            if os.path.isdir(target):
+                shutil.rmtree(target)
+            else:
+                os.unlink(target)
         else:
             log.warning("Skipping already existing target: %s", target)
             return False
