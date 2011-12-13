@@ -44,6 +44,7 @@ pv
 pydf
 python-imaging
 python-lxml
+python-tidylib
 unrar
 vim-doc
 vim-gtk
