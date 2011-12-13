@@ -10,6 +10,7 @@ nautilus-dropbox
 fortune-mod
 gaffitter
 gmrun
+mercurial
 ncdu
 pychecker
 pyflakes
@@ -56,6 +57,7 @@ xchat
 zsh
 
 # May exclude from Porteus:
+calibre
 evince
 gimp
 inkscape

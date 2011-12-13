@@ -1,2 +1,21 @@
 - Figure out what setxkbmap arguments I used to be using to set up both AltGr
   and Compose on an otherwise US 104 keyboard.
+- Re-port my custom zsh prompt back to bash and include in .zsh_profile.
+- Add a commit hook to verify that I haven't accidentally committed my GitHub
+  token or SMTP credentials.
+- Figure out a good way to sync settings containing passwords like:
+  - My complete .gitconfig (SMTP credentials and GitHub token)
+  - Audacious (scrobbler password and not ideal for Git but possibly)
+  - Pidgin (many account passwords)
+  - Thunderbird (just plain not suited to Git.)
+  - Firefox (just plain not suited to Git. I'll probably have to wait for Addon Sync)
+- I need a more automatic way to build virtualenvs for my projects without
+  having to sync the virtualenvs themselves.
+  - Find or make an "addvirtualenv <project> [virtualenv]"  command for
+    virtualenvwrapper which creates and attaches a virtualenv for an existing
+    project and then runs `pip install -r requirements.txt` and/or
+    `./setup.py develop` (in that order) if they exist. (All other options are
+    passed to mkvirtualenv so you can use things like -i and -r and bare
+    virtualenv arguments.
+  - Decide on the most appropriate approach to automating the calling of said
+    command on many projects.
