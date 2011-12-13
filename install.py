@@ -55,10 +55,11 @@ def symlink_path(source, target, dry_run=False, overwrite=False):
     if os.path.exists(target) or os.path.islink(target):
         if overwrite:
             log.info("Replace with Symlink: %s -> %s", source, target)
-            if os.path.isdir(target):
-                shutil.rmtree(target)
-            else:
-                os.unlink(target)
+            if not dry_run:
+                if os.path.isdir(target) and not os.path.islink(target):
+                    shutil.rmtree(target)
+                else:
+                    os.unlink(target)
         else:
             log.warning("Skipping already existing target: %s", target)
             return False
