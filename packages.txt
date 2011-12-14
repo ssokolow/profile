@@ -12,7 +12,7 @@ gaffitter
 gmrun
 mercurial
 ncdu
-npm
+nodejs
 pychecker
 pyflakes
 pylint
