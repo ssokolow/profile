@@ -300,6 +300,10 @@ set nocompatible
 set modeline
 set hidden
 
+" It seems Ubuntu's defaults are less agreeable than Gentoo's.
+set nobackup
+set nowritebackup
+
 " Stuff that gVimPortable revealed to be necessary
 set enc=utf-8
 syntax on
