@@ -18,9 +18,11 @@ log = logging.getLogger(__name__)
 
 #TODO: Make this support paths to be exploded for clean and specific syntax.
 RECURSE = [
+    'applications',
     'bin',
     '.virtualenvs',
     '.config',
+    'lxpanel',
     'lxsession',
     'LXDE',
     'openbox',
