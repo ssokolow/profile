@@ -44,7 +44,9 @@ git-gui
 gqview
 htop
 k3b
+konqueror
 mc
+oxygen-icon-theme
 p7zip-full
 p7zip-rar
 parcellite
@@ -65,6 +67,7 @@ evince
 gimp
 inkscape
 libreoffice
+lyx
 nitrogen
 numlockx
 okular
@@ -80,3 +83,7 @@ python-xpyb
 screen
 sox
 sshfs
+
+# Already in 32-bit Porteus but need
+# http://www.trinitydesktop.org/installation.php#ubuntu
+basket-trinity
