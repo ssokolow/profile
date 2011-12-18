@@ -1,6 +1,10 @@
 # Base set of desired packages (Debian/Ubuntu package names)
 # Can be installed using this quick hack:
 #  egrep -v '^#' packages.txt | xargs sudo apt-get install -y
+#
+# The following PPAs and/or external sources must be enabled:
+# - http://www.trinitydesktop.org/installation.php#ubuntu
+# - sudo add-apt-repository ppa:nilarimogard/webupd8 (for up-to-date Audacious)
 
 # Still need to be installed in Porteus:
 ack-grep
@@ -35,6 +39,7 @@ xpad
 
 # Already in my Porteus or not necessary:
 audacious
+basket-trinity
 comix
 curl
 filelight
@@ -83,7 +88,3 @@ python-xpyb
 screen
 sox
 sshfs
-
-# Already in 32-bit Porteus but need
-# http://www.trinitydesktop.org/installation.php#ubuntu
-basket-trinity
