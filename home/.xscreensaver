@@ -1,8 +1,8 @@
 # XScreenSaver Preferences File
-# Written by xscreensaver-demo 5.07 for ssokolow on Wed Feb 10 22:03:00 2010.
+# Written by xscreensaver-demo 5.14 for ssokolow on Wed Dec 14 06:08:56 2011.
 # http://www.jwz.org/xscreensaver/
 
-timeout:	0:10:00
+timeout:	0:30:00
 cycle:		0:10:00
 lock:		False
 lockTimeout:	0:00:00
@@ -25,6 +25,7 @@ captureStderr:	True
 ignoreUninstalledPrograms:False
 font:		*-medium-r-*-140-*-m-*
 dpmsEnabled:	True
+dpmsQuickOff:	False
 dpmsStandby:	0:20:00
 dpmsSuspend:	0:25:00
 dpmsOff:	0:30:00
@@ -33,7 +34,7 @@ grabVideoFrames:    False
 chooseRandomImages: True
 imageDirectory:	/usr/share/backgrounds
 
-mode:		random
+mode:		blank
 selected:	-1
 
 textMode:	program
@@ -264,15 +265,18 @@ programs:								      \
   GL: 				hypnowheel -root			    \n\
 -				lcdscrub -root				    \n\
 - GL: 				skytentacles -root			    \n\
+- GL: 				surfaces -root				    \n\
+- GL: 				photopile -root				    \n\
+- GL: 				rubikblocks -root			    \n\
+				unicode -root				    \n\
 
 
 pointerPollTime:    0:00:05
 pointerHysteresis:  10
 windowCreationTimeout:0:00:30
 initialDelay:	0:00:00
-sgiSaverExtension:  True
-xidleExtension:	True
 GetViewPortIsFullOfLies:False
 procInterrupts:	True
+xinputExtensionDev: False
 overlayStderr:	True
 
