@@ -1,0 +1,6 @@
+# --== A stripped down bash_completion with just what I want. ==--
+# (The regular one does things I don't like)
+
+shopt -s extglob progcomp
+
+complete -d pushd cd
