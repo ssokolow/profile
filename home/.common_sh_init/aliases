@@ -89,6 +89,10 @@ if `which ack-grep &> /dev/null`; then
     alias ack=ack-grep
 fi
 
+if ! `which download_ffn_fic &> /dev/null` && [ -e ~/src/fanfic2ebook ]; then
+    alias download_ffn_fic=~/src/fanfic2ebook/src/fanfic2html
+fi
+
 # Set up rTorrent to interact more nicely with screen's window list
 if [[ "$TERM" == screen* ]]; then
 	title() { screen -X title "$@" && echo -ne "\033_$@\033\\"; }
