@@ -11,21 +11,25 @@
 	st = status
 	co = checkout
 	ci = commit
-	cia = commit -a
+	ca = commit -a
 	di = diff
 	re = checkout HEAD --
 	staged = diff --cached
 	unstaged = diff
 	both = diff HEAD
 	oneline = log --pretty=oneline
+	br = branch -a
+	pick = cherry-pick
 [branch]
-	autosetupmerge = true
+	autosetupmerge = always
+	autosetuprebase = always
 [merge]
 	tool = kdiff3
 [core]
 	excludesfile = /home/ssokolow/.gitignore
 	legacyheaders = false
 [sendemail]
+	smtpserver = smtp.gmail.com
 	aliasesfile = /home/ssokolow/.gitaliases
 	aliasfiletype = mailrc
 	smtpssl = true
@@ -37,3 +41,9 @@
 	user = ssokolow
 [push]
 	default = matching
+
+# Seamless r/w checkouts for me.
+# Source: http://rentzsch.tumblr.com/post/564806957/public-but-hackable-git-submodules
+# TODO: Also set this up for HTTPS checkouts?
+[url "git@github.com:ssokolow/"]
+  insteadOf = "git://github.com/ssokolow/"
