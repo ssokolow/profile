@@ -1,46 +1,46 @@
-[user]
-	name = Stephan Sokolow
-	email = http://www.ssokolow.com/ContactMe
-[color]
-	diff = auto
-	status = auto
-	branch = auto
-	interactive = auto
-	ui = auto
 [alias]
-	st = status
-	co = checkout
-	ci = commit
+	both = diff HEAD
+	br = branch -a
 	ca = commit -a
+	ci = commit
+	co = checkout
 	di = diff
+	oneline = log --pretty=oneline
+	pick = cherry-pick
 	re = checkout HEAD --
+	st = status
 	staged = diff --cached
 	unstaged = diff
-	both = diff HEAD
-	oneline = log --pretty=oneline
-	br = branch -a
-	pick = cherry-pick
 [branch]
 	autosetupmerge = always
 	autosetuprebase = always
-[merge]
-	tool = kdiff3
+[color]
+	branch = auto
+	diff = auto
+	interactive = auto
+	status = auto
+	ui = auto
 [core]
 	excludesfile = /home/ssokolow/.gitignore
 	legacyheaders = false
-[sendemail]
-	smtpserver = smtp.gmail.com
-	aliasesfile = /home/ssokolow/.gitaliases
-	aliasfiletype = mailrc
-	smtpssl = true
-[repack]
-	usedeltabaseoffset = true
 [format]
 	numbered = auto
 [github]
 	user = ssokolow
+[merge]
+	tool = kdiff3
 [push]
 	default = matching
+[repack]
+	usedeltabaseoffset = true
+[sendemail]
+	aliasesfile = /home/ssokolow/.gitaliases
+	aliasfiletype = mailrc
+	smtpserver = smtp.gmail.com
+	smtpssl = true
+[user]
+	name = Stephan Sokolow
+	email = http://www.ssokolow.com/ContactMe
 
 # Seamless r/w checkouts for me.
 # Source: http://rentzsch.tumblr.com/post/564806957/public-but-hackable-git-submodules
