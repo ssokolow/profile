@@ -78,6 +78,7 @@ numlockx
 okular
 
 # Porteus Status Unknown:
+kdiff3
 links
 lynx
 normalize-audio

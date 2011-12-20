@@ -1,0 +1,6 @@
+# Desired npm packages
+# Can be installed using this quick hack:
+#  egrep -v '^#' node_packages.txt | xargs sudo npm install -g
+
+docco
+uglify-js
