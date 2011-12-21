@@ -78,6 +78,7 @@ numlockx
 okular
 
 # Porteus Status Unknown:
+chmsee
 kdiff3
 links
 lynx
