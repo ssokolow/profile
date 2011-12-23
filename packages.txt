@@ -7,9 +7,10 @@
 # - sudo add-apt-repository ppa:nilarimogard/webupd8 (for up-to-date Audacious)
 # - sudo add-apt-repository ppa:ubuntu-mozilla-security/ppa (for up-to-date Firefox)
 #
-# Given how it pegs the CPU at up to 46% with Minecraft, probably also good to:
-#   sudo apt-get purge pulseaudio gstreamer0.10-pulseaudio
-#   sudo apt-get autoremove
+# Given how it pegs the CPU at up to 46% with Minecraft, probably also good to remove
+# PulseAudio after all this pulls it in:
+#   sudo apt-get purge pulseaudio gstreamer0.10-pulseaudio -y
+#   sudo apt-get autoremove -y
 
 # Still need to be installed in Porteus:
 ack-grep
@@ -93,5 +94,6 @@ python-setuptools
 python-xlib
 python-xpyb
 screen
+smartmontools
 sox
 sshfs
