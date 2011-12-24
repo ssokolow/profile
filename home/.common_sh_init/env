@@ -37,7 +37,7 @@ export MAILCHECK=60
 # Python-related settings
 export PYTHONDOCS="/usr/share/htmldoc_links/dev-python/python-docs-2.6/"
 export PYTHONPATH=~/src:~/src/read-only/scrapy-trunk":$PYTHONPATH"
-export PYTHONWARNINGS="default,ignore:Not importing directory:ImportWarning:pkgutil:186,ignore::DeprecationWarning:pyflakes.scripts.pyflakes,ignore::DeprecationWarning:nose.util:14,ignore::PendingDeprecationWarning:paste.request:131,ignore::PendingDeprecationWarning:django.views.generic.date_based:13,ignore::DeprecationWarning:rpdb2,ignore::DeprecationWarning:werkzeug.templates,ignore::ImportWarning:mercurial.demandimport,ignore::ImportWarning:aptsources.sourceslist,ignore::ImportWarning:gettext,ignore::ImportWarning:httplib"
+export PYTHONWARNINGS='default,ignore:Not importing directory:ImportWarning:pkgutil:186,ignore::DeprecationWarning:pyflakes.scripts.pyflakes,ignore::DeprecationWarning:nose.util:14,ignore::PendingDeprecationWarning:paste.request:131,ignore::PendingDeprecationWarning:django.views.generic.date_based:13,ignore::DeprecationWarning:rpdb2,ignore::DeprecationWarning:werkzeug.templates,ignore::ImportWarning:mercurial.demandimport,ignore::ImportWarning:aptsources.sourceslist,ignore::ImportWarning:gettext,ignore::ImportWarning:httplib,ignore::ImportWarning:optparse,ignore::ImportWarning:xmlrpclib'
 export VIRTUALENV_USE_DISTRIBUTE=1
 
 # Disable start menu icon creation in Wine
@@ -66,3 +66,5 @@ export TCLLIBPATH=~/.local/share/tkthemes
 
 # Make sure the gtk-qt gtkrc is loaded.
 export GTK2_RC_FILES="$HOME/.gtkrc-2.0:$HOME/.kde/share/config/gtkrc-2.0:/etc/gtk-2.0/gtkrc"
+
+# vim: ft=sh noexpandtab
