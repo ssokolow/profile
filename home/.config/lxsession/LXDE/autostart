@@ -1,5 +1,5 @@
 @nitrogen --restore
-@setxkbmap -option compose:rctrl
+@setxkbmap -variant altgr-intl -option -option lv3:ralt_switch -option compose:rctrl -option terminate:ctrl_alt_bkspc -option eurosign:e -option nbsp:level3n
 @sh -c "exec ~/bin/urxvt_kuake"
 @conky
 @numlockx
