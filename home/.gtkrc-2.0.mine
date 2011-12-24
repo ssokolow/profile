@@ -1,2 +1,4 @@
 gtk-icon-theme-name="Oxygen"
 gnome-theme-icon-name="Oxygen"
+
+gtk-recent-files-max-age=0
