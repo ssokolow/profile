@@ -69,21 +69,27 @@
 # End of xbindkeys configuration #
 ##################################
 
-# Bindings for normal keyboards
+# --== Bindings for normal keyboards ==--
 
 "audtool playlist-jump `audtool playlist-length` && audtool playback-stopped && audtool playback-play"
   Mod4 + m
 
-# Special Keyboard Key Bindings
+# --== Bindings for ATi Remove Wonder II ==--
 
 "sleep 1; br -F & xset dpms force off"
   XF86PowerOff
 
-"~/bin/saytime"
-  XF86Display
-
 "audtool playlist-jump `audtool playlist-length` && audtool playback-stopped && audtool playback-play"
   XF86AudioMute
+
+# Shim away mplayer's inability to bind SunFront to fullscreen toggle.
+"xdotool getactivewindow key f"
+  SunFront
+
+# --== Special Keyboard Key Bindings (to rework) ==--
+
+"~/bin/saytime"
+  XF86Display
 
 "audtool playlist-shuffle-toggle"
   XF86CD

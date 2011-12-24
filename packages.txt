@@ -77,6 +77,7 @@ xchat
 zsh
 
 # May exclude from Porteus:
+bottlerocket
 calibre
 evince
 gimp
@@ -86,6 +87,7 @@ lyx
 nitrogen
 numlockx
 okular
+xdotool
 
 # Porteus Status Unknown:
 chmsee

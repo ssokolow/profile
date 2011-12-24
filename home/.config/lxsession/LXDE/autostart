@@ -1,10 +1,10 @@
 @nitrogen --restore
 @setxkbmap -variant altgr-intl -option -option lv3:ralt_switch -option compose:rctrl -option terminate:ctrl_alt_bkspc -option eurosign:e -option nbsp:level3n
+@xbindkeys
 @sh -c "exec ~/bin/urxvt_kuake"
 @conky
 @numlockx
 @parcellite
-@sh -c "exec ~/bin/setkeys"
 @sh -c "exec ~/bin/timeclock --ui compact"
 @sh -c "exec ~/bin/quicktile -b"
 @basket -h
