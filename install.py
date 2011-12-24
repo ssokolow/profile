@@ -24,6 +24,7 @@ RECURSE = [
     'bin',
     '.virtualenvs',
     '.config',
+    'geeqie',
     'lxpanel',
     'lxsession',
     'LXDE',

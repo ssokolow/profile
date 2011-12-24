@@ -18,3 +18,4 @@ Terminal=false
 #StartupWMClass=gqview
 Categories=Graphics;Viewer;
 MimeType=image/x-xpixmap;image/x-xbitmap;image/x-tga;image/x-sun-raster;image/x-portable-pixmap;image/x-portable-graymap;image/x-portable-bitmap;image/x-portable-anymap;image/x-pcx;image/x-ico;image/x-cmu-raster;image/vnd.wap.wbmp;image/tiff;image/svg+xml;image/png;image/jpeg;image/gif;image/bmp;image/bmp;image/bmp;application/x-navi-animation;
+NotShowIn=X-Geeqie;
