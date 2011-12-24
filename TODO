@@ -2,7 +2,7 @@
   non-ancient npm automatically.
 - install.py should also handle setting up git submodules.
 - Add a commit hook to verify that I haven't accidentally committed my GitHub
-  token or SMTP credentials.
+  token or SMTP credentials or my Geeqie last-visited folder.
 - I should see if I can set up some kind of git post-clone hook for setting up
   submodules in every project I clone.
 - Re-port my custom zsh prompt back to bash and include in .zsh_profile.
@@ -22,3 +22,6 @@
     virtualenv arguments.
   - Decide on the most appropriate approach to automating the calling of said
     command on many projects.
+- I need some kind of automatic mechanism for generating an equivs definition
+  from the in-repo pulseaudio and pulseaudio-utils metadata and then calling
+  equivs-build and dpkg -i on it to ensure future installs don't pull them in.
