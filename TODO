@@ -25,3 +25,5 @@
 - I need some kind of automatic mechanism for generating an equivs definition
   from the in-repo pulseaudio and pulseaudio-utils metadata and then calling
   equivs-build and dpkg -i on it to ensure future installs don't pull them in.
+- recently-used.xbel can't be a symlink. It must be a genuine directory to
+  circumvent GTK+'s attempt to maintain the MRU list.
