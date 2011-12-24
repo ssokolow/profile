@@ -6,6 +6,8 @@
 - Should recurse if not --overwrite and os.path.isdir()
 - Consider including an option to install my base set of packages on apt-based
   distros and chsh to zsh.
+- Need some generic mechanism for running commands like these after:
+    xrdb -merge ~/.Xresources
 """
 
 __appname__ = "ssokolow/profile symlink setup script"

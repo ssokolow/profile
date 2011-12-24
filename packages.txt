@@ -7,6 +7,10 @@
 # - sudo add-apt-repository ppa:nilarimogard/webupd8 (for up-to-date Audacious)
 # - sudo add-apt-repository ppa:ubuntu-mozilla-security/ppa (for up-to-date Firefox)
 #
+# Stuff Lubuntu installs which I don't want:
+#   sudo apt-get purge sylpheed ace-of-penguins gnumeric mtpaint -y
+#   sudo rm /usr/share/applications/gnumeric.desktop
+#
 # Given how it pegs the CPU at up to 46% with Minecraft, probably also good to remove
 # PulseAudio after all this pulls it in:
 #   sudo apt-get purge pulseaudio gstreamer0.10-pulseaudio -y
