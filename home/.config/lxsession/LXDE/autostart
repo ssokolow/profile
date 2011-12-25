@@ -2,7 +2,7 @@
 @setxkbmap -variant altgr-intl -option -option lv3:ralt_switch -option compose:rctrl -option terminate:ctrl_alt_bkspc -option eurosign:e -option nbsp:level3n
 @xbindkeys
 @sh -c "exec ~/bin/urxvt_kuake"
-@conky
+@sh -c "until conky; do echo; done"
 @numlockx
 @parcellite
 @sh -c "exec rm -f ~/.xsession-errors"
