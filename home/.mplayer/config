@@ -4,8 +4,10 @@
 # This interferes with my joystick evdev bindings (causes each button to do two different things in one push)
 nojoystick=yes
 
-vo=xv,gl2,gl,x11,ggi,fbdev,fbdev2
+vo=vdpau,xv,gl2,gl,x11,ggi,fbdev,fbdev2
 ao=alsa,openal,pulse,oss
+
+vc=ffh264vdpau,ffmpeg12vdpau,ffwmv3vdpau,ffvc1vdpau,ffodivxvdpau,
 
 # This enables screenshots but disables the hardware scaling
 #vf=screenshot
