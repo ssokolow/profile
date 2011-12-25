@@ -5,6 +5,7 @@
 @conky
 @numlockx
 @parcellite
+@sh -c "exec rm -f ~/.xsession-errors"
 @sh -c "exec ~/bin/timeclock --ui compact"
 @sh -c "exec ~/bin/quicktile -b"
 @basket -h

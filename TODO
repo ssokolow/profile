@@ -1,3 +1,7 @@
+- Once I've got my crontab being backed up in this repo, add a nightly removal
+  of ~/.xsession-errors since I tend to stay logged in for weeks and don't want
+  it to grow huge with pointless DEBUG messages and harmless GTK+ theme errors.
+
 - install.py needs some mechanism for calling setup scripts so I can pull
   non-ancient npm automatically.
 - install.py should also handle setting up git submodules.
