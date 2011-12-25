@@ -26,7 +26,7 @@ confirm_view_dir=0
 mouse_move_pages=1
 mouse_move_pages_viewer=1
 fast_refresh=0
-navigate_with_arrows=0
+navigate_with_arrows=1
 drop_menus=1
 wrap_mode=1
 old_esc_mode=0
@@ -104,9 +104,11 @@ ignore_ftp_chattr_errors=true
 
 filepos_max_saved_entries=1024
 
+auto_save_setup_panels=1
+
 [Layout]
 equal_split=1
-first_panel_size=90
+first_panel_size=106
 message_visible=1
 keybar_visible=1
 xterm_title=1
