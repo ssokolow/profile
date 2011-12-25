@@ -79,8 +79,10 @@ zsh
 # May exclude from Porteus:
 bottlerocket
 calibre
+conky
 evince
 gimp
+hddtemp
 inkscape
 libreoffice
 lyx
