@@ -6,6 +6,7 @@
 alias colordiff="colordiff -u"
 alias ls="ls --color=auto"
 alias dirs="dirs -v"
+alias less="less -R"
 
 function cwdiff() {
     if `which dwdiff &>/dev/null`; then
