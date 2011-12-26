@@ -46,4 +46,6 @@
 # Source: http://rentzsch.tumblr.com/post/564806957/public-but-hackable-git-submodules
 # TODO: Also set this up for HTTPS checkouts?
 [url "git@github.com:ssokolow/"]
-  insteadOf = "git://github.com/ssokolow/"
+	insteadOf = "git://github.com/ssokolow/"
+
+# vim: noexpandtab
