@@ -301,6 +301,9 @@
         <command>gmrun</command>
       </action>
     </keybind>
+    <keybind key="W-F11">
+        <action name="ToggleFullscreen"/>
+    </keybind>
     <!-- Launch Task Manager with Ctrl+Alt+Del -->
     <keybind key="A-C-Delete">
       <action name="Execute">
@@ -780,6 +783,10 @@
     <application class="net-minecraft-LauncherFrame">
       <maximized>true</maximized>
       <decor>no</decor>
-    </application>
+  </application>
+  <application name="stepmania">
+      <fullscreen>yes</fullscreen>
+      <maximized>true</maximized>
+  </application>
   </applications>
 </openbox_config>
