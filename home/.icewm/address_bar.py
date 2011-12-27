@@ -2,10 +2,12 @@
 # -*- coding: utf-8 -*-
 """Smart parser for IceWM's address bar feature
 
-Run without arguments for usage.
-
 Included (somewhat slapdash but fairly comprehensive) test suite may be run
 with `nosetests <name of this file>`.
+
+--snip--
+
+Run without arguments for usage.
 
 @todo: Refactor to allow cleaner, more thorough unit tests.
 @todo: Use notify_error to display exceptions.
@@ -25,11 +27,15 @@ __license__ = "MIT"
 import logging, os, re, shlex, string, subprocess, sys, time
 from xml.sax.saxutils import escape as xmlescape
 
+log = logging.getLogger(__name__)
+
 #{ Configuration
 
-OPEN_CMD = ['xdg-open']
-BROWSE_CMD = ['pcmanfm']
-TERMINAL_CMD = ['xterm', '-hold', '-e']
+CONFIG = {
+    'open': ['xdg-open'],
+    'browse': ['pcmanfm'],
+    'terminal': ['xterm', '-hold', '-e'],
+}
 
 NOTIFY_BACKENDS = [
         ['notify-send', '%(title)s', '%(text_xml)s'],
@@ -45,11 +51,11 @@ if os.name == 'nt':
     #TODO: Figure out how to split on Windows.
     _split = shlex.split
     _unsplit = subprocess.list2cmdline
-    _useterm = lambda : True
+    _useterm = True
 else:
     _split = shlex.split
     _unsplit = lambda args: ' '.join([sh_quote(x) for x in args])
-    _useterm = lambda : getattr(sys.stdout, 'fileno', None) and not os.isatty(sys.stdout.fileno())
+    _useterm = getattr(sys.stdout, 'fileno', None) and not os.isatty(sys.stdout.fileno())
 
 def sh_quote(file):
     """Reliably quote a string as a single argument for /bin/sh
@@ -213,18 +219,18 @@ def run(args):
         elif os.path.isdir(cmd):
             # Local Directory (open in file manager)
             logging.info("Opening directory: %s" % cmd)
-            execute(BROWSE_CMD + [cmd])
+            execute(CONFIG['browse'] + [cmd])
         elif os.path.isfile(cmd):
             # Local File (open in desired application)
             logging.info("Opening file: %s" % cmd)
-            execute(OPEN_CMD + [cmd])
+            execute(CONFIG['open'] + [cmd])
         elif cmd.startswith('file://'):
             # Local path as URL (let file manager decide)
-            execute(BROWSE_CMD + [cmd])
+            execute(CONFIG['browse'] + [cmd])
         elif uri_re.match(cmd):
             # Likely URI (open in desired URL handler)
             logging.info("Opening URL: %s" % cmd)
-            execute(OPEN_CMD + [cmd])
+            execute(CONFIG['open'] + [cmd])
         else:
             continue # No match, try the alternate interpretation.
         break # Match found, don't try the alternate interpretation.
@@ -232,8 +238,9 @@ def run(args):
         # Fall back to letting the shell try to make sense of it.
         try:
             logging.info("Attempting shell fallback: %r" % argv)
-            if _useterm():
-                call_timeout(TERMINAL_CMD + [shell_cmd, '-c', longcmd])
+            #FIXME: Gotta use opts.terminal here.
+            if _useterm:
+                call_timeout(CONFIG['terminal'] + [shell_cmd, '-c', longcmd])
             else:
                 call_timeout(longcmd, shell=True, executable=shell_cmd)
         except subprocess.CalledProcessError:
@@ -245,8 +252,10 @@ def run(args):
 #{ Test Routines for python-nose
 
 def _check_core(args, all_mocks=False):
-    mok = all_mocks and '--use-all-mocks' or '--use-mocks'
-    return subprocess.call([__file__, mok, '--'] + args,
+    cmd = [__file__.replace('.pyc', '.py'), '-vvv', '--use-mocks']
+    if all_mocks:
+        cmd.append('--terminal')
+    return subprocess.call(cmd + ['--'] + args,
             stdout = open(os.devnull, 'w'),
             stderr = subprocess.STDOUT)
 
@@ -307,32 +316,49 @@ def test_failure():
     yield _check_run_fail, ['$TEST_ECHO']
 #}
 
-if __name__ == '__main__':
-    logging.basicConfig(level=logging.INFO, format='%(levelname)s: %(message)s')
+def main():
+    from optparse import OptionParser
+    parser = OptionParser(version="%%prog v%s" % __version__,
+            usage="\n\t%prog [options] <command> <argument> ...\n\t\tor\n\t%prog [options] <command with args>",
+            description=__doc__.replace('\r\n','\n').split('\n--snip--\n')[0])
+    parser.add_option('-v', '--verbose', action="count", dest="verbose",
+        default=2, help="Increase the verbosity. Can be used twice for extra effect.")
+    parser.add_option('-q', '--quiet', action="count", dest="quiet",
+        default=0, help="Decrease the verbosity. Can be used twice for extra effect.")
+    parser.add_option('--terminal', action="store_true", dest="terminal",
+        default=_useterm, help="Always execute command in a terminal window")
+    parser.add_option('--no-terminal', action="store_false", dest="terminal",
+        default=_useterm, help="Never execute command in a terminal window")
+    parser.add_option('--use-mocks', action="store_true", dest="use_mocks",
+        default=False, help="Used by the test suite to stub out bits requiring input.")
+    #Reminder: %default can be used in help strings.
 
-    if len(sys.argv) < 2:
-        notify_error((
-                "%(cmd)s <cmd> [arg] ...\n" +
-                "  or  \n" +
-                "%(cmd)s <cmd with args>") % {'cmd': os.path.basename(sys.argv[0])}
-                , title="Usage")
+    # Allow pre-formatted descriptions
+    parser.formatter.format_description = lambda description: description
+
+    opts, args  = parser.parse_args()
+
+    # Set up clean logging to stderr
+    log_levels = [logging.CRITICAL, logging.ERROR, logging.WARNING,
+                  logging.INFO, logging.DEBUG]
+    opts.verbose = min(opts.verbose - opts.quiet, len(log_levels) - 1)
+    opts.verbose = max(opts.verbose, 0)
+    logging.basicConfig(level=log_levels[opts.verbose],
+                        format='%(levelname)s: %(message)s')
+
+    if not args:
+        parser.print_help()
         sys.exit(2)
-    else:
-        args = sys.argv[1:]
-        use_mocks = False
 
-        if args[0:2] == ['--use-all-mocks', '--']:
-            _useterm = lambda: True
+    if opts.use_mocks:
+        CONFIG['browse'].insert(0, 'echo')
+        CONFIG['open'].insert(0, 'echo')
+        CONFIG['terminal'] = ['env']
 
-        if args[0:2] in (['--use-mocks', '--'], ['--use-all-mocks', '--']):
-            args = args[2:]
+    outcome = run(args)
 
-            BROWSE_CMD = ['echo', 'pcmanfm']
-            OPEN_CMD = ['echo', 'xdg-open']
-            TERMINAL_CMD = ['env']
-            use_mocks = True
+    # Exit with a return code of 1 on failure
+    sys.exit(int(not outcome))
 
-        outcome = run(args)
-
-        # Exit with a return code of 1 on failure
-        sys.exit(int(not outcome))
+if __name__ == '__main__':
+    main()
