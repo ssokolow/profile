@@ -24,6 +24,9 @@ snippet boiler
 			default=0, help="Decrease the verbosity. Can be used twice for extra effect.")
 		#Reminder: %default can be used in help strings.
 
+		# Allow pre-formatted descriptions
+		parser.formatter.format_description = lambda description: description
+
 		opts, args  = parser.parse_args()
 
 		# Set up clean logging to stderr
