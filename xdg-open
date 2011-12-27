@@ -536,8 +536,8 @@ open_xfce()
 open_generic_xdg_mime()
 {
     filetype="$2"
-    default=`xdg-mime query default "$filetype"`
-    if [ -n "$default" ] ; then
+    defaults=`xdg-mime query default "$filetype"`
+    if [ -n "$defaults" ] ; then
         xdg_user_dir="$XDG_DATA_HOME"
         [ -n "$xdg_user_dir" ] || xdg_user_dir="$HOME/.local/share"
 
@@ -545,31 +545,39 @@ open_generic_xdg_mime()
         [ -n "$xdg_system_dirs" ] || xdg_system_dirs=/usr/local/share/:/usr/share/
 
 DEBUG 3 "$xdg_user_dir:$xdg_system_dirs"
-        for x in `echo "$xdg_user_dir:$xdg_system_dirs" | sed 's/:/ /g'`; do
-            local file
-            # look for both vendor-app.desktop, vendor/app.desktop
-            if [ -r "$x/applications/$default" ]; then
-              file="$x/applications/$default"
-            elif [ -r "$x/applications/`echo $default | sed -e 's|-|/|'`" ]; then
-              file="$x/applications/`echo $default | sed -e 's|-|/|'`"
-            fi
+        IFS=";"
+        for default in $defaults; do
+            if [ x"$default" != x"" ]; then
+                unset IFS
 
-            if [ -r "$file" ] ; then
-                command="`grep -E "^Exec(\[[^]=]*])?=" "$file" | cut -d= -f 2- | first_word`"
-                command_exec=`which $command 2>/dev/null`
-                arguments="`grep -E "^Exec(\[[^]=]*])?=" "$file" | cut -d= -f 2- | last_word`"
-                arguments_exec="`echo $arguments | sed -e 's*%[fFuU]*"'"$1"'"*g'`"
-                if [ -x "$command_exec" ] ; then
-                    if echo $arguments | grep -iq '%[fFuU]' ; then
-                        eval $command_exec $arguments_exec
-                    else
-                        eval $command_exec $arguments_exec "$1"
+                for x in `echo "$xdg_user_dir:$xdg_system_dirs" | sed 's/:/ /g'`; do
+                    local file
+                    # look for both vendor-app.desktop, vendor/app.desktop
+                    if [ -r "$x/applications/$default" ]; then
+                      file="$x/applications/$default"
+                    elif [ -r "$x/applications/`echo $default | sed -e 's|-|/|'`" ]; then
+                      file="$x/applications/`echo $default | sed -e 's|-|/|'`"
                     fi
 
-                    if [ $? -eq 0 ]; then
-                        exit_success
+                    if [ -r "$file" ] ; then
+                        command="`grep -E "^Exec(\[[^]=]*])?=" "$file" | cut -d= -f 2- | first_word`"
+                        command_exec=`which $command 2>/dev/null`
+                        arguments="`grep -E "^Exec(\[[^]=]*])?=" "$file" | cut -d= -f 2- | last_word`"
+                        argone=`echo $1|sed 's/&/\\\\&/g'`
+                        arguments_exec="`echo $arguments | sed -e 's*%[fFuU]*"'"$argone"'"*g'`"
+                        if [ -x "$command_exec" ] ; then
+                            if echo $arguments | grep -iq '%[fFuU]' ; then
+                                eval $command_exec $arguments_exec
+                            else
+                                eval $command_exec $arguments_exec "$1"
+                            fi
+
+                            if [ $? -eq 0 ]; then
+                                exit_success
+                            fi
+                        fi
                     fi
-                fi
+                done
             fi
         done
     fi
@@ -628,6 +636,7 @@ open_generic()
     IFS=":"
     for browser in $BROWSER; do
         if [ x"$browser" != x"" ]; then
+            unset IFS
 
             browser_with_arg=`printf "$browser" "$1" 2>/dev/null`
             if [ $? -ne 0 ]; then
