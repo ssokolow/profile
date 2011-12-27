@@ -3,7 +3,7 @@
 	url = http://github.com/ciaranm/detectindent.git
 [submodule "home/.vim/bundle/minibufexpl.vim"]
 	path = home/.vim/bundle/minibufexpl.vim
-	url = git@github.com:ssokolow/minibufexpl.vim.git
+	url = git@github.com:fholgado/minibufexpl.vim.git
 [submodule "home/.vim/bundle/nerdcommenter"]
 	path = home/.vim/bundle/nerdcommenter
 	url = https://github.com/scrooloose/nerdcommenter.git
