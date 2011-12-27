@@ -9,6 +9,7 @@
   token or SMTP credentials or my Geeqie last-visited folder.
 - I should see if I can set up some kind of git post-clone hook for setting up
   submodules in every project I clone.
+- Decide how to integrate a zsh chsh call to whatever global setup I design.
 - Re-port my custom zsh prompt back to bash and include in .zsh_profile.
 - Figure out a good way to sync settings containing passwords like:
   - My complete .gitconfig (SMTP credentials and GitHub token)
@@ -31,3 +32,9 @@
   equivs-build and dpkg -i on it to ensure future installs don't pull them in.
 - recently-used.xbel can't be a symlink. It must be a genuine directory to
   circumvent GTK+'s attempt to maintain the MRU list.
+- Figure out a way to store the folder config for Firefox Scrapbook (stored
+  alongside the data in ~/incoming/ffox_scrapbook) alongside either my roaming
+  profile or my Firefox profile.
+- Automate the process of removing these without exploding if not present:
+   appmenu-gtk3 appmenu-gtk appmenu-qt indicator-applet-appmenu indicator-appmenu
+   liboverlay-scrollbar
