@@ -418,6 +418,13 @@ if exists(":let")
 	" Set up Conque to match my workflow better
 	let g:ConqueTerm_CWInsert = 1
 	let g:ConqueTerm_InsertOnEnter = 1
+
+	" --== Vala highlighting settings (https://live.gnome.org/Vala/Vim) ==--
+	" Enable comment strings
+	let vala_comment_strings = 1
+	" Highlight space errors
+	let vala_space_errors = 1
+
 endif
 
 
@@ -468,16 +475,6 @@ if has("autocmd") && exists("+filetype")
 	" TODO: Make absolutely sure this overrides my call to DetectIndent
 	autocmd FileType make set noexpandtab
 
-	" Set indent folding for Python files since foldmethod=syntax does nothing
-	autocmd FileType python set foldmethod=indent
-	autocmd FileType python set foldlevel=99
-
-	" Make gf search installed Python modules
-	autocmd FileType python set path+=/usr/lib/python2.7/**,
-
-	" Until I think of something better, enable Django snippets for all Python
-	autocmd FileType python set ft=python.django
-
 	" Autocomplete </ for closing tags in HTML/XML files
 	autocmd FileType html,xml,xsl iabbrev <buffer> </ </
 
@@ -488,17 +485,45 @@ if has("autocmd") && exists("+filetype")
 	" Automatically compile CoffeeScript on save
 	autocmd BufWritePost, *.coffee silent CoffeeMake!
 
-	" Fix a few apparent oversights in filetype detection
-	autocmd BufNewFile,BufRead SCons* set syntax=python
-	autocmd BufNewFile,BufRead *.mako set filetype=mako
-	autocmd BufNewFile,BufRead *.django set filetype=htmldjango
 	" ...and work around a sudoedit-vim interaction quirk
 	autocmd BufNewFile,BufRead *.ebuild.* set filetype=ebuild
-endif
 
-" Work around a very annoying bug in the PHP filetype's indent profile.
-" FIXME: I'm just gonna have to fix the PHP indent script. This won't do.
-" autocmd FileType php filetype indent off | runtime! $VIM/vim71/indent/html.vim
+	augroup python
+		au!
+		" Set indent fold for Python files since foldmethod=syntax does nothing
+		autocmd FileType python set foldmethod=indent
+		autocmd FileType python set foldlevel=99
+
+		" Make gf search installed Python modules
+		autocmd FileType python set path+=/usr/lib/python2.7/**,
+
+		" Until I think of something better, enable Django snips for all Python
+		autocmd FileType python set ft=python.django
+
+		" Fix a few apparent oversights in filetype detection
+		autocmd BufNewFile,BufRead SCons* set syntax=python
+		autocmd BufNewFile,BufRead *.mako set filetype=mako
+		autocmd BufNewFile,BufRead *.django set filetype=htmldjango
+	augroup END
+
+	augroup vala
+		au!
+		au FileType vala setlocal smartindent
+		au BufRead *.vala,*.vapi set efm=%f:%l.%c-%[%^:]%#:\ %t%[%^:]%#:\ %m
+		au BufRead,BufNewFile *.vala,*.vapi setfiletype vala
+	augroup END
+
+	augroup genie
+		au!
+		au BufNewFile *.gs setlocal filetype="genie"
+		au BufRead *.gs setlocal filetype="genie"
+	augroup END
+
+	" Work around a very annoying bug in the PHP filetype's indent profile.
+	" FIXME: I'm just gonna have to fix the PHP indent script. This won't do.
+	" autocmd FileType php filetype indent off | runtime! $VIM/vim71/indent/html.vim
+
+endif
 
 " }}}
 " {{{ Key Bindings
