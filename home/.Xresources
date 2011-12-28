@@ -103,6 +103,8 @@ URxvt.scrollTtyKeypress: true
 
 ! Set the Urgent hint on bell for console apps without notify-send
 URxvt.urgentOnBell: true
+! But not in something which will not usually be visible anyway
+urxvt_kuake.urgentOnBell: false
 
 ! More Konsole/Yakuake-like clipboard keybindings
 URxvt.iso14755: false
