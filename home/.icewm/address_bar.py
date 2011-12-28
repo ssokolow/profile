@@ -33,7 +33,6 @@ log = logging.getLogger(__name__)
 
 CONFIG = {
     'open': ['xdg-open'],
-    'browse': ['pcmanfm'],
     'terminal': ['xterm', '-hold', '-e'],
 }
 
@@ -52,6 +51,7 @@ if os.name == 'nt':
     _split = shlex.split
     _unsplit = subprocess.list2cmdline
     _useterm = True
+    CONFIG['open'] = ['start']
 else:
     _split = shlex.split
     _unsplit = lambda args: ' '.join([sh_quote(x) for x in args])
@@ -216,20 +216,9 @@ def run(args):
             # Valid command (shell execute for versatility)
             logging.info("Running as command: %r" % argv)
             execute([shell_cmd, '-c', longcmd])
-        elif os.path.isdir(cmd):
-            # Local Directory (open in file manager)
-            logging.info("Opening directory: %s" % cmd)
-            execute(CONFIG['browse'] + [cmd])
-        elif os.path.isfile(cmd):
-            # Local File (open in desired application)
-            logging.info("Opening file: %s" % cmd)
-            execute(CONFIG['open'] + [cmd])
-        elif cmd.startswith('file://'):
-            # Local path as URL (let file manager decide)
-            execute(CONFIG['browse'] + [cmd])
-        elif uri_re.match(cmd):
-            # Likely URI (open in desired URL handler)
-            logging.info("Opening URL: %s" % cmd)
+        elif os.path.exists(cmd) or uri_re.match(cmd):
+            # URL or local path (Use desktop associations system)
+            logging.info("Opening file/URL with %s: %s" % (CONFIG['open'], cmd))
             execute(CONFIG['open'] + [cmd])
         else:
             continue # No match, try the alternate interpretation.
@@ -351,7 +340,6 @@ def main():
         sys.exit(2)
 
     if opts.use_mocks:
-        CONFIG['browse'].insert(0, 'echo')
         CONFIG['open'].insert(0, 'echo')
         CONFIG['terminal'] = ['env']
 
