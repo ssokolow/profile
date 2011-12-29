@@ -1,0 +1,38 @@
+[Desktop Entry]
+Type=Application
+
+Exec=basket -h %f
+MimeType=application/x-basket-archive;application/x-basket-template;
+Icon=basket
+Categories=Qt;KDE;Office;
+
+X-DBUS-StartupType=Unique
+
+Name=BasKet Note Pads
+Name[de]=BasKet Notizblätter
+Name[es]=Blocs de notas BasKet
+Name[fr]=Blocs notes BasKet
+Name[it]=Blocco appunti BasKet
+Name[ja]=BasKet メモパッド
+Name[nb]=Kurvnotat
+Name[nn]=Korgnotat
+Name[pt]=Bloco de Notas BasKet
+Name[ru]=Альбом заметок BasKet
+Name[tr]=Basket
+Name[xx]=xxBasKet Note Padsxx
+GenericName=Multi-Purpose Notepad
+GenericName[tr]=Not Tutma Aracı
+
+Comment=Taking care of your ideas.
+Comment[de]=Bewahren Sie Ihre Ideen.
+Comment[es]=Cuidando de sus ideas.
+Comment[fr]=Prendre soin de vos idées.
+Comment[it]=Ci prendiamo cura delle tue idee
+Comment[nb]=Ta vare på tankene dine.
+Comment[nn]=Ta vare på tankane dine.
+Comment[ja]=あなたのアイデアのお世話をします。
+Comment[pt]=Cuidando das suas ideias.
+Comment[ru]=Заботимся о ваших идеях.
+Comment[tr]=Not Tutma Aracı
+Comment[xx]=xxTaking care of your ideas.xx
+Categories=KDE;Application;Utility;TextEditor;

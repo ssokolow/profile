@@ -1,15 +1,6 @@
-@nitrogen --restore
-@setxkbmap -variant altgr-intl -option -option lv3:ralt_switch -option compose:rctrl -option terminate:ctrl_alt_bkspc -option eurosign:e -option nbsp:level3n
-@xbindkeys
 @sh -c "exec ~/bin/urxvt_kuake"
 @sh -c "until conky; do echo; done"
-@numlockx
-@parcellite
 @sh -c "exec rm -f ~/.xsession-errors"
 @sh -c "exec ~/bin/timeclock --ui compact"
 @sh -c "exec ~/bin/quicktile -b"
-@basket -h
-@thunderbird
-@pidgin
 @sh -c "sleep 60; exec audacious"
-@xpad

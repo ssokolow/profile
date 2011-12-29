@@ -1,0 +1,9 @@
+[Desktop Entry]
+Name=NumlockX
+GenericName=Enable Numlock
+Comment=Turn on Numlock by default on login
+Exec=numlockx
+Terminal=false
+Type=Application
+Categories=
+StartupNotify=false
