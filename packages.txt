@@ -90,6 +90,7 @@ lyx
 nitrogen
 numlockx
 okular
+opensp
 xdotool
 
 # Porteus Status Unknown:
