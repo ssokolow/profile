@@ -22,7 +22,7 @@
             duplicates_similarity_threshold = "99" 
 
             mousewheel_scrolls = "false" 
-            open_recent_list_maxsize = "10" 
+            open_recent_list_maxsize = "11" 
             dnd_icon_size = "48" 
             place_dialogs_under_mouse = "false" 
             save_window_positions = "true" 
@@ -42,7 +42,7 @@
             image.zoom_increment = "5" 
             image.fit_window_to_image = "false" 
             image.limit_window_size = "true" 
-            image.max_window_size = "90" 
+            image.max_window_size = "100" 
             image.limit_autofit_size = "false" 
             image.max_autofit_size = "100" 
             image.scroll_reset_method = "2" 
