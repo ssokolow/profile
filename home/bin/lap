@@ -45,7 +45,6 @@ locate_command = ['locate', '-i']
 # ========== Configuration Ends ==========
 
 import fnmatch, optparse, os, sys
-from dbus import Bus #TODO: , DBusException
 
 # TODO: Support audtool as a fallback but don't depend on it
 try: import subprocess
@@ -57,8 +56,20 @@ try:
     readline # Shut PyFlakes up
 except ImportError: pass
 
-# connect to DBus
-bus = Bus(Bus.TYPE_SESSION)
+try:
+    from dbus import Bus
+    from dbus.exceptions import DBusException
+
+    try:
+        # connect to DBus
+        bus = Bus(Bus.TYPE_SESSION)
+    except DBusException:
+        bus = None
+except ImportError:
+    bus = None
+
+if not bus:
+        print "Cannot connect to D-Bus session bus. Assuming --pretend."
 
 def get_results(query):
     """Given a query or series of queries for the locate command, run them."""
@@ -87,8 +98,9 @@ def addTrack(path, play=False):
     if isinstance(path, str):
         path = path.decode(sys.getfilesystemencoding())
     file_url = 'file://' + path
-    mp = bus.get_object('org.mpris.audacious', '/TrackList')
-    mp.AddTrack(file_url, play)
+    if bus:
+        mp = bus.get_object('org.mpris.audacious', '/TrackList')
+        mp.AddTrack(file_url, play)
 
 def parseChoice(inString):
     try:
@@ -152,6 +164,9 @@ if __name__ == '__main__':
                 help="Just show the list of results. Don't prompt for a choice and then act on it.")
 
         (opts, args) = op.parse_args()
+
+        if not bus:
+            opts.pretend = True
 
         if opts.locate:
             doLocate()
