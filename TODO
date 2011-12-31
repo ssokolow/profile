@@ -38,6 +38,7 @@
 - Automate the process of removing these without exploding if not present:
    appmenu-gtk3 appmenu-gtk appmenu-qt indicator-applet-appmenu indicator-appmenu
    liboverlay-scrollbar
+- http://askubuntu.com/questions/29707/how-to-disable-floppy-drive
 
 sudo chown -R ssokolow:family /srv/inbound
 sudo find /srv/inbound -type d -exec chmod 2775 {} \;
