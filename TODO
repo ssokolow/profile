@@ -38,3 +38,7 @@
 - Automate the process of removing these without exploding if not present:
    appmenu-gtk3 appmenu-gtk appmenu-qt indicator-applet-appmenu indicator-appmenu
    liboverlay-scrollbar
+
+sudo chown -R ssokolow:family /srv/inbound
+sudo find /srv/inbound -type d -exec chmod 2775 {} \;
+sudo find /srv/inbound -type f -exec chmod a-x {} \;
