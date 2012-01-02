@@ -7,7 +7,7 @@ nojoystick=yes
 vo=vdpau,xv,gl2,gl,x11,ggi,fbdev,fbdev2
 ao=alsa,openal,pulse,oss
 
-vc=ffh264vdpau,ffmpeg12vdpau,ffwmv3vdpau,ffvc1vdpau,ffodivxvdpau,
+vc=ffh264vdpau,ffmpeg12vdpau,ffwmv3vdpau,ffvc1vdpau,
 
 # This enables screenshots but disables the hardware scaling
 #vf=screenshot
