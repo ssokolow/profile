@@ -22,6 +22,7 @@ alang=eng
 tv=driver=v4l:width=640:height=480:fps=30:forceaudio=1:alsa=1:adevice=webcam
 #tv=driver=v4l2:width=640:height=480:fps=30:device=/dev/video1
 
+fixed-vo=yes
 stop-xscreensaver=yes
 
 af=volnorm
