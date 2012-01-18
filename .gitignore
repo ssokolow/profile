@@ -1,0 +1,18 @@
+# Vim stuff that shouldn't be replicated
+home/.vim/.netrwhist
+home/.vim/view
+home/.vim/sessions
+
+# Revision control directories for vim bundles
+home/.vim/bundle/web-indent/.svn/
+home/.vim/bundle/web-indent/indent/.svn/
+
+# Midnight Commander caches
+home/.mc/Tree
+home/.mc/filepos
+home/.mc/history
+home/.mc/hotlist
+home/.mc/hotlist.bak
+
+# Ubuntu puts a zsh cache in your homedir
+home/.zsh/cache

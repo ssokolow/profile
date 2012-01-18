@@ -10,22 +10,6 @@
 # Backup files
 *~
 
-# Vim stuff that shouldn't be replicated
-.vim/.netrwhist
-.vim/view
-.vim/sessions
-
-# Revision control directories for vim bundles
-.vim/bundle/web-indent/.svn/
-.vim/bundle/web-indent/indent/.svn/
-
-# Midnight Commander caches
-.mc/Tree
-.mc/filepos
-.mc/history
-.mc/hotlist
-.mc/hotlist.bak
-
 # See also:
 # - http://help.github.com/git-ignore/
 # - https://github.com/github/gitignore
