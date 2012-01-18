@@ -6,6 +6,7 @@
 # - http://www.trinitydesktop.org/installation.php#ubuntu
 # - sudo add-apt-repository ppa:nilarimogard/webupd8 (for up-to-date Audacious)
 # - sudo add-apt-repository ppa:ubuntu-mozilla-security/ppa (for up-to-date Firefox)
+# - sudo add-apt-repository ppa:ubuntu-wine/ppa (for up-to-date Wine)
 #
 # Stuff Lubuntu installs which I don't want:
 #   sudo apt-get purge sylpheed ace-of-penguins gnumeric mtpaint -y
@@ -67,6 +68,7 @@ oxygen-icon-theme
 p7zip-full
 p7zip-rar
 parcellite
+pinfo
 pv
 pydf
 python-gtk2
@@ -93,6 +95,7 @@ numlockx
 okular
 opensp
 xdotool
+wine1.3
 
 # Porteus Status Unknown:
 chmsee
