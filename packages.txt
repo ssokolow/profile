@@ -94,7 +94,9 @@ nitrogen
 numlockx
 okular
 opensp
+python-psutil
 xdotool
+xsane
 wine1.3
 
 # Porteus Status Unknown:
