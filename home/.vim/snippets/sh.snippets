@@ -1,0 +1,13 @@
+snippet boiler
+	#!/bin/bash
+	# ${1:[application description here]}
+	# By: Stephan Sokolow (deitarion/SSokolow)
+	#
+	# Released under the ${2:GNU GPL 2.0 or later}
+
+	${3}
+
+snippet elevate
+	if [ "$EUID" != 0 ]; then
+		exec sudo "$0" "$@"
+	fi
