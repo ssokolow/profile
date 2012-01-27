@@ -1,0 +1,9 @@
+[Desktop Entry]
+Name=The Procrastinator's Timeclock
+GenericName=Timeclock
+Comment=Keep track of time spent on "one more thing"
+Exec=sh -c "exec ~/src/timeclock/timeclock.py --ui compact"
+Terminal=false
+Type=Application
+Categories=
+StartupNotify=false

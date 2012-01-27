@@ -1,0 +1,9 @@
+[Desktop Entry]
+Name=QuickTile
+GenericName=Window Tiling Helper
+Comment=Keyboard shortcuts to tile windows under non-tiling WMs
+Exec=sh -c "exec ~/src/quicktile/quicktile.py -b"
+Terminal=false
+Type=Application
+Categories=
+StartupNotify=false

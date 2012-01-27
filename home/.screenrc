@@ -103,11 +103,6 @@ termcapinfo xterm* ti@:te@
 # Launch a mouse-enabled Midnight Commander in window 0 and zsh in window 1.
 #screen 0 mc -x
 
-#
-# Automate away the launching of the FFCMS development server in the face of
-# frequent hard freezing and reboots.
-screen 0 /home/ssokolow/bin/test_ffcms
-
 # Open the usual bare terminal in window 1 and start with it visible
 screen
 

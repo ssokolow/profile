@@ -1,6 +1,2 @@
-@sh -c "exec ~/bin/urxvt_kuake"
 @sh -c "until conky; do echo; done"
-@sh -c "exec rm -f ~/.xsession-errors"
-@sh -c "exec ~/bin/timeclock --ui compact"
-@sh -c "exec ~/bin/quicktile -b"
 @sh -c "sleep 60; exec audacious"
