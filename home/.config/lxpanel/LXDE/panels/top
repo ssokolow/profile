@@ -6,7 +6,7 @@ Global {
     allign=center
     margin=0
     widthtype=pixel
-    width=270
+    width=298
     height=24
     transparent=0
     tintcolor=#000000
@@ -48,6 +48,9 @@ Plugin {
         }
         Button {
             id=/usr/share/applications/leafpad.desktop
+        }
+        Button {
+            id=/home/ssokolow/.local/share/applications/desura.desktop
         }
         Button {
             id=/usr/share/applications/lyx.desktop
