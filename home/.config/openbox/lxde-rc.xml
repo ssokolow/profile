@@ -786,10 +786,18 @@
     <application class="net-minecraft-LauncherFrame">
       <maximized>true</maximized>
       <decor>no</decor>
-  </application>
-  <application name="stepmania">
+    </application>
+    <application class="shadowgrounds-bin">
+      <layer>above</layer>
+      <decor>no</decor>
+    </application>
+    <application class="trine-bin">
+      <layer>above</layer>
+      <decor>no</decor>
+    </application>
+    <application name="stepmania">
       <fullscreen>yes</fullscreen>
       <maximized>true</maximized>
-  </application>
+    </application>
   </applications>
 </openbox_config>
