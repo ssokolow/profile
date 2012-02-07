@@ -47,10 +47,10 @@ Plugin {
             id=/usr/share/applications/comix.desktop
         }
         Button {
-            id=/usr/share/applications/leafpad.desktop
+            id=/home/ssokolow/.local/share/applications/desura.desktop
         }
         Button {
-            id=/home/ssokolow/.local/share/applications/desura.desktop
+            id=/usr/share/applications/leafpad.desktop
         }
         Button {
             id=/usr/share/applications/lyx.desktop
