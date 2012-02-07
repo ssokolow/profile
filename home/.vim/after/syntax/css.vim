@@ -5,6 +5,20 @@
 " Licence:     No Warranties. Do whatever you want with this. But please tell me!
 " Version:     0.6
 
+" -- Begin HTML 5 patch for CSS highlight --
+" Source: https://gist.github.com/256840
+" Language: Cascading Style Sheets
+" Maintainer:   Andrew Scott hoka@hokapoka.com
+" Last Change:  2010 Jul 28
+
+syn keyword cssTagName article aside audio bb canvas command datagrid
+syn keyword cssTagName datalist details dialog embed figure footer
+syn keyword cssTagName header hgroup keygen mark meter nav output
+syn keyword cssTagName progress time ruby rt rp section time video
+syn keyword cssTagName source figcaption
+
+"  -- End HTML 5 patch for CSS highlight --
+
 function! s:FGforBG(bg)
    " takes a 6hex color code and returns a matching color that is visible
    let pure = substitute(a:bg,'^#','','')
@@ -45,7 +59,7 @@ let s:valuerange = [ 0x00, 0x5F, 0x87, 0xAF, 0xD7, 0xFF ]
 "" 16 basic colors
 let s:basic16 = [ [ 0x00, 0x00, 0x00 ], [ 0xCD, 0x00, 0x00 ], [ 0x00, 0xCD, 0x00 ], [ 0xCD, 0xCD, 0x00 ], [ 0x00, 0x00, 0xEE ], [ 0xCD, 0x00, 0xCD ], [ 0x00, 0xCD, 0xCD ], [ 0xE5, 0xE5, 0xE5 ], [ 0x7F, 0x7F, 0x7F ], [ 0xFF, 0x00, 0x00 ], [ 0x00, 0xFF, 0x00 ], [ 0xFF, 0xFF, 0x00 ], [ 0x5C, 0x5C, 0xFF ], [ 0xFF, 0x00, 0xFF ], [ 0x00, 0xFF, 0xFF ], [ 0xFF, 0xFF, 0xFF ] ]
 :
-function! s:Xterm2rgb(color) 
+function! s:Xterm2rgb(color)
 	" 16 basic colors
    let r=0
    let g=0
@@ -55,7 +69,7 @@ function! s:Xterm2rgb(color)
       let g = s:basic16[a:color][1]
       let b = s:basic16[a:color][2]
    endif
-	
+
 	" color cube color
    if a:color>=16 && a:color<=232
       let color=a:color-16
@@ -63,7 +77,7 @@ function! s:Xterm2rgb(color)
       let g = s:valuerange[(color/6)%6]
       let b = s:valuerange[color%6]
    endif
-	
+
 	" gray tone
 	if a:color>=233 && a:color<=253
       let r=8+(a:color-232)*0x0a
