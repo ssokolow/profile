@@ -50,6 +50,7 @@ xpad
 # which install their own copies of PyTidyLib.
 
 # Already in my Porteus or not necessary:
+advancecomp
 audacious
 basket-trinity
 comix
@@ -64,6 +65,7 @@ htop
 k3b
 konqueror
 mc
+optipng
 oxygen-icon-theme
 p7zip-full
 p7zip-rar
