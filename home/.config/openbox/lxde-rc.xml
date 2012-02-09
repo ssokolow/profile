@@ -787,6 +787,10 @@
       <maximized>true</maximized>
       <decor>no</decor>
     </application>
+    <application class="net-minecraft-MinecraftLauncher">
+      <maximized>true</maximized>
+      <decor>no</decor>
+    </application>
     <application class="shadowgrounds-bin">
       <layer>above</layer>
       <decor>no</decor>
