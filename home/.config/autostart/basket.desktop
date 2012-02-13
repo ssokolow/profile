@@ -1,7 +1,7 @@
 [Desktop Entry]
 Type=Application
 
-Exec=basket -h %f
+Exec=/opt/trinity/bin/basket -h %f
 MimeType=application/x-basket-archive;application/x-basket-template;
 Icon=basket
 Categories=Qt;KDE;Office;

@@ -1,9 +1,0 @@
-[Desktop Entry]
-Name=URxvt-Kuake
-GenericName=Quake-like Terminal
-Comment=Persistent, slide-down terminal accessible via F12
-Exec=sh -c "exec ~/bin/urxvt_kuake"
-Terminal=false
-Type=Application
-Categories=
-StartupNotify=false

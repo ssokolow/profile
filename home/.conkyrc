@@ -147,5 +147,5 @@ ${template4 root /dev/sda /}
 ${template4 home /dev/sda /home}
 ${template4 srv /dev/sdb /srv}
 ${template4 incoming /dev/sdc /home/ssokolow/incoming}
- CPU ${goto 65}${hwmon 0 temp 1}°C | ${alignc}Sys ${hwmon 1 temp 1}°C ${hwmon 1 temp 3}°C ${alignr 5}| GPU ${nvidia temp}°C
+ CPU ${goto 65}${hwmon 1 temp 1}°C | ${alignc}Sys ${hwmon 0 temp 1}°C ${hwmon 0 temp 3}°C ${alignr 5}| GPU ${nvidia temp}°C
 # vim: fenc=latin1

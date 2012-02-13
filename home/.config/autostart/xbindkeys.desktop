@@ -1,9 +1,0 @@
-[Desktop Entry]
-Name=XBindKeys
-GenericName=Global Hotkeys
-Comment=Set up global hotkeys as defined in ~/.xbindkeysrc
-Exec=xbindkeys
-Terminal=false
-Type=Application
-Categories=
-StartupNotify=false
