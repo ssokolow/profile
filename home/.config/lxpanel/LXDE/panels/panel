@@ -7,7 +7,7 @@ Global {
     margin=0
     widthtype=percent
     width=100
-    height=24
+    height=22
     transparent=0
     tintcolor=#000000
     alpha=0
@@ -43,17 +43,10 @@ Plugin {
 }
 
 Plugin {
-    type = space
-    Config {
-        Size=2
-    }
-}
-
-Plugin {
     type = dirmenu
     Config {
         path=~
-        image=/usr/share/icons/oxygen/22x22/places/user-home.png
+        image=/home/ssokolow/.local/share/images/go-home.png
     }
 }
 
@@ -61,14 +54,7 @@ Plugin {
     type = dirmenu
     Config {
         path=/srv/
-        image=/usr/share/icons/oxygen/22x22/categories/applications-multimedia.png
-    }
-}
-
-Plugin {
-    type = space
-    Config {
-        Size=4
+        image=/home/ssokolow/.local/share/images/music-library.png
     }
 }
 

@@ -31,6 +31,7 @@ RECURSE = [
     'openbox',
     'parcellite',
     '.local',
+    '.trinity',
     'share'
 ]
 
