@@ -96,6 +96,18 @@
       <weight/>
       <slant/>
     </font>
+    <font place="OnScreenActiveDisplay">
+      <name>Sans</name>
+      <size>8</size>
+      <weight/>
+      <slant/>
+    </font>
+    <font place="OnScreenIactiveDisplay">
+      <name>Sans</name>
+      <size>8</size>
+      <weight/>
+      <slant/>
+    </font>
   </theme>
   <desktops>
     <!-- this stuff is only used at startup, pagers allow you to change them
@@ -305,7 +317,7 @@
       </action>
     </keybind>
     <keybind key="W-F11">
-        <action name="ToggleFullscreen"/>
+      <action name="ToggleFullscreen"/>
     </keybind>
     <!-- Launch Task Manager with Ctrl+Alt+Del -->
     <keybind key="A-C-Delete">

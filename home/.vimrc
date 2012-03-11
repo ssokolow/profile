@@ -481,6 +481,7 @@ if has("autocmd") && exists("+filetype")
 	" Support the jQuery syntax extension from
 	" http://www.vim.org/scripts/script.php?script_id=2416
 	autocmd BufRead,BufNewFile *.js set filetype=javascript syntax=jquery
+	autocmd BufRead,BufNewFile *.jsm set filetype=javascript syntax=jquery
 
 	" Automatically compile CoffeeScript on save
 	autocmd BufWritePost, *.coffee silent CoffeeMake!
