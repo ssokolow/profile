@@ -605,4 +605,20 @@ function! s:DiffWithSaved()
 endfunction
 com! DiffSaved call s:DiffWithSaved()
 " }}}
+" {{{ Shortcut: F5 = Run anything with a shebang
+" Source: http://superuser.com/a/21503/48014
+if has("autocmd")
+	au BufEnter * if match( getline(1) , '^\#!') == 0 |
+	\ execute("let b:interpreter = getline(1)[2:]") |
+	\endif
+
+	fun! CallInterpreter()
+		if exists("b:interpreter")
+			 exec ("!".b:interpreter." %")
+		endif
+	endfun
+
+	map <F5> :call CallInterpreter()<CR>
+endif
+" }}}
 " vim:ft=vim:fdm=marker:ff=unix:noexpandtab
