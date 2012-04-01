@@ -22,7 +22,7 @@
             duplicates_similarity_threshold = "99" 
 
             mousewheel_scrolls = "false" 
-            open_recent_list_maxsize = "12" 
+            open_recent_list_maxsize = "15" 
             dnd_icon_size = "48" 
             place_dialogs_under_mouse = "false" 
             save_window_positions = "true" 
@@ -174,7 +174,7 @@
         main_window.w = "1276" 
         main_window.h = "977" 
         main_window.maximized = "true" 
-        main_window.hdivider_pos = "243" 
+        main_window.hdivider_pos = "272" 
         main_window.vdivider_pos = "250" 
 
         float_window.x = "0" 

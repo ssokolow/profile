@@ -115,3 +115,5 @@ screen
 smartmontools
 sox
 sshfs
+pidgin
+pidgin-otr

@@ -803,6 +803,10 @@
       <maximized>true</maximized>
       <decor>no</decor>
     </application>
+    <application class="OpenClonk">
+      <layer>above</layer>
+      <decor>no</decor>
+    </application>
     <application class="shadowgrounds-bin">
       <layer>above</layer>
       <decor>no</decor>
