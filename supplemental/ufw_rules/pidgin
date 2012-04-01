@@ -1,0 +1,3 @@
+[pidgin]
+title=Pidgin File Transfer
+ports=5190:5290/tcp|5298

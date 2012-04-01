@@ -1,0 +1,3 @@
+[avahi-daemon]
+title=Avahi Zeroconf Daemon
+ports=5353/udp

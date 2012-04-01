@@ -1,0 +1,3 @@
+[ntpd]
+title=Network Time Protocol daemon
+ports=123/udp

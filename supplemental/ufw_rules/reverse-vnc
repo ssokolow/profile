@@ -1,0 +1,4 @@
+[VNC]
+title=VNC -listen
+description=Reverse VNC connections for -listen operation. Possibly regular ones too.
+ports=5500/tcp

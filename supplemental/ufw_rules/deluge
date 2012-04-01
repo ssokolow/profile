@@ -1,0 +1,4 @@
+[Deluge]
+title=ssokolow's copy of the Deluge
+description=A full-featured BitTorrent client.
+ports=32158,32159/udp|32158,32159/tcp
