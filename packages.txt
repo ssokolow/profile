@@ -91,6 +91,14 @@ gimp
 hddtemp
 inkscape
 libreoffice
+libreoffice-nlpsolver
+libreoffice-ogltrans
+libreoffice-pdfimport
+libreoffice-presenter-console
+libreoffice-presentation-minimizer
+libreoffice-wiki-publisher
+libreoffice-writer2latex
+libreoffice-writer2xhtml
 lyx
 nitrogen
 numlockx
@@ -100,6 +108,7 @@ python-psutil
 xdotool
 xsane
 wine1.3
+
 
 # Porteus Status Unknown:
 chmsee
