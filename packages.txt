@@ -51,6 +51,7 @@ xpad
 
 # Already in my Porteus or not necessary:
 advancecomp
+aptitude
 audacious
 basket-trinity
 comix
