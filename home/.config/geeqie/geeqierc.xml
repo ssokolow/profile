@@ -22,7 +22,7 @@
             duplicates_similarity_threshold = "99" 
 
             mousewheel_scrolls = "false" 
-            open_recent_list_maxsize = "15" 
+            open_recent_list_maxsize = "17" 
             dnd_icon_size = "48" 
             place_dialogs_under_mouse = "false" 
             save_window_positions = "true" 
@@ -144,6 +144,7 @@
             <file_type key = "r3d" enabled = "true" extensions = ".r3d" description = "Red raw format" file_class = "2" writable = "false" allow_sidecar = "true" />
             <file_type key = "3fr" enabled = "true" extensions = ".3fr" description = "Hasselblad raw format" file_class = "2" writable = "false" allow_sidecar = "true" />
             <file_type key = "erf" enabled = "true" extensions = ".erf" description = "Epson raw format" file_class = "2" writable = "false" allow_sidecar = "true" />
+            <file_type key = "GdkPixdata" enabled = "true" extensions = ".gdkp" description = "The GdkPixdata format" file_class = "1" writable = "true" allow_sidecar = "false" />
         </filter>
 
         <keyword_tree>

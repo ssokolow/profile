@@ -183,7 +183,8 @@ setopt NO_NOMATCH
 
 # Set up "you know what I mean" handling of raw paths
 setopt AUTO_CD
-alias -s {pdf,PDF,ps,chm,CHM,djvu,DjVu}=okular
+alias -s {chm,CHM}=okular
+alias -s {pdf,PDF,ps,djvu,DjVu}=evince
 alias -s {php,css,js,htm,html}="$EDITOR"
 alias -s {jpeg,jpg,JPEG,JPG,png,gif,xpm}="$IMAGE_VIEWER"
 alias -s {avi,AVI,Avi,divx,DivX,mkv,mpg,mpeg,wmv,WMV,mov,rm,flv,ogm,ogv,mp4}=mplayer

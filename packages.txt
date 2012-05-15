@@ -114,6 +114,7 @@ wine1.3
 # Porteus Status Unknown:
 chmsee
 kdiff3
+graphviz
 links
 lynx
 normalize-audio
