@@ -153,6 +153,8 @@
 "   Tab          Indent/Snippets/Omni-Completion (Smart)
 "   <C-P>        Omni-Completion (when Smart isn't smart enough)
 "
+"   <C-V>        Type the following character literally
+"
 "   <C-X> /      Close the last open HTML/PHP/Django/eRuby tag
 "   <C-X> Space  Create tag pair from the typed word (single line)
 "   <C-X> Enter  Create tag pair from the typed word (multi-line)

@@ -33,6 +33,7 @@ alias bd="cd -"	# Cycle between the two most recent directories
 cond_alias df pydf
 cond_alias date "date --rfc-3339=seconds"
 cond_alias top htop
+cond_alias units "units -v"
 
 # Quick shortcut to open a file browser in the current directory without
 # cluttering up the terminal with messages from it.

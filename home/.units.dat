@@ -1,0 +1,159 @@
+# TODO: Re-indent with spaces to match units.dat.
+# TODO: https://en.wikipedia.org/wiki/List_of_unusual_units_of_measurement
+hubbletime      4.35e17 seconds
+hubblelength    c * hubbletime
+
+#
+# Fictional Currencies
+#
+
+ryo             10 japanyen     # Currency used in Masashi Kishimoto's Naruto.
+ryō             ryo             # Based on an old Japanese coin and valued by
+                                # Word of Author at 10 JPY.
+                                # http://naruto.wikia.com/wiki/Ry%C5%8D
+
+#
+# Computing shorthand we'd probably want to use
+#
+
+b               bit
+
+# SI-compatible (Decimal-rounded) computer shorthand
+# Use Kib/KiB for binary-rounded (1024-based) increments
+# (Useful for calculating the capacity of a 4.7GB DVD+R or 1TB SATA hard drive)
+
+Kb              kilobit
+Mb              megabit
+#Gb             gigabit  # Conflicts with shorthand for Gilbert (Use Gbit)
+#Tb             terabit  # Conflicts with shorthand for Tablespoon (Use Tbit)
+Pb              petabit
+
+KB              kilobyte
+MB              megabyte
+GB              gigabyte
+TB              terabyte
+PB              petabyte
+
+#############################################################################
+#                                                                           #
+# Humourous units of measurement                                            #
+# From: https://en.wikipedia.org/wiki/List_of_humorous_units_of_measurement #
+# Dexcription License: CC BY-SA 3.0 Unported                                #
+#                                                                           #
+#############################################################################
+
+#
+# Potrzebie System of Weights and Measures (MAD Magazine #33)
+# Source: https://upload.wikimedia.org/wikipedia/en/5/52/Potrzeb.jpg
+#
+
+potrzebie       2.263348517438173216473mm
+ngogn           dekapotrzebie^3
+farshimmelt-    micro
+furshlugginer-  mega
+
+p               potrzebie
+fp              farshimmelt potrzebie
+mp              millipotrzebie
+cp              centipotrzebie
+dp              decipotrzebie
+Dp              dekapotrzebie
+Hp              hectopotrzebie
+Kp              kilopotrzebie
+Fp              furshlugginer potrzebie
+
+n               ngogn
+fn              farshimmelt ngogn
+mn              millingogn
+cn              centingogn
+dn              decingogn
+Dn              dekangogn
+Hn              hectongogn
+Kn              kilongogn
+Fn              furshlugginer ngogn
+
+# TODO: Look up how to use volume, specific gravity, and specific heat to
+# relate ngogn to blintz:
+# 1 ngogn (at 3.1416 specific gravity and .31416 specific heat) = 1 blintz (b)
+#
+# Also note that "b" is taken up by "bit", so the shorthands for "blintz" are
+# omitted.
+blintz          !
+
+#
+# Great Underground Empire (Zork)
+#
+
+bloit           2|3 mile
+#TODO: See if Infocom ever published enough detail on how big a gloop is.
+#TODO: Find a second temperature reference point for degreesq (57°Q = 0°C)
+
+#
+# Other things from this Wikipedia page:
+# https://en.wikipedia.org/wiki/List_of_humorous_units_of_measurement
+#
+
+#TODO: More details on these units.
+friedman        6 months            # https://en.wikipedia.org/wiki/Friedman_%28unit%29
+hubblebarn      hubblelength * barn
+smoot           170cm
+warhol          15 minutes          # Unit of fame or hype, derived from an Andy Warhol quote.
+#TODO: Rictus Scale, Helen, Tatum Grid?
+
+beardsecond     100 angstroms       # The length an average beard grows in one
+                                    # second as defined by Kolb, Nordling, and
+                                    # Österman.
+                                    # Google Calculator incorrectly uses 50
+                                    # angstroms (5nm) instead.
+
+bottlesworth    0.75 liters         # Approximate volume of one standard
+                                    # Champagne bottle.
+                                    # Designed to allow the use of Wine in
+                                    # scientific experiments in the comedy
+                                    # "Look Around You".
+
+dirac           1 word / hour       # Information flow rate. Named for
+word            !dimensionles       # Physicist Paul Dirac and his precise yet
+                                    # taciturn nature.
+
+outhouse        1e-6 barns          # A companion to the barn and shed units
+                                    # already defined in the base config file.
+
+sheppey         1.4km               # The closest distance at which sheep
+                                    # remain picturesque.
+                                    # Source: The Meaning of Liff
+                                    #         by Douglas Adams and John Lloyd
+
+wheaton         1|2 million followers   # Measurement of Twitter followers.
+follower        person                  # Fixed relative to Wil Wheaton at a
+                                        # specific date and time.
+
+#
+# Utilitarian conceptual units
+#
+
+util            !dimensionless      # Base unit of utility.
+hedon           util                # Happiness gained from one util.
+dolor           -hedon              # Base unit of pain/displeasure.
+
+############################################################################
+#
+# The following units were in Wikipedia but do not appear in this file:
+# (Usually for lack of a solid understanding of how they relate to other units)
+#
+#      canard     base unit of quackery as used by Quackometer.net
+#                 Intended as an SI Unit replacement for the Crackpot Index
+#                 (http://math.ucr.edu/home/baez/crackpot.html)
+#
+#      fonzie     Amount of coolness inherent in the Happy Days character
+#
+#      lenat      Base unit for the fictional field of Quantum Bogodynamics
+#
+#      pouter     Base unit for obstructiveness as embodied by Commander Pouter
+#                 of the British navy.
+#
+#      thaum      Standard unit for measuring magic in Terry Pratchett's
+#                 Discworld universe.
+#
+############################################################################
+# vim: set noexpandtab :

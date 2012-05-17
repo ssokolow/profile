@@ -49,3 +49,5 @@
 	insteadOf = "git://github.com/ssokolow/"
 
 # vim: noexpandtab
+[gui]
+	recentrepo = /home/ssokolow/.profile_repo
