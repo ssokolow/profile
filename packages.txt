@@ -106,6 +106,7 @@ numlockx
 okular
 opensp
 python-psutil
+uptimed
 xdotool
 xsane
 wine1.3
