@@ -1,0 +1,9 @@
+[Desktop Entry]
+Name=XBindKeys
+GenericName=Enable Custom Keybindings
+Comment=Enable keybindings defined in ~/.xbindkeysrc
+Exec=xbindkeys
+Terminal=false
+Type=Application
+Categories=
+StartupNotify=false
