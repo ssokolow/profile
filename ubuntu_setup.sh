@@ -14,6 +14,7 @@ export DEBIAN_FRONTEND
 add-apt-repository -y ppa:nilarimogard/webupd8 # (for up-to-date Audacious)
 add-apt-repository -y ppa:ubuntu-mozilla-daily/firefox-aurora # (for up-to-date Firefox)
 add-apt-repository -y ppa:ubuntu-wine/ppa # (for up-to-date Wine)
+add-apt-repository -y ppa:chris-lea/node.js # (for up-to-date Node.js)
 add-apt-repository -y ppa:cdemu/ppa
 # BasKet (http://www.trinitydesktop.org/installation.php#ubuntu)
 # TODO: Figure out how to make this reliably up-to-date when Trinity sometimes lags behind
@@ -62,6 +63,7 @@ gmrun
 mercurial
 ncdu
 nodejs
+nodejs-dev
 pychecker
 pyflakes
 pylint
@@ -206,7 +208,12 @@ pip install -r "`dirname \"$0\"`"/requirements.txt
 
 echo " * Installing npm and node packages"
 curl http://npmjs.org/install.sh | sh
-npm install -g docco uglify-js
+xargs npm install -g << EOF
+coffee-script
+docco
+nodemon
+uglify-js
+EOF
 
 echo " * Installing ruby gems"
 gem install jekyll
