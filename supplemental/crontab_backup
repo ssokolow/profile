@@ -1,0 +1,18 @@
+# Per-user initscript equivalent
+@reboot screen -wipe &> /dev/null
+@reboot rm ~/.config/audacious/lock
+@reboot rm /home/ssokolow/.DCOPserver_monolith__0
+@reboot /usr/bin/keychain &> /dev/null
+@reboot mkdir -p ~/.macromedia/Flash_Player/macromedia.com/support/flashplayer/sys/; cp ~/.profile_repo/supplemental/settings.sol ~/.macromedia/Flash_Player/macromedia.com/support/flashplayer/sys/settings.sol
+
+# Nightly housekeeping
+0       0       *       *       *       cp ~/.profile_repo/supplemental/settings.sol ~/.macromedia/Flash_Player/macromedia.com/support/flashplayer/sys/settings.sol
+1       1       *       *       *       rm -f ~/.xsession-errors
+2       1       *       *       *       rm -rf ~/incoming/gtk-gnutella-downloads/corrupt/*
+
+# Nightly backup for stuff that's too volatile for DVD-Rs.
+0       2       *       *       *       ~/src/rdbackup_wrapper/backup.py 2>&1 >/dev/null
+
+# PostgreSQL maintenance (nightly light, monthly full)
+0       0       *       *       *       vacuumdb --analyze --quiet ssokolow 2>&1 | grep -v 'only table or database owner can vacuum it'
+0       1       1       *       *       vacuumdb --analyze --quiet --full ssokolow 2>&1 | grep -v 'only table or database owner can vacuum it'

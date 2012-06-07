@@ -273,3 +273,4 @@ done
 echo "IMPORTANT:"
 echo " - Now edit /etc/ssh/sshd_config to allow only non-root, pubkey authentication."
 echo " - Don't forget to copy xorg.conf from supplemental if you need TwinView."
+echo " - Don't forget to restore your crontab."
