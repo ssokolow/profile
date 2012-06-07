@@ -53,9 +53,16 @@ function kman()  { konqueror man:"$@" & }
 function nohup() { command nohup "$@" > /dev/null & }
 
 # Miscellaneous quick features
-function pngcomp() { optipng "$@"; advpng -z4 "$@"; }
 function mp3ck()   { mpck -B "$@"; mp3check -e3STBEG "$@"; }
-
+function pngcomp() {
+    optipng "$@";
+    advpng -z4 "$@";
+    for X in "$@"; do
+        mv "$X" "$X".bak &&
+        pngcrush -rem gAMA -rem alla -rem cHRM -rem iCCP -rem sRGB -rem time "$X".bak "$X" &&
+        rm "$X".bak
+    done
+}
 # An accompaniment to dos2unix and unix2dos
 alias mac2unix="tr '\r' '\n' "
 alias unix2mac="tr '\n' '\r' "

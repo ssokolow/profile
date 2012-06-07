@@ -1,0 +1,9 @@
+[Desktop Entry]
+Name=GTK+ Recent Files Scrubber
+GenericName=Recent Files Cleaner
+Comment=Filter embarassing entries from Recently Used
+Exec=sh -c "exec ~/src/gtk-recent-scrubber/gtk_cleanup.py"
+Terminal=false
+Type=Application
+Categories=
+StartupNotify=false

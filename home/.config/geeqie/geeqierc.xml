@@ -157,7 +157,7 @@
 
 
     <layout
-        id = "main" 
+        id = "lw2" 
         style = "0" 
         order = "123" 
         dir_view_type = "0" 
@@ -175,7 +175,7 @@
         main_window.w = "1276" 
         main_window.h = "977" 
         main_window.maximized = "true" 
-        main_window.hdivider_pos = "272" 
+        main_window.hdivider_pos = "350" 
         main_window.vdivider_pos = "250" 
 
         float_window.x = "0" 

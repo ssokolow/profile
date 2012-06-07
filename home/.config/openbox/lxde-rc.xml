@@ -89,6 +89,9 @@
     </font>
     <font place="ActiveOnScreenDisplay">
       <name/>
+      <size>8</size>
+      <weight></weight>
+      <slant></slant>
     </font>
     <font place="InactiveOnScreenDisplay">
       <name>Sans</name>

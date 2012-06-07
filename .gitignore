@@ -16,3 +16,6 @@ home/.mc/hotlist.bak
 
 # Ubuntu puts a zsh cache in your homedir
 home/.zsh/cache
+
+# Auto-generated and site-specific
+home/.config/awesome/debian/menu.lua
