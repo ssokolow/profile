@@ -1,7 +1,0 @@
-# Desired npm packages
-# Can be installed using this quick hack:
-#  sudo sh -c 'curl http://npmjs.org/install.sh | sh'
-#  egrep -v '^#' node_packages.txt | xargs sudo npm install -g
-
-docco
-uglify-js

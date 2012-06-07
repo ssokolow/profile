@@ -1,4 +1,4 @@
 #!/bin/sh
 # Use with 'sudo apt-get install libv4l-0:1386' on 64-bit Ubuntu.
 # Source: http://ubuntuforums.org/showthread.php?t=1860519&page=2
-LD_PRELOAD=/usr/lib32/libv4l/v4l1compat.so /usr/bin/skype
+LD_PRELOAD=/usr/lib/i386-linux-gnu/libv4l/v4l1compat.so /usr/bin/skype

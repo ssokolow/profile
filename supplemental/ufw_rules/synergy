@@ -1,0 +1,4 @@
+[Synergy]
+title=Synergy Server
+description=Software KVM (master side)
+ports=24800/tcp
