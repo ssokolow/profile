@@ -99,6 +99,7 @@ gksu
 gpm
 gqview
 htop
+incron
 jpegoptim
 k3b
 konqueror
@@ -115,6 +116,7 @@ pydf
 python-gtk2
 python-imaging
 python-lxml
+rdiff-backup
 timidity
 unrar
 vim-doc
@@ -135,6 +137,8 @@ rubygems
 gimp
 hddtemp
 inkscape
+iotop
+latencytop
 libreoffice
 libreoffice-nlpsolver
 libreoffice-ogltrans
@@ -281,3 +285,4 @@ echo "IMPORTANT:"
 echo " - Now edit /etc/ssh/sshd_config to allow only non-root, pubkey authentication."
 echo " - Don't forget to copy xorg.conf from supplemental if you need TwinView."
 echo " - Don't forget to restore your crontab."
+echo " - If upgrading, run virtualenv -p /usr/bin/python ~/.virtualenvs/<name> for all virtualenvs"
