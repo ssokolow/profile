@@ -138,6 +138,12 @@ gimp
 hddtemp
 inkscape
 iotop
+ipython
+ipython3
+ipython-doc
+ipython-notebook
+ipython-qtconsole
+ipython3-qtconsole
 latencytop
 libreoffice
 libreoffice-nlpsolver
@@ -153,7 +159,13 @@ nitrogen
 numlockx
 okular
 opensp
+python-examples
 python-psutil
+python3
+python3-doc
+python3-examples
+python3-qt4
+python3-setuptools
 samba
 uptimed
 xdotool
