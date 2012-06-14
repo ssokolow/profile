@@ -1,5 +1,8 @@
 #!/bin/sh
 
+# User to permission and customize
+ME="ssokolow"
+
 # Only prompt for a password once so this can be left unattended
 if [ `id -u` -ne 0 ]; then
     echo "Re-running self as root..."
@@ -255,6 +258,15 @@ else
     echo " * Sensors already set up. Skipping."
 fi
 
+if [ -e /etc/incron.allow ]; then
+    if [ ! `egrep ^$ME$ /etc/incron.allow` ]; then
+        echo " * Adding '$ME' to permitted incron users"
+        echo "ssokolow" >> /etc/incron.allow
+    else
+        echo " * '$ME' already in /etc/incron.allow"
+    fi
+fi
+
 echo " * Setting up eawpatches in Timidity"
 if [ -e /etc/timidity/eawpatches.cfg ]; then
     if egrep -q '^source /etc/timidity/freepats.cfg$' /etc/timidity/timidity.cfg; then
@@ -267,19 +279,19 @@ else
 fi
 
 echo " * Setting login shell to zsh..."
-chsh -s /bin/zsh ssokolow
+chsh -s /bin/zsh "$ME"
 
 echo " * Creating group 'family' for limited file sharing"
 addgroup family
 
-echo " * Adding user 'ssokolow' to requisite groups"
+echo " * Adding '$ME' to requisite groups"
 for GRP in tty dialout video lpadmin vboxusers family; do
-    gpasswd -a ssokolow "$GRP"
+    gpasswd -a "$ME" "$GRP"
 done
 
 if [ -e /srv/inbound ]; then
     echo " * Found /srv/inbound. Setting permissions."
-    sudo chown -R ssokolow:family /srv/inbound
+    sudo chown -R "$ME:family" /srv/inbound
     sudo find /srv/inbound -type d -exec chmod 2775 {} \;
     sudo find /srv/inbound -type f -exec chmod a-x {} \;
 else
