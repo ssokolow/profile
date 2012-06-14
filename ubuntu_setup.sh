@@ -176,8 +176,9 @@ xsane
 
 # Porteus Status Unknown:
 chmsee
-kdiff3
 graphviz
+fuseiso
+kdiff3
 links
 lm-sensors
 lynx
