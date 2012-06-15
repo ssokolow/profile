@@ -5,6 +5,18 @@
 # If $HOME is not set, it will look in the current directory.
 #
 
+# only warn about files passed on the command line
+only = 0
+
+# the maximum number of warnings to be displayed
+limit = 30
+
+# list of evil C extensions that crash the interpreter
+evil = []
+
+# ignore import errors
+ignoreImportErrors = 0
+
 # unused imports
 importUsed = 1
 
@@ -135,6 +147,9 @@ modulo1 = 1
 # check if using (expr is const-literal), doesn't always work on integers and strings
 isLiteral = 1
 
+# check if a constant string is passed to getattr()/setattr()
+constAttr = 1
+
 # check consistent return values
 checkReturnValues = 1
 
@@ -217,4 +232,10 @@ printParse = 0
 
 # turn on debugging for checker
 debug = 0
+
+# print each class object to find one that crashes
+findEvil = 0
+
+# turn off all output except warnings
+quiet = 0
 
