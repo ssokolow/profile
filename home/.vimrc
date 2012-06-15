@@ -58,10 +58,10 @@
 "  %            Jump to next if/then clause or matching paren
 "  g%           Jump to previous if/then clause or matching paren
 "
-"  ]m           Jump to start of next method/class/fold
-"  [m           Jump to start of previous method/class/fold
-"  ]M           Jump to end of next method/class/fold
-"  [M           Jump to end of previous method/class/fold
+"  [m/]m        Jump to start of previous/next method/class/fold
+"  [M/]M        Jump to end of previous/next method/class/fold
+"
+"  [s/]s        Jump to previous/next misspelled word
 "
 " Folds:
 "  zo/zc       Open/Close fold
@@ -141,7 +141,9 @@
 "  ]yy          C String Escape line/selection
 "  ]yy          C String Unescape line/selection
 "
-"  zf           Create fold  (Inserts markers around selection if foldmethod=marker)
+"  zf           Create fold (Adds markers around selection if foldmethod=marker)
+"  zg/zG        Add word to spellcheck's permanent/session whitelist
+"  z=           Get suggested spelling corrections for word under cursor
 "
 "  gg=G         Reindent the entire file according to the current indent setup
 "               (Assuming 'equalprg' hasn't redefined the meaning of =)
