@@ -158,6 +158,7 @@ libreoffice-wiki-publisher
 libreoffice-writer2latex
 libreoffice-writer2xhtml
 lyx
+mutt
 nitrogen
 numlockx
 okular

@@ -1,3 +1,6 @@
+# I don't want my Mutt mail folder cluttering up my PCManFM and "ls -lh" views
+set folder="~/.mail"
+
 # colors
 color normal	white black
 color attachment brightyellow black
