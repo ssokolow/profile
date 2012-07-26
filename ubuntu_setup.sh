@@ -40,7 +40,7 @@ else
 fi
 
 # Stuff Lubuntu installs which I don't want:
-apt-get purge sylpheed ace-of-penguins gnumeric mtpaint modemmanager -y
+apt-get purge sylpheed ace-of-penguins gnumeric mtpaint modemmanager transmission{,-gtk,-common} -y
 rm /usr/share/applications/gnumeric.desktop
 
 # Stuff Ubuntu installs which I DEFINITELY don't want:
@@ -185,6 +185,7 @@ lm-sensors
 lynx
 normalize-audio
 python-dbus
+python-dev
 python-setuptools
 python-xlib
 python-xpyb

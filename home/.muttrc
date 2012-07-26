@@ -1,5 +1,14 @@
+# Note: Use "source" to split up a muttrc to not git-version credentials.
+#
+# Potential Future References:
+# http://www.die-welt.net/2011/11/desktop-in-a-shell-mutt-with-multiple-imap-accounts/
+# https://shreevatsa.wordpress.com/2007/07/31/using-gmail-with-mutt-the-minimal-way/
+# http://www.noah.org/wiki/Mutt
+# http://stackoverflow.com/questions/5055614/whats-in-your-muttrc
+
 # I don't want my Mutt mail folder cluttering up my PCManFM and "ls -lh" views
-set folder="~/.mail"
+set folder = ~/.mail
+set move = no
 
 # colors
 color normal	white black

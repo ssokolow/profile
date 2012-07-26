@@ -319,7 +319,7 @@
         <command>gmrun</command>
       </action>
     </keybind>
-    <keybind key="W-F11">
+    <keybind key="F11">
       <action name="ToggleFullscreen"/>
     </keybind>
     <!-- Launch Task Manager with Ctrl+Alt+Del -->
@@ -807,6 +807,10 @@
       <decor>no</decor>
     </application>
     <application class="OpenClonk">
+      <layer>above</layer>
+      <decor>no</decor>
+    </application>
+    <application name="arx" class="arx">
       <layer>above</layer>
       <decor>no</decor>
     </application>

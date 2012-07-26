@@ -59,7 +59,7 @@ function pngcomp() {
     advpng -z4 "$@";
     for X in "$@"; do
         mv "$X" "$X".bak &&
-        pngcrush -rem gAMA -rem alla -rem cHRM -rem iCCP -rem sRGB -rem time "$X".bak "$X" &&
+        pngcrush -rem gAMA -rem alla -rem cHRM -rem iCCP -rem sRGB -rem time "$X".bak "$X" | egrep -v '^[ \|]\|' &&
         rm "$X".bak
     done
 }
