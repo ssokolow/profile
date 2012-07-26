@@ -135,6 +135,7 @@ arduino-mk
 bottlerocket
 calibre
 conky-all
+dhex
 evince
 rubygems
 gimp
@@ -172,6 +173,7 @@ python3-qt4
 python3-setuptools
 samba
 uptimed
+wxhexeditor
 xdotool
 xsane
 
