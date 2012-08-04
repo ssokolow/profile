@@ -63,6 +63,19 @@ function pngcomp() {
         rm "$X".bak
     done
 }
+function pngcomp_brute() {
+    optipng -zc1-9 -zm1-9 -zs0-3 -f0-5 "$@" | egrep '(\*\* Processing|% decrease|is already optimized)';
+    advpng -z4 "$@";
+    advpng -z3 "$@" | fgrep -v '100%';
+    advpng -z2 "$@" | fgrep -v '100%';
+    advpng -z1 "$@" | fgrep -v '100%';
+    for X in "$@"; do
+        mv "$X" "$X".bak &&
+        pngcrush -brute -rem gAMA -rem alla -rem cHRM -rem iCCP -rem sRGB -rem time "$X".bak "$X" | egrep '(Best pngcrush method|no filesize change|% filesize reduction)' &&
+        rm "$X".bak
+    done
+}
+
 # An accompaniment to dos2unix and unix2dos
 alias mac2unix="tr '\r' '\n' "
 alias unix2mac="tr '\n' '\r' "
