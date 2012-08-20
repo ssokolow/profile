@@ -2,7 +2,15 @@
 username="Stephan Sokolow <http://www.ssokolow.com/ContactMe>"
 
 [extensions]
+color=
+pager=
 hgext.fetch=
 hgext.gpg=
 hgext.purge=
 hgext.convert=
+
+[pager]
+pager = LESS=FRSXQ less
+quiet = True
+
+# https://blog.mozilla.org/ted/2012/08/20/prettier-mercurial-output/
