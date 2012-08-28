@@ -1,0 +1,75 @@
+snippet superbase
+	{% load i18n %}
+	{% load static %}
+	{% load url from future %}
+	{% get_static_prefix as STATIC_PREFIX %}
+	{% get_current_language as LANGUAGE_CODE %}
+	{% get_language_info for LANGUAGE_CODE as lang %}
+
+	<!DOCTYPE html>
+	<html lang="{{ lang.code }}">
+		<head>
+			{% block head %}
+				<title>{% block title %}{% trans "Untitled Page" %}{% endblock %}
+					- {% trans "${1:TODO: Title}" %}</title>
+
+				<meta http-equiv="content-type" content="text/html;charset=utf-8" />
+				<meta http-equiv="Content-Style-Type" content="text/css" />
+				<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+				<meta name="viewport" content="width=device-width" />
+
+				{# TODO: Fill these out dynamically #}
+				{# <meta name="description" content="{% trans "" %}" /> #}
+				{#<meta name="keywords" content="{% trans "" %}" />#}
+				<meta name="language" content="{{ lang.code }}" />
+				<link rel="icon" type="image/png" href="{{ STATIC_PREFIX }}favicon.ico" />
+				<link rel="stylesheet" type="text/css" href="{{ STATIC_PREFIX }}css/base.css" />
+
+				<!-- jquery for equal height elements -->
+				<script type="text/javascript" src="{{ STATIC_PREFIX }}js/base.js"></script>
+			{% endblock %}
+		</head>
+		<body>
+			<h1><a href="{% url "home" %}"></a></h1>
+
+			{% if messages %}
+				<ul class="content messages">
+					{% for message in messages %}
+						<li{% if message.tags %}
+							class="msgbox form-msg-error {{ message.tags }}"{% endif %}
+							>{{ message }}</li>
+					{% endfor %}
+				</ul>
+			{% endif %}
+
+			<div class="body">
+				{# TODO: Hyperlink the leave a note part. #}
+				{% block body %}
+					<p>{% trans "Oops. This page has no content. Please leave a note so we can fix the problem." %}</p>
+				{% endblock %}
+			</body>
+
+			<div id="footer">
+				{# TODO: Copyright info including CC/GPL license. #}
+			</div>
+		</body>
+	</html>
+
+snippet base
+	{% extends "superbase.html" %}
+	{% load i18n %}
+
+	{% block body %}
+		{# http://stackoverflow.com/questions/511067/how-to-repeat-a-block-in-a-django-template #}
+		<h2>{% block title %}{% trans "Untitled Page" %}{% endblock %}</h2>
+		<div class="content">{% block content %}{% endblock %}</div>
+	{% endblock %}
+
+snippet boiler
+	{% extends "base.html" %}
+	{% load i18n %}
+
+	{% block title %}{% trans "${1:Welcome" context "greeting}" %}{% endblock %}
+	{% block body %}
+		${2:TODO: Content}
+	{% endblock %}
