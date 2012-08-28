@@ -40,8 +40,7 @@ else
 fi
 
 # Stuff Lubuntu installs which I don't want:
-apt-get purge sylpheed ace-of-penguins gnumeric mtpaint modemmanager transmission{,-gtk,-common} -y
-rm /usr/share/applications/gnumeric.desktop
+apt-get purge sylpheed ace-of-penguins gnumeric gnumeric-common mtpaint modemmanager transmission{,-gtk,-common} -y
 
 # Stuff Ubuntu installs which I DEFINITELY don't want:
 # TODO: What's a cleaner way to say "remove any of the following if installed"?
