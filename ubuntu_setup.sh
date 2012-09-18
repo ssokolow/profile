@@ -210,6 +210,20 @@ libgee-dev
 
 EOF
 
+# Set up LCDproc for the G15 keyboard if I'm running on monolith
+if [ "`hostname`" = "monolith" ]; then
+    apt-get install -y g15daemon lcdproc
+    sed -i 's@^\(ToggleRotateKey=Enter$\)@#\1\nToggleRotateKey=Down@' /etc/LCDd.conf
+    sed -i 's@^\(#Heartbeat=open$\)@\1\nHeartbeat=on@' /etc/LCDd.conf
+    sed -i 's@^\(^Driver=curses$\)@#\1\nDriver=g15@' /etc/LCDd.conf
+    sed -i 's@^#\(ServerScreen=no$\)@\1@' /etc/LCDd.conf
+    sed -i 's@^#\(AutoRotate=no$\)@\1@' /etc/LCDd.conf
+    cp "`dirname \"$0\"`/supplemental/lcdproc.conf /etc/"
+    /etc/init.d/LCDd restart
+
+    #TODO: Set up lcdproc to run on boot via /etc/rc.local
+fi
+
 # Separate out stuff only found in alternate repos to avoid problems if the
 # apt-get update fails
 apt-get install -y wine
