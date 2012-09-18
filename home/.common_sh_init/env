@@ -30,7 +30,7 @@ export LC_CTYPE="en_CA.utf8"
 export TZ="America/Toronto"
 
 # Configure the shell the way I like it
-export PATH="${PATH}:"~/bin
+export PATH="${PATH}:${HOME}/bin"
 export MAILPATH=~/.maildir:~/mbox:~/Mail:/var/spool/mail/$USER
 export MAILCHECK=60
 
