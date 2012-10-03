@@ -10,6 +10,14 @@ alias less="less -R"
 
 function oiod() { echo "ERROR: Your fingers are misaligned"; }
 
+function t() {
+    if [ -z "$*" ]; then
+        clear; task
+    else
+        task "$@"
+    fi
+}
+
 function cwdiff() {
     if `which dwdiff &>/dev/null`; then
         dwdiff -R "$@" | command colordiff
