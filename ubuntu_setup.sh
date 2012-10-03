@@ -82,6 +82,7 @@ thunderbird
 tig
 winpdb
 xclip
+xournal
 xpad
 
 # Note: python-tidylib must be here so it can pull in tidylib for virtualenvs
