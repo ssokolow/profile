@@ -1,3 +1,4 @@
 @sh -c "exec ~/bin/urxvt_kuake"
+@sh -c "killall lcdproc; exec lcdproc -f"
 @sh -c "until conky; do echo; done"
 @sh -c "sleep 60; exec audacious"
