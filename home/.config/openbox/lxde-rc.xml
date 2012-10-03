@@ -662,13 +662,6 @@
         <action name="Focus"/>
         <action name="Raise"/>
       </mousebind>
-      <!-- User Bindings -->
-      <mousebind button="Button8" action="Press">
-        <action name="DesktopNext"/>
-      </mousebind>
-      <mousebind button="Button9" action="Press">
-        <action name="DesktopPrevious"/>
-      </mousebind>
     </context>
     <context name="Root">
       <!-- Menus -->
@@ -681,6 +674,13 @@
         <action name="ShowMenu">
           <menu>root-menu</menu>
         </action>
+      </mousebind>
+      <!-- User Bindings -->
+      <mousebind button="Button8" action="Press">
+        <action name="DesktopNext"/>
+      </mousebind>
+      <mousebind button="Button9" action="Press">
+        <action name="DesktopPrevious"/>
       </mousebind>
     </context>
     <context name="MoveResize">
