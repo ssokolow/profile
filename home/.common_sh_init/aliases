@@ -7,6 +7,7 @@ alias colordiff="colordiff -u"
 alias ls="ls --color=auto"
 alias dirs="dirs -v"
 alias less="less -R"
+alias vids="egrep '\.(flv|mp4|webm|avi|ogv|ogm|mkv|mov|rm|wmv)'"
 
 function oiod() { echo "ERROR: Your fingers are misaligned"; }
 
