@@ -1,0 +1,81 @@
+# [Created by task 2.0.0 9/16/2012 13:15:25]
+# Taskwarrior program configuration file.
+# For more documentation, see http://taskwarrior.org or try 'man task', 'man task-faq',
+# 'man task-tutorial', 'man task-color', 'man task-sync' or 'man taskrc'
+
+# Here is an example of entries that use the default, override and blank values
+#   variable=foo   -- By specifying a value, this overrides the default
+#   variable=      -- By specifying no value, this means no default
+#   #variable=foo  -- By commenting out the line, or deleting it, this uses the default
+
+# Use the command 'task show' to see all defaults and overrides
+
+# Files
+data.location=/home/ssokolow/.task
+
+# Color theme (uncomment one to use)
+#include /usr/share/doc/task/rc/light-16.theme
+#include /usr/share/doc/task/rc/light-256.theme
+#include /usr/share/doc/task/rc/dark-16.theme
+include /usr/share/doc/task/rc/dark-256.theme
+#include /usr/share/doc/task/rc/dark-red-256.theme
+#include /usr/share/doc/task/rc/dark-green-256.theme
+#include /usr/share/doc/task/rc/dark-blue-256.theme
+#include /usr/share/doc/task/rc/dark-violets-256.theme
+#include /usr/share/doc/task/rc/dark-yellow-green.theme
+#include /usr/share/doc/task/rc/dark-gray-256.theme
+
+# Sync settings for my pocket device's SD card
+merge.default.uri=/media/PANDORA_32G/pandora/appdata/task/data
+push.default.uri=/media/PANDORA_32G/pandora/appdata/task/data
+
+# Set up holidays
+include /usr/share/doc/task/rc/holidays.en-CA.rc
+calendar.holidays=sparse
+
+# I always welcome more statusline integration for screen/tmux
+xterm.title=on
+
+# I find `task calendar` kind of useless when in sparse format
+calendar.details=full
+
+# Set up a more sane short date format
+# Entry in abbreviated ISO8601 with or without leading zeroes
+# Display in abbreviated ISO8601 with leading zeros
+dateformat=Y-m-d
+dateformat.report=Y-M-D
+dateformat.annotation=a Y-M-D
+dateformat.edit=Y-m-d H:N:S
+dateformat.info=Y-M-D H:N:S
+
+# Make "overdue" take prededence over "blocked" for colorization to drive home the urgency of the situation
+rule.precedence.color=due.today,active,overdue,blocked,due,keyword,project,tag,recurring,pri,tagged,completed,deleted
+
+# Define "eta" as a user-defined attribute
+#TODO: Still needs to be integrated into urgency calculations
+uda.eta.type=duration
+uda.eta.label=Time eta
+
+# Add "eta" to the default "next" and "long" reports
+report.next.columns=id,project,priority,due,start.active,entry.age,urgency,due.countdown,eta,description
+report.next.labels=ID,Project,Pri,Due,A,Age,Urgency,Countdown,ETA,Description
+report.long.columns=id,project,priority,entry,start,due,recur,due.countdown,entry.age,eta,depends,tags,description
+report.long.labels=ID,Project,Pri,Added,Started,Due,Recur,Countdown,Age,ETA,Deps,Tags,Description
+
+# Make the recurring report useful by showing recurring stuff that's also waiting
+report.recurring.filter=status.not:completed status.not:deleted parent.any:
+
+# A cross between the "next" and "unblocked" reports
+#TODO: Needs a smarter alternative to depends.none:
+report.brief.columns=id,project,priority,due,start.active,entry.age,urgency,eta,description
+report.brief.description=* Lists the most urgent unblocked tasks
+report.brief.filter=status:pending depends.none: limit:page
+report.brief.labels=ID,Project,Pri,Due,Active,Age,Urgency,ETA,Description
+report.brief.sort=urgency-,due+,priority-,start-,project+
+
+# A report for quick things that can fill slack time
+report.quick.columns=id,project,priority,due,start.active,entry.age,urgency,eta,description
+report.quick.description=* Lists the tasks most suited to being productive in spare time
+report.quick.labels=ID,Project,Pri,Due,A,Age,Urgency,ETA,Description
+report.quick.filter=status:pending limit:page eta.any:
+report.quick.sort=eta+,urgency-,due+,priority-,start-,project+
