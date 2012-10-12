@@ -76,6 +76,8 @@ XTerm*scrollTtyOutput: false
 
 ! ---=== urxvt Defaults for a nice mix of Linux console and Konsole ===---
 
+URxvt.iconFile: /usr/share/icons/elementary/apps/16/terminal.svg
+
 ! URL integration
 ! TODO: Consider this: http://www.jukie.net/bart/blog/urxvt-url-yank
 URxvt.perl-lib: /home/ssokolow/.urxvt
