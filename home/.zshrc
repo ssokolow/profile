@@ -153,6 +153,7 @@ setopt HIST_FCNTL_LOCK 2>/dev/null
 setopt HIST_ALLOW_CLOBBER
 setopt HIST_IGNORE_ALL_DUPS HIST_FIND_NO_DUPS
 setopt HIST_REDUCE_BLANKS
+setopt HIST_IGNORE_SPACE # Easy way to omit things from history
 setopt APPEND_HISTORY # Default, but let's be sure
 setopt INC_APPEND_HISTORY SHARE_HISTORY
 
