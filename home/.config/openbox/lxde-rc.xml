@@ -788,6 +788,11 @@
 
   # end of the example
   -->
+    <application name="urxvt_desktop">
+      <layer>below</layer>
+      <desktop>all</desktop>
+      <skip_taskbar>yes</skip_taskbar>
+    </application>
     <application name="gmrun" class="Gmrun">
       <layer>above</layer>
     </application>
