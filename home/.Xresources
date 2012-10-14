@@ -87,7 +87,9 @@ URxvt.urlLauncher: xdg-open
 urxvt_kuake.perl-ext-common: default,matcher,clipboard,kuake<F12>
 urxvt_kuake.geometry: 212x60+0+0
 urxvt_kuake.borderLess: true
-URxvt.kuake.toggleFocusesIfVisible: true
+urxvt_kuake.internalBorder: 0
+urxvt_kuake.externalBorder: 0
+urxvt_kuake.toggleFocusesIfVisible: true
 
 ! White on Black without being eye-straining.
 Rxvt.background: #010101
