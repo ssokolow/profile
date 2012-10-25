@@ -47,7 +47,7 @@ Plugin {
             id=/usr/share/applications/comix.desktop
         }
         Button {
-            id=/home/ssokolow/.local/share/applications/desura.desktop
+            id=/usr/share/applications/desurium.desktop
         }
         Button {
             id=/usr/share/applications/leafpad.desktop
