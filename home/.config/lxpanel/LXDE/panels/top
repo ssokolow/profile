@@ -16,7 +16,9 @@ Global {
     setdocktype=1
     setpartialstrut=0
     usefontcolor=1
+    fontsize=10
     fontcolor=#ffffff
+    usefontsize=0
     background=1
     backgroundfile=/home/ssokolow/.local/share/images/lubuntu-background-vert.png
     iconsize=24
