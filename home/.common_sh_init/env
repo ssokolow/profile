@@ -64,7 +64,4 @@ fi
 # Make sure I can brink my Clearlooks Ttk theme everywhere I go.
 export TCLLIBPATH=~/.local/share/tkthemes
 
-# Make sure the gtk-qt gtkrc is loaded.
-export GTK2_RC_FILES="$HOME/.gtkrc-2.0:$HOME/.kde/share/config/gtkrc-2.0:/etc/gtk-2.0/gtkrc"
-
 # vim: ft=sh noexpandtab

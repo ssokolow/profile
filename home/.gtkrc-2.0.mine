@@ -1,2 +1,7 @@
 gtk-icon-theme-name="elementary"
 gnome-theme-icon-name="elementary"
+
+# Use sane button order
+# http://uxmovement.com/buttons/why-ok-buttons-in-dialog-boxes-work-best-on-the-right/
+# WARNING: Make sure this isn't overridden by other files in GTK2_RC_FILES
+gtk-alternative-button-order = 0
