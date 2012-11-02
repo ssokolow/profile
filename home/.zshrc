@@ -91,8 +91,10 @@ zstyle ':completion:*:cd:*' ignored-patterns '(*/)#lost+found'             # hid
 zstyle ':completion:*:(rm|kill|diff|scp):*' ignore-line yes                # commands like rm don't want the same completion multiple times
 zstyle ':completion:*:complete:-command-::commands' ignored-patterns '*\~' # don't complete backup files as executables
 
+# Exclude bytecode and temporary files from filename completion.
 zstyle ':completion:*:*files' ignored-patterns '*?.o' '*?.pyc' '*?.pyo' '*?~' '*?.bak'
 # TODO: Make this work
+# Exclude bytecode and temporary files from completion for everything except rm.
 #zstyle ':completion:*:*:(^rm):*:*files' ignored-patterns '*?.o' '*?.pyc' '*?.pyo' '*?~' '*?.bak'
 
 # Complete PIDs and process names to any process owned by my user
@@ -118,13 +120,16 @@ getent passwd | while IFS=: read name passwd uid rest; do
 done
 zstyle ':completion:*' users $_users
 
+#TODO: Identify which "Shell Options" control completion and belong here instead
+#TODO: Can I set up a keybind which means "If we're not already in an {a,b,c}
+#      group, then move back to the nearest /, insert {, return, and add a ','"?
+#TODO: Maybe I should further subdivide this section.
 # Set up some pretty verbose formatting for completion
 #zstyle ':completion:*:descriptions' format '%B%d%b'
 #zstyle ':completion:*' group-name ''
 #zstyle ':completion:*' verbose yes
 #zstyle ':completion:*:messages' format '%d'
 #zstyle ':completion:*:warnings' format 'No matches for: %d'
-
 
 # }}}
 # {{{ Keybindings:
@@ -195,7 +200,7 @@ HISTSIZE=1100
 SAVEHIST=1000
 
 # }}}
-# {{{ Shell Options:
+# {{{ Shell Options: (TODO: Split out into more appropriate places)
 
 # Set shopts which bash doesn't support
 setopt MULTIBYTE
