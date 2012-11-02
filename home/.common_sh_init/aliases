@@ -9,7 +9,13 @@ alias dirs="dirs -v"
 alias less="less -R"
 alias vids="egrep '\.(flv|mp4|webm|avi|ogv|ogm|mkv|mov|rm|wmv)'"
 
-function oiod() { echo "ERROR: Your fingers are misaligned"; }
+function oiod() { echo "ERROR: Your right hand is misaligned"; }
+
+function ytdl() {
+    youtube-dl -l --prefer-free-formats "$@"
+    rename 's@[|:]@ - @' *
+    rename 'y@\?\\\*/"<>@_@' *
+}
 
 function t() {
     if [ -z "$*" ]; then
