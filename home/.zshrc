@@ -85,6 +85,16 @@ zstyle ':completion:*' accept-exact '*(N)'
 zstyle ':completion:*' list-colors ${(s.:.)LS_COLORS}
 zstyle ':completion:*:*:kill:*:processes' list-colors '=(#b) #([0-9]#)*=0=01;31'
 
+# Show arrow-navigable completions and, for "kill", do it even when unambiguous
+# (https://bbs.archlinux.org/viewtopic.php?pid=987587#p987587)
+zstyle ':completion:*' menu yes select
+zstyle ':completion:*:kill:*' force-list always
+zstyle ':completion:*:*:kill:*' verbose yes
+
+# Group completions by different object types for big result sets (eg. rsync)
+zstyle ':completion:*:descriptions' format '%B%F{green}%d%f%b'
+zstyle ':completion:*' group-name ''
+
 # Set up some comfy completion exemptions
 zstyle ':completion:*:functions' ignored-patterns '_*'                     # hide completion functions from the completer
 zstyle ':completion:*:cd:*' ignored-patterns '(*/)#lost+found'             # hide the lost+found directory from cd
@@ -124,12 +134,6 @@ zstyle ':completion:*' users $_users
 #TODO: Can I set up a keybind which means "If we're not already in an {a,b,c}
 #      group, then move back to the nearest /, insert {, return, and add a ','"?
 #TODO: Maybe I should further subdivide this section.
-# Set up some pretty verbose formatting for completion
-#zstyle ':completion:*:descriptions' format '%B%d%b'
-#zstyle ':completion:*' group-name ''
-#zstyle ':completion:*' verbose yes
-#zstyle ':completion:*:messages' format '%d'
-#zstyle ':completion:*:warnings' format 'No matches for: %d'
 
 # }}}
 # {{{ Keybindings:
