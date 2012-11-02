@@ -49,8 +49,9 @@ promptinit
 source ~/.zshrc.d/prompt_gentoo_setup
 zstyle ':completion::complete:*' use-cache 1
 zstyle ':completion:*' cache-path ~/.zsh/cache
-zstyle ':completion:*' matcher-list 'm:{a-z}={A-Z}'
-zstyle ':completion:*:processes' command 'ps x'
+zstyle ':completion:*' matcher-list 'm:{a-z}={A-Z}' # Match lowercase letters case-insensitively but not uppercase ones
+zstyle ':completion:*:processes' command 'ps x'     # Complete PIDs any process owned by my user
+# TODO: How do I also complete process names (eg. killall) the same way?
 
 # Speed up completions by reducing the fuzziness of the matching
 zstyle ':completion:*' accept-exact '*(N)'
