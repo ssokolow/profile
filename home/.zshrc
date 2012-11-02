@@ -11,6 +11,21 @@
 #  Ctrl-S  Incremental history search (forward)
 #  Ctrl-R  Incremental history search (backward)
 #
+# Kill Buffer:
+#  Ctrl-W  Cut previous word
+#  Ctrl-Y  Paste
+#
+# Useful expansions:
+#  !!       Previous line
+#    !!:0          Command from the previous line
+#    !!:1          First argument on the previous line
+#    !!$           Last  argument on the previous line
+#    !!:s/foo/bar  Previous command with all "foo" turned into "bar"
+#  !#       Current line
+#    !#$           Last word on the current line
+#  --------------------------------------------
+#  mv SomeReallyLongFilename !#$:s/Really/Quite
+#
 # }}}
 
 # Source all environment settings common to both zsh and bash and don't let
