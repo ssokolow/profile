@@ -84,6 +84,7 @@ winpdb
 xclip
 xournal
 xpad
+youtube-dl
 
 # Note: python-tidylib must be here so it can pull in tidylib for virtualenvs
 # which install their own copies of PyTidyLib.
