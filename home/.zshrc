@@ -36,7 +36,18 @@ typeset -ga chpwd_functions
 autoload -U zrecompile # Generate and cache compiled versions of initscripts
 autoload -U run-help   # Enable Meta-H (Alt/Esc-h/H) to read the manpage for the current partially typed command
 
+# {{{ Load Definitions Shared With Bash:
+
+# Pull in the stuff common to both bash and zsh
+source ~/.common_sh_init/aliases
+source ~/.common_sh_init/misc
+
+# Make sure there are no duplicate entries in PATH or PYTHONPATH
+typeset -U PATH PYTHONPATH
+
+# }}}
 # {{{ Completion:
+# Note: Must come after common_sh_init defines LS_COLORS
 
 # Resolve any symlinks in ~/.zsh/functions and prepend the result to fpath
 fpath=(~/.zsh/functions(:A) $fpath)
@@ -54,6 +65,10 @@ zstyle ':completion:*' matcher-list 'm:{a-z}={A-Z}' # Match lowercase letters ca
 # Speed up completions by reducing the fuzziness of the matching
 zstyle ':completion:*' accept-exact '*(N)'
 # TODO: Forget fuzziness. It's too much hassle and too slow sometimes.
+
+# Colorize completions (Note: Must come after common_sh_init defines LS_COLORS)
+zstyle ':completion:*' list-colors ${(s.:.)LS_COLORS}
+zstyle ':completion:*:*:kill:*:processes' list-colors '=(#b) #([0-9]#)*=0=01;31'
 
 # Set up some comfy completion exemptions
 zstyle ':completion:*:functions' ignored-patterns '_*'                     # hide completion functions from the completer
@@ -95,19 +110,6 @@ zstyle ':completion:*' users $_users
 #zstyle ':completion:*:messages' format '%d'
 #zstyle ':completion:*:warnings' format 'No matches for: %d'
 
-# }}}
-# {{{ Load Definitions Shared With Bash:
-
-# Pull in the stuff common to both bash and zsh
-source ~/.common_sh_init/aliases
-source ~/.common_sh_init/misc
-
-# Colorize completions (Has to come after common_sh_init defines LS_COLORS
-zstyle ':completion:*' list-colors ${(s.:.)LS_COLORS}
-zstyle ':completion:*:*:kill:*:processes' list-colors '=(#b) #([0-9]#)*=0=01;31'
-
-# Make sure there are no duplicate entries in PATH or PYTHONPATH
-typeset -U PATH PYTHONPATH
 
 # }}}
 # {{{ Keybindings:
