@@ -195,14 +195,20 @@ setopt NOHUP
 setopt AUTO_CONTINUE
 setopt NO_NOMATCH
 
-# Set up "you know what I mean" handling of raw paths
+# }}}
+# {{{ File Extension Associations
+# Note: Must be after common_sh_init for EDITOR, IMAGE_MANAGER, and MUSIC_PLAYER
+
 setopt AUTO_CD
-alias -s {chm,CHM}=okular
-alias -s {pdf,PDF,ps,djvu,DjVu}=evince
+alias -s {chm,CHM}=xdg-open
+alias -s {pdf,PDF,ps,djvu,DjVu}=xdg-open
+alias -s {pdf,PDF,ps,djvu,DjVu}=xdg-open
+alias -s {rar,Rar,RAR,zip,Zip,ZIP}=xdg-open
 alias -s {php,css,js,htm,html}="$EDITOR"
 alias -s {jpeg,jpg,JPEG,JPG,png,gif,xpm}="$IMAGE_VIEWER"
 alias -s {avi,AVI,Avi,divx,DivX,mkv,mpg,mpeg,wmv,WMV,mov,rm,flv,ogm,ogv,mp4}=mplayer
 alias -s {aac,ape,au,hsc,flac,gbs,gym,it,lds,ogg,m4a,mod,mp2,mp3,MP3,Mp3,mpc,nsf,nsfe,psf,sid,spc,stm,s3m,vgm,vgz,wav,wma,wv,xm}="$MUSIC_PLAYER"
+# TODO: Is there any way to set up xdg-open as a default?
 # TODO: Find a way to make these suffix aliases case-insensitive.
 
 # }}}
