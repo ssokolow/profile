@@ -62,18 +62,28 @@ zstyle ':completion:*:functions' ignored-patterns '_*'                     # hid
 zstyle ':completion:*:cd:*' ignored-patterns '(*/)#lost+found'             # hide the lost+found directory from cd
 zstyle ':completion:*:(rm|kill|diff|scp):*' ignore-line yes                # commands like rm don't want the same completion multiple times
 zstyle ':completion:*:complete:-command-::commands' ignored-patterns '*\~' # don't complete backup files as executables
-zstyle ':completion:*:*:*:users' ignored-patterns \
-    adm apache bin daemon games gdm halt ident junkbust lp mail mailnull \
-    named news nfsnobody nobody nscd ntp operator pcap postgres radvd \
-    rpc rpcuser rpm shutdown squid sshd sync uucp vcsa xfs backup bind  \
-    dictd gnats identd irc man messagebus postfix proxy sys www-data \
-    avahi clamav ddclient festival freenet haldaemon ldap mysql partimag \
-    postmaster sockd timidity asterisk avahi-autoipd buildbot cron firebird \
-    hsqldb mythtv nut paludisbuild portage pulse smmsp tor
 
 zstyle ':completion:*:*files' ignored-patterns '*?.o' '*?.pyc' '*?.pyo' '*?~' '*?.bak'
 # TODO: Make this work
 #zstyle ':completion:*:*:(^rm):*:*files' ignored-patterns '*?.o' '*?.pyc' '*?.pyo' '*?~' '*?.bak'
+
+# Opt ssh and rsync out of /etc/hosts so my ad-blocking doesn't flood out
+# useful completions (https://gist.github.com/4000350)
+local _hosts
+_hosts=(${${${(M)${(f)"$(<~/.ssh/config)"}:#Host*}#Host }:#*\**})
+zstyle ':completion:*' hosts $_hosts
+
+# Only complete users to non-system accounts (https://gist.github.com/4000615)
+# Note: Only gives "root" on OSX because "getent passwd" returns an empty list
+#       (Need to parse 'dscacheutil -q user' there, which has another format)
+local _users
+_users=(root)
+getent passwd | while IFS=: read name passwd uid rest; do
+    if [[ $uid = <1000-> ]]; then
+        _users=($_users $name)
+    fi
+done
+zstyle ':completion:*' users $_users
 
 # Set up some pretty verbose formatting for completion
 #zstyle ':completion:*:descriptions' format '%B%d%b'
