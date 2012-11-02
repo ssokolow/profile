@@ -50,8 +50,6 @@ source ~/.zshrc.d/prompt_gentoo_setup
 zstyle ':completion::complete:*' use-cache 1
 zstyle ':completion:*' cache-path ~/.zsh/cache
 zstyle ':completion:*' matcher-list 'm:{a-z}={A-Z}' # Match lowercase letters case-insensitively but not uppercase ones
-zstyle ':completion:*:processes' command 'ps x'     # Complete PIDs any process owned by my user
-# TODO: How do I also complete process names (eg. killall) the same way?
 
 # Speed up completions by reducing the fuzziness of the matching
 zstyle ':completion:*' accept-exact '*(N)'
@@ -66,6 +64,11 @@ zstyle ':completion:*:complete:-command-::commands' ignored-patterns '*\~' # don
 zstyle ':completion:*:*files' ignored-patterns '*?.o' '*?.pyc' '*?.pyo' '*?~' '*?.bak'
 # TODO: Make this work
 #zstyle ':completion:*:*:(^rm):*:*files' ignored-patterns '*?.o' '*?.pyc' '*?.pyo' '*?~' '*?.bak'
+
+# Complete PIDs and process names to any process owned by my user
+# (Use "cut" as a workaround for kdeinit4 argv[0])
+zstyle ':completion:*:processes' command 'ps x'     # Complete PIDs any process owned by my user
+zstyle ':completion:*:processes-names' command 'ps x -o command | cut -d: -f1'
 
 # Opt ssh and rsync out of /etc/hosts so my ad-blocking doesn't flood out
 # useful completions (https://gist.github.com/4000350)
