@@ -9,7 +9,7 @@ Global {
     width=298
     height=24
     transparent=0
-    tintcolor=#000000
+    tintcolor=#474747
     alpha=255
     autohide=1
     heightwhenhidden=2
@@ -19,7 +19,7 @@ Global {
     fontsize=10
     fontcolor=#ffffff
     usefontsize=0
-    background=1
+    background=0
     backgroundfile=/home/ssokolow/.local/share/images/lubuntu-background-vert.png
     iconsize=24
 }
