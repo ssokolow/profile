@@ -296,10 +296,6 @@ if command -v fortune >/dev/null; then
     fortune
 fi
 
-# Do the deferred heavy stuff here
-# TODO: See if I can make this lighter without losing cdr<Tab>
-setopt hashcmds hashdirs hashlistall
-
 #}}}
 #{{{ url-encode
 # Source:
@@ -310,6 +306,12 @@ function url-encode; {
     setopt extendedglob
     echo "${${(j: :)@}//(#b)(?)/%$[[##16]##${match[1]}]}"
 }
+
+#}}}
+#{{{ Deferred heavy stuff
+
+# TODO: See if I can make this lighter without losing cdr<Tab>
+setopt hashcmds hashdirs hashlistall
 
 #}}}
 # vim:fdm=marker
