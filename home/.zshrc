@@ -38,7 +38,9 @@ autoload -U run-help   # Enable Meta-H (Alt/Esc-h/H) to read the manpage for the
 
 # {{{ Completion:
 
-fpath=(~/.zsh/functions $fpath)
+# Resolve any symlinks in ~/.zsh/functions and prepend the result to fpath
+fpath=(~/.zsh/functions(:A) $fpath)
+#TODO: Figure out why this isn't causing my _wine completion to load
 
 # Enable completion (case-insensitive, colorized, and tricked-out)
 autoload -U compinit promptinit
