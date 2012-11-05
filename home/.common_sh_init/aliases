@@ -9,14 +9,17 @@ alias dirs="dirs -v"
 alias less="less -R"
 alias vids="egrep '\.(flv|mp4|webm|avi|ogv|ogm|mkv|mov|rm|wmv)'"
 
+# For when I mistype popd
 function oiod() { echo "ERROR: Your right hand is misaligned"; }
 
+# Alias for my preferred approach to using youtube-dl
 function ytdl() {
     youtube-dl -l --prefer-free-formats "$@"
     rename 's@[|:]@ - @' *
     rename 'y@\?\\\*/"<>@_@' *
 }
 
+# Smart wrapper for multiple site-specific download tools
 function dl() {
     for url in "$@"; do
         case $url in
@@ -27,6 +30,7 @@ function dl() {
     done
 }
 
+# Shorthand alias for TaskWarrior
 function t() {
     if [ -z "$*" ]; then
         clear; task
@@ -35,6 +39,7 @@ function t() {
     fi
 }
 
+# Colorized wdiff
 function cwdiff() {
     if `which dwdiff &>/dev/null`; then
         dwdiff -R "$@" | command colordiff

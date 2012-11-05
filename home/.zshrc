@@ -90,6 +90,10 @@ zstyle ':completion:*:*:kill:*:processes' list-colors '=(#b) #([0-9]#)*=0=01;31'
 zstyle ':completion:*' menu yes select
 zstyle ':completion:*:kill:*' force-list always
 zstyle ':completion:*:*:kill:*' verbose yes
+# TODO: Use accept-and-menu-complete (or, if that doesn't work, try
+#       accept-and-infer-next-history) to set up a keybind for accepting the
+#       selected completion and then triggering more completion (like "descend
+#       into directory" in vim's wildmenu)
 
 # Group completions by different object types for big result sets (eg. rsync)
 zstyle ':completion:*:descriptions' format '%B%F{green}%d%f%b'
