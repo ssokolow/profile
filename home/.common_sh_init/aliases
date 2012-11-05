@@ -12,6 +12,14 @@ alias vids="egrep '\.(flv|mp4|webm|avi|ogv|ogm|mkv|mov|rm|wmv)'"
 # For when I mistype popd
 function oiod() { echo "ERROR: Your right hand is misaligned"; }
 
+# Nicer alternative to piping a gunzipped file into lynx
+function wo() {
+    TMPFILE=`mktemp --suffix=.html`
+    cat "$@" | gunzip > "$TMPFILE"
+    "$BROWSER" "$TMPFILE"
+    (sleep 5; rm "$TMPFILE") &
+}
+
 # Alias for my preferred approach to using youtube-dl
 function ytdl() {
     youtube-dl -l --prefer-free-formats "$@"
