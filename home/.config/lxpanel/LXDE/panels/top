@@ -8,7 +8,7 @@ Global {
     widthtype=pixel
     width=298
     height=24
-    transparent=0
+    transparent=1
     tintcolor=#474747
     alpha=255
     autohide=1
