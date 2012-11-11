@@ -32,7 +32,8 @@
 "
 "  :Rename      Rename file attached to the current buffer
 "
-"  <C-^>        Cycle between most recent two buffers
+"  <C-6>        Cycle between most recent two buffers
+"  <C-^>          "      "     "      "    "     "
 "  :A           Switch between source and header file
 "
 "  :AS/:AV      Split horiz/vert and switch to matching source/header
@@ -564,6 +565,15 @@ map <unique> <Leader>s :SessionSave<CR>
 map <unique> <Leader>nt :NERDTreeToggle<CR>
 map <unique> <Leader>[ :NERDTreeToggle<CR>
 map <unique> <Leader>] <Plug>TMiniBufExplorer
+
+" Source: http://bairuidahu.deviantart.com/art/Flying-vs-Cycling-261641977
+nnoremap <leader>l :ls<CR>:b<space>
+
+" }}}
+" {{{ Custom command aliases
+
+" Alias :E as a shorter :tabe that accepts wildcards
+:command -nargs=+ -complete=file E args <args><bar>argdo tabe
 
 " }}}
 " {{{ Aliases to work around "physical race conditions" on some keyboards
