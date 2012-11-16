@@ -149,9 +149,15 @@
 "  gg=G         Reindent the entire file according to the current indent setup
 "               (Assuming 'equalprg' hasn't redefined the meaning of =)
 "
-"  :g/re/p     Print (list) all lines matching re (or any regex)
-"  :g/re/d     Delete all lines matching re
-"  :v/re/d     Delete all lines NOT matching re
+"  :g/re/p      Print (list) all lines matching re (or any regex)
+"  :g/re/d      Delete all lines matching re
+"  :v/re/d      Delete all lines NOT matching re
+"
+"  :sort        Sort lines
+"  :sort!       Sort lines in reverse
+"  :sort u      Sort lines, discarding duplicates
+"  :sort n      Sort lines numerically rather than lexicographically
+"               (http://vim.wikia.com/wiki/Sort_lines)
 "
 "  :Loremipsum [word count]
 "               Insert placeholder text
