@@ -803,6 +803,12 @@
         <monitor>1</monitor>
       </position>
     </application>
+    <application name="Download" class="Firefox">
+      <position>
+        <x>1280</x>
+        <y>0</y>
+      </position>
+    </application>
     <application class="net-minecraft-LauncherFrame">
       <maximized>true</maximized>
       <decor>no</decor>
