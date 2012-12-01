@@ -102,7 +102,7 @@ zstyle ':completion:*' group-name ''
 # Set up some comfy completion exemptions
 zstyle ':completion:*:functions' ignored-patterns '_*'                     # hide completion functions from the completer
 zstyle ':completion:*:cd:*' ignored-patterns '(*/)#lost+found'             # hide the lost+found directory from cd
-zstyle ':completion:*:(rm|kill|diff|scp):*' ignore-line yes                # commands like rm don't want the same completion multiple times
+zstyle ':completion:*:(cp|mv|rm|kill|diff|scp):*' ignore-line yes          # commands like rm don't want the same completion multiple times
 zstyle ':completion:*:complete:-command-::commands' ignored-patterns '*\~' # don't complete backup files as executables
 
 # Exclude bytecode and temporary files from filename completion.
