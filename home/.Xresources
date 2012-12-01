@@ -27,6 +27,71 @@
 *TkTheme: clearlooks
 *background: #efebe7
 
+! ---=== Experiment with making Motif less ugly for DDD ===---
+! (DDD ignores generically-set Motif properties so we must do this)
+! TODO (if possible):
+!  - Hide text cursors in unfocused fields
+!  - Convert on-hover effect from shadow to background color or border
+!  - Pick better fonts and check which package provides them
+
+! Use the lighter background grey from the Lubuntu GTK+ theme
+! (Still a cool grey. Eyedropper the Clearlooks warm grey if necessary.)
+Ddd*background: #e0e0e0
+Ddd*enableThinThickness: True
+Ddd*enableEtchedInMenu: True
+Ddd*enableToggleColor: True
+Ddd*enableToggleVisual: True
+
+! Use pure white for white backgrounds like modern widget themes and websites
+Ddd*XmText.background:         #ffffff
+Ddd*XmTextField.background:    #ffffff
+Ddd*XmList.background:         #ffffff
+Ddd*GraphEdit.background:      #ffffff
+
+! Thick borders and shadows everywhere are archaic
+Ddd*shadowThickness: 1
+Ddd*borderThickness: 0
+Ddd*?*arg*shadowThickness: 1
+Ddd*?*arg*borderThickness: 0
+Ddd*?*buttons*shadowThickness: 1
+Ddd*?*buttons*borderThickness: 0
+
+! Un-cramp the menubar, menus, and toolbar to match modern compact sizing
+Ddd*menubar*marginTop: 1
+Ddd*menubar*marginBottom: 0
+Ddd*XmMenuShell*marginTop: 2
+Ddd*XmMenuShell*marginBottom: 2
+Ddd*XmMenuShell.?.marginWidth: 2
+Ddd*XmMenuShell.?.marginHeight: 2
+Ddd*toolbar*marginWidth: 5
+
+! Compact the menu tear-off buttons
+Ddd*XmMenuShell*XmTearOffButton*borderWidth: 0
+Ddd*XmMenuShell*XmTearOffButton*marginHeight: 0
+
+! DDD's interpretation of a "toggle button" shouldn't have a raised border
+Ddd*XmToggleButton*shadowThickness: 0
+Ddd*XmToggleButton*borderThickness: 0
+
+! The menu bar should not have a raised border
+Ddd*menubar.shadowThickness: 0
+Ddd*menubar.borderThickness: 0
+Ddd*XmMenuShell*XmTearOffButton*ShadowThickness: 2
+
+! ...and we do not want a border around the toolbar to make that stand out
+Ddd*main_window.?.borderThickness: 0
+Ddd*main_window.shadowThickness: 0
+
+! Drop-down boxes in toolbars do not have raised borders these days
+Ddd*toolbar.shadowThickness:        0
+Ddd*toolbar.?.shadowThickness:      1
+
+! DDD can sometimes get its GDB settings fatally messed up so duplicate
+! GUI-exposed integration defaults here for when I want to nuke ~/.ddd/init
+Ddd*cutCopyPasteBindings: KDE
+Ddd*selectAllBindings: KDE
+Ddd*buttonColorKey: c
+
 ! ---=== XTerm Defaults for a nice mix of Linux console and Konsole ===---
 
 ! Operate terminals in utf8 mode whether or not uxterm was called
