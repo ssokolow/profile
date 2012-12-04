@@ -70,6 +70,7 @@ application/x-perl=gvim.desktop;
 application/x-php=gvim.desktop;
 application/x-rar=file-roller.desktop;comix.desktop;
 application/x-shellscript=gvim.desktop;
+application/x-tar=file-roller.desktop;
 application/xhtml+xml=firefox.desktop;
 application/xml=gvim.desktop;
 application/x-yaml=gvim.desktop;
