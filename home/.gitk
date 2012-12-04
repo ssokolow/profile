@@ -5,7 +5,7 @@ set tabstop 8
 set findmergefiles 0
 set maxgraphpct 50
 set maxwidth 16
-set cmitmode tree
+set cmitmode patch
 set wrapcomment none
 set autoselect 1
 set autosellen 40
