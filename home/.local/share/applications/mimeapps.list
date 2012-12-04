@@ -51,6 +51,14 @@ x-scheme-handler/mailto=thunderbird.desktop
 x-scheme-handler/news=thunderbird.desktop
 x-scheme-handler/nntp=thunderbird.desktop
 x-scheme-handler/snews=thunderbird.desktop
+x-scheme-handler/aim=purple-url-handler.desktop
+x-scheme-handler/gtalk=purple-url-handler.desktop
+x-scheme-handler/icq=purple-url-handler.desktop
+x-scheme-handler/irc=purple-url-handler.desktop
+x-scheme-handler/msnim=purple-url-handler.desktop
+x-scheme-handler/xmpp=purple-url-handler.desktop
+x-scheme-handler/ymsgr=purple-url-handler.desktop
+x-scheme-handler/gg=purple-url-handler.desktop
 
 [Added Associations]
 application/javascript=gvim.desktop;
