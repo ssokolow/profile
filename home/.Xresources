@@ -37,6 +37,9 @@
 ! Use the lighter background grey from the Lubuntu GTK+ theme
 ! (Still a cool grey. Eyedropper the Clearlooks warm grey if necessary.)
 Ddd*background: #e0e0e0
+
+! These had no effect on my system but, from what I read, they help on
+! some systems.
 Ddd*enableThinThickness: True
 Ddd*enableEtchedInMenu: True
 Ddd*enableToggleColor: True
@@ -91,6 +94,7 @@ Ddd*toolbar.?.shadowThickness:      1
 Ddd*cutCopyPasteBindings: KDE
 Ddd*selectAllBindings: KDE
 Ddd*buttonColorKey: c
+Ddd*FlatButtons: on
 
 ! ---=== XTerm Defaults for a nice mix of Linux console and Konsole ===---
 
