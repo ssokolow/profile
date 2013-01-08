@@ -65,6 +65,9 @@ report.long.labels=ID,Project,Pri,Added,Started,Due,Recur,Countdown,Age,ETA,Deps
 # Make the recurring report useful by showing recurring stuff that's also waiting
 report.recurring.filter=status.not:completed status.not:deleted parent.any:
 
+# Limit the oldest report to the screen rather than just 10 entries
+report.oldest.filter=status:pending limit:page
+
 # A cross between the "next" and "unblocked" reports
 #TODO: Needs a smarter alternative to depends.none:
 report.brief.columns=id,project,priority,due,start.active,entry.age,urgency,eta,description
