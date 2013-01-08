@@ -10,8 +10,8 @@ snippet superbase
 	<html lang="{{ lang.code }}">
 		<head>
 			{% block head %}
-				<title>{% block title %}{% trans "Untitled Page" %}{% endblock %}
-					- {% trans "${1:TODO: Title}" %}</title>
+				<title>{% block title %}{{ _("Untitled Page")|force_escape }}{% endblock %}
+					- {{ _"${1:TODO: Title}")|force_escape }}</title>
 
 				<meta http-equiv="content-type" content="text/html;charset=utf-8" />
 				<meta http-equiv="Content-Style-Type" content="text/css" />
@@ -19,8 +19,8 @@ snippet superbase
 				<meta name="viewport" content="width=device-width" />
 
 				{# TODO: Fill these out dynamically #}
-				{# <meta name="description" content="{% trans "" %}" /> #}
-				{#<meta name="keywords" content="{% trans "" %}" />#}
+				{# <meta name="description" content="{{ _("")|force_escape }}" /> #}
+				{#<meta name="keywords" content="{{ _("")|force_escape }}" />#}
 				<meta name="language" content="{{ lang.code }}" />
 				<link rel="icon" type="image/png" href="{{ STATIC_PREFIX }}favicon.ico" />
 				<link rel="stylesheet" type="text/css" href="{{ STATIC_PREFIX }}css/base.css" />
@@ -45,7 +45,7 @@ snippet superbase
 			<div class="body">
 				{# TODO: Hyperlink the leave a note part. #}
 				{% block body %}
-					<p>{% trans "Oops. This page has no content. Please leave a note so we can fix the problem." %}</p>
+					<p>{{ _("Oops. This page has no content. Please leave a note so we can fix the problem.")|force_escape }}</p>
 				{% endblock %}
 			</body>
 
@@ -61,7 +61,7 @@ snippet base
 
 	{% block body %}
 		{# http://stackoverflow.com/questions/511067/how-to-repeat-a-block-in-a-django-template #}
-		<h2>{% block title %}{% trans "Untitled Page" %}{% endblock %}</h2>
+		<h2>{% block title %}{{ _("Untitled Page")|force_escape }}{% endblock %}</h2>
 		<div class="content">{% block content %}{% endblock %}</div>
 	{% endblock %}
 
@@ -69,7 +69,10 @@ snippet boiler
 	{% extends "base.html" %}
 	{% load i18n %}
 
-	{% block title %}{% trans "${1:Welcome" context "greeting}" %}{% endblock %}
+	{% block title %}{{ _("${1:Welcome" context "greeting}")|force_escape }}{% endblock %}
 	{% block body %}
 		${2:TODO: Content}
 	{% endblock %}
+
+snippet tr
+	{{ _("${1}")|force_escape }}
