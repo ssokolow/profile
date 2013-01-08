@@ -51,3 +51,5 @@
 # vim: noexpandtab
 [gui]
 	recentrepo = /home/ssokolow/.profile_repo
+[guitool "gitk"]
+	cmd = gitk
