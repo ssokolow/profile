@@ -88,6 +88,8 @@ zstyle ':completion:*:*:kill:*:processes' list-colors '=(#b) #([0-9]#)*=0=01;31'
 # Show arrow-navigable completions and, for "kill", do it even when unambiguous
 # (https://bbs.archlinux.org/viewtopic.php?pid=987587#p987587)
 zstyle ':completion:*' menu yes select
+# TODO: Figure out how to get insert-unambiguous on the first keypress and menu
+# on the second.
 zstyle ':completion:*:kill:*' force-list always
 zstyle ':completion:*:*:kill:*' verbose yes
 # TODO: Use accept-and-menu-complete (or, if that doesn't work, try
@@ -159,6 +161,7 @@ bindkey '\eOF'    end-of-line        # gnome-terminal
 bindkey '\eOw'    end-of-line        # PuTTy in rxvt mode
 
 # Make word-by-word movement work for Ctrl+Left/Right/Backspace/Delete/Tab
+# TODO: Look into making an argument-by-argument delete
 bindkey "\eOc"    forward-word  # urxvt
 bindkey "\e[1;5C" forward-word  # everything else
 bindkey "\eOd"    backward-word # urxvt
