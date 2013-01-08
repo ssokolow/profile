@@ -26,8 +26,8 @@ include /usr/share/doc/task/rc/dark-256.theme
 #include /usr/share/doc/task/rc/dark-gray-256.theme
 
 # Sync settings for my pocket device's SD card
-merge.default.uri=/media/PANDORA_32G/pandora/appdata/task/data
-push.default.uri=/media/PANDORA_32G/pandora/appdata/task/data
+merge.default.uri=/media/Pandora64GB/pandora/appdata/task/data
+push.default.uri=/media/Pandora64GB/pandora/appdata/task/data
 
 # Set up holidays
 include /usr/share/doc/task/rc/holidays.en-CA.rc
