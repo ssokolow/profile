@@ -322,6 +322,12 @@
     <keybind key="F11">
       <action name="ToggleFullscreen"/>
     </keybind>
+    <keybind key="W-f">
+      <!-- Force the flash plugin to release keyboard focus -->
+      <action name="Execute">
+        <command>xdotool getactivewindow mousemove --window %1 0 0 click --clearmodifiers 2</command>
+      </action>
+    </keybind>
     <!-- Launch Task Manager with Ctrl+Alt+Del -->
     <keybind key="A-C-Delete">
       <action name="Execute">
