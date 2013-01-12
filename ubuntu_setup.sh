@@ -175,7 +175,6 @@ python3-setuptools
 samba
 uptimed
 wxhexeditor
-xdotool
 xsane
 
 # Porteus Status Unknown:
@@ -203,6 +202,7 @@ pidgin-otr
 libpurple-bin
 units
 wdiff
+xdotool
 
 # For programming in vala
 gdb

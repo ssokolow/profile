@@ -323,7 +323,9 @@
       <action name="ToggleFullscreen"/>
     </keybind>
     <keybind key="W-f">
-      <!-- Force the flash plugin to release keyboard focus -->
+      <!-- Force the flash plugin to release keyboard focus
+           http://awesome.naquadah.org/wiki/Workaround_plugins_that_steal_the_keyboard_focus
+        -->
       <action name="Execute">
         <command>xdotool getactivewindow mousemove --window %1 0 0 click --clearmodifiers 2</command>
       </action>
