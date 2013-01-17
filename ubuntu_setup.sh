@@ -216,10 +216,7 @@ EOF
 # Set up LCDproc for the case LCD if I'm running on monolith
 if [ "`hostname`" = "monolith" ]; then
     apt-get install -y lcdproc
-    sed -i 's@^\(^Driver=curses$\)@#\1\nDriver=hd44780@' /etc/LCDd.conf
-    sed -i 's@^\(^ConnectionType=4bit$\)@#\1\nConnectionType=lcd2usb@' /etc/LCDd.conf
-    sed -i 's@^\(#Heartbeat=open$\)@\1\nHeartbeat=on@' /etc/LCDd.conf
-    sed -i 's@^#\(ServerScreen=no$\)@\1@' /etc/LCDd.conf
+    cp "`dirname \"$0\"`/supplemental/LCDd.conf /etc/"
     cp "`dirname \"$0\"`/supplemental/lcdproc.conf /etc/"
     /etc/init.d/LCDd restart
 
