@@ -9,6 +9,15 @@ alias dirs="dirs -v"
 alias less="less -R"
 alias vids="egrep '\.(flv|mp4|webm|avi|ogv|ogm|mkv|mov|rm|wmv)'"
 
+# Wrap sqliteman to prevent it from leaving crud lying around
+if `which sqliteman &> /dev/null`; then
+    function sqliteman() {
+        command sqliteman "$@"
+        rm -- -version
+    }
+fi
+
+
 # For when I mistype popd
 function oiod() { echo "ERROR: Your right hand is misaligned"; }
 
