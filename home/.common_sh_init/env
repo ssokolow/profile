@@ -31,7 +31,7 @@ export TZ="America/Toronto"
 
 # Configure the shell the way I like it
 export PATH="${PATH}:${HOME}/bin"
-export MAILPATH=~/.maildir:~/mbox:~/Mail:/var/spool/mail/$USER
+export MAILPATH=${HOME}/.maildir:${HOME}/mbox:${HOME}/Mail:/var/spool/mail/$USER
 export MAILCHECK=60
 
 # Python-related settings
@@ -48,7 +48,7 @@ export SDL_VIDEO_FULLSCREEN_HEAD=2
 
 # Set a few app-specific settings
 export ENCAOPT="-L none"
-export PYTHONSTARTUP=~/.interactive_rc.py
+export PYTHONSTARTUP=${HOME}/.interactive_rc.py
 export SCIPY_PIL_IMAGE_VIEWER=display
 
 # Provide this for later scripts
@@ -56,12 +56,12 @@ if [ -n "$DISPLAY" ]; then
 	export IMAGE_VIEWER=xdg-open
 	export MUSIC_PLAYER=xdg-open
 else
-	export IMAGE_VIEWER=~/bin/gqfbi
+	export IMAGE_VIEWER=${HOME}/bin/gqfbi
 	export MUSIC_PLAYER=mplayer
 	#TODO: Set MUSIC_PLAYER to a wrapper which can also call stuff like adplay
 fi
 
 # Make sure I can brink my Clearlooks Ttk theme everywhere I go.
-export TCLLIBPATH=~/.local/share/tkthemes
+export TCLLIBPATH=${HOME}/.local/share/tkthemes
 
 # vim: ft=sh noexpandtab
