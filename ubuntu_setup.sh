@@ -252,7 +252,7 @@ uglify-js
 EOF
 
 echo " * Installing ruby gems"
-gem install jekyll
+gem install jekyll travis-lint
 
 echo " * Downloading WinTV-HVR 1600 firmware (can't hurt, may help)"
 cd /lib/firmware
