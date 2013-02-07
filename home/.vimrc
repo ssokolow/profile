@@ -321,7 +321,6 @@ set nowritebackup
 
 " Stuff that gVimPortable revealed to be necessary
 set enc=utf-8
-syntax on
 
 " I don't like my apps bugging me about donations or flooding me with recover
 " alerts when I restore a session. If I need to recover, I'll do it manually.
@@ -446,16 +445,19 @@ endif
 " }}}
 " {{{ Load Plugin Bundles
 
-" Explicitly disable filetype-specific features before loading pathogen in case
-" we're on a Debian-based distro. (To force a rescan when re-enabled)
+" Explicitly disable syntax and filetype-specific features before loading
+" pathogen in case we're on a Debian-based distro.
+" (To force a rescan when re-enabled)
+syntax off
 if exists("+filetype")
 	filetype off
 endif
 
 " Use Pathogen to handle vim plugins as bundles
-call pathogen#runtime_append_all_bundles()
+call pathogen#infect()
 
-" Enable all filetype-specific features
+" Enable syntax highlighting and all filetype-specific features
+syntax on
 if exists("+filetype")
 	filetype plugin indent on
 endif
