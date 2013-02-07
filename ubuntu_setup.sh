@@ -69,7 +69,6 @@ nodejs-dev
 pychecker
 pyflakes
 pylint
-python-coverage
 python-nose
 python-notify
 python-pip
