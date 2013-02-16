@@ -249,6 +249,7 @@ coffee-script
 docco
 nodemon
 uglify-js
+coffeelint
 EOF
 
 echo " * Installing ruby gems"

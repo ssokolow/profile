@@ -494,6 +494,7 @@ if has("autocmd") && exists("+filetype")
 	autocmd FileType make set noexpandtab
 
 	" Autocomplete </ for closing tags in HTML/XML files
+	" TODO: Why isn't this working as I expect?
 	autocmd FileType html,xml,xsl iabbrev <buffer> </ </
 
 	" Support the jQuery syntax extension from
@@ -501,11 +502,11 @@ if has("autocmd") && exists("+filetype")
 	autocmd BufRead,BufNewFile *.js set filetype=javascript syntax=jquery
 	autocmd BufRead,BufNewFile *.jsm set filetype=javascript syntax=jquery
 
-	" Automatically compile CoffeeScript on save
-	autocmd BufWritePost, *.coffee silent CoffeeMake!
-
 	" ...and work around a sudoedit-vim interaction quirk
 	autocmd BufNewFile,BufRead *.ebuild.* set filetype=ebuild
+
+	" Use the indentation CoffeeLint defaults to. It makes sense.
+	autocmd FileType coffee set shiftwidth=2 softtabstop=2
 
 	augroup python
 		au!
