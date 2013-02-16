@@ -423,7 +423,8 @@ if exists(":let")
 	let NERDTreeQuitOnOpen = 1
 	let NERDTreeWinSize = 30
 
-	" Show a jump list automatically on save if errors are found
+	" Configure automatic syntax and style checks
+	let g:syntastic_check_on_open = 1
 	let g:syntastic_auto_loc_list = 1
 
 	" Things to double-check the efficacy of:
