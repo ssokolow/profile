@@ -1,0 +1,31 @@
+#!/bin/sh
+# Light-weight script for moving files across a network
+#
+# To use:
+# 1. Make sure tar, netcat, and pv are installed.
+# 2. Edit TARGET_IP and TARGET_PORT
+# 3. Run with `--listen` on the target machine.
+# 3. Run with files/folders to move as arguments on the source machine.
+#
+# Troubleshooting:
+# - The OpenBSD version of netcat (included with Ubuntu) needs `-p` removed
+#   from the listening-side `nc` command.
+# - The version of netcat packaged for Slax is too old to understand the
+#   `-q 0` option which makes the sending-side `nc` exit on completion.
+#
+# Optional modifications:
+# - To copy rather than move, remove the `&& rm -rf "$@"` from the sending side
+# - If you lack the "pv" command, you can remove `| pv -W` from the pipeline.
+#   It's just for displaying a summarized progress indicator.
+# - If you'd like your transfers to end up somewhere other than $PWD, use the
+#   `-C /target/path` option to the listening-side tar command.
+
+TARGET_IP=192.168.0.6
+TARGET_PORT=1282
+
+if [ "$1x" = "--listenx" ]; then
+	nc -l -p "$TARGET_PORT" | tar -xvf -
+else
+	tar -cv "$@" | pv -W | nc -q 0 "$TARGET_IP" "$TARGET_PORT" &&
+	rm -rf "$@"
+fi
