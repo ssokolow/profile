@@ -10,6 +10,10 @@ set lines=59 columns=79
 " human-targeted text. Do it here because it doesn't look good in terminals.
 set spell spelllang=en_ca
 
+" Make the 80th column visible
+set colorcolumn=80
+highlight ColorColumn guibg=#eaffea
+
 " Give myself a new and a close button on the toolbar.
 amenu 1.05 ToolBar.New   :tabnew<CR>
 amenu 1.35 ToolBar.Close :confirm bd<CR>
