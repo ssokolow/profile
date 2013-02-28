@@ -67,7 +67,6 @@ ncdu
 nodejs
 nodejs-dev
 pychecker
-pyflakes
 pylint
 python-nose
 python-notify

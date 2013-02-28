@@ -1,5 +1,6 @@
 coverage
 pep8
+pyflakes
 flake8
 virtualenvwrapper
 virtualenvwrapper.django
