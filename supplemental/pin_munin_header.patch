@@ -1,0 +1,21 @@
+--- /etc/munin/templates/style.css	2012-10-17 11:28:59.000000000 -0400
++++ /home/ssokolow/style.css	2013-03-02 02:34:54.000000000 -0500
+@@ -114,6 +114,9 @@
+   border-left: 1px solid #cfd6f8;
+   border-right: 1px solid #cfd6f8;
+   overflow: auto;
++  top: 0;
++  left: 4%;
++  position: fixed;
+ }
+ 
+ #header-table td{
+@@ -149,7 +152,7 @@
+   border: 0px solid #999999;
+   width: 90%;
+   padding: 0px 0px 0px 0px;
+-  margin-top: 10px;
++  margin-top: 3.5em;
+   margin-left: auto;
+   margin-bottom: 0px;
+   margin-right: auto;

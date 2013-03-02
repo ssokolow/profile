@@ -222,6 +222,58 @@ if [ "`hostname`" = "monolith" ]; then
     #TODO: Set up lcdproc to run on boot via /etc/rc.local
 fi
 
+# Set up munin if I'm running on monolith
+if [ "`hostname`" = "monolith" ]; then
+    apt-get install -y munin munin-plugins-extra snmp
+    #TODO: Add nvclock once it no longer segfaults
+
+    # Set up master config
+    cp "`dirname \"$0\"`/supplemental/munin.conf /etc/munin/"
+
+    # Set up node plugins
+    rm /etc/munin/plugins/*
+    ln -s /usr/share/munin/plugins/apache_accesses /etc/munin/plugins/apache_accesses
+    ln -s /usr/share/munin/plugins/apache_volume /etc/munin/plugins/apache_volume
+    ln -s /usr/share/munin/plugins/cpu /etc/munin/plugins/cpu
+    ln -s /usr/share/munin/plugins/cpuspeed /etc/munin/plugins/cpuspeed
+    ln -s /usr/share/munin/plugins/df /etc/munin/plugins/df
+    ln -s /usr/share/munin/plugins/diskstats /etc/munin/plugins/diskstats
+    ln -s /usr/share/munin/plugins/entropy /etc/munin/plugins/entropy
+    ln -s /usr/share/munin/plugins/forks /etc/munin/plugins/forks
+    ln -s /usr/share/munin/plugins/fw_conntrack /etc/munin/plugins/fw_conntrack
+    ln -s /usr/share/munin/plugins/hddtemp_smartctl /etc/munin/plugins/hddtemp_smartctl
+    ln -s /usr/share/munin/plugins/http_loadtime /etc/munin/plugins/http_loadtime
+    ln -s /usr/share/munin/plugins/if_err_ /etc/munin/plugins/if_err_eth0
+    ln -s /usr/share/munin/plugins/if_ /etc/munin/plugins/if_eth0
+    ln -s /usr/share/munin/plugins/iostat /etc/munin/plugins/iostat
+    ln -s /usr/share/munin/plugins/iostat_ios /etc/munin/plugins/iostat_ios
+    ln -s /usr/share/munin/plugins/load /etc/munin/plugins/load
+    ln -s /usr/share/munin/plugins/memory /etc/munin/plugins/memory
+    ln -s /usr/share/munin/plugins/munin_stats /etc/munin/plugins/munin_stats
+    ln -s /usr/share/munin/plugins/nvidia_ /etc/munin/plugins/nvidia_clock
+    ln -s /usr/share/munin/plugins/nvidia_ /etc/munin/plugins/nvidia_temp
+    ln -s /usr/share/munin/plugins/nvidia_ /etc/munin/plugins/nvidia_volt
+    ln -s /usr/share/munin/plugins/processes /etc/munin/plugins/processes
+    ln -s /usr/share/munin/plugins/proc_pri /etc/munin/plugins/proc_pri
+    ln -s /usr/share/munin/plugins/smart_ /etc/munin/plugins/smart_sda
+    ln -s /usr/share/munin/plugins/smart_ /etc/munin/plugins/smart_sdb
+    ln -s /usr/share/munin/plugins/smart_ /etc/munin/plugins/smart_sdc
+    ln -s /usr/share/munin/plugins/snmp__if_ /etc/munin/plugins/snmp_router_if_1
+    ln -s /usr/share/munin/plugins/snmp__if_ /etc/munin/plugins/snmp_router_if_2
+    ln -s /usr/share/munin/plugins/snmp__if_ /etc/munin/plugins/snmp_router_if_3
+    ln -s /usr/share/munin/plugins/snmp__if_ /etc/munin/plugins/snmp_router_if_7
+    ln -s /usr/share/munin/plugins/snmp__if_multi /etc/munin/plugins/snmp_router_if_multi
+    ln -s /usr/share/munin/plugins/snmp__uptime /etc/munin/plugins/snmp_router_uptime
+    ln -s /usr/share/munin/plugins/swap /etc/munin/plugins/swap
+    ln -s /usr/share/munin/plugins/uptime /etc/munin/plugins/uptime
+    ln -s /usr/share/munin/plugins/vmstat /etc/munin/plugins/vmstat
+
+    # Allow only loopback connections to the local munin node
+    sed -i -e 's@\(^host \*$\)@# \1@' -e 's@^# \(host 127.0.0.1\)@\1@' /etc/munin/munin-node.conf
+    /etc/init.d/munin-node restart
+fi
+
+
 # Separate out stuff only found in alternate repos to avoid problems if the
 # apt-get update fails
 apt-get install -y wine
