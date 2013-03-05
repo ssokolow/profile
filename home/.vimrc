@@ -456,6 +456,7 @@ endif
 
 " Use Pathogen to handle vim plugins as bundles
 call pathogen#infect()
+call pathogen#helptags()
 
 " Enable syntax highlighting and all filetype-specific features
 syntax on
