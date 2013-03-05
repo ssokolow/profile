@@ -14,6 +14,9 @@ else
 	fi
 fi
 
+# make less more friendly for non-text input files, see lesspipe(1)
+[ -x /usr/bin/lesspipe ] && eval "$(lesspipe)"
+
 # Use pygmentize as the code colorizer for less if it and lesspipe.sh are installed.
 # http://pyside.blogspot.com/2008/03/using-pygments-with-less.html
 if which pygmentize &> /dev/null && which lesspipe.sh &> /dev/null; then

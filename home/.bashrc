@@ -35,9 +35,6 @@ function do_debug() { export BASHRC_DEBUG="$BASHRC_DEBUG"$'\n'"${BASHRC_DEBUG_IN
 # --== Begin Ubuntu stuff not yet integrated ==--
 # TODO: Finish integrating this.
 
-# make less more friendly for non-text input files, see lesspipe(1)
-#[ -x /usr/bin/lesspipe ] && eval "$(lesspipe)"
-
 # set variable identifying the chroot you work in (used in the prompt below)
 #if [ -z "$debian_chroot" ] && [ -r /etc/debian_chroot ]; then
 #    debian_chroot=$(cat /etc/debian_chroot)
@@ -92,6 +89,7 @@ shopt -s histappend      # Append command history, don't overwrite
 # Pull in the stuff common to both bash and zsh
 source ~/.common_sh_init/env
 source ~/.common_sh_init/aliases
+source ~/.common_sh_init/misc
 
 # Run fortune for maximum wittiness
 if command -v fortune >/dev/null; then
