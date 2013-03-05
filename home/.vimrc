@@ -525,6 +525,9 @@ if has("autocmd") && exists("+filetype")
 		autocmd BufNewFile,BufRead SCons* set syntax=python
 		autocmd BufNewFile,BufRead *.mako set filetype=mako
 		autocmd BufNewFile,BufRead *.django set filetype=htmldjango
+
+		" Add GMPL (GNU Linear Programming Kit) support
+		autocmd BufNewFile,BufRead *.mod set filetype=gmpl
 	augroup END
 
 	augroup vala
