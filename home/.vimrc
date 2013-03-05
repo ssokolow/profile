@@ -345,7 +345,7 @@ set textwidth=79
 
 " I prefer 4-space indentation by default
 set expandtab
-set tabstop=4
+set tabstop=8
 set softtabstop=4
 set shiftwidth=4
 
