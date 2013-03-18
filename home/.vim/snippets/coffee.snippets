@@ -1,0 +1,21 @@
+snippet jquery
+	do ($ = jQuery) ->
+	  $.fn.${1:pluginName} = (options) ->
+
+	    options = $.extend(defaults, options)
+	    @each ->
+	      $this = $(this)
+	      o = if $.meta then $.extend({}, opts, $this.data()) else opts
+
+	      $(${8:'.selector'}, @).${9:method()}
+
+	  # private functions go here
+
+	  # methods go here
+	  $.fn.${2:pluginName}.${6:methodName} = (${7:param}) ->
+	    ${10}
+
+	  # plugin defaults
+	  $.fn.${3:pluginName}.defaults =
+	    ${4:key}: ${5:'value'}
+

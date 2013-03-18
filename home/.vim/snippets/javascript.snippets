@@ -1,0 +1,27 @@
+snippet jquery
+	(function($) {
+	    $.fn.${1:pluginName} = function(options) {
+		debug(this);
+		var opts = $.extend({}, $.fn.hilight.defaults, options);
+
+	        return this.each(function() {
+	            $this = $(this);
+
+	            var o = $.meta ? $.extend({}, opts, $this.data()) : opts;
+
+	            ${9}
+	        });
+	    };
+
+	    // private functions go here
+
+	    // methods go here
+	    $.fn.${2:pluginName}.${6:methodName} = function(${7:param}) {
+	        ${8}
+	    };
+
+	    // plugin defaults
+	    $.fn.${3:pluginName}.defaults = {
+	        ${4:key}: ${5:'value'}
+	    };
+	})(jQuery);
