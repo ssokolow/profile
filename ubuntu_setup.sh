@@ -158,6 +158,7 @@ libreoffice-presentation-minimizer
 libreoffice-wiki-publisher
 libreoffice-writer2latex
 libreoffice-writer2xhtml
+lua5.2
 lyx
 mutt
 nitrogen
@@ -298,6 +299,8 @@ curl http://npmjs.org/install.sh | sh
 xargs npm install -g << EOF
 coffee-script
 docco
+jshint
+jsonlint
 nodemon
 uglify-js
 coffeelint
