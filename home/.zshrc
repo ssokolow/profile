@@ -108,7 +108,7 @@ zstyle ':completion:*:(cp|mv|rm|kill|diff|scp):*' ignore-line yes          # com
 zstyle ':completion:*:complete:-command-::commands' ignored-patterns '*\~' # don't complete backup files as executables
 
 # Exclude bytecode and temporary files from filename completion.
-zstyle ':completion:*:*files' ignored-patterns '*?.o' '*?.pyc' '*?.pyo' '*?~' '*?.bak'
+zstyle ':completion:*:*files' ignored-patterns '*?.o' '*?.pyc' '*?.pyo' '*?.class' '*?~' '*?.bak'
 # TODO: Make this work
 # Exclude bytecode and temporary files from completion for everything except rm.
 #zstyle ':completion:*:*:(^rm):*:*files' ignored-patterns '*?.o' '*?.pyc' '*?.pyo' '*?~' '*?.bak'
