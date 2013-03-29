@@ -1,5 +1,5 @@
 # XScreenSaver Preferences File
-# Written by xscreensaver-demo 5.14 for ssokolow on Wed Dec 14 06:08:56 2011.
+# Written by xscreensaver-demo 5.15 for ssokolow on Fri Mar 29 06:23:57 2013.
 # http://www.jwz.org/xscreensaver/
 
 timeout:	0:30:00
@@ -269,6 +269,9 @@ programs:								      \
 - GL: 				photopile -root				    \n\
 - GL: 				rubikblocks -root			    \n\
 				unicode -root				    \n\
+  GL: 				companioncube -root			    \n\
+- GL: 				hilbert -root				    \n\
+- GL: 				tronbit -root				    \n\
 
 
 pointerPollTime:    0:00:05
