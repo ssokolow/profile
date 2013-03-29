@@ -341,11 +341,6 @@
         <command>xkill</command>
       </action>
     </keybind>
-    <keybind key="W-F7">
-      <action name="Execute">
-        <execute>sh -c 'sleep 2;xset dpms force off'</execute>
-      </action>
-    </keybind>
     <keybind key="XF86ScrollDown">
       <action name="DesktopPrevious"/>
     </keybind>

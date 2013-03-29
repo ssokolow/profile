@@ -203,6 +203,7 @@ libpurple-bin
 units
 wdiff
 xdotool
+xbindkeys
 
 # For programming in vala
 gdb

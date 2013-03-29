@@ -69,44 +69,39 @@
 # End of xbindkeys configuration #
 ##################################
 
-# --== Bindings for normal keyboards ==--
+# --== Bindings for Regular Keyboards ==--
+
+"(sleep 0.5; br --port=/dev/ttyS0 -F)& sleep 1; xset dpms force off"
+  Mod4 + F7
 
 "audtool playlist-jump `audtool playlist-length` && audtool playback-stopped && audtool playback-play"
   Mod4 + m
 
-# --== Bindings for ATi Remove Wonder II ==--
+# --== Bindings for ATi Remote Wonder II ==--
 
-"sleep 1; br -F & xset dpms force off"
+"(sleep 0.5; br --port=/dev/ttyS0 -F)& sleep 1; xset dpms force off"
   XF86PowerOff
 
 "audtool playlist-jump `audtool playlist-length` && audtool playback-stopped && audtool playback-play"
   XF86AudioMute
 
+"~/bin/note_song.py"
+  XF86AudioRecord
+
 # Shim away mplayer's inability to bind SunFront to fullscreen toggle.
 "xdotool getactivewindow key f"
   SunFront
 
-# --== Special Keyboard Key Bindings (to rework) ==--
+# --== Special Keyboard Key Bindings (TODO: rework) ==--
 
-"~/bin/saytime"
-  XF86Display
+#"~/bin/saytime"
+#  XF86Display
 
-"audtool playlist-shuffle-toggle"
-  XF86CD
-
-"~/bin/note_song.py"
-  XF86WWW
-
-"~/bin/rand_enqueue.py"
-  XF86DOS
-
-"gmrun"
-  XF86LaunchA
-
-"qdbus org.kde.klipper /klipper org.kde.klipper.klipper.showKlipperManuallyInvokeActionMenu"
-  XF86LaunchB
-
-"ks do"
-  XF86LaunchC
+# TODO: Decide how to bind these with my new keyboard
+#"audtool playlist-shuffle-toggle"
+#  XF86CD
+#
+#"~/bin/rand_enqueue.py"
+#  XF86DOS
 
 # b:8 and b:9 are the left and right side buttons on my G3 mouse, respectively.
