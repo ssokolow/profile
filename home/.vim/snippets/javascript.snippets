@@ -2,26 +2,26 @@ snippet jquery
 	(function($) {
 	    $.fn.${1:pluginName} = function(options) {
 		debug(this);
-		var opts = $.extend({}, $.fn.hilight.defaults, options);
+		var opts = $.extend({}, $.fn.${2:pluginName.defaults, options);
 
 	        return this.each(function() {
 	            $this = $(this);
 
 	            var o = $.meta ? $.extend({}, opts, $this.data()) : opts;
 
-	            ${9}
+	            ${10}
 	        });
 	    };
 
 	    // private functions go here
 
 	    // methods go here
-	    $.fn.${2:pluginName}.${6:methodName} = function(${7:param}) {
-	        ${8}
+	    $.fn.${3:pluginName}.${7:methodName} = function(${8:param}) {
+	        ${9}
 	    };
 
 	    // plugin defaults
-	    $.fn.${3:pluginName}.defaults = {
-	        ${4:key}: ${5:'value'}
+	    $.fn.${4:pluginName}.defaults = {
+	        ${5:key}: ${6:'value'}
 	    };
 	})(jQuery);
