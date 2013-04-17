@@ -1,0 +1,4 @@
+[aMule]
+title=aMule
+description=A full-featured eDonkey/Kademlia client.
+ports=4662/tcp|4665/udp|4672/udp|6419/tcp|6429/udp
