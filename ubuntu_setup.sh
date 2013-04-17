@@ -224,6 +224,14 @@ if [ "`hostname`" = "monolith" ]; then
     #TODO: Set up lcdproc to run on boot via /etc/rc.local
 fi
 
+# Set up SpaceNavD for my 3D Mouse if I'm running on monolith
+if [ "`hostname`" = "monolith" ]; then
+    apt-get install -y spacenavd
+    cp "`dirname \"$0\"`/supplemental/spnavrc /etc/"
+    /etc/init.d/spacenavd restart
+fi
+
+
 # Set up munin if I'm running on monolith
 if [ "`hostname`" = "monolith" ]; then
     apt-get install -y munin munin-plugins-extra snmp
