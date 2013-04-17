@@ -1,3 +1,5 @@
+#TODO: degF <> degC conversion seems broken. It disagrees with Wolfram Alpha.
+
 # TODO: Re-indent with spaces to match units.dat.
 # TODO: https://en.wikipedia.org/wiki/List_of_unusual_units_of_measurement
 hubbletime      4.35e17 seconds
