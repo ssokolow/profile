@@ -4,7 +4,7 @@
 
 " Set a comfortable default window size
 " TODO: Find a way to set this dynamically based on screen height
-set lines=59 columns=79
+set lines=59 columns=82
 
 " Turn on spell-checking since syntax highlighting keeps it limited to
 " human-targeted text. Do it here because it doesn't look good in terminals.
