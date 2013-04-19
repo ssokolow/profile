@@ -322,6 +322,21 @@
     <keybind key="F11">
       <action name="ToggleFullscreen"/>
     </keybind>
+    <keybind key="A-Print">
+      <action name="Execute">
+        <command>scrot -e 'xdg-open $f'</command>
+      </action>
+    </keybind>
+    <keybind key="C-Print">
+      <action name="Execute">
+        <command>scrot -u -e 'xdg-open $f'</command>
+      </action>
+    </keybind>
+    <keybind key="S-Print">
+      <action name="Execute">
+        <command>scrot -s -e 'xdg-open $f'</command>
+      </action>
+    </keybind>
     <keybind key="W-f">
       <!-- Force the flash plugin to release keyboard focus
            http://awesome.naquadah.org/wiki/Workaround_plugins_that_steal_the_keyboard_focus
