@@ -192,6 +192,7 @@ python-setuptools
 python-xlib
 python-xpyb
 screen
+scrot
 ssh-askpass-gnome
 smartmontools
 sox
