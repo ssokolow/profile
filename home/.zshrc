@@ -43,6 +43,17 @@ if [[ $- != *i* ]]; then
 	return
 fi
 
+# {{{ fortune command
+
+# I prefer to have a fortune from any new shell, not just login ones.
+# (And displaying it this early helps to hide time spent waiting on the disk
+#  to build the complietion cache)
+if command -v fortune >/dev/null; then
+    fortune
+fi
+
+#}}}
+
 # Set up the on-action arrays for use
 typeset -ga preexec_functions
 typeset -ga precmd_functions
@@ -325,14 +336,6 @@ function sudo() {
 }
 
 # }}}
-# {{{ fortune command
-
-# I prefer to have a fortune from any new shell, not just login ones.
-if command -v fortune >/dev/null; then
-    fortune
-fi
-
-#}}}
 #{{{ url-encode
 # Source:
 # http://stackoverflow.com/questions/171563/whats-in-your-zshrc/187853#187853
