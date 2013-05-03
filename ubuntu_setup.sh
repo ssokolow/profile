@@ -390,5 +390,5 @@ done
 echo "IMPORTANT:"
 echo " - Now edit /etc/ssh/sshd_config to allow only non-root, pubkey authentication."
 echo " - Don't forget to copy xorg.conf from supplemental if you need TwinView."
-echo " - Don't forget to restore your crontab."
+echo " - Don't forget to restore your crontab and set Cyphertite back up."
 echo " - If upgrading, run virtualenv -p /usr/bin/python ~/.virtualenvs/<name> for all virtualenvs"

@@ -11,8 +11,9 @@
 2       1       *       *       *       rm -rf ~/incoming/gtk-gnutella-downloads/corrupt/*
 
 # Nightly backup for stuff that's too volatile for DVD-Rs.
-0       2       *       *       *       ~/src/rdbackup_wrapper/backup.py 2>&1 >/dev/null
+0       2       *       *       *       cyphertite -cf monolith_critical.ct ~/Documents/Critical; ctctl cull
+0       3       *       *       *       ionice -c3 ~/src/rdbackup_wrapper/backup.py 2>&1 | fgrep -v -f ~/.rdiff-backup_known_ok_failures
 
 # PostgreSQL maintenance (nightly light, monthly full)
-0       0       *       *       *       vacuumdb --analyze --quiet ssokolow 2>&1 | grep -v 'only table or database owner can vacuum it'
-0       1       1       *       *       vacuumdb --analyze --quiet --full ssokolow 2>&1 | grep -v 'only table or database owner can vacuum it'
+3       0       *       *       *       vacuumdb --analyze --quiet ssokolow 2>&1 | grep -v 'only table or database owner can vacuum it'
+3       1       1       *       *       vacuumdb --analyze --quiet --full ssokolow 2>&1 | grep -v 'only table or database owner can vacuum it'
