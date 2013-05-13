@@ -9,6 +9,7 @@ __author__ = "Stephan Sokolow (deitarion/SSokolow)"
 __version__ = "0.3"
 __license__ = "GNU GPL 2 or later"
 
+DEFAULT_COUNT = 10
 BLACKLISTED_EXTS = [
     '.m3u', '.pls', '.xspf'     # Playlists (just enqueue directly)
     '.jpg', '.jpeg', '.png', '.gif', '.bmp',  # Images (eg. Cover Art)
@@ -55,7 +56,7 @@ if __name__ == '__main__':
     op.add_option("-Q", "--enqueue", action="store_true", dest="enqueue",
         default=False, help="Don't start song(s) playing after enqueueing it.")
     op.add_option("-n", "--song-count", action="store", type=int,
-        dest="wanted_count", default=1, metavar="NUM",
+        dest="wanted_count", default=DEFAULT_COUNT, metavar="NUM",
         help="Request that NUM randomly-chosen songs be picked rather than "
         "just one.")
 
