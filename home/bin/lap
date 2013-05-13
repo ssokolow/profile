@@ -6,36 +6,47 @@ Version: 1.0
 
 Description:
 - A quick wrapper to make playing songs via the local command quick and easy.
-- Works with any player which implements the MPRIS standard for remote control via D-Bus.
-- Accepts multiple space- and/or comma-separated choices after presenting the results.
+- Works with any player which implements the MPRIS standard for remote control
+  via D-Bus.
+- Accepts multiple space- and/or comma-separated choices after presenting the
+  results.
 - Can enqueue or enqueue and play.
 - Can show full paths or just filenames.
 - Will behave in a sane fashion when asked to enqueue and play multiple files.
 
 Note:
-- If you decide that you want to enqueue after you see the results and you forgot to pass in -q on
-  the command-line, just throw q into your result string. It doesn't matter whether it's on it's own
-  or as a prefix or suffix to another entry.
+- If you decide that you want to enqueue after you see the results and you
+  forgot to pass in -q on the command-line, just throw q into your result
+  string. It doesn't matter whether it's on it's own or as a prefix or suffix
+  to another entry.
 
 TODO:
  - Complete the list of extensions for ModPlug and UADE (3rd-party)
- - Support an "all" keyword and an alternative to Ctrl+C for cancelling. (maybe 0)
+ - Support an "all" keyword and an alternative to Ctrl+C for cancel. (maybe 0)
  - Clean up the code
  - Allow non-file:// URLs.
 """
 
-ADLIB_EXTS    = ['.a2m', '.adl',  '.adlib', '.amd', '.bam', '.cff', '.cmf', '.d00', '.dfm',  '.dmo', '.dro', '.dtm', '.hsc', '.hsp',
-                 '.jbm', '.ksm',  '.laa',   '.lds', '.m',   '.mad', '.mkj', '.msc', '.mtk',  '.rad', '.raw', '.rix', '.rol', '.sat',
-                 '.sa2', '.sci',  '.sng',   '.imf', '.wlf', '.xad', '.xsm']
-CONSOLE_EXTS  = ['.adx', '.ay',   '.gbs',   '.gym', '.hes', '.kss', '.minipsf',     '.nsf', '.nsfe', '.psf', '.sap', '.sid', '.spc',
-                 '.vgm', '.vgz',  '.vtx',   '.ym']
-MIDI_EXTS     = ['.mid', '.midi', '.rmi']
-MODULE_EXTS   = [ '.it', ',mod',  '.s3m',   '.stm', '.xm']
-PLAYLIST_EXTS = ['.cue', '.m3u',  '.pls',   '.xspf']
-WAVEFORM_EXTS = ['.aac', '.ac3',  '.aif',   '.aiff',  '.ape', '.au', '.flac', '.m4a', '.mp2', '.mp3', '.mpc', '.ogg', '.shn', '.snd',
-                 '.tta', '.voc',  '.wav',   '.wma', '.wv']
+#TODO: Redesign this to support ack-like command-line filter options
+ADLIB_EXTS = ['.a2m', '.adl', '.amd', '.bam', '.cff', '.cmf', '.d00', '.dfm',
+              '.dmo', '.dro', '.dtm', '.hsc', '.hsp', '.jbm', '.ksm', '.laa',
+              '.lds', '.mad', '.mkj', '.msc', '.mtk', '.rad', '.raw', '.rix',
+              '.rol', '.sat', '.sa2', '.sci', '.sng', '.imf', '.wlf', '.xad',
+              '.xsm', '.m', '.adlib']
 
-# Edit these lines to choose the kind of files to be filtered for. By default, playlist extensions are excluded.
+CONSOLE_EXTS = ['.adx', '.gbs', '.gym', '.hes', '.kss', '.nsf', '.nsfe', '.ay',
+                '.psf', '.sap', '.sid', '.spc', '.vgm', '.vgz', '.vtx', '.ym',
+                '.minipsf']
+
+MIDI_EXTS     = ['.mid', '.rmi', '.midi']
+MODULE_EXTS   = [',mod', '.s3m', '.stm', '.xm', '.it']
+PLAYLIST_EXTS = ['.cue', '.m3u', '.pls', '.xspf']
+WAVEFORM_EXTS = ['.aac', '.ac3', '.aif', '.aiff', '.ape', '.au', '.flac',
+                 '.m4a', '.mp2', '.mp3', '.mpc', '.ogg', '.shn', '.snd',
+                 '.tta', '.voc', '.wav', '.wma', '.wv']
+
+# Edit these lines to choose the kind of files to be filtered for.
+# By default, playlist extensions are excluded.
 OK_EXTS = WAVEFORM_EXTS + MODULE_EXTS + CONSOLE_EXTS + MIDI_EXTS + ADLIB_EXTS
 # If you want true format filtering, YOU write the mimetype cache.
 USE_PAGER = False  # Should we page output if it's more than a screenful?
@@ -47,14 +58,17 @@ locate_command = ['locate', '-i']
 import fnmatch, optparse, os, sys
 
 # TODO: Support audtool as a fallback but don't depend on it
-try: import subprocess
-except ImportError: pass
+try:
+    import subprocess
+except ImportError:
+    pass
 
 # Use readline if available but don't depend on it
 try:
     import readline
-    readline # Shut PyFlakes up
-except ImportError: pass
+    readline  # Shut PyFlakes up
+except ImportError:
+    pass
 
 try:
     from dbus import Bus
@@ -73,7 +87,10 @@ if not bus:
 
 def get_results(query):
     """Given a query or series of queries for the locate command, run them."""
-    results, cmd = [], locate_command + (isinstance(query, basestring) and [query] or query)
+    if isinstance(query, basestring):
+        query = [query]
+
+    results, cmd = [], locate_command + query
     for line in subprocess.Popen(cmd, stdout=subprocess.PIPE).stdout:
         result = line.strip()
         if os.path.splitext(result)[1] in OK_EXTS:
@@ -83,13 +100,14 @@ def get_results(query):
 
 def filter(results, filters):
     for filter in filters:
-        results = [x for x in results if fnmatch.fnmatch(x.lower(), '*%s*' % filter.lower())]
+        results = [x for x in results
+                if fnmatch.fnmatch(x.lower(), '*%s*' % filter.lower())]
     return results
 
 def makeMenu(results, strip_path=True):
     for pos, val in enumerate(results):
         val = strip_path and os.path.split(val)[1] or val
-        print "%3d) %s" % (pos+1, val)
+        print "%3d) %s" % (pos + 1, val)
 
 def addTrack(path, play=False):
     if not os.path.exists(path):
@@ -107,12 +125,13 @@ def parseChoice(inString):
         return [int(inString)]
     except ValueError:
         choices = []
-        for x in inString.replace(',',' ').split():
-            try: choices.append(int(x))
+        for x in inString.replace(',', ' ').split():
+            try:
+                choices.append(int(x))
             except ValueError:
                 try:
                     first, last = [int(y) for y in x.split(':', 1)]
-                    choices.extend(range(first, last+1))
+                    choices.extend(range(first, last + 1))
                 except ValueError:
                     print "Not an integer or range: %s" % x
         return choices
@@ -138,30 +157,38 @@ def doLocate():
 
             if 'q' in choices.lower():
                 opts.enqueue = True
-                choices = choices.replace('q','') #FIXME: This will distort the "Not an integer" message for values containing "q".
+                choices = choices.replace('q', '')  # FIXME: This will distort
+                     # the "Not an integer" message for values containing "q".
             choices = parseChoice(choices)
 
             if len(choices):
                 takeChoice(choices.pop(0), not opts.enqueue)
             for item in choices:
-                takeChoice(item, False) # This ensures proper behaviour with no --enqueue and multiple choices.
+                takeChoice(item, False)  # This ensures proper behaviour with
+                                         # no --enqueue and multiple choices.
         else:
             print "No Results"
 
 if __name__ == '__main__':
     try:
         cmd = os.path.split(sys.argv[0])[1]
-        argType = (cmd.lower() in ('ap', 'aq')) and '<path> ...' or '<keyword> ...'
+        aTy = (cmd.lower() in ('ap', 'aq')) and '<path> ...' or '<keyword> ...'
 
-        op = optparse.OptionParser(usage="usage: %prog [options] " + argType)
-        op.add_option("-q", "--enqueue", action="store_true", dest="enqueue", default=(cmd.lower() in ('aq', 'laq')),
-                help="Don't start the song playing after enqueueing it. (default if called as 'aq' or 'laq')")
-        op.add_option("-P", "--show_path", action="store_true", dest="show_path", default=False,
+        op = optparse.OptionParser(usage="usage: %prog [options] " + aTy)
+        op.add_option("-q", "--enqueue", action="store_true", dest="enqueue",
+                default=(cmd.lower() in ('aq', 'laq')),
+                help="Don't start the song playing after enqueueing it. "
+                     "(default if called as 'aq' or 'laq')")
+        op.add_option("-P", "--show_path", action="store_true",
+                dest="show_path", default=False,
                 help="Show the full path to each result.")
-        op.add_option("-l", "--locate", action="store_true", dest="locate", default=(cmd.lower() in ('lap', 'laq')),
-                help="Treat the arguments as search keywords rather than paths. (default if called as 'lap' or 'laq')")
-        op.add_option("-p", "--pretend", action="store_true", dest="pretend", default=False,
-                help="Just show the list of results. Don't prompt for a choice and then act on it.")
+        op.add_option("-l", "--locate", action="store_true", dest="locate",
+                default=(cmd.lower() in ('lap', 'laq')),
+                help="Treat the arguments as search keywords rather than "
+                     "paths. (default if called as 'lap' or 'laq')")
+        op.add_option("-p", "--pretend", action="store_true", dest="pretend",
+                default=False, help="Just show the list of results. Don't "
+                                    "prompt for a choice and then act on it.")
 
         (opts, args) = op.parse_args()
 
