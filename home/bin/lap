@@ -41,13 +41,15 @@ CONSOLE_EXTS = ['.adx', '.gbs', '.gym', '.hes', '.kss', '.nsf', '.nsfe', '.ay',
 MIDI_EXTS     = ['.mid', '.rmi', '.midi']
 MODULE_EXTS   = [',mod', '.s3m', '.stm', '.xm', '.it']
 PLAYLIST_EXTS = ['.cue', '.m3u', '.pls', '.xspf']
+VIDEO_FILES   = ['.avi', '.flv', '.m4v', '.mov', '.mp4', '.webm']
 WAVEFORM_EXTS = ['.aac', '.ac3', '.aif', '.aiff', '.ape', '.au', '.flac',
                  '.m4a', '.mp2', '.mp3', '.mpc', '.ogg', '.shn', '.snd',
                  '.tta', '.voc', '.wav', '.wma', '.wv']
 
 # Edit these lines to choose the kind of files to be filtered for.
 # By default, playlist extensions are excluded.
-OK_EXTS = WAVEFORM_EXTS + MODULE_EXTS + CONSOLE_EXTS + MIDI_EXTS + ADLIB_EXTS
+OK_EXTS = (WAVEFORM_EXTS + MODULE_EXTS + CONSOLE_EXTS + MIDI_EXTS +
+           ADLIB_EXTS    + VIDEO_FILES)
 # If you want true format filtering, YOU write the mimetype cache.
 USE_PAGER = False  # Should we page output if it's more than a screenful?
 
