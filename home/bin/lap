@@ -1,18 +1,15 @@
-#!/usr/bin/env python
+#!/usr/bin/env python2
+# -*- coding: utf-8 -*-
 """Locate and Play
-Author: Stephan Sokolow (deitarion/SSokolow)
-License: GNU GPL-2
-Version: 1.0
 
 Description:
 - A quick wrapper to make playing songs via the local command quick and easy.
-- Works with any player which implements the MPRIS standard for remote control
-  via D-Bus.
 - Accepts multiple space- and/or comma-separated choices after presenting the
   results.
 - Can enqueue or enqueue and play.
 - Can show full paths or just filenames.
 - Will behave in a sane fashion when asked to enqueue and play multiple files.
+- Can randomly select a given number of tracks from a folder tree.
 
 Note:
 - If you decide that you want to enqueue after you see the results and you
@@ -20,12 +17,22 @@ Note:
   string. It doesn't matter whether it's on it's own or as a prefix or suffix
   to another entry.
 
+--snip--
+
 TODO:
+ - Still needs more refactoring.
+ - Decide how to expose filtering options from locate.
+ - Support any MPRIS-compatible player, not just Audacious.
  - Complete the list of extensions for ModPlug and UADE (3rd-party)
  - Support an "all" keyword and an alternative to Ctrl+C for cancel. (maybe 0)
  - Clean up the code
  - Allow non-file:// URLs.
 """
+
+__appname__ = "Locate and Play"
+__author__ = "Stephan Sokolow (deitarion/SSokolow)"
+__version__ = "1.1"
+__license__ = "GNU GPL 2 or later"
 
 #TODO: Redesign this to support ack-like command-line filter options
 ADLIB_EXTS = ['.a2m', '.adl', '.amd', '.bam', '.cff', '.cmf', '.d00', '.dfm',
@@ -51,19 +58,30 @@ WAVEFORM_EXTS = ['.aac', '.ac3', '.aif', '.aiff', '.ape', '.au', '.flac',
 OK_EXTS = (WAVEFORM_EXTS + MODULE_EXTS + CONSOLE_EXTS + MIDI_EXTS +
            ADLIB_EXTS    + VIDEO_FILES)
 # If you want true format filtering, YOU write the mimetype cache.
-USE_PAGER = False  # Should we page output if it's more than a screenful?
+
+# Blacklist used for gather_random()
+BLACKLISTED_EXTS = [
+    '.m3u', '.pls', '.xspf'     # Playlists (just enqueue directly)
+    '.jpg', '.jpeg', '.png', '.gif', '.bmp',  # Images (eg. Cover Art)
+    '.txt', '.html', '.htm',    # Not media
+    '.sid',                     # Capable of looping infinitely
+    '.mid', '.midi', '.rmi',    # Require the keyboard to be turned on manually
+]
+# Note: SID is actually blacklisted for two reasons:
+#  1. I have the entire HVSC and I don't want that to weight the randomization
+#     in favor of SIDs.
+#  2. All the SIDs I've encountered loop infinitely and I want my playlist to
+#     stop after a predictable interval.
+
+USE_PAGER = False   # Should we page output if it's more than a screenful?
+DEFAULT_RAND_COUNT = 10
 
 locate_command = ['locate', '-i']
 
 # ========== Configuration Ends ==========
 
-import fnmatch, optparse, os, sys
-
-# TODO: Support audtool as a fallback but don't depend on it
-try:
-    import subprocess
-except ImportError:
-    pass
+import fnmatch, logging, os, random, subprocess, sys
+log = logging.getLogger(__name__)
 
 # Use readline if available but don't depend on it
 try:
@@ -84,15 +102,52 @@ try:
 except ImportError:
     bus = None
 
-if not bus:
-        print "Cannot connect to D-Bus session bus. Assuming --pretend."
+def addTrack(paths, play=False):
+    """Use MPRIS to add the track to Audacious.
 
-def get_results(query):
-    """Given a query or series of queries for the locate command, run them."""
+    @todo: Make this work with any MPRIS-compatible client.
+    """
+    for path in paths:
+        if not os.path.exists(path):
+            log.error("File does not exist: %s", path)
+
+        if isinstance(path, str):
+            path = path.decode(sys.getfilesystemencoding())
+        file_url = 'file://' + path
+
+        if bus:
+            mp = bus.get_object('org.mpris.audacious', '/TrackList')
+            mp.AddTrack(file_url, play)
+        else:
+            pass  # TODO: Support audtool or dbus-send as a fallback
+
+        play = False  # Only start the first one playing
+
+def gather_random(roots, wanted_count):
+    """Use C{os.walk} to choose C{wanted_count} files from C{roots}.
+
+    @type roots: C{list} of C{basestring}
+    """
+    choices = []
+    for root in roots:
+        for fldr, dirs, files in os.walk(root):
+            choices.extend(os.path.join(fldr, x) for x in files
+                    if not os.path.splitext(x)[1].lower() in BLACKLISTED_EXTS)
+
+    chosen = []
+    for i in range(0, opts.wanted_count):
+        # We don't want duplicates
+        chosen.append(choices.pop(random.randrange(0, len(choices))))
+
+    return chosen
+
+#TODO: Refactor and reuse elsewhere
+def get_results(query, locate_cmd=locate_command):
+    """Retrieve matches for C{query} in L{OK_EXTS} using L{locate_command}."""
     if isinstance(query, basestring):
         query = [query]
 
-    results, cmd = [], locate_command + query
+    results, cmd = [], locate_cmd + query
     for line in subprocess.Popen(cmd, stdout=subprocess.PIPE).stdout:
         result = line.strip()
         if os.path.splitext(result)[1] in OK_EXTS:
@@ -100,28 +155,7 @@ def get_results(query):
     results.sort()
     return results
 
-def filter(results, filters):
-    for filter in filters:
-        results = [x for x in results
-                if fnmatch.fnmatch(x.lower(), '*%s*' % filter.lower())]
-    return results
-
-def makeMenu(results, strip_path=True):
-    for pos, val in enumerate(results):
-        val = strip_path and os.path.split(val)[1] or val
-        print "%3d) %s" % (pos + 1, val)
-
-def addTrack(path, play=False):
-    if not os.path.exists(path):
-        print "ERR: File does not exist: %s" % path
-        return None
-    if isinstance(path, str):
-        path = path.decode(sys.getfilesystemencoding())
-    file_url = 'file://' + path
-    if bus:
-        mp = bus.get_object('org.mpris.audacious', '/TrackList')
-        mp.AddTrack(file_url, play)
-
+#TODO: Document and, if necessary, refactor
 def parseChoice(inString):
     try:
         return [int(inString)]
@@ -135,74 +169,130 @@ def parseChoice(inString):
                     first, last = [int(y) for y in x.split(':', 1)]
                     choices.extend(range(first, last + 1))
                 except ValueError:
-                    print "Not an integer or range: %s" % x
+                    print("Not an integer or range: %s" % x)
         return choices
 
-def doLocate():
-        results = (len(args) > 0) and get_results(args.pop(0)) or []
-        results = filter(results, args)
+#TODO: Document and, if necessary, refactor
+def choose(results, strip_path):
+        # Draw the menu
+        for pos, val in enumerate(results):
+            val = strip_path and os.path.basename(val) or val
+            print("%3d) %s" % (pos + 1, val))
 
-        def takeChoice(index, play=False):
-            index = index - 1
-            if index >= 0 and index < len(results):
-                addTrack(results[index], play)
+        if opts.pretend:
+            return
+
+        choices = raw_input("Choice(s) (Ctrl+C to cancel): ")
+
+        if 'q' in choices.lower():
+            opts.enqueue = True  # FIXME: Remove this side-effect.
+            choices = choices.replace('q', '')  # FIXME: This will distort
+                 # the "Not an integer" message for values containing "q".
+
+        output = []
+        for index in parseChoice(choices):
+            if index > 0 and index <= len(results):
+                output.append(results[index - 1])
             else:
-                print "Invalid result index: %s" % (index + 1)
+                print("Invalid result index: %d" % index)
 
-        if len(results):
-            makeMenu(results, not opts.show_path)
+        return output
 
-            if opts.pretend:
-                return
-
-            choices = raw_input("Choice(s) (Ctrl+C to cancel): ")
-
-            if 'q' in choices.lower():
-                opts.enqueue = True
-                choices = choices.replace('q', '')  # FIXME: This will distort
-                     # the "Not an integer" message for values containing "q".
-            choices = parseChoice(choices)
-
-            if len(choices):
-                takeChoice(choices.pop(0), not opts.enqueue)
-            for item in choices:
-                takeChoice(item, False)  # This ensures proper behaviour with
-                                         # no --enqueue and multiple choices.
-        else:
-            print "No Results"
-
+#TODO: Split this up more
 if __name__ == '__main__':
-    try:
-        cmd = os.path.split(sys.argv[0])[1]
-        aTy = (cmd.lower() in ('ap', 'aq')) and '<path> ...' or '<keyword> ...'
+    cmd = os.path.split(sys.argv[0])[1]
+    aTy = (cmd.lower() in ('ap', 'aq')) and '<path> ...' or '<keyword> ...'
 
-        op = optparse.OptionParser(usage="usage: %prog [options] " + aTy)
-        op.add_option("-q", "--enqueue", action="store_true", dest="enqueue",
-                default=(cmd.lower() in ('aq', 'laq')),
-                help="Don't start the song playing after enqueueing it. "
-                     "(default if called as 'aq' or 'laq')")
-        op.add_option("-P", "--show_path", action="store_true",
-                dest="show_path", default=False,
-                help="Show the full path to each result.")
-        op.add_option("-l", "--locate", action="store_true", dest="locate",
-                default=(cmd.lower() in ('lap', 'laq')),
-                help="Treat the arguments as search keywords rather than "
-                     "paths. (default if called as 'lap' or 'laq')")
-        op.add_option("-p", "--pretend", action="store_true", dest="pretend",
-                default=False, help="Just show the list of results. Don't "
-                                    "prompt for a choice and then act on it.")
+    from optparse import OptionParser
+    op = OptionParser(version="%%prog v%s" % __version__,
+        usage="%prog [options] " + aTy,
+        description=__doc__.replace('\r\n', '\n').split('\n--snip--\n')[0])
 
-        (opts, args) = op.parse_args()
+    # TODO: Reconcile all these. Maybe make all input via options and then
+    #       use configurable personalities to map positional arguments to
+    #       options.
+    op.add_option("-e", "--exec", action="store", dest="exe_cmd",
+        default=None, help="Use this command to enqueue/play rather than "
+                           "the default.")
+    op.add_option("-l", "--locate", action="store_true", dest="locate",
+            default=(cmd.lower() in ('lap', 'laq')),
+            help="Treat the arguments as search keywords rather than "
+                 "paths. (default if called as 'lap' or 'laq')")
+    op.add_option("-n", "--song-count", action="store", type=int,
+        dest="wanted_count", default=DEFAULT_RAND_COUNT, metavar="NUM",
+        help="Request that NUM randomly-chosen songs be picked rather than"
+             " just one.")
+    op.add_option("-p", "--pretend", action="store_true", dest="pretend",
+            default=False, help="Just show the list of results. Don't "
+                                "prompt for a choice and then act on it.")
+    op.add_option("-P", "--show_path", action="store_true",
+            dest="show_path", default=False,
+            help="Show the full path to each result.")
+    op.add_option('-q', '--quiet', action="count", dest="quiet",
+        default=0, help="Decreased verbosity. Use twice for extra effect")
+    op.add_option("-Q", "--enqueue", action="store_true", dest="enqueue",
+            default=(cmd.lower() in ('aq', 'laq', 'raq')),
+            help="Don't start the song playing after enqueueing it. "
+                 "(default if called as 'aq' or 'laq')")
+    op.add_option("-r", "--random", action="store_true", dest="random",
+            default=(cmd.lower() in ('rap', 'raq')),
+            help="Select X entries at random from the provided paths. "
+                 "(default if called as 'rap' or 'raq')")
+    op.add_option('-v', '--verbose', action="count", dest="verbose",
+        default=2, help="Increased verbosity. Use twice for extra effect")
 
-        if not bus:
-            opts.pretend = True
+    # Allow pre-formatted descriptions
+    op.formatter.format_description = lambda description: description
 
-        if opts.locate:
-            doLocate()
-        elif len(args):
-            addTrack(os.path.abspath(args[0]), not opts.enqueue)
-            for track in args[1:]:
-                addTrack(os.path.abspath(track), False)
+    (opts, args) = op.parse_args()
 
-    except KeyboardInterrupt:
-        print
+    # Set up clean logging to stderr
+    log_levels = [logging.CRITICAL, logging.ERROR, logging.WARNING,
+                  logging.INFO, logging.DEBUG]
+    opts.verbose = min(opts.verbose - opts.quiet, len(log_levels) - 1)
+    opts.verbose = max(opts.verbose, 0)
+    logging.basicConfig(level=log_levels[opts.verbose],
+                        format='%(levelname)s: %(message)s')
+
+    # Branch for --exec, MPRIS, or fallback to pretend
+    if opts.exe_cmd:
+        add_func = lambda paths, play: subprocess.call([opts.exe_cmd] + paths)
+    elif bus:
+        add_func = addTrack
+    else:
+        print("Cannot connect to D-Bus session bus. Assuming --pretend.")
+        add_func = lambda paths, play: None
+        opts.pretend = True
+
+    if not args:
+        #TODO: Do I really want this case to require Python 2.7?
+        args.append(subprocess.check_output(
+            ['xdg-user-dir', 'MUSIC']).strip())
+
+    # If opts.locate, resolve args using `locate` first.
+    if opts.locate:
+        # Implement implicit AND for locate (default is implicit OR)
+        results = (len(args) > 0) and get_results(args.pop(0)) or []
+        for kw in args:
+            results = [x for x in results
+                    #TODO: Implement locate's "only *%s* if no globbing chars"
+                    if fnmatch.fnmatch(x.lower(), '*%s*' % kw.lower())]
+    else:
+        results = args
+
+    # TODO: Decide whether to support locate without chooser
+    if opts.random:
+        results = gather_random(args, opts.wanted_count)
+    elif opts.locate:
+        try:
+            results = choose(results, not opts.show_path)
+        except KeyboardInterrupt:
+            results = []
+    else:
+        results = args
+
+    # Feed the results to the player
+    if results:
+        add_func(results, not opts.enqueue)
+    else:
+        print("No Results")
