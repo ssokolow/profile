@@ -22,7 +22,6 @@ Note:
 TODO:
  - Still needs more refactoring.
  - Decide how to expose filtering options from locate.
- - Support any MPRIS-compatible player, not just Audacious.
  - Complete the list of extensions for ModPlug and UADE (3rd-party)
  - Support an "all" keyword and an alternative to Ctrl+C for cancel. (maybe 0)
  - Clean up the code
@@ -91,37 +90,71 @@ except ImportError:
     pass
 
 try:
-    from dbus import Bus
+    import dbus
     from dbus.exceptions import DBusException
-
-    try:
-        # connect to DBus
-        bus = Bus(Bus.TYPE_SESSION)
-    except DBusException:
-        bus = None
+    import xml.etree.cElementTree as ET
 except ImportError:
-    bus = None
+    # Let the exception handler wrapping the MPRISAdder() call handle it
+    DBusException = Exception
+    pass
 
-def addTrack(paths, play=False):
-    """Use MPRIS to add the track to Audacious.
-
-    @todo: Make this work with any MPRIS-compatible client.
+class MPRISAdder(object):
+    """Convenience wrapper for accessing MPRIS AddTrack via D-Bus.
+    @todo: Blog about the tasks within this. I had to piece it together.
+        - Dynamically retrieving a suitable MPRIS interface.
+        - Testing for method existence
     """
-    for path in paths:
-        if not os.path.exists(path):
-            log.error("File does not exist: %s", path)
+    ifname = 'org.freedesktop.MediaPlayer'
 
-        if isinstance(path, str):
-            path = path.decode(sys.getfilesystemencoding())
-        file_url = 'file://' + path
+    def __init__(self, bus=None):
+        """
+        @todo: Support a configurable preference for a specific player
+        @todo: Make sure I properly support both MPRIS1 and MPRIS2.
+        """
+        self.bus = bus or dbus.Bus(dbus.Bus.TYPE_SESSION)
 
-        if bus:
-            mp = bus.get_object('org.mpris.audacious', '/TrackList')
-            mp.AddTrack(file_url, play)
+        for name in self.get_player_names():
+            iface = self._get_dbus_if(name, '/TrackList', self.ifname)
+            if 'AddTrack' in self.get_method_names(iface):
+                self.iface = iface
+                break
         else:
-            pass  # TODO: Support audtool or dbus-send as a fallback
+            raise DBusException("No media player with MPRIS AddTrack found")
 
-        play = False  # Only start the first one playing
+    def _get_dbus_if(self, name, path, interface):
+        obj = self.bus.get_object(name, path)
+        return dbus.Interface(obj, dbus_interface=interface)
+
+    def get_player_names(self):
+        """Find all D-Bus names for MPRIS-compatible players"""
+        ispect_if = self._get_dbus_if(
+                'org.freedesktop.DBus', '/', 'org.freedesktop.DBus')
+        return [x for x in ispect_if.ListNames() if x.startswith('org.mpris.')]
+
+    def get_method_names(self, interface):
+        """Get all method names within C{self.ifname} on the given interface.
+
+        @todo: Extract ifname from the passed-in interface object.
+        """
+        dom = ET.fromstring(interface.Introspect(
+                dbus_interface='org.freedesktop.DBus.Introspectable'))
+        funcs = dom.findall(".//interface[@name='" + self.ifname + "']/method")
+        return [x.get('name') for x in funcs]
+
+    def add_tracks(self, paths, play=False):
+        """Add the given tracks to the player's playlist and, C{if play=True},
+        start the first one playing.
+        """
+        for path in paths:
+            if not os.path.exists(path):
+                log.error("File does not exist: %s", path)
+
+            if isinstance(path, str):
+                path = path.decode(sys.getfilesystemencoding())
+            file_url = 'file://' + path
+
+            self.iface.AddTrack(file_url, play)
+            play = False  # Only start the first one playing
 
 def gather_random(roots, wanted_count):
     """Use C{os.walk} to choose C{wanted_count} files from C{roots}.
@@ -179,9 +212,6 @@ def choose(results, strip_path):
             val = strip_path and os.path.basename(val) or val
             print("%3d) %s" % (pos + 1, val))
 
-        if opts.pretend:
-            return
-
         choices = raw_input("Choice(s) (Ctrl+C to cancel): ")
 
         if 'q' in choices.lower():
@@ -211,6 +241,9 @@ if __name__ == '__main__':
     # TODO: Reconcile all these. Maybe make all input via options and then
     #       use configurable personalities to map positional arguments to
     #       options.
+    op.add_option("-0", "--print0", action="store_true", dest="print_null",
+            default=False, help="Display the list of results, separated by "
+                                "NULL characters. (good for `xargs -0`)")
     op.add_option("-e", "--exec", action="store", dest="exe_cmd",
         default=None, help="Use this command to enqueue/play rather than "
                            "the default.")
@@ -222,9 +255,8 @@ if __name__ == '__main__':
         dest="wanted_count", default=DEFAULT_RAND_COUNT, metavar="NUM",
         help="Request that NUM randomly-chosen songs be picked rather than"
              " just one.")
-    op.add_option("-p", "--pretend", action="store_true", dest="pretend",
-            default=False, help="Just show the list of results. Don't "
-                                "prompt for a choice and then act on it.")
+    op.add_option("-p", "--print", action="store_true", dest="print_nl",
+            default=False, help="Display the list of results, one per line.")
     op.add_option("-P", "--show_path", action="store_true",
             dest="show_path", default=False,
             help="Show the full path to each result.")
@@ -254,15 +286,16 @@ if __name__ == '__main__':
     logging.basicConfig(level=log_levels[opts.verbose],
                         format='%(levelname)s: %(message)s')
 
-    # Branch for --exec, MPRIS, or fallback to pretend
+    # Branch for --exec, MPRIS, or fallback to print
     if opts.exe_cmd:
         add_func = lambda paths, play: subprocess.call([opts.exe_cmd] + paths)
-    elif bus:
-        add_func = addTrack
     else:
-        print("Cannot connect to D-Bus session bus. Assuming --pretend.")
-        add_func = lambda paths, play: None
-        opts.pretend = True
+        try:
+            add_func = MPRISAdder().add_tracks
+        except (NameError, DBusException):
+            print("Cannot connect to D-Bus session bus. Assuming --print.")
+            add_func = lambda paths, play: None
+            opts.print_nl = True
 
     if not args:
         #TODO: Do I really want this case to require Python 2.7?
@@ -283,7 +316,7 @@ if __name__ == '__main__':
     # TODO: Decide whether to support locate without chooser
     if opts.random:
         results = gather_random(args, opts.wanted_count)
-    elif opts.locate:
+    elif opts.locate and not (opts.print_nl or opts.print_null):
         try:
             results = choose(results, not opts.show_path)
         except KeyboardInterrupt:
@@ -292,7 +325,11 @@ if __name__ == '__main__':
         results = args
 
     # Feed the results to the player
-    if results:
+    if opts.print_null:
+        print('\0'.join(results))
+    elif opts.print_nl:
+        print('\n'.join(results))
+    elif results:
         add_func(results, not opts.enqueue)
     else:
         print("No Results")
