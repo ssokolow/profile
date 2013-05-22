@@ -1,4 +1,5 @@
 # Use "less -R" as my pager but pretend I'm not when the results fit one screen
+--ignore-dir=.tox
 --pager=less -R -F -X
 
 # Shockingly, there is no JSON in the default type map
