@@ -431,7 +431,7 @@ if __name__ == '__main__':
     op.add_option("-n", "--song-count", action="store", type=int,
         dest="wanted_count", default=DEFAULT_RAND_COUNT, metavar="NUM",
         help="Request that NUM randomly-chosen songs be picked rather than"
-             " just one.")
+             " %default.")
     op.add_option("--no-urwid", action="store_false", dest="urwid",
         default=True, help="Don't use urwid-based ncurses chooser even if it "
                            "is available.")
