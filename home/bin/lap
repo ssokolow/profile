@@ -467,9 +467,17 @@ if __name__ == '__main__':
                         format='%(levelname)s: %(message)s')
 
     if not args:
-        #TODO: Do I really want this case to require Python 2.7?
-        args.append(subprocess.check_output(
-            ['xdg-user-dir', 'MUSIC']).strip())
+        try:
+            #TODO: Do I really want this case to require Python 2.7?
+            args.append(subprocess.check_output(
+                ['xdg-user-dir', 'MUSIC']).strip())
+        except OSError, err:
+            if err.errno == 2:
+                print("Could not use 'xdg-user-dir' to locate your music "
+                      "library. Please provide an argument.")
+                sys.exit(1)
+            else:
+                raise
 
     # If opts.locate, resolve args using `locate` first.
     if opts.locate:
