@@ -346,8 +346,9 @@ def gather_random(roots, wanted_count):
 
     chosen = []
     for i in range(0, opts.wanted_count):
-        # We don't want duplicates
-        chosen.append(choices.pop(random.randrange(0, len(choices))))
+        if choices:
+            # We don't want duplicates
+            chosen.append(choices.pop(random.randrange(0, len(choices))))
 
     return chosen
 
