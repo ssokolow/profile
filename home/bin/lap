@@ -489,11 +489,11 @@ if __name__ == '__main__':
                     #TODO: Implement locate's "only *%s* if no globbing chars"
                     if fnmatch.fnmatch(x.lower(), '*%s*' % kw.lower())]
     else:
-        results = args
+        results = [os.path.abspath(x) for x in args]
 
     # TODO: Decide whether to support locate without chooser
     if opts.random:
-        results = gather_random(args, opts.wanted_count)
+        results = gather_random(results, opts.wanted_count)
     elif opts.locate and not (opts.print_nl or opts.print_null):
         try:
             argv = cmd + ' ' + ' '.join(sys.argv[1:])
@@ -506,7 +506,7 @@ if __name__ == '__main__':
         except KeyboardInterrupt:
             results = []
     else:
-        results = args
+        results = results
 
     # Branch for --exec, MPRIS, or fallback to print
     if opts.exe_cmd:
