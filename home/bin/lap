@@ -22,6 +22,8 @@ Note:
 TODO:
  - Still needs more refactoring.
  - Decide how to expose filtering options from locate.
+ - Implement /-triggered "search within these results" for lap.
+ - Look into "insert before/after current song" as an MPRIS option
  - Complete the list of extensions for ModPlug and UADE (3rd-party)
  - Support an "all" keyword and an alternative to Ctrl+C for cancel. (maybe 0)
  - Clean up the code
