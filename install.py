@@ -3,6 +3,7 @@
 """Simple unattended script for linking my roaming profile into a new $HOME.
 
 @todo:
+- Run ` ~/bin/git-submodule-recur.sh submodule update --init` on completion.
 - Should recurse if not --overwrite and os.path.isdir()
 - Consider including an option to install my base set of packages on apt-based
   distros and chsh to zsh.

@@ -46,3 +46,6 @@
 [submodule "home/.vim/bundle/vim-stylus"]
 	path = home/.vim/bundle/vim-stylus
 	url = https://github.com/wavded/vim-stylus.git
+[submodule "home/.vim/bundle/jedi-vim"]
+	path = home/.vim/bundle/jedi-vim
+	url = https://github.com/davidhalter/jedi-vim.git
