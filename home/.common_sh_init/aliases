@@ -41,7 +41,7 @@ function dl() {
     for url in "$@"; do
         case $url in
             http://youtube.com/watch\?* | http://www.youtube.com/watch\?* | https://youtube.com/watch\?* | https://www.youtube.com/watch\?* ) ytdl "$url" ;;
-            http://vimeo.com/* | http://blip.tv/* ) ytdl "$url" ;;
+            http://vimeo.com/* | https://vimeo.com/* | http://blip.tv/* ) ytdl "$url" ;;
             http://fanfiction.net/s/* | http://www.fanfiction.net/s/* | http://www.tthfanfic.org/Story-* | http://ficwad.com/story/* | http://www.ficwad.com/story/* ) download_ffn_fic "$url" ;;
             * ) echo "Unrecognized URL type: $url" ;;
         esac
@@ -162,7 +162,7 @@ if `which ack-grep &> /dev/null`; then
 fi
 
 if ! `which download_ffn_fic &> /dev/null` && [ -e ~/src/fanfic2ebook ]; then
-    alias download_ffn_fic=~/src/fanfic2ebook/src/fanfic2html
+    download_ffn_fic() { ~/src/fanfic2ebook/src/fanfic2html "$@"; }
 fi
 
 # Set up rTorrent to interact more nicely with screen's window list
