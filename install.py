@@ -51,7 +51,7 @@ def relpath(path, start=os.curdir):
     # Work out how much of the filepath is shared by start and path.
     i = len(os.path.commonprefix([start_list, path_list]))
 
-    rel_list = [os.pardir] * (len(start_list)-i) + path_list[i:]
+    rel_list = [os.pardir] * (len(start_list) - i) + path_list[i:]
     if not rel_list:
         return os.curdir
     return os.path.join(*rel_list)
@@ -113,17 +113,18 @@ if __name__ == '__main__':
     from optparse import OptionParser
     parser = OptionParser(version="%%prog v%s" % __version__,
             usage="%prog [options]",
-            description=__doc__.replace('\r\n','\n').split('\n--snip--\n')[0])
+            description=__doc__.replace('\r\n', '\n').split('\n--snip--\n')[0])
     parser.add_option('-n', '--dry-run', action="store_true", dest="dry_run",
         default=False, help="Don't make changes. (Best used with -v)")
     parser.add_option('-v', '--verbose', action="count", dest="verbose",
         default=3, help="Increase the verbosity.")
     parser.add_option('-q', '--quiet', action="count", dest="quiet",
-        default=0, help="Decrease the verbosity. Can be repeated for extra effect.")
+        default=0, help="Decrease the verbosity. Repeat for extra effect.")
     parser.add_option('--overwrite', action="store_true", dest="overwrite",
         default=False, help="Overwrite existing files if necessary.")
     parser.add_option('--prefix', action="store", dest="home",
-        default=os.environ['HOME'], help="Specify a location other than %default to install to.")
+        default=os.environ['HOME'],
+        help="Specify a location other than %default to install to.")
 
     opts, args  = parser.parse_args()
 
