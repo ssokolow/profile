@@ -9,6 +9,9 @@ ao=alsa,openal,pulse,oss
 
 vc=ffh264vdpau,ffmpeg12vdpau,ffwmv3vdpau,ffvc1vdpau,
 
+# Required to pan-and-scan in enough for The Cinema Snob - Gums
+panscanrange=3
+
 # This enables screenshots but disables the hardware scaling
 #vf=screenshot
 
