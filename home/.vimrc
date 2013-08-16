@@ -50,6 +50,9 @@
 "  :G           'git grep' on the provided string
 "  <C-X> G      'git grep' on the word under the cursor
 "
+"  TODO: Add relevant jedi-vim keybindings here
+"        (https://github.com/davidhalter/jedi-vim)
+"
 " Navigation:
 "  gv           Re-select contents of previous visual-mode selection.
 "
@@ -426,6 +429,10 @@ if exists(":let")
 	" Configure automatic syntax and style checks
 	let g:syntastic_check_on_open = 1
 	let g:syntastic_auto_loc_list = 1
+
+	" Prevent jedi-vim from popping up when not explicitly triggered
+	let g:jedi#popup_on_dot = 0
+	let g:jedi#show_function_definition = 0
 
 	" Things to double-check the efficacy of:
 	let python_highlight_all = 1
