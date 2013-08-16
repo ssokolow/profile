@@ -3,6 +3,9 @@
 
 " {{{ Quick Reference
 "
+"  TODO: Decide what to do with *this* quick reference:
+"        https://cdn.shopify.com/s/files/1/0165/4168/files/preview.png
+"
 "  :e {file}    Edit {file} in new buffer
 "  :ene         Edit new (empty) file in new buffer
 "
