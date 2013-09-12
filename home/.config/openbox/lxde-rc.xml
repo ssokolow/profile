@@ -828,55 +828,84 @@
   </application>
 
   # end of the example
-  -->
-    <application name="urxvt_desktop">
-      <layer>below</layer>
-      <desktop>all</desktop>
-      <skip_taskbar>yes</skip_taskbar>
+-->
+    <!-- Layout automation for my desktop -->
+    <application name="basket" class="Basket" role="MainWindow">
+      <maximized>true</maximized>
+      <position force="yes">
+        <x>0</x>
+        <y>0</y>
+        <monitor>2</monitor>
+      </position>
+      <size>
+        <width>100%</width>
+        <height>100%</height>
+      </size>
+    </application>
+    <application name="git-gui">
+      <maximized>true</maximized>
+      <position force="yes">
+        <x>0</x>
+        <y>0</y>
+        <monitor>2</monitor>
+      </position>
     </application>
     <application name="gmrun" class="Gmrun">
       <layer>above</layer>
     </application>
-    <application name="basket" class="Basket" role="MainWindow">
+    <application name="tsermon">
+      <decor>no</decor>
+      <layer>above</layer>
+      <desktop>all</desktop>
+      <skip_taskbar>yes</skip_taskbar>
       <position>
+        <x>1450</x>
+        <y>0</y>
+      </position>
+    </application>
+    <application name="urxvt_desktop">
+      <decor>no</decor>
+      <layer>below</layer>
+      <desktop>all</desktop>
+      <skip_taskbar>yes</skip_taskbar>
+    </application>
+    <!-- Fullscreening Fixes for Games -->
+    <application name="arx" class="arx">
+      <fullscreen>yes</fullscreen>
+    </application>
+    <application title="Legend of Grimrock">
+      <fullscreen>yes</fullscreen>
+    </application>
+    <application class="OpenClonk">
+      <fullscreen>yes</fullscreen>
+    </application>
+    <application class="shadowgrounds-bin">
+      <fullscreen>yes</fullscreen>
+    </application>
+    <application name="stepmania">
+      <fullscreen>yes</fullscreen>
+    </application>
+    <application title="Thomas Was Alone">
+      <fullscreen>true</fullscreen>
+    </application>
+    <application title="Torchlight">
+      <fullscreen>yes</fullscreen>
+    </application>
+    <application class="trine-bin64">
+      <fullscreen>yes</fullscreen>
+    </application>
+    <application class="trine2_linux_32bit">
+      <fullscreen>yes</fullscreen>
+    </application>
+    <application name="trine2_linux_launcher_32bit">
+      <position force="yes">
         <x>center</x>
         <y>center</y>
         <monitor>1</monitor>
       </position>
     </application>
-    <application name="Download" class="Firefox">
-      <position>
-        <x>1280</x>
-        <y>0</y>
-      </position>
-    </application>
-    <application class="net-minecraft-LauncherFrame">
-      <maximized>true</maximized>
-      <decor>no</decor>
-    </application>
-    <application class="net-minecraft-MinecraftLauncher">
-      <maximized>true</maximized>
-      <decor>no</decor>
-    </application>
-    <application class="OpenClonk">
-      <layer>above</layer>
-      <decor>no</decor>
-    </application>
-    <application name="arx" class="arx">
-      <layer>above</layer>
-      <decor>no</decor>
-    </application>
-    <application class="shadowgrounds-bin">
-      <layer>above</layer>
-      <decor>no</decor>
-    </application>
-    <application class="trine-bin">
-      <layer>above</layer>
-      <decor>no</decor>
-    </application>
-    <application name="stepmania">
+    <application class="wakingmars">
       <fullscreen>yes</fullscreen>
-      <maximized>true</maximized>
     </application>
   </applications>
 </openbox_config>
