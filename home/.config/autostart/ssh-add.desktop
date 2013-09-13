@@ -1,3 +1,4 @@
+
 [Desktop Entry]
 Name=ssh-add
 GenericName=Load SSH keys
@@ -7,3 +8,4 @@ Terminal=false
 Type=Application
 Categories=
 StartupNotify=false
+NotShowIn=Lubuntu;
