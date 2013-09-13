@@ -830,6 +830,14 @@
   # end of the example
 -->
     <!-- Layout automation for my desktop -->
+    <application name="amule" type="normal">
+      <maximized>true</maximized>
+      <position force="yes">
+        <x>0</x>
+        <y>0</y>
+        <monitor>2</monitor>
+      </position>
+    </application>
     <application name="basket" class="Basket" role="MainWindow">
       <maximized>true</maximized>
       <position force="yes">
@@ -842,7 +850,7 @@
         <height>100%</height>
       </size>
     </application>
-    <application name="git-gui">
+    <application name="deluge" type="normal">
       <maximized>true</maximized>
       <position force="yes">
         <x>0</x>
@@ -850,8 +858,24 @@
         <monitor>2</monitor>
       </position>
     </application>
+    <application name="git-gui">
+        <maximized>true</maximized>
+        <!-- git-gui somehow overrides force="yes" for position -->
+    </application>
     <application name="gmrun" class="Gmrun">
       <layer>above</layer>
+    </application>
+    <application class="Thunderbird" role="3pane">
+      <maximized>true</maximized>
+      <position force="yes">
+        <x>0</x>
+        <y>0</y>
+        <monitor>2</monitor>
+      </position>
+      <size>
+        <width>100%</width>
+        <height>100%</height>
+      </size>
     </application>
     <application name="tsermon">
       <decor>no</decor>
