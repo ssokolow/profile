@@ -859,8 +859,8 @@
       </position>
     </application>
     <application name="git-gui">
-        <maximized>true</maximized>
-        <!-- git-gui somehow overrides force="yes" for position -->
+      <maximized>true</maximized>
+      <!-- git-gui somehow overrides force="yes" for position -->
     </application>
     <application name="gmrun" class="Gmrun">
       <layer>above</layer>
