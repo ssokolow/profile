@@ -897,7 +897,7 @@
     <application name="arx" class="arx">
       <fullscreen>yes</fullscreen>
     </application>
-    <application title="Legend of Grimrock">
+    <application class="Grimrock.bin.x86_64">
       <fullscreen>yes</fullscreen>
     </application>
     <application class="OpenClonk">
@@ -909,10 +909,14 @@
     <application name="stepmania">
       <fullscreen>yes</fullscreen>
     </application>
+    <!-- DISABLED: Triggers a crashing bug when a Java application starts
+         and Thomas Was Alone doesn't set any other distinctive properties.
     <application title="Thomas Was Alone">
       <fullscreen>true</fullscreen>
-    </application>
-    <application title="Torchlight">
+    </application>-->
+    <application class="Torchlight.bin.x86_64">
+      <!-- Also catches the splash screen but we can't be more specific
+           until the Openbox title="..." + Java crash bug is fixed. -->
       <fullscreen>yes</fullscreen>
     </application>
     <application class="trine-bin64">
