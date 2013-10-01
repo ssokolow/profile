@@ -893,6 +893,9 @@
       <desktop>all</desktop>
       <skip_taskbar>yes</skip_taskbar>
     </application>
+    <application name="urxvt_kuake">
+      <desktop>all</desktop>
+    </application>
     <!-- Fullscreening Fixes for Games -->
     <application name="arx" class="arx">
       <fullscreen>yes</fullscreen>
