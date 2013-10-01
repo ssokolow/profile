@@ -52,7 +52,7 @@ sub on_root_event {
    # urxvtperl(3) doesn't even mention things like $term->XMapWindow.
    if (not $self->focus and $self->mapped and $self->{toggle_focuses_if_visible}) {
       if ($self->{wmctrl_path}) {
-          my $cmd = $self->{wmctrl_path} . " -i -a " . int($self->parent);
+          my $cmd = $self->{wmctrl_path} . " -i -R " . int($self->parent);
           print($cmd);
          `$cmd`;
       } else {
