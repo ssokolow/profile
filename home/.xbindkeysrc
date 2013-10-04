@@ -80,6 +80,9 @@
 "audtool playlist-jump `audtool playlist-length`; audtool playback-playing || audtool playback-play"
   Mod4 + Down
 
+"audtool playback-playing || audtool playback-play; [ `audtool playlist-stop-after-status` = 'off' ] && audtool playlist-stop-after-toggle"
+  Mod4 + o
+
 # --== Bindings for ATi Remote Wonder II ==--
 
 "(sleep 0.5; br --port=/dev/ttyS0 -F)& sleep 1; xset dpms force off"
