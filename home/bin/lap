@@ -296,6 +296,16 @@ class MPRISAdder(object):
             iface = self._get_dbus_if(name, '/TrackList', self.ifname)
             if 'AddTrack' in self.get_method_names(iface):
                 self.iface = iface
+
+                # FIXME: Figure out why qdbusviewer can introspect this but I
+                # can't. (Could be related to how qdbus segfaults calling it)
+                if name == 'org.mpris.audacious':
+                    self.pq_add = self._get_dbus_if(name,
+                        '/org/atheme/audacious',
+                        'org.atheme.audacious').PlayqueueAdd
+                else:
+                    self.pq_add = lambda x: None
+
                 break
         else:
             raise DBusException("No media player with MPRIS AddTrack found")
@@ -333,6 +343,8 @@ class MPRISAdder(object):
             file_url = 'file://' + path
 
             self.iface.AddTrack(file_url, play)
+            if self.pq_add and not play:
+                self.pq_add(self.iface.GetLength() - 1)
             play = False  # Only start the first one playing
 
 def gather_random(roots, wanted_count):
