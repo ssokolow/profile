@@ -70,6 +70,8 @@
 "
 "  [s/]s        Jump to previous/next misspelled word
 "
+"  <C-o>        Pop cursor position stack (great alternative to marks)
+"
 " Folds:
 "  zo/zc       Open/Close fold
 "  zO/zC       Open/Close fold and all child folds
@@ -251,6 +253,7 @@
 "   comparison or I use it infrequently.
 " }}}
 " {{{ TODO:
+" * http://constantcoding.blogspot.ca/2013/07/quick-vim-trick-for-fixing-indentation.html"
 " * Django:
 "   * https://github.com/chronossc/my-vim-confs/blob/master/.vimrc
 "     (http://chronosbox.org/blog/read-to-work-vim-confs-for-python-and-django)
