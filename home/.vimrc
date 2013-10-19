@@ -399,7 +399,7 @@ if exists("+wildmenu")
 	set wildmenu
 endif
 if exists("+wildignore")
-	set wildignore+=.pyc,.pyo,.class
+	set wildignore+=*.pyc,*.pyo,*.class
 else
 	set suffixes+=.pyc,.pyo,.class
 endif
