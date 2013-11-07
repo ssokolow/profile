@@ -23,6 +23,7 @@
 [core]
 	excludesfile = /home/ssokolow/.gitignore
 	legacyheaders = false
+	abbrev = 12
 [format]
 	numbered = auto
 [github]
