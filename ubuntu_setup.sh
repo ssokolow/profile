@@ -195,6 +195,7 @@ screen
 scrot
 ssh-askpass-gnome
 smartmontools
+smem
 sox
 sshfs
 synergy
