@@ -1,0 +1,9 @@
+[Desktop Entry]
+Name=Calibrate X-Box 360 Pad
+GenericName=Calibrate Joystick
+Comment=Set a sane dead zone on my X-Box 360 Pad
+Exec=jscal -s 8,1,0,-5000,2500,19334,17737,1,0,-1200,3500,17006,18343,1,0,127,127,4227201,4194176,1,0,-3500,4000,18342,18662,1,0,-2000,3000,17448,18035,1,0,127,127,4227201,4194176,1,0,0,0,536854528,536854528,1,0,0,0,536854528,536854528 /dev/input/js3
+Terminal=false
+Type=Application
+Categories=
+StartupNotify=false

@@ -46,6 +46,9 @@ export WINEDLLOVERRIDES="winemenubuilder.exe=d"
 # Fix desktop-spanning games with my new head layout
 export SDL_VIDEO_FULLSCREEN_HEAD=2
 
+# Make sure SDL uses a joystick device which can be calibrated
+export SDL_JOYSTICK_DEVICE=/dev/input/js3
+
 # Set a few app-specific settings
 export ENCAOPT="-L none"
 export PYTHONSTARTUP=${HOME}/.interactive_rc.py
