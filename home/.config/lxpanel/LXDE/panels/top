@@ -37,7 +37,7 @@ Plugin {
             id=/usr/share/applications/kde4/konqbrowser.desktop
         }
         Button {
-            id=/usr/share/applications/chromium.desktop
+            id=/usr/share/applications/chromium-browser.desktop
         }
         Button {
             id=/usr/share/applications/audacious.desktop
