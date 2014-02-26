@@ -6,7 +6,7 @@ Global {
     allign=center
     margin=0
     widthtype=pixel
-    width=298
+    width=324
     height=24
     transparent=1
     tintcolor=#474747
@@ -50,6 +50,9 @@ Plugin {
         }
         Button {
             id=/usr/share/applications/desurium.desktop
+        }
+        Button {
+            id=/usr/share/applications/PlayOnLinux.desktop
         }
         Button {
             id=/usr/share/applications/leafpad.desktop
