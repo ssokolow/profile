@@ -519,6 +519,9 @@ if has("autocmd") && exists("+filetype")
 	" ...and work around a sudoedit-vim interaction quirk
 	autocmd BufNewFile,BufRead *.ebuild.* set filetype=ebuild
 
+	" ...and treat .md as Markdown, not Modula2
+	autocmd BufNewFile,BufRead *.md set filetype=markdown
+
 	" Use the indentation CoffeeLint defaults to. It makes sense.
 	autocmd FileType coffee set shiftwidth=2 softtabstop=2
 
