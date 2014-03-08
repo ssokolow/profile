@@ -11,6 +11,7 @@
 	st = status
 	staged = diff --cached
 	unstaged = diff
+	addremove = add -A
 [branch]
 	autosetupmerge = always
 	autosetuprebase = always
