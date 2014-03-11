@@ -19,3 +19,7 @@ home/.zsh/cache
 
 # Auto-generated and site-specific
 home/.config/awesome/debian/menu.lua
+
+# Private credentials which may theoretically be placed into the working copy
+# rather than directly in $HOME
+home/.gitconfig.credentials

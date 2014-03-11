@@ -27,8 +27,6 @@
 	abbrev = 12
 [format]
 	numbered = auto
-[github]
-	user = ssokolow
 [merge]
 	tool = kdiff3
 [push]
@@ -55,3 +53,5 @@
 	recentrepo = /home/ssokolow/.profile_repo
 [guitool "gitk"]
 	cmd = gitk
+[include]
+	path = .gitconfig.credentials
