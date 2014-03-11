@@ -18,6 +18,7 @@ add-apt-repository -y ppa:nilarimogard/webupd8 # (for up-to-date Audacious)
 add-apt-repository -y ppa:ubuntu-mozilla-daily/firefox-aurora # (for up-to-date Firefox)
 add-apt-repository -y ppa:ubuntu-wine/ppa # (for up-to-date Wine)
 add-apt-repository -y ppa:chris-lea/node.js # (for up-to-date Node.js)
+add-apt-repository -y ppa:anay/ppa # (http://docs.travis-ci.com/user/cc-menu/ )
 add-apt-repository -y ppa:cdemu/ppa
 # BasKet (http://www.trinitydesktop.org/installation.php#ubuntu)
 # TODO: Figure out how to make this reliably up-to-date when Trinity sometimes lags behind
@@ -165,6 +166,7 @@ nitrogen
 numlockx
 okular
 opensp
+python-buildnotify
 python-examples
 python-psutil
 python3
