@@ -32,6 +32,14 @@ fi
 # Virtualenvwrapper integration
 source ~/.common_sh_init/virtualenvwrapper
 
+if [[ -s "$HOME/.rvm/scripts/rvm" ]]; then
+    # Load RVM into a shell session *as a function*
+    source "$HOME/.rvm/scripts/rvm"
+
+    # Add RVM to PATH for scripting
+    export PATH=$PATH:$HOME/.rvm/bin
+fi
+
 # Load my SSH key into my global ssh-agent if it's an interactive session
 if [[ $- == *i* ]]; then
 	GA_PID=${GPG_AGENT_INFO#*:}
