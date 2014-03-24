@@ -53,6 +53,9 @@
 "  :G           'git grep' on the provided string
 "  <C-X> G      'git grep' on the word under the cursor
 "
+"  :e ++enc=<encoding>
+"               Reload the file, interpreting it as a different encoding
+"
 "  TODO: Add relevant jedi-vim keybindings here
 "        (https://github.com/davidhalter/jedi-vim)
 "
