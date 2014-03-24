@@ -31,9 +31,14 @@ function wo() {
 
 # Alias for my preferred approach to using youtube-dl
 function ytdl() {
-    youtube-dl -l --prefer-free-formats "$@"
+    youtube-dl --prefer-free-formats "$@"
     rename 's@[|:]@ - @' *
     rename 'y@\?\\\*/"<>@_@' *
+}
+
+# Alias for my preferred settings for saving Young Turks vids
+function yt() {
+    youtube-dl -f 44/35/43/18/34 "$@"
 }
 
 # Smart wrapper for multiple site-specific download tools
