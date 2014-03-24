@@ -174,6 +174,7 @@ python3-doc
 python3-examples
 python3-qt4
 python3-setuptools
+qjoypad
 samba
 uptimed
 wxhexeditor
