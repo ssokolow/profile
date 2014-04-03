@@ -229,6 +229,14 @@ if [ "`hostname`" = "monolith" ]; then
     #TODO: Set up lcdproc to run on boot via /etc/rc.local
 fi
 
+# Set up TrueRNG entropy source if I'm running on monolith
+if [ "`hostname`" = "monolith" ]; then
+    apt-get install -y rng-tools
+    cp "`dirname \"$0\"`/supplemental/99-TrueRNG.rules" /etc/udev/rules.d/
+    cp "`dirname \"$0\"`/supplemental/rng-tools" /etc/default/rng-tools
+    update-rc.d rng-tools defaults
+fi
+
 # Set up SpaceNavD for my 3D Mouse if I'm running on monolith
 if [ "`hostname`" = "monolith" ]; then
     apt-get install -y spacenavd
