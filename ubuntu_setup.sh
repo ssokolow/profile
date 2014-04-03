@@ -297,8 +297,8 @@ apt-get install -y eawpatches
 apt-get install -y skype
 apt-get install -y opera
 apt-get install -t cdemu-daemon cdemu-client gcdemu
-cp "`dirname \"$0\"`/supplemental/skype /usr/local/bin/"
-cp "`dirname \"$0\"`/supplemental/49-teensy.rules /etc/udev/rules.d/"
+cp "`dirname \"$0\"`/supplemental/skype" /usr/local/bin/
+cp "`dirname \"$0\"`/supplemental/49-teensy.rules" /etc/udev/rules.d/
 
 #TODO: How did one hold a package as uninstalled again?
 echo " * Removing pulseaudio for pegging one of my CPU cores when I game"
