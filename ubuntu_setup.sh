@@ -4,13 +4,16 @@
 ME="ssokolow"
 
 # Only prompt for a password once so this can be left unattended
-if [ `id -u` -ne 0 ]; then
+if [ "$(id -u)" -ne 0 ]; then
     echo "Re-running self as root..."
     exec sudo "$0" "$@"
 fi
 
+# Do this once up here to keep paths simple
+cd "$(dirname "$0")"
+
 # Make sure apt-get doesn't pause to prompt for input
-DEBIAN_FRONTENT=noninteractive
+DEBIAN_FRONTEND=noninteractive
 export DEBIAN_FRONTEND
 
 # The following PPAs and/or external sources must be enabled:
@@ -220,38 +223,38 @@ libgee-dev
 EOF
 
 # Set up LCDproc for the case LCD if I'm running on monolith
-if [ "`hostname`" = "monolith" ]; then
+if [ "$(hostname)" = "monolith" ]; then
     apt-get install -y lcdproc
-    cp "`dirname \"$0\"`/supplemental/LCDd.conf /etc/"
-    cp "`dirname \"$0\"`/supplemental/lcdproc.conf /etc/"
+    cp "supplemental/LCDd.conf /etc/"
+    cp "supplemental/lcdproc.conf /etc/"
     /etc/init.d/LCDd restart
 
     #TODO: Set up lcdproc to run on boot via /etc/rc.local
 fi
 
 # Set up TrueRNG entropy source if I'm running on monolith
-if [ "`hostname`" = "monolith" ]; then
+if [ "$(hostname)" = "monolith" ]; then
     apt-get install -y rng-tools
-    cp "`dirname \"$0\"`/supplemental/99-TrueRNG.rules" /etc/udev/rules.d/
-    cp "`dirname \"$0\"`/supplemental/rng-tools" /etc/default/rng-tools
+    cp "supplemental/99-TrueRNG.rules" /etc/udev/rules.d/
+    cp "supplemental/rng-tools" /etc/default/rng-tools
     update-rc.d rng-tools defaults
 fi
 
 # Set up SpaceNavD for my 3D Mouse if I'm running on monolith
-if [ "`hostname`" = "monolith" ]; then
+if [ "$(hostname)" = "monolith" ]; then
     apt-get install -y spacenavd
-    cp "`dirname \"$0\"`/supplemental/spnavrc /etc/"
+    cp "supplemental/spnavrc /etc/"
     /etc/init.d/spacenavd restart
 fi
 
 
 # Set up munin if I'm running on monolith
-if [ "`hostname`" = "monolith" ]; then
+if [ "$(hostname)" = "monolith" ]; then
     apt-get install -y munin munin-plugins-extra snmp
     #TODO: Add nvclock once it no longer segfaults
 
     # Set up master config
-    cp "`dirname \"$0\"`/supplemental/munin.conf /etc/munin/"
+    cp "supplemental/munin.conf /etc/munin/"
 
     # Set up node plugins
     rm /etc/munin/plugins/*
@@ -305,8 +308,8 @@ apt-get install -y eawpatches
 apt-get install -y skype
 apt-get install -y opera
 apt-get install -t cdemu-daemon cdemu-client gcdemu
-cp "`dirname \"$0\"`/supplemental/skype" /usr/local/bin/
-cp "`dirname \"$0\"`/supplemental/49-teensy.rules" /etc/udev/rules.d/
+cp "supplemental/skype" /usr/local/bin/
+cp "supplemental/49-teensy.rules" /etc/udev/rules.d/
 
 #TODO: How did one hold a package as uninstalled again?
 echo " * Removing pulseaudio for pegging one of my CPU cores when I game"
@@ -314,7 +317,7 @@ apt-get purge pulseaudio gstreamer0.10-pulseaudio -y
 apt-get autoremove -y
 
 echo " * Using pip to install python packages not covered by apt-get"
-pip install -r "`dirname \"$0\"`"/requirements.txt
+pip install -r requirements.txt
 
 echo " * Installing npm and node packages"
 curl http://npmjs.org/install.sh | sh
@@ -353,7 +356,7 @@ else
 fi
 
 if [ -e /etc/incron.allow ]; then
-    if [ ! `egrep ^$ME$ /etc/incron.allow` ]; then
+    if [ ! "$(egrep ^$ME\$ /etc/incron.allow)" ]; then
         echo " * Adding '$ME' to permitted incron users"
         echo "ssokolow" >> /etc/incron.allow
     else
@@ -393,7 +396,7 @@ else
 fi
 
 echo " * Setting up basic firewall"
-cp -n "`dirname $0`/supplemental/ufw_rules/"* /etc/ufw/applications.d/
+cp -n "supplemental/ufw_rules/"* /etc/ufw/applications.d/
 ufw enable
 for X in OpenSSH VNC Deluge Dropbox Samba avahi-daemon dhclient ntpd pidgin synergy; do
     ufw allow "$X"
