@@ -363,7 +363,9 @@ set shiftwidth=4
 
 " Put swapfiles all together in one of the system temporary directories so it's
 " easy for me to flush them if need be.
-set dir-=.
+" (And don't let them clutter up my ~/tmp)
+" TODO: Can I do this on one line?
+set dir-=.,~/tmp
 
 " TODO: Get these cooperating. (n seems to require t)
 "set formatoptions+=n
