@@ -355,7 +355,7 @@ set formatoptions-=t     " No word-wrap inside code.
 set formatoptions+=croql " Make the behaviour I'm used to explicit
 set textwidth=79
 
-" I prefer 4-space indentation by default
+" I prefer 4-space indentation by default but use expected 8-space tabs
 set expandtab
 set tabstop=8
 set softtabstop=4
@@ -382,85 +382,85 @@ set sessionoptions=blank,curdir,folds,help,resize,slash,tabpages,unix,winpos,win
 
 " Make searching more efficient
 if has("extra_search")
-	set incsearch
-	set hlsearch
-	set ignorecase
-	set smartcase
+    set incsearch
+    set hlsearch
+    set ignorecase
+    set smartcase
 endif
 
-" Let's default to syntax-based folding since it's the most automatic
+" Let's default to indent-based folding since it's the most automatic
 if exists("+folding")
-	set foldmethod=indent
+    set foldmethod=indent
 endif
 
 " I want full mouse support when using a Yakuake-->screen-->vim stack.
 if exists("+mouse")
-	set ttymouse=xterm2
-	set mouse=a
+    set ttymouse=xterm2
+    set mouse=a
 endif
 
 " Set up more comfortable filesystem navigation
 if exists("+wildmenu")
-	set wildmenu
+    set wildmenu
 endif
 if exists("+wildignore")
-	set wildignore+=*.pyc,*.pyo,*.class
+    set wildignore+=*.pyc,*.pyo,*.class
 else
-	set suffixes+=.pyc,.pyo,.class
+    set suffixes+=.pyc,.pyo,.class
 endif
 
 " Use 'ack' as my grep program since it's more comfortable for me
 " (In a Debian-compatible way)
 if executable("ack-grep")
-	set grepprg=ack\ -a
+    set grepprg=ack\ -a
 elseif executable("ack")
-	set grepprg=ack\ -a
+    set grepprg=ack\ -a
 endif
 
 " }}}
 " {{{ Configuration (Plugins)
 if exists(":let")
-	let g:ragtag_global_maps = 1
-	let g:pcs_check_when_saving = 1
-	let g:SuperTabDefaultCompletionType = "context"
 
-	" I prefer 4-character space indentation as my default for DetectIndent too
-	let g:detectindent_preferred_expandtab = 1
-	let g:detectindent_preferred_indent = 4
+    let g:ragtag_global_maps = 1
+    let g:pcs_check_when_saving = 1
+    let g:SuperTabDefaultCompletionType = "context"
 
-	" Open MiniBufExplorer as a sidebar more like I got used to with Kate
-	let g:miniBufExplVSplit=25
-	let g:miniBufExplorerMoreThanOne=9999
-	let g:miniBufExplCloseOnSelect = 1
-	let g:miniBufExplToggleRefocuses = 1
-	"let g:miniBufExplUseSingleClick = 1
-	"let g:miniBufExplForceSyntaxEnable = 1
+    " I prefer 4-char space indentation as my default for DetectIndent too
+    let g:detectindent_preferred_expandtab = 1
+    let g:detectindent_preferred_indent = 4
 
-	" Make sure NERDTree always opens with the right dimensions
-	let NERDTreeQuitOnOpen = 1
-	let NERDTreeWinSize = 30
+    " Open MiniBufExplorer as a sidebar more like I got used to with Kate
+    let g:miniBufExplVSplit=25
+    let g:miniBufExplorerMoreThanOne=9999
+    let g:miniBufExplCloseOnSelect = 1
+    let g:miniBufExplToggleRefocuses = 1
+    "let g:miniBufExplUseSingleClick = 1
+    "let g:miniBufExplForceSyntaxEnable = 1
 
-	" Configure automatic syntax and style checks
-	let g:syntastic_check_on_open = 1
-	let g:syntastic_auto_loc_list = 1
+    " Make sure NERDTree always opens with the right dimensions
+    let NERDTreeQuitOnOpen = 1
+    let NERDTreeWinSize = 30
 
-	" Prevent jedi-vim from popping up when not explicitly triggered
-	let g:jedi#popup_on_dot = 0
-	let g:jedi#show_function_definition = 0
+    " Configure automatic syntax and style checks
+    let g:syntastic_check_on_open = 1
+    let g:syntastic_auto_loc_list = 1
 
-	" Things to double-check the efficacy of:
-	let python_highlight_all = 1
+    " Prevent jedi-vim from popping up when not explicitly triggered
+    let g:jedi#popup_on_dot = 0
+    let g:jedi#show_function_definition = 0
 
-	" Set up Conque to match my workflow better
-	let g:ConqueTerm_CWInsert = 1
-	let g:ConqueTerm_InsertOnEnter = 1
+    " TODO: Things to double-check the efficacy of:
+    let python_highlight_all = 1
 
-	" --== Vala highlighting settings (https://live.gnome.org/Vala/Vim) ==--
-	" Enable comment strings
-	let vala_comment_strings = 1
-	" Highlight space errors
-	let vala_space_errors = 1
+    " Set up Conque to match my workflow better
+    let g:ConqueTerm_CWInsert = 1
+    let g:ConqueTerm_InsertOnEnter = 1
 
+    " --= Vala highlighting settings (https://live.gnome.org/Vala/Vim) =--
+    " Enable comment strings
+    let vala_comment_strings = 1
+    " Highlight space errors
+    let vala_space_errors = 1
 endif
 
 
@@ -490,86 +490,86 @@ endif
 
 " Save folding status automatically
 "if has("autocmd")
-"	autocmd BufWinLeave ?* silent mkview
-"	autocmd BufWinEnter ?* silent loadview
+"    autocmd BufWinLeave ?* silent mkview
+"    autocmd BufWinEnter ?* silent loadview
 "endif
 
 " Enable the syntax-based fallback for omni-completion
 if has("autocmd") && exists("+omnifunc")
-	autocmd Filetype * if &omnifunc == "" | setlocal omnifunc=syntaxcomplete#Complete | endif
+    autocmd Filetype * if &omnifunc == "" | setlocal omnifunc=syntaxcomplete#Complete | endif
 endif
 
 " Filetype-specific autocommands
 if has("autocmd") && exists("+filetype")
-	if exists(":DetectIndent")
-		" Run the DetectIndent plugin automatically
-		autocmd BufReadPost * :DetectIndent
-	endif
+    if exists(":DetectIndent")
+        " Run the DetectIndent plugin automatically
+        autocmd BufReadPost * :DetectIndent
+    endif
 
-	" Automatically strip trailing whitespace from lines when saving non-M4 files.
-	" Also, exclude SQL because I often have check constraints which this would
-	" mangle.
-	autocmd BufWritePre * if index(['m4', 'diff', 'make', 'mail', 'sql'], &ft) < 0 | exe 'normal m`' | %s/\s\+$//e | exe 'normal ``' | endif
+    " Automatically strip trailing whitespace from lines when saving non-M4 files.
+    " Also, exclude SQL because I often have check constraints which this would
+    " mangle.
+    autocmd BufWritePre * if index(['m4', 'diff', 'make', 'mail', 'sql'], &ft) < 0 | exe 'normal m`' | %s/\s\+$//e | exe 'normal ``' | endif
 
-	" Make sure that I don't accidentally cause myself problems with Makefiles
-	" TODO: Make absolutely sure this overrides my call to DetectIndent
-	autocmd FileType make set noexpandtab
+    " Make sure that I don't accidentally cause myself problems with Makefiles
+    " TODO: Make absolutely sure this overrides my call to DetectIndent
+    autocmd FileType make set noexpandtab
 
-	" Autocomplete </ for closing tags in HTML/XML files
-	" TODO: Why isn't this working as I expect?
-	autocmd FileType html,xml,xsl iabbrev <buffer> </ </
+    " Autocomplete </ for closing tags in HTML/XML files
+    " TODO: Why isn't this working as I expect?
+    autocmd FileType html,xml,xsl iabbrev <buffer> </ </
 
-	" Support the jQuery syntax extension from
-	" http://www.vim.org/scripts/script.php?script_id=2416
-	autocmd BufRead,BufNewFile *.js set filetype=javascript syntax=jquery
-	autocmd BufRead,BufNewFile *.jsm set filetype=javascript syntax=jquery
+    " Support the jQuery syntax extension from
+    " http://www.vim.org/scripts/script.php?script_id=2416
+    autocmd BufRead,BufNewFile *.js set filetype=javascript syntax=jquery
+    autocmd BufRead,BufNewFile *.jsm set filetype=javascript syntax=jquery
 
-	" ...and work around a sudoedit-vim interaction quirk
-	autocmd BufNewFile,BufRead *.ebuild.* set filetype=ebuild
+    " ...and work around a sudoedit-vim interaction quirk
+    autocmd BufNewFile,BufRead *.ebuild.* set filetype=ebuild
 
-	" ...and treat .md as Markdown, not Modula2
-	autocmd BufNewFile,BufRead *.md set filetype=markdown
+    " ...and treat .md as Markdown, not Modula2
+    autocmd BufNewFile,BufRead *.md set filetype=markdown
 
-	" Use the indentation CoffeeLint defaults to. It makes sense.
-	autocmd FileType coffee set shiftwidth=2 softtabstop=2
+    " Use the indentation CoffeeLint defaults to. It makes sense.
+    autocmd FileType coffee set shiftwidth=2 softtabstop=2
 
-	augroup python
-		au!
-		" Set indent fold for Python files since foldmethod=syntax does nothing
-		autocmd FileType python set foldmethod=indent
-		autocmd FileType python set foldlevel=99
+    augroup python
+        au!
+        " Set indent fold for Python files since foldmethod=syntax does nothing
+        autocmd FileType python set foldmethod=indent
+        autocmd FileType python set foldlevel=99
 
-		" Make gf search installed Python modules
-		autocmd FileType python set path+=/usr/lib/python2.7/**,
+        " Make gf search installed Python modules
+        autocmd FileType python set path+=/usr/lib/python2.7/**,
 
-		" Until I think of something better, enable Django snips for all Python
-		autocmd FileType python set ft=python.django
+        " Until I think of something better, enable Django snips for all Python
+        autocmd FileType python set ft=python.django
 
-		" Fix a few apparent oversights in filetype detection
-		autocmd BufNewFile,BufRead SCons* set syntax=python
-		autocmd BufNewFile,BufRead *.mako set filetype=mako
-		autocmd BufNewFile,BufRead *.django set filetype=htmldjango
+        " Fix a few apparent oversights in filetype detection
+        autocmd BufNewFile,BufRead SCons* set syntax=python
+        autocmd BufNewFile,BufRead *.mako set filetype=mako
+        autocmd BufNewFile,BufRead *.django set filetype=htmldjango
 
-		" Add GMPL (GNU Linear Programming Kit) support
-		autocmd BufNewFile,BufRead *.mod set filetype=gmpl
-	augroup END
+        " Add GMPL (GNU Linear Programming Kit) support
+        autocmd BufNewFile,BufRead *.mod set filetype=gmpl
+    augroup END
 
-	augroup vala
-		au!
-		au FileType vala setlocal smartindent
-		au BufRead *.vala,*.vapi set efm=%f:%l.%c-%[%^:]%#:\ %t%[%^:]%#:\ %m
-		au BufRead,BufNewFile *.vala,*.vapi setfiletype vala
-	augroup END
+    augroup vala
+        au!
+        au FileType vala setlocal smartindent
+        au BufRead *.vala,*.vapi set efm=%f:%l.%c-%[%^:]%#:\ %t%[%^:]%#:\ %m
+        au BufRead,BufNewFile *.vala,*.vapi setfiletype vala
+    augroup END
 
-	augroup genie
-		au!
-		au BufNewFile *.gs setlocal filetype="genie"
-		au BufRead *.gs setlocal filetype="genie"
-	augroup END
+    augroup genie
+        au!
+        au BufNewFile *.gs setlocal filetype="genie"
+        au BufRead *.gs setlocal filetype="genie"
+    augroup END
 
-	" Work around a very annoying bug in the PHP filetype's indent profile.
-	" FIXME: I'm just gonna have to fix the PHP indent script. This won't do.
-	" autocmd FileType php filetype indent off | runtime! $VIM/vim71/indent/html.vim
+    " Work around a very annoying bug in the PHP filetype's indent profile.
+    " FIXME: I'm just gonna have to fix the PHP indent script. This won't do.
+    " autocmd FileType php filetype indent off | runtime! $VIM/vim71/indent/html.vim
 
 endif
 
@@ -664,17 +664,17 @@ com! DiffSaved call s:DiffWithSaved()
 " {{{ Shortcut: F5 = Run anything with a shebang
 " Source: http://superuser.com/a/21503/48014
 if has("autocmd")
-	au BufEnter * if match( getline(1) , '^\#!') == 0 |
-	\ execute("let b:interpreter = getline(1)[2:]") |
-	\endif
+    au BufEnter * if match( getline(1) , '^\#!') == 0 |
+    \ execute("let b:interpreter = getline(1)[2:]") |
+    \endif
 
-	fun! CallInterpreter()
-		if exists("b:interpreter")
-			 exec ("!".b:interpreter." %")
-		endif
-	endfun
+    fun! CallInterpreter()
+        if exists("b:interpreter")
+             exec ("!".b:interpreter." %")
+        endif
+    endfun
 
-	map <F5> :call CallInterpreter()<CR>
+    map <F5> :call CallInterpreter()<CR>
 endif
 " }}}
-" vim:ft=vim:fdm=marker:ff=unix:noexpandtab
+" vim:ft=vim:fdm=marker:ff=unix
