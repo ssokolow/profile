@@ -410,7 +410,10 @@ else
 endif
 
 " Use 'ack' as my grep program since it's more comfortable for me
-if executable("ack")
+" (In a Debian-compatible way)
+if executable("ack-grep")
+	set grepprg=ack\ -a
+elseif executable("ack")
 	set grepprg=ack\ -a
 endif
 
