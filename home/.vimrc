@@ -590,6 +590,23 @@ VAMActivate github:jmcantrell/vim-virtualenv
 
 " TODO: Make this conditional on CoffeeScript files
 VAMActivate vim-coffee-script
+
+" TODO: Figure out how to rebuild my statusline using airline
+"VAMActivate  vim-airline
+"let g:airline#extensions#syntastic#enabled = 0
+"let g:airline#extensions#virtualenv#enabled = 1
+
+"if has('gui_running')
+"    let g:airline_powerline_fonts = 1
+"else
+"    if !exists('g:airline_symbols')
+"        let g:airline_symbols = {}
+"    endif
+
+"    let g:airline_left_sep = '▶'
+"    let g:airline_right_sep = '◀'
+"endif
+
 " }}}
 
 " {{{ Set the color scheme
