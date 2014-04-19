@@ -20,11 +20,14 @@ if exists("g:loaded_creamStatus") && !exists('g:force_reload_creamStatus')
 endif
 let g:loaded_creamStatus = 1
 
+let g:virtualenv_stl_format = '[%n]'
+
 set statusline=%f
 set statusline+=\ %{Filestate_prettyprint()}
 set statusline+=\|%{CompType()}
 set statusline+=%{&ff}:%{(len(&fenc)?&fenc:&enc).(&bomb?'-bom':'')}
-set statusline+=:%{len(&ft)?&ft:'none'}\|%{Bufsize_prettyprint()}%=
+set statusline+=:%{len(&ft)?&ft:'none'}\|%{Bufsize_prettyprint()}
+set statusline+=\ %{virtualenv#statusline()}%=
 set statusline+=\|Indent:\ %{GetIndentLevel()}\|%{Mode_prettyprint()}\|
 set statusline+=\ %5.5l/%L,%3.3v/%-3.3{len(getline(line('.')))}\ %P
 set laststatus=2
