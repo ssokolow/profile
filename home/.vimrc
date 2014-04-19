@@ -587,6 +587,19 @@ VAMActivate github:jmcantrell/vim-virtualenv
 VAMActivate vim-coffee-script
 " }}}
 
+" {{{ Set the color scheme
+if !has('gui_running')
+    set t_Co=256
+    colorscheme default_256_fixed
+    highlight Pmenu ctermfg=7 ctermbg=8
+
+    " Color scheme editor via `:help hicolors`
+    "VAMActivate HiColors 
+
+    " Mechanism for loading GUI color schemes in 256-color terminals
+    "VAMActivate guicolorscheme
+    "GuiColorScheme sublime
+endif
 " }}}
 " {{{ Define Autocommands
 
