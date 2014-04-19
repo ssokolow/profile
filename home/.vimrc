@@ -149,6 +149,7 @@
 "               (Also supports letters of the alphabet in visual mode)
 "
 "  \c           Trigger snippet expansion
+"  \u           Toggle undo history browser
 "
 "  \c<Space>    Toggle comment state for selected lines
 "  \cy          Yank then comment selected lines
@@ -572,6 +573,10 @@ VAMActivate Conque_Shell conque-repl " Embedded shell and REPL
 " Autodetection
 VAMActivate DetectIndent            " File's indent settings
 VAMActivate NERD_tree_Project       " Root project folder for current file
+
+" Make sure I can't lose anything by accident while using undo
+VAMActivate Gundo
+nnoremap <Leader>u :GundoToggle<CR>
 
 " More Vim Commands
 VAMActivate loremipsum unimpaired vis VisIncr
