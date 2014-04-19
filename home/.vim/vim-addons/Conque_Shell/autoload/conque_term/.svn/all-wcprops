@@ -1,0 +1,65 @@
+K 25
+svn:wc:ra_dav:version-url
+V 44
+/svn/!svn/ver/493/trunk/autoload/conque_term
+END
+conque_screen.py
+K 25
+svn:wc:ra_dav:version-url
+V 61
+/svn/!svn/ver/493/trunk/autoload/conque_term/conque_screen.py
+END
+conque_win32_util.py
+K 25
+svn:wc:ra_dav:version-url
+V 65
+/svn/!svn/ver/463/trunk/autoload/conque_term/conque_win32_util.py
+END
+conque_sole_shared_memory.py
+K 25
+svn:wc:ra_dav:version-url
+V 73
+/svn/!svn/ver/463/trunk/autoload/conque_term/conque_sole_shared_memory.py
+END
+conque.py
+K 25
+svn:wc:ra_dav:version-url
+V 54
+/svn/!svn/ver/493/trunk/autoload/conque_term/conque.py
+END
+conque_sole_wrapper.py
+K 25
+svn:wc:ra_dav:version-url
+V 67
+/svn/!svn/ver/462/trunk/autoload/conque_term/conque_sole_wrapper.py
+END
+conque_sole_communicator.py
+K 25
+svn:wc:ra_dav:version-url
+V 72
+/svn/!svn/ver/462/trunk/autoload/conque_term/conque_sole_communicator.py
+END
+conque_sole.py
+K 25
+svn:wc:ra_dav:version-url
+V 59
+/svn/!svn/ver/466/trunk/autoload/conque_term/conque_sole.py
+END
+conque_globals.py
+K 25
+svn:wc:ra_dav:version-url
+V 62
+/svn/!svn/ver/466/trunk/autoload/conque_term/conque_globals.py
+END
+conque_subprocess.py
+K 25
+svn:wc:ra_dav:version-url
+V 65
+/svn/!svn/ver/461/trunk/autoload/conque_term/conque_subprocess.py
+END
+conque_sole_subprocess.py
+K 25
+svn:wc:ra_dav:version-url
+V 70
+/svn/!svn/ver/466/trunk/autoload/conque_term/conque_sole_subprocess.py
+END

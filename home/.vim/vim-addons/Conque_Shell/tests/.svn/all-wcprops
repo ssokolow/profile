@@ -1,0 +1,29 @@
+K 25
+svn:wc:ra_dav:version-url
+V 29
+/svn/!svn/ver/457/trunk/tests
+END
+api.vim
+K 25
+svn:wc:ra_dav:version-url
+V 37
+/svn/!svn/ver/346/trunk/tests/api.vim
+END
+profile.py
+K 25
+svn:wc:ra_dav:version-url
+V 40
+/svn/!svn/ver/457/trunk/tests/profile.py
+END
+test.vim
+K 25
+svn:wc:ra_dav:version-url
+V 38
+/svn/!svn/ver/342/trunk/tests/test.vim
+END
+test_insert.vim
+K 25
+svn:wc:ra_dav:version-url
+V 45
+/svn/!svn/ver/457/trunk/tests/test_insert.vim
+END

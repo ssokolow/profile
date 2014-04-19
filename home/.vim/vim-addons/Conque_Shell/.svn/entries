@@ -1,0 +1,43 @@
+10
+
+dir
+496
+http://conque.googlecode.com/svn/trunk
+http://conque.googlecode.com/svn
+
+
+
+2011-09-03T06:46:53.803988Z
+493
+nicoraffo
+has-props
+
+
+
+
+
+
+
+
+
+
+
+
+
+18cfea20-95ec-11de-9f73-7911e0306dd8
+
+plugin
+dir
+
+tests
+dir
+
+doc
+dir
+
+syntax
+dir
+
+autoload
+dir
+

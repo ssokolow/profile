@@ -22,10 +22,19 @@
 "   !{command}   Filter specified lines using {command}
 "  :!{command}   Run {command}
 "
-"  :sh           Open a shell (hides Vim until exited)
-"   \c           Open the shell in a :split console
+"   <F5>         Inject the selected line(s) in a Conque REPL
+"   <F6>         Inject the current file into a Conque REPL
+"   <F7>         Run the current file via its shebang
 "
-"   TODO: Figure out the command for "open current path in {command}"
+"  :sh           Open a shell (hides Vim until exited)
+"   \C           Open the shell in a :split console
+"
+"   <F9>         Send selected text to :split console
+"   <F10>        Send current buffer to :split console
+"   <F11>        Toggle editability of :split console as a buffer
+"
+"   TODO:
+"   - Figure out the command for "open current path in {command}"
 "
 " File Navigation And Management:
 "  \s           Save Current Session
@@ -56,8 +65,11 @@
 "  :e ++enc=<encoding>
 "               Reload the file, interpreting it as a different encoding
 "
-"  TODO: Add relevant jedi-vim keybindings here
-"        (https://github.com/davidhalter/jedi-vim)
+"  NERD Tree:
+"   m           Display actions menu for selected entry
+"
+" TODO: Add relevant jedi-vim keybindings here
+"       (https://github.com/davidhalter/jedi-vim)
 "
 " Navigation:
 "  gv           Re-select contents of previous visual-mode selection.
@@ -135,6 +147,8 @@
 "
 "  <C-A>/<C-X>  Increment/decrement number/date/time/numeral under cursor.
 "               (Also supports letters of the alphabet in visual mode)
+"
+"  \c           Trigger snippet expansion
 "
 "  \c<Space>    Toggle comment state for selected lines
 "  \cy          Yank then comment selected lines
@@ -323,7 +337,7 @@
 
 " {{{ Configuration
 
-set nocompatible
+set nocompatible | filetype indent plugin on | syn on
 set modeline
 set hidden
 
@@ -420,41 +434,49 @@ endif
 " }}}
 " {{{ Configuration (Plugins)
 if exists(":let")
+    " Fix an incompatibility with Lubuntu Precise
+    " TODO: Remove this once I've upgraded to ack 2.x
+    let g:ack_default_options = " -H --nocolor --nogroup --column"
 
-    let g:ragtag_global_maps = 1
-    let g:pcs_check_when_saving = 1
-    let g:SuperTabDefaultCompletionType = "context"
+    " Set up Conque to match my workflow better
+    let g:ConqueTerm_CWInsert = 1
+    let g:ConqueTerm_InsertOnEnter = 1
+
 
     " I prefer 4-char space indentation as my default for DetectIndent too
     let g:detectindent_preferred_expandtab = 1
     let g:detectindent_preferred_indent = 4
 
+    " Prevent jedi-vim from popping up when not explicitly triggered
+    " TODO: Is there a way to make the scratch window auto-dismiss?
+    let g:jedi#show_function_definition = 0
+
     " Open MiniBufExplorer as a sidebar more like I got used to with Kate
     let g:miniBufExplVSplit=25
-    let g:miniBufExplorerMoreThanOne=9999
+    let g:miniBufExplorerAutoStart = 0
+    let g:miniBufExplUseSingleClick = 1
     let g:miniBufExplCloseOnSelect = 1
-    let g:miniBufExplToggleRefocuses = 1
-    "let g:miniBufExplUseSingleClick = 1
-    "let g:miniBufExplForceSyntaxEnable = 1
 
     " Make sure NERDTree always opens with the right dimensions
     let NERDTreeQuitOnOpen = 1
     let NERDTreeWinSize = 30
 
+
+    " TODO: Things to double-check the efficacy of:
+    let python_highlight_all = 1
+    let g:pcs_check_when_saving = 1
+
+    let g:ragtag_global_maps = 1
+
     " Configure automatic syntax and style checks
     let g:syntastic_check_on_open = 1
     let g:syntastic_auto_loc_list = 1
 
-    " Prevent jedi-vim from popping up when not explicitly triggered
-    let g:jedi#popup_on_dot = 0
-    let g:jedi#show_function_definition = 0
-
-    " TODO: Things to double-check the efficacy of:
-    let python_highlight_all = 1
-
-    " Set up Conque to match my workflow better
-    let g:ConqueTerm_CWInsert = 1
-    let g:ConqueTerm_InsertOnEnter = 1
+    " Use \c for to trigger snippet expansion since YouCompleteMe
+    " already uses Tab for cycling through the completions menu.
+    let g:UltiSnipsExpandTrigger="<Leader>c"
+    let g:UltiSnipsJumpForwardTrigger="<tab>"
+    let g:UltiSnipsJumpBackwardTrigger="<s-tab>"
 
     " --= Vala highlighting settings (https://live.gnome.org/Vala/Vim) =--
     " Enable comment strings
@@ -465,25 +487,105 @@ endif
 
 
 " }}}
+" {{{ Bootstrap VAM (vim-addon-manager)
+
+" See vim-addon-manager-getting-started for commented version.
+
+fun! EnsureVamIsOnDisk(plugin_root_dir)
+  " windows users may want to use http://mawercer.de/~marc/vam/index.php
+  " to fetch VAM, VAM-known-repositories and the listed plugins
+  " without having to install curl, 7-zip and git tools first
+  " -> BUG [4] (git-less installation)
+  let vam_autoload_dir = a:plugin_root_dir.'/vim-addon-manager/autoload'
+  if isdirectory(vam_autoload_dir)
+    return 1
+  else
+    if 1 == confirm("Clone VAM into ".a:plugin_root_dir."?","&Y\n&N")
+      call mkdir(a:plugin_root_dir, 'p')
+      execute '!git clone --depth=1 git://github.com/MarcWeber/vim-addon-manager '.
+               \       shellescape(a:plugin_root_dir, 1).'/vim-addon-manager'
+      " VAM runs helptags automatically when you install or update plugins
+      exec 'helptags '.fnameescape(a:plugin_root_dir.'/vim-addon-manager/doc')
+    endif
+    return isdirectory(vam_autoload_dir)
+  endif
+endfun
+
+fun! SetupVAM()
+  " Set advanced options like this:
+  " let g:vim_addon_manager = {}
+  " let g:vim_addon_manager.key = value
+  "     Pipe all output into a buffer which gets written to disk
+  " let g:vim_addon_manager.log_to_buf =1
+
+  " Example: drop git sources unless git is in PATH. Same plugins can
+  " be installed from www.vim.org. Lookup MergeSources to get more control
+  " let g:vim_addon_manager.drop_git_sources = !executable('git')
+  " let g:vim_addon_manager.debug_activation = 1
+
+  " VAM install location:
+  let c = get(g:, 'vim_addon_manager', {})
+  let g:vim_addon_manager = c
+  let c.plugin_root_dir = expand('$HOME/.vim/vim-addons', 1)
+  if !EnsureVamIsOnDisk(c.plugin_root_dir)
+    echohl ErrorMsg | echomsg "No VAM found!" | echohl NONE
+    return
+  endif
+  let &rtp.=(empty(&rtp)?'':',').c.plugin_root_dir.'/vim-addon-manager'
+
+  " Tell VAM which plugins to fetch & load:
+  call vam#ActivateAddons([], {'auto_install' : 0})
+
+  " How to find addon names?
+  " - look up source from pool
+  " - (<c-x><c-p> complete plugin names):
+  " You can use name rewritings to point to sources:
+  "    ..ActivateAddons(["github:foo", .. => github://foo/vim-addon-foo
+  "    ..ActivateAddons(["github:user/repo", .. => github://user/repo
+  " Also see section "2.2. names of addons and addon sources" in VAM's documentation
+endfun
+call SetupVAM()
+
+" }}}
 " {{{ Load Plugin Bundles
 
-" Explicitly disable syntax and filetype-specific features before loading
-" pathogen in case we're on a Debian-based distro.
-" (To force a rescan when re-enabled)
-syntax off
-if exists("+filetype")
-	filetype off
-endif
+" Basic IDE functionality
+VAMActivate Syntastic                " Syntax check on save
+VAMActivate YouCompleteMe            " Smart Competion
+VAMActivate ragtag surround          " Editing aid shortcuts for XML and HTML
+VAMActivate UltiSnips vim-snippets   " Code Snippets
+VAMActivate bwHomeEndAdv             " Smart Home/End
 
-" Use Pathogen to handle vim plugins as bundles
-call pathogen#infect()
-call pathogen#helptags()
+" Ack support (Must come before The_NERD_tree)
+VAMActivate ack nerdtree-ack
 
-" Enable syntax highlighting and all filetype-specific features
-syntax on
-if exists("+filetype")
-	filetype plugin indent on
-endif
+" Basic Project Functionality
+VAMActivate sessionman                     " Session manager
+VAMActivate minibufexplorer                " Vim buffer sidebar
+VAMActivate The_NERD_tree nerdtree-execute " Filesystem sidebar
+
+" Supplemental IDE Functionality
+VAMActivate rename%4840              " Rename command for the file being edited
+VAMActivate The_NERD_Commenter       " Comment/Uncomment commands
+VAMActivate Conque_Shell conque-repl " Embedded shell and REPL
+
+" Autodetection
+VAMActivate DetectIndent            " File's indent settings
+VAMActivate NERD_tree_Project       " Root project folder for current file
+
+" More Vim Commands
+VAMActivate loremipsum unimpaired vis VisIncr
+
+" -- TODO: Tune and sort --
+VAMActivate LargeFile
+
+" TODO: Make this conditional on Python files
+VAMActivate indentpython%974
+VAMActivate github:jmcantrell/vim-virtualenv
+
+" TODO: Make this conditional on CoffeeScript files
+VAMActivate vim-coffee-script
+" }}}
 
 " }}}
 " {{{ Define Autocommands
@@ -494,18 +596,13 @@ endif
 "    autocmd BufWinEnter ?* silent loadview
 "endif
 
-" Enable the syntax-based fallback for omni-completion
-if has("autocmd") && exists("+omnifunc")
-    autocmd Filetype * if &omnifunc == "" | setlocal omnifunc=syntaxcomplete#Complete | endif
+" Run the DetectIndent plugin automatically
+if has("autocmd")
+    autocmd BufReadPost * :DetectIndent
 endif
 
 " Filetype-specific autocommands
 if has("autocmd") && exists("+filetype")
-    if exists(":DetectIndent")
-        " Run the DetectIndent plugin automatically
-        autocmd BufReadPost * :DetectIndent
-    endif
-
     " Automatically strip trailing whitespace from lines when saving non-M4 files.
     " Also, exclude SQL because I often have check constraints which this would
     " mangle.
@@ -597,12 +694,12 @@ nmap <C-N><C-N> :set invnumber<CR>
 noremap <c-l> :nohls<CR><c-l>
 
 " Provide a convenient, concise way to work beyond single files
-map <unique> <Leader>c :exe "silent ConqueTermSplit " . &shell<CR>
+map <unique> <Leader>C :exe "silent ConqueTermSplit " . &shell<CR>
 map <unique> <Leader>p :SessionList<CR>
 map <unique> <Leader>s :SessionSave<CR>
 map <unique> <Leader>nt :NERDTreeToggle<CR>
 map <unique> <Leader>[ :NERDTreeToggle<CR>
-map <unique> <Leader>] <Plug>TMiniBufExplorer
+map <unique> <Leader>] :MBEToggle<CR>:MBEFocus<CR>
 
 " Source: http://bairuidahu.deviantart.com/art/Flying-vs-Cycling-261641977
 nnoremap <leader>l :ls<CR>:b<space>
@@ -661,7 +758,7 @@ function! s:DiffWithSaved()
 endfunction
 com! DiffSaved call s:DiffWithSaved()
 " }}}
-" {{{ Shortcut: F5 = Run anything with a shebang
+" {{{ Shortcut: F7 = Run anything with a shebang
 " Source: http://superuser.com/a/21503/48014
 if has("autocmd")
     au BufEnter * if match( getline(1) , '^\#!') == 0 |
@@ -674,7 +771,7 @@ if has("autocmd")
         endif
     endfun
 
-    map <F5> :call CallInterpreter()<CR>
+    map <F7> :call CallInterpreter()<CR>
 endif
 " }}}
 " vim:ft=vim:fdm=marker:ff=unix
