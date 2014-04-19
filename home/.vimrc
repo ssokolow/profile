@@ -581,6 +581,9 @@ nnoremap <Leader>u :GundoToggle<CR>
 " More Vim Commands
 VAMActivate loremipsum unimpaired vis VisIncr
 
+" Git integration
+VAMActivate fugitive vim-signify
+
 " -- TODO: Tune and sort --
 VAMActivate LargeFile
 
