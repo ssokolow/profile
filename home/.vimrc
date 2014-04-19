@@ -469,6 +469,9 @@ if exists(":let")
 
     let g:ragtag_global_maps = 1
 
+    " Use a more intuitive symbol to denote changed lines
+    let g:signify_sign_change = '~'
+
     " Configure automatic syntax and style checks
     let g:syntastic_check_on_open = 1
     let g:syntastic_auto_loc_list = 1
