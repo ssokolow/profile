@@ -142,6 +142,11 @@
 "   gj/gk        Down/Up (Visually)
 "   g<Home/End>  Home/End (Visually)
 "
+"  In Python Code:
+"   <C-c> d      Show documentation for token under cursor
+"   <C-c> g      Go to definition of token under cursor
+"   <C-c> f      Find occurrences of token under cursor
+"
 " Editing:
 "  <C-V>        Visual Block mode (A.K.A. column mode)
 "
@@ -187,6 +192,9 @@
 "
 "  :Loremipsum [word count]
 "               Insert placeholder text
+"
+"  In Python Code:
+"    :Rope*     Various commands which allow batch refactoring
 "
 "  Insert Mode:
 "   Tab          Indent/Snippets/Omni-Completion (Smart)

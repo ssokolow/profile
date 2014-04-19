@@ -4,3 +4,4 @@ pyflakes
 flake8
 virtualenvwrapper
 virtualenvwrapper.django
+ropevim
