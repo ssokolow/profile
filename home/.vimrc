@@ -596,6 +596,14 @@ if !has('gui_running')
     " Color scheme editor via `:help hicolors`
     "VAMActivate HiColors 
 
+    " Other theme-improvement tools:
+    " http://www.vim.org/scripts/script.php?script_id=1488
+    " http://bytefluent.com/vivify/
+    " http://www.vimtax.com/
+    " http://cocopon.me/app/vim-color-gallery/
+    " https://code.google.com/p/vimcolorschemetest/
+    " http://vim.sourceforge.net/scripts/script.php?script_id=625
+
     " Mechanism for loading GUI color schemes in 256-color terminals
     "VAMActivate guicolorscheme
     "GuiColorScheme sublime
