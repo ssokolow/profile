@@ -613,13 +613,11 @@ VAMActivate vim-coffee-script
 " }}}
 
 " {{{ Set the color scheme
-if !has('gui_running')
-    set t_Co=256
-    colorscheme default_256_fixed
-    highlight Pmenu ctermfg=7 ctermbg=8
+colorscheme default_256_fixed
 
+if !has('gui_running')
     " Color scheme editor via `:help hicolors`
-    "VAMActivate HiColors 
+    "VAMActivate HiColors
 
     " Other theme-improvement tools:
     " http://www.vim.org/scripts/script.php?script_id=1488
