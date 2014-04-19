@@ -113,6 +113,9 @@ UXTerm*bellIsUrgent:  true
 *VT100*foreground: gray70
 *VT100*background: black
 
+! The default blue used by my stuff is barely readable
+*color12:  #005FFF
+
 ! Make the scrollbar look a little less 1980s on all Athena-based VT100s.
 *VT100.scrollbar.background:    gray60
 *VT100.scrollbar.foreground:    white
