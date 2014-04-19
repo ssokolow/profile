@@ -29,6 +29,12 @@ function wo() {
     (sleep 5; rm "$TMPFILE") &
 }
 
+# Alias for more comfortable gog downloader argv syntax
+function gogd() {
+    local IFS=\|
+    lgogdownloader --download --game "^($*)\$"
+}
+
 # Alias for my preferred approach to using youtube-dl
 function ytdl() {
     youtube-dl --prefer-free-formats "$@"
