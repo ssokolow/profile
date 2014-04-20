@@ -279,6 +279,8 @@
 "   comparison or I use it infrequently.
 " }}}
 " {{{ TODO:
+" * Make better use of UltiSnips's advanced syntax
+" * http://vim.sourceforge.net/scripts/script.php?script_id=301 (xmledit)
 " * http://constantcoding.blogspot.ca/2013/07/quick-vim-trick-for-fixing-indentation.html"
 " * Django:
 "   * https://github.com/chronossc/my-vim-confs/blob/master/.vimrc
@@ -314,6 +316,7 @@
 " * Figure out why, with comment formatting enabled, formatoptions wants to
 "   word-wrap after every word in this file.
 " * Explore alternate Vim color schemes.
+" * also :h function-list   if you ever want to see what else is available
 " ----
 " * http://vim.wikia.com/wiki/Integration_with_PyUnit_testing_framework
 " * http://www.vim.org/scripts/script.php?script_id=974
