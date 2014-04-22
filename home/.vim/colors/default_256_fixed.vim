@@ -19,7 +19,7 @@ hi NonText        ctermfg=32 gui=bold guifg=Blue
 hi Directory      ctermfg=26 guifg=Blue
 hi ErrorMsg       term=standout ctermfg=15 ctermbg=1 guifg=White guibg=Red
 hi IncSearch      term=reverse cterm=reverse gui=reverse
-hi Search         term=reverse ctermbg=11 guibg=Yellow
+hi Search         ctermfg=232 ctermbg=11 guibg=Yellow
 hi MoreMsg        term=bold ctermfg=2 gui=bold guifg=SeaGreen
 hi ModeMsg        term=bold cterm=bold gui=bold
 hi LineNr         term=underline ctermfg=130 guifg=Brown
