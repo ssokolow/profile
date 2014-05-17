@@ -310,6 +310,7 @@ apt-get install -y opera
 apt-get install -t cdemu-daemon cdemu-client gcdemu
 cp "supplemental/skype" /usr/local/bin/
 cp "supplemental/49-teensy.rules" /etc/udev/rules.d/
+cp "supplemental/99-escpos.rules" /etc/udev/rules.d/
 
 #TODO: How did one hold a package as uninstalled again?
 echo " * Removing pulseaudio for pegging one of my CPU cores when I game"
