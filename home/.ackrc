@@ -1,6 +1,8 @@
 # Use "less -R" as my pager but pretend I'm not when the results fit one screen
 --ignore-dir=_site
 --ignore-dir=.tox
+--ignore-dir=vendor
+--ignore-dir=twig_cache
 --pager=less -R -F -X
 
 # Shockingly, there is no JSON in the default type map
