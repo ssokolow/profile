@@ -207,6 +207,7 @@ sshfs
 synergy
 pidgin
 pidgin-otr
+pidgin-plugin-pack
 libpurple-bin
 units
 wdiff
