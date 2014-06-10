@@ -9,6 +9,7 @@
 0       0       *       *       *       cp ~/.profile_repo/supplemental/settings.sol ~/.macromedia/Flash_Player/macromedia.com/support/flashplayer/sys/settings.sol
 0       0       *       *       *       rm -f ~/.local/share/applications/wine-extension-*
 0       0       *       *       *       rm -f ~/.local/share/icons/hicolor/*/apps/application-x-wine-extension-*
+0       0       *       *       *       chmod 600 ~/Documents/*.kdbx
 1       1       *       *       *       rm -f ~/.xsession-errors
 2       1       *       *       *       rm -rf ~/incoming/gtk-gnutella-downloads/corrupt/*
 
