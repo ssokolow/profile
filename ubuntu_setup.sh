@@ -409,5 +409,6 @@ echo " - Now edit /etc/ssh/sshd_config to allow only non-root, pubkey authentica
 echo " - Don't forget to copy xorg.conf from supplemental if you need TwinView."
 echo " - Don't forget to restore your crontab and set Cyphertite back up."
 echo " - Don't forget to reinstall KeePass2 and link in the plugins folder."
+echo " - Don't forget to reinstall lap."
 echo " - If upgrading, run virtualenv -p /usr/bin/python ~/.virtualenvs/<name> for all virtualenvs"
 echo " - Don't forget to run vim once and then build the compiled part of YouCompleteMe"
