@@ -3,8 +3,11 @@ snippet boiler
 	# -*- coding: utf-8 -*-
 	"""${4:[application description here]}"""
 
+	from __future__ import (absolute_import, division, print_function,
+							with_statement, unicode_literals)
+
+	__author__ = "Stephan Sokolow (deitarion/SSokolow)"
 	__appname__ = "${1:[application name here]}"
-	__author__  = "Stephan Sokolow (deitarion/SSokolow)"
 	__version__ = "${2:0.0pre0}"
 	__license__ = "${3:GNU GPL 3.0 or later}"
 
