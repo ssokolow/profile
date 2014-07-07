@@ -6,7 +6,7 @@ Global {
     allign=center
     margin=0
     widthtype=pixel
-    width=350
+    width=378
     height=24
     transparent=1
     tintcolor=#474747
@@ -38,6 +38,9 @@ Plugin {
         }
         Button {
             id=/usr/share/applications/chromium-browser.desktop
+        }
+        Button {
+            id=/usr/share/applications/keepass2.desktop
         }
         Button {
             id=/usr/share/applications/audacious.desktop

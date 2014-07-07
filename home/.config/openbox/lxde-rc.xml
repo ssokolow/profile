@@ -345,6 +345,11 @@
         <command>xdotool getactivewindow mousemove --window %1 0 0 click --clearmodifiers 2</command>
       </action>
     </keybind>
+    <keybind key="W-p">
+      <action name="Execute">
+        <command>keepass2 --auto-type</command>
+      </action>
+    </keybind>
     <!-- Launch Task Manager with Ctrl+Alt+Del -->
     <keybind key="A-C-Delete">
       <action name="Execute">
