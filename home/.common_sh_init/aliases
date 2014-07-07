@@ -35,36 +35,34 @@ git-filter-whitelist() {
 }
 
 # For when I mistype popd
-function oiod() { echo "ERROR: Your right hand is misaligned"; }
+oiod() { echo "ERROR: Your right hand is misaligned"; }
 
 # Nicer alternative to piping a gunzipped file into lynx
-function wo() {
-    TMPFILE=`mktemp --suffix=.html`
-    cat "$@" | gunzip > "$TMPFILE"
+wo() {
+    TMPFILE=$(mktemp --suffix=.html)
+    gunzip < "$@" > "$TMPFILE"
     "$BROWSER" "$TMPFILE"
     (sleep 5; rm "$TMPFILE") &
 }
 
 # Alias for more comfortable gog downloader argv syntax
-function gogd() {
+gogd() {
     local IFS=\|
     lgogdownloader --download --game "^($*)\$"
 }
 
 # Alias for my preferred approach to using youtube-dl
-function ytdl() {
+ytdl() {
     youtube-dl --prefer-free-formats "$@"
-    rename 's@[|:]@ - @' *
-    rename 'y@\?\\\*/"<>@_@' *
 }
 
 # Alias for my preferred settings for saving Young Turks vids
-function yt() {
+yt() {
     youtube-dl -f 44/35/43/18/34 "$@"
 }
 
 # Smart wrapper for multiple site-specific download tools
-function dl() {
+dl() {
     for url in "$@"; do
         case $url in
             http://youtube.com/watch\?* | http://www.youtube.com/watch\?* | https://youtube.com/watch\?* | https://www.youtube.com/watch\?* ) ytdl "$url" ;;
@@ -77,7 +75,7 @@ function dl() {
 }
 
 # Shorthand alias for TaskWarrior
-function t() {
+t() {
     if [ -z "$*" ]; then
         clear; task
     else
@@ -86,7 +84,7 @@ function t() {
 }
 
 # Colorized wdiff
-function cwdiff() {
+cwdiff() {
     if `which dwdiff &>/dev/null`; then
         dwdiff -R "$@" | command colordiff
     else
@@ -98,9 +96,9 @@ function cwdiff() {
 function cond_alias() { eval "function ${1}() { [ -z \"\$*\" ] && $2 || command $1 \"\$@\"; }"; }
 
 # Stuff for KIO LAN transfers
-function andre() { kioclient copy "$@" "smb://Slick.multiverse/inbound/"; }
-function mom()   { kioclient copy "$@" "smb://mom/inbound/"; }
-function nicky() { kioclient copy "$@" "smb://darkspark/inbound/"; }
+andre() { kioclient copy "$@" "smb://Slick.multiverse/inbound/"; }
+mom()   { kioclient copy "$@" "smb://mom/inbound/"; }
+nicky() { kioclient copy "$@" "smb://darkspark/inbound/"; }
 
 # Provide a "github" command for opening the browser to the github page for the current working directory
 # I forget who I got this from, but it's not my creation.
@@ -123,16 +121,16 @@ alias gvim="gvim -p &>/dev/null"
 
 # Make documentation browsing easier
 alias info="pinfo"
-function kinfo() { konqueror info:/"$@" & }
-function kman()  { konqueror man:"$@" & }
+kinfo() { konqueror info:/"$@" & }
+kman()  { konqueror man:"$@" & }
 
 # Get rid of the annoying "nohup.out" files.
 # (Why couldn't they have a --logoutput option and no-logging default instead?)
-function nohup() { command nohup "$@" > /dev/null & }
+nohup() { command nohup "$@" > /dev/null & }
 
 # Miscellaneous quick features
-function mp3ck()   { mpck -B "$@"; mp3check -e3STBEG "$@"; }
-function pngcomp() {
+mp3ck()   { mpck -B "$@"; mp3check -e3STBEG "$@"; }
+pngcomp() {
     optipng "$@";
     advpng -z4 "$@";
     for X in "$@"; do
@@ -141,7 +139,7 @@ function pngcomp() {
         rm "$X".bak
     done
 }
-function pngcomp_brute() {
+pngcomp_brute() {
     optipng -zc1-9 -zm1-9 -zs0-3 -f0-5 "$@" | egrep '(\*\* Processing|% decrease|is already optimized)';
     advpng -z4 "$@";
     advpng -z3 "$@" | fgrep -v '100%';
@@ -160,7 +158,7 @@ alias unix2mac="tr '\n' '\r' "
 
 # Since I habitually use "ls" to drill down until I hit a file, let's make an
 # alias that uses ls if given a directory and vim's less.sh macro for files.
-function l() {
+l() {
 	if [ -f "$1" -a "$*" = "$1" ]; then
 		/usr/share/vim/vim72/macros/less.sh "$1"
 	else
