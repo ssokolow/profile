@@ -50,6 +50,10 @@ gogd() {
     local IFS=\|
     lgogdownloader --download --game "^($*)\$"
 }
+gogu() {
+    local IFS=\|
+    lgogdownloader --download --no-cover --no-extras --game "^($*)\$"
+}
 
 # Alias for my preferred approach to using youtube-dl
 ytdl() {
