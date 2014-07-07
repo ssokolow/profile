@@ -17,6 +17,22 @@ if `which sqliteman &> /dev/null`; then
     }
 fi
 
+# Given an egrep path filter, use git filter-branch to throw out all files
+# which don't match.
+git-filter-whitelist() {
+    # Filter out content and newly emptied non-merge, non-root commits
+    # Source: http://stackoverflow.com/a/6006679
+    #shellcheck disable=SC1004
+    git filter-branch --prune-empty --index-filter '
+	    git ls-tree -zr --name-only --full-tree $GIT_COMMIT \
+	    | egrep -vz "'"$1"'" \
+	    | xargs -0 git rm --cached -r
+	' -- --all
+
+    # Collapse away vestigial merge and root commits ignored by --prune-empty
+    # Source: My own accidental discovery
+    git rebase --root HEAD
+}
 
 # For when I mistype popd
 function oiod() { echo "ERROR: Your right hand is misaligned"; }
