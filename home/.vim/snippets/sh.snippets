@@ -11,3 +11,6 @@ snippet elevate
 	if [ "$EUID" != 0 ]; then
 		exec sudo "$0" "$@"
 	fi
+
+snippet cd
+	cd "\`dirname \"$${1:0}\"\`"${2}
