@@ -124,8 +124,8 @@ UXTerm*bellIsUrgent:  true
 ! More Konsole/Yakuake-like keybindings:
 ! NOTE: in Konsole/Yakuake, bind Ctrl+Backspace to \b
 *VT100.Translations: #override \
-             Shift <Key>Up:         scroll-back(1) \n\
-             Shift <Key>Down:       scroll-forw(1) \n\
+             Shift <Key>Up:         scroll-back(1, halfpage) \n\
+             Shift <Key>Down:       scroll-forw(1, halfpage) \n\
 \
             ~Ctrl<Key>BackSpace:     string(0x08)  \n\
              Ctrl<Key>BackSpace:     string(0x1b) string(0x08)  \n\
