@@ -1,0 +1,10 @@
+snippet post "Jekyll blog post boilerplate (post)" b
+---
+layout: post
+title:  "${1:Post Title}"
+date:   `date -u '+%Y-%m-%d %H:%M:%S'`
+categories: ${2:design hardware}
+---
+
+${3}
+endsnippet
