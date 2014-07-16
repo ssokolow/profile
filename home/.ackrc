@@ -18,3 +18,7 @@ mako=.mako,.html,.incl
 
 --type-set
 cakephp=.ctp,.tpl
+
+# --== Opt in to listing results in unpacked TiddlyWiki5 tiddlers ==--
+--type-set
+tiddler=.tid
