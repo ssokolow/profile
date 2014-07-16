@@ -11,8 +11,12 @@ set lines=59 columns=82
 set spell spelllang=en_ca
 
 " Make the 80th column visible
-set colorcolumn=80
-highlight ColorColumn guibg=#eaffea
+if exists('+colorcolumn')
+	set colorcolumn=80
+	highlight ColorColumn guibg=#eaffea
+else
+  au BufWinEnter * let w:m2=matchadd('ErrorMsg', '\%>80v.\+', -1)
+endif
 
 " Give myself a new and a close button on the toolbar.
 amenu 1.05 ToolBar.New   :tabnew<CR>
