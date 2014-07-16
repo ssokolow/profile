@@ -674,6 +674,11 @@ if has("autocmd") && exists("+filetype")
     " TODO: Why isn't this working as I expect?
     autocmd FileType html,xml,xsl iabbrev <buffer> </ </
 
+    " Set up an 'escpos' filetype which makes the width of my thermal printer's
+    " paper clear.
+    autocmd FileType escpos set colorcolumn=32
+    autocmd BufNewFile,BufRead *.escpos set filetype=escpos
+
     " Support the jQuery syntax extension from
     " http://www.vim.org/scripts/script.php?script_id=2416
     autocmd BufRead,BufNewFile *.js set filetype=javascript syntax=jquery
