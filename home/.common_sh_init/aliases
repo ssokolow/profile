@@ -65,6 +65,19 @@ yt() {
     youtube-dl -f 44/35/43/18/34 "$@"
 }
 
+# Alias for grabbing The Cinema Snob episodes
+tcs() {
+    cd ~"/incoming/Videos/The Cinema Snob"
+    for X in "$@"; do
+        # Grab the SD file for eventual fservroot use
+        youtube-dl -f 'Blip SD' "$X"
+    done
+    for X in "$@"; do
+        # Grab the HD file for archival
+        youtube-dl "$X"
+    done
+}
+
 # Smart wrapper for multiple site-specific download tools
 dl() {
     for url in "$@"; do
