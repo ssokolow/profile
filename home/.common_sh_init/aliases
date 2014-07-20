@@ -9,6 +9,11 @@ alias dirs="dirs -v"
 alias less="less -R"
 alias vids="egrep '\.(flv|mp4|webm|avi|ogv|ogm|mkv|mov|rm|wmv)'"
 
+# If github's "hub" wrapper is installed, hook it up
+if which hub >/dev/null 2>&1; then
+    alias git=hub
+fi
+
 # Wrap sqliteman to prevent it from leaving crud lying around
 if `which sqliteman &> /dev/null`; then
     function sqliteman() {
@@ -116,10 +121,6 @@ function cond_alias() { eval "function ${1}() { [ -z \"\$*\" ] && $2 || command 
 andre() { kioclient copy "$@" "smb://Slick.multiverse/inbound/"; }
 mom()   { kioclient copy "$@" "smb://mom/inbound/"; }
 nicky() { kioclient copy "$@" "smb://darkspark/inbound/"; }
-
-# Provide a "github" command for opening the browser to the github page for the current working directory
-# I forget who I got this from, but it's not my creation.
-alias github='br=$(git branch --contains HEAD | sed -rn "s/^\* //p"); if ! git ls-remote . | grep -q -e "refs/remotes/.*/${br}"; then br="master"; fi; xdg-open $(git config -l | sed -rn "s%remote.origin.url=git(@|://)(github.com)(:|/)(.+/.+).git%https://\2/\4/tree/${br}%p")'
 
 #Command remaps for extra convenience
 alias bd="cd -"	# Cycle between the two most recent directories
