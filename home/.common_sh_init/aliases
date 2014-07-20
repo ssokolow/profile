@@ -15,8 +15,8 @@ if which hub >/dev/null 2>&1; then
 fi
 
 # Wrap sqliteman to prevent it from leaving crud lying around
-if `which sqliteman &> /dev/null`; then
-    function sqliteman() {
+if which sqliteman >/dev/null 2>&1; then
+    sqliteman() {
         command sqliteman "$@"
         rm -- -version
     }
@@ -27,7 +27,7 @@ fi
 git-filter-whitelist() {
     # Filter out content and newly emptied non-merge, non-root commits
     # Source: http://stackoverflow.com/a/6006679
-    #shellcheck disable=SC1004
+    #shellcheck disable=SC1004,SC2016
     command git filter-branch --prune-empty --index-filter '
 	    git ls-tree -zr --name-only --full-tree $GIT_COMMIT \
 	    | egrep -vz "'"$1"'" \
@@ -201,16 +201,17 @@ else
 fi
 
 # Work around smartypants Debian packagers
-if `which ack-grep &> /dev/null`; then
+if which ack-grep > /dev/null 2>&1; then
     alias ack=ack-grep
 fi
 
-if ! `which download_ffn_fic &> /dev/null` && [ -e ~/src/fanfic2ebook ]; then
+if ! which download_ffn_fic >/dev/null 2>&1 && [ -e ~/src/fanfic2ebook ]; then
     download_ffn_fic() { ~/src/fanfic2ebook/src/fanfic2html "$@"; }
 fi
 
 # Set up rTorrent to interact more nicely with screen's window list
 if [[ "$TERM" == screen* ]]; then
+	#shellcheck disable=SC2032,SC2033
 	title() { screen -X title "$@" && echo -ne "\033_$@\033\\"; }
 	alias rtorrent="title rTorrent && exec rtorrent"
 fi
