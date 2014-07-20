@@ -80,8 +80,10 @@ fpath=(~/.zsh/functions(:A) $fpath)
 #TODO: Figure out why this isn't causing my _wine completion to load
 
 # Enable completion (case-insensitive, colorized, and tricked-out)
+# TODO: Figure out how to get manual completion dumps to get along with a
+#       custom fpath and then use `compinit -C` to shave off some startup time
 autoload -U compinit promptinit
-compinit -C
+compinit
 promptinit
 source ~/.zshrc.d/prompt_gentoo_setup
 zstyle ':completion::complete:*' use-cache 1

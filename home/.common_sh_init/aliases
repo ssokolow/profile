@@ -23,7 +23,7 @@ git-filter-whitelist() {
     # Filter out content and newly emptied non-merge, non-root commits
     # Source: http://stackoverflow.com/a/6006679
     #shellcheck disable=SC1004
-    git filter-branch --prune-empty --index-filter '
+    command git filter-branch --prune-empty --index-filter '
 	    git ls-tree -zr --name-only --full-tree $GIT_COMMIT \
 	    | egrep -vz "'"$1"'" \
 	    | xargs -0 git rm --cached -r
@@ -31,7 +31,7 @@ git-filter-whitelist() {
 
     # Collapse away vestigial merge and root commits ignored by --prune-empty
     # Source: My own accidental discovery
-    git rebase --root HEAD
+    command git rebase --root HEAD
 }
 
 # For when I mistype popd
