@@ -675,8 +675,9 @@ if has("autocmd") && exists("+filetype")
     autocmd FileType html,xml,xsl iabbrev <buffer> </ </
 
     " Set up an 'escpos' filetype which makes the width of my thermal printer's
-    " paper clear.
+    " paper clear and sets up :make to print things.
     autocmd FileType escpos set colorcolumn=32
+    autocmd FileType escpos set makeprg=~/bin/escpos-cli.py\ print\ %
     autocmd BufNewFile,BufRead *.escpos set filetype=escpos
 
     " Hook up syntax/tiddlywiki.vim
