@@ -1,0 +1,252 @@
+#!/usr/bin/env python2
+# -*- coding: utf-8 -*-
+"""Simple script to streamline my typical use of youtube-dl with
+The Young Turks."""
+
+from __future__ import (absolute_import, division, print_function,
+                        with_statement)
+
+__author__ = "Stephan Sokolow (deitarion/SSokolow)"
+__appname__ = "TYT youtube-dl streamliner"
+__version__ = "0.0pre0"
+__license__ = "MIT"
+
+import logging
+log = logging.getLogger(__name__)
+
+import os, shelve, shutil, subprocess, urlparse, urllib
+
+import feedparser
+
+STATE_FILE = os.path.expanduser('~/.cache/tyt.shelf')
+
+YT_PAT = 'https://gdata.youtube.com/feeds/api/users/%s/uploads?orderby=updated'
+YT_FEED = YT_PAT % 'TheYoungTurks'
+
+DOWNLOADER_CMD = ['youtube-dl', '-f', '44/35/43/18/34']
+TARGET_DIR = os.path.expanduser('~/Desktop/pandora')
+
+THUMBDRIVE_PATH = '/media/16GB_Flash'
+
+SELF_DIR = os.path.abspath(os.path.split(__file__)[0])
+NOTIFY_ICON = os.path.join(SELF_DIR, 'tyt_logo.png')
+NOTIFY_MSG = 'Young Turks videos downloaded'
+NOTIFY_CMD = ['notify-send', '-i', NOTIFY_ICON]
+
+class BadUrlError(Exception):
+    """Raised when the sanitizer received a URL it didn't understand."""
+class BadTargetError(Exception):
+    """Raised when the target directory is unsuitable."""
+class BadDeviceError(Exception):
+    """Raised when a failure occurs in resolving or ejecting a device."""
+
+# {{{ Removable Media Control
+
+def mountpoint_to_devnode(path):
+    """Given a path, walk up to the mountpoint, then resolve to a dev node.
+
+    Returns None on failure.
+    """
+    while not os.path.ismount(path):
+        path, _ = os.path.split(path)
+    path = os.path.normpath(os.path.normcase(path))
+
+    with open('/proc/mounts') as fobj:
+        for line in fobj:
+            devnode, mountpoint, _ = line.split(None, 2)
+
+            if not devnode.startswith('/'):
+                continue
+
+            mountpoint = os.path.normpath(os.path.normcase(mountpoint))
+            if mountpoint == path:
+                return devnode
+    return BadDeviceError("Couldn't find device node for given path")
+
+def unmount_and_eject(devnode):
+    """Given a device node for a mounted partition, unmount it and
+       eject the associated device."""
+    try:
+        log.info("Unmounting %s", devnode)
+        subprocess.check_call(['udisks', '--unmount', devnode])
+    except subprocess.CalledProcessError:
+        raise BadDeviceError("udisks failed while unmounting %s" % devnode)
+
+    try:
+        # FIXME: How do I properly find the non-partition device node?
+        devnode = devnode.strip('1234567890')
+        log.info("Ejecting %s", devnode)
+        subprocess.check_call(['udisks', '--eject', devnode])
+    except subprocess.CalledProcessError:
+        raise BadDeviceError("udisks failed while ejecting %s" % devnode)
+
+# }}}
+# {{{ Downloading Individual YouTube Vids
+
+def sanitize_youtube_url(url):
+    """Pare down a YouTube URL's query string to just ?v=<id>"""
+    url = urlparse.urlparse(url)
+    query = urlparse.parse_qs(url.query)
+
+    if not url.hostname.lower() in ['youtube.com', 'www.youtube.com']:
+        raise BadUrlError("URL does not point to YouTube: %s" % url)
+
+    if not url.path == '/watch':
+        raise BadUrlError("Only /watch URLs currently supported: %s" % url)
+
+    if 'v' not in query or len(query['v']) != 1:
+        raise BadUrlError("Fewer/more than one 'v' query parameter: %s" % url)
+
+    # url.query, but Python doesn't let you assign to that
+    url = list(url)
+    url[4] = urllib.urlencode({'v': query['v'][0]})
+    url[5] = ''  # Strip fragments
+    return urlparse.urlunparse(url)
+
+def download_vids(urls, cache):
+    """Download only YouTube videos I haven't seen before."""
+    failed_urls = {}
+
+    for url in urls:
+        try:
+            url = sanitize_youtube_url(url)
+        except BadUrlError, err:
+            failed_urls[url] = str(err)
+            continue
+
+        if url in cache.setdefault('downloaded_urls', []):
+            log.info("Already downloaded %s. Skipping.", url)
+            continue
+
+        try:
+            subprocess.check_call(DOWNLOADER_CMD + [url])
+        except subprocess.CalledProcessError:
+            failed_urls[url] = "Downloader returned failure"
+            continue
+        else:
+            # Maintain a sliding window of the 50 most recent downloads
+            downloaded_urls = cache.setdefault('downloaded_urls', [])
+            downloaded_urls.append(url)
+            downloaded_urls = downloaded_urls[-50:]
+            cache['downloaded_urls'] = downloaded_urls
+
+    if failed_urls:
+        for url, message in failed_urls.items():
+            log.error("%s: %s", url, message)
+
+    print(sanitize_youtube_url(url))
+
+# {{{ Getting the Young Turks Feed
+
+def get_new_vids(feed_url, cache):
+    """Retrieve the list of the 25 newest Young Turks videos from YouTube RSS
+
+    (To feed into C{download_vids})
+    """
+
+    # Parse the YouTube Feed
+    parsed = feedparser.parse(feed_url,
+                              etag=cache.get('feed-etag'),
+                              modified=cache.get('feed-modified'))
+
+    # Handle HTTP bandwidth-saving features
+    if parsed.status == 304:
+        parsed = cache.get('feed-cached')
+        if not parsed:
+            raise ValueError("Cache file is broken. Please delete %s" %
+                             STATE_FILE)
+    elif parsed.status == 200:
+        cache['feed-cached'] = parsed
+        cache['feed-etag'] = parsed.get('etag')
+        cache['feed-modified'] = parsed.get('modified')
+    elif parsed.status == 410:
+        raise BadUrlError("He's Dead Jim! (Channel Feed returned "
+                          "HTTP 410 Gone)")
+    else:
+        # pylint: disable=bad-continuation
+        raise BadUrlError("Unexpected HTTP response: %s %s" % (
+                          parsed.status, parsed.debug_message))
+
+    # Return a list of video URLs
+    return [x['link'] for x in parsed['entries'] if 'link' in x]
+
+# }}}
+
+def main():
+    """The main entry point, compatible with setuptools entry points."""
+    # pylint: disable=bad-continuation
+    from optparse import OptionParser
+    parser = OptionParser(version="%%prog v%s" % __version__,
+            usage="%prog [options] [url] ...",
+            description=__doc__.replace('\r\n', '\n').split('\n--snip--\n')[0])
+    parser.add_option('-v', '--verbose', action="count", dest="verbose",
+        default=2, help="Increase the verbosity. Use twice for extra effect")
+    parser.add_option('-q', '--quiet', action="count", dest="quiet",
+        default=0, help="Decrease the verbosity. Use twice for extra effect")
+    parser.add_option('-t', '--target', action="store", dest="target_dir",
+        default=TARGET_DIR, help="Set target directory (Default: %default)")
+
+    # Allow pre-formatted descriptions
+    parser.formatter.format_description = lambda description: description
+
+    opts, args = parser.parse_args()
+
+    # Set up clean logging to stderr
+    log_levels = [logging.CRITICAL, logging.ERROR, logging.WARNING,
+                  logging.INFO, logging.DEBUG]
+    opts.verbose = min(opts.verbose - opts.quiet, len(log_levels) - 1)
+    opts.verbose = max(opts.verbose, 0)
+    logging.basicConfig(level=log_levels[opts.verbose],
+                        format='%(levelname)s: %(message)s')
+
+    if not os.path.exists(opts.target_dir):
+        raise BadTargetError("Target directory does not exist")
+    if not os.access(opts.target_dir, os.W_OK):
+        # Reminder: This isn't the safety check. It's the friendly message.
+        raise BadTargetError("Target directory is not writable")
+
+    # Set the target directory for youtube-dl and the source for copying
+    os.chdir(opts.target_dir)
+
+    # Get the list of new videos
+    state = shelve.open(STATE_FILE)
+    if args:
+        urls = args
+    else:
+        try:
+            urls = get_new_vids(YT_FEED, state)
+        except BadUrlError, err:
+            log.critical(str(err))
+            return
+
+    # Retrieve any of those videos we haven't seen before
+    download_vids(urls, state)
+
+    # If the thumbdrive is available...
+    details = ''
+    if os.path.exists(THUMBDRIVE_PATH):
+        # Copy any new videos over
+        for fname in os.listdir('.'):
+            if os.path.isdir(fname):
+                continue
+
+            if not os.path.exists(os.path.join(THUMBDRIVE_PATH, fname)):
+                log.info("Copying %s to thumbdrive", fname)
+                shutil.copy(fname, THUMBDRIVE_PATH)
+
+        # Try to eject the thumbdrive
+        try:
+            dev = mountpoint_to_devnode(THUMBDRIVE_PATH)
+            unmount_and_eject(dev)
+        except BadDeviceError, err:
+            log.error(str(err))
+            details = '...could not eject the thumbdrive'
+        else:
+            details = 'You may now remove the thumbdrive'
+
+    state.close()
+    notify_argv = NOTIFY_CMD[:] + [NOTIFY_MSG, details]
+    subprocess.call(notify_argv)
+
+if __name__ == '__main__':
+    main()
