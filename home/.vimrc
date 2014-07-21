@@ -679,6 +679,8 @@ if has("autocmd") && exists("+filetype")
     autocmd FileType escpos set colorcolumn=32
     autocmd BufNewFile,BufRead *.escpos set filetype=escpos
 
+    " Hook up syntax/tiddlywiki.vim
+    autocmd BufNewFile,BufRead *.tid set filetype=tiddlywiki
     " Support the jQuery syntax extension from
     " http://www.vim.org/scripts/script.php?script_id=2416
     autocmd BufRead,BufNewFile *.js set filetype=javascript syntax=jquery
