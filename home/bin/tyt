@@ -134,8 +134,6 @@ def download_vids(urls, cache):
         for url, message in failed_urls.items():
             log.error("%s: %s", url, message)
 
-    print(sanitize_youtube_url(url))
-
 # {{{ Getting the Young Turks Feed
 
 def get_new_vids(feed_url, cache):
