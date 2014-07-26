@@ -459,9 +459,9 @@ if exists(":let")
     let g:detectindent_preferred_expandtab = 1
     let g:detectindent_preferred_indent = 4
 
-    " Prevent jedi-vim from popping up when not explicitly triggered
-    " TODO: Is there a way to make the scratch window auto-dismiss?
-    let g:jedi#show_function_definition = 0
+    " Make YouCompleteMe auto-dismiss the scratch buffer showing a function's
+    " definition.
+    let g:ycm_autoclose_preview_window_after_completion=1
 
     " Open MiniBufExplorer as a sidebar more like I got used to with Kate
     let g:miniBufExplVSplit=25
