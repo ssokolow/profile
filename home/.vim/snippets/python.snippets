@@ -16,7 +16,9 @@ snippet boiler
 
 	${7:# -- Code Here --}
 
-	if __name__ == '__main__':
+	def main():
+		"""The main entry point, compatible with setuptools entry points."""
+		# pylint: disable=bad-continuation
 		from optparse import OptionParser
 		parser = OptionParser(version="%%prog v%s" % __version__,
 				usage="%prog ${5:[options] <argument> ...}",
@@ -41,6 +43,9 @@ snippet boiler
 							format='%(levelname)s: %(message)s')
 
 		${6}
+
+	if __name__ == '__main__':
+		main()
 
 snippet logging
 	import logging
