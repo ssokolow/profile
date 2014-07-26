@@ -22,7 +22,7 @@
             duplicates_similarity_threshold = "99" 
 
             mousewheel_scrolls = "false" 
-            open_recent_list_maxsize = "20" 
+            open_recent_list_maxsize = "30" 
             dnd_icon_size = "48" 
             place_dialogs_under_mouse = "false" 
             save_window_positions = "true" 
