@@ -165,8 +165,17 @@ def get_new_vids(feed_url, cache):
         raise BadUrlError("Unexpected HTTP response: %s %s" % (
                           parsed.status, parsed.debug_message))
 
-    # Return a list of video URLs
-    return [x['link'] for x in parsed['entries'] if 'link' in x]
+    # Return a list of non-stream video URLs
+    relevant_entries = []
+    for entry in parsed['entries']:
+        vid_url = entry.get('link')
+        if not vid_url:
+            log.warn("Skipping entry without a URL: %r", entry)
+        elif entry.get('yt_duration', {}).get('seconds', '0') == '0':
+            log.warn("0-length video (stream?) skipped: %s", entry.get('link'))
+        else:
+            relevant_entries.append(vid_url)
+    return relevant_entries
 
 # }}}
 
