@@ -71,6 +71,9 @@ source ~/.common_sh_init/misc
 # Make sure there are no duplicate entries in PATH or PYTHONPATH
 typeset -U PATH PYTHONPATH
 
+# Source zsh-specific aliases
+source ~/.zshrc.d/aliases
+
 # }}}
 # {{{ Completion:
 # Note: Must come after common_sh_init defines LS_COLORS

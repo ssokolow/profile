@@ -1,0 +1,3 @@
+function 457mv() {
+     mergemove.py ~/.local/share/geeqie/collections/*.gqv(P:--rewrite:) "$@" ../dvd_saved
+}
