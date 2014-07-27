@@ -53,6 +53,7 @@
 "  :sf {X}      Find file {X} and edit it in a new :split.
 "  gf           Find file named under cursor and edit it.
 "
+"  \g           Go to definition of token under cursor
 "  <C-]>        Jump to tag under cursor.
 "  <C-T>        Undo the most recent jump to tag.
 "
@@ -769,6 +770,9 @@ map <unique> <Leader>] :MBEToggle<CR>:MBEFocus<CR>
 
 " Source: http://bairuidahu.deviantart.com/art/Flying-vs-Cycling-261641977
 nnoremap <leader>l :ls<CR>:b<space>
+
+" Source: https://blog.dbrgn.ch/2013/5/27/using-jedi-with-ymc/
+nnoremap <leader>g :YcmCompleter GoToDefinitionElseDeclaration<CR>
 
 " }}}
 " {{{ Custom command aliases
