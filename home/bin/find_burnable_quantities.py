@@ -1,7 +1,11 @@
 #!/usr/bin/env python2
 # -*- coding: utf-8 -*-
 """A simple little script to walk a filesystem subtree from the leaves upwards
-and draw a tree of of folders large enough to be backed up to DVD+R."""
+and draw a tree of of folders large enough to be backed up to DVD+R.
+
+(Displayed size values for parent directories do not include content which
+matches the exclusion filter)
+"""
 
 from __future__ import (absolute_import, division, print_function,
                         with_statement, unicode_literals)
@@ -19,7 +23,8 @@ OMITTED_NAMES = ['VIDEO_TS']  # Only show DVD-Video dumps as whole entries
 TRAVERSAL_EXCLUSIONS = [
     '.backups',
     '.git', '.hg', '.bzr', '.svn',
-    'incomplete'
+    'incomplete',
+    'ACTION_NEEDED_BEFORE_BURNING'
 ]
 
 import logging
