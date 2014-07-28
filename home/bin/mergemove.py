@@ -18,7 +18,7 @@ __license__ = "MIT"
 import logging
 log = logging.getLogger(__name__)
 
-import os, re, shutil, sys, tempfile
+import os, re, shutil, sys, tempfile, urllib
 
 def _move(src, dest, overwrite=False, dry_run=False):
     """Wrapper for C{shutil.move} which handles overwrite control and
@@ -85,6 +85,13 @@ def mergemove(src, dest, overwrite=False, dry_run=False):
 
 def rewrite(fpath, mappings, exceptions=None):
     """Rewrite paths within a given file."""
+    # Transparently support both paths and URL components
+    # (Not perfect since not all programs escape the same set of characters as
+    #  urllib.quote() but a good start for a naive tool)
+    mappings = mappings.copy()
+    mappings.update({urllib.pathname2url(x): urllib.pathname2url(y)
+                     for x, y in mappings.items()})
+
     rex = re.compile('(%s)' % '|'.join(re.escape(x) for x in mappings.keys()))
     exceptions = exceptions or []
 
@@ -92,8 +99,13 @@ def rewrite(fpath, mappings, exceptions=None):
     exceptions_dict = dict((x, []) for x in mappings.keys())
     for path in exceptions:
         for ancestor in exceptions_dict:
+            url_path = urllib.pathname2url(path)
+
+            # Again, transparently support both paths and URL components
             if path.startswith(ancestor):
                 exceptions_dict[ancestor].append((path, len(path)))
+            elif url_path.startswith(ancestor):
+                exceptions_dict[ancestor].append((url_path, len(path)))
 
     with open(fpath, 'rb') as fobj:
         content = fobj.read()
@@ -109,6 +121,8 @@ def rewrite(fpath, mappings, exceptions=None):
         log.debug("Rewrite in %r: %r -> %r", fpath, src, mappings[src])
         return mappings[src]
 
+    # Replace atomically
+    # TODO: I think Windows required an explicit delete first
     with tempfile.NamedTemporaryFile(delete=False,
                                      dir=os.path.split(fpath)[0]) as fobj:
         fobj.write(rex.sub(matcher, content))
