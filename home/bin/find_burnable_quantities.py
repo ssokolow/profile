@@ -212,13 +212,15 @@ def main():
         omitted_names=OMITTED_NAMES,
         traversal_exclusions=TRAVERSAL_EXCLUSIONS)
 
-    results = itertools.chain(*[statter.render(statter.examine(x))
-                                for x in args])
+    results = [statter.render(statter.examine(x)) for x in args]
 
-    if not opts.reverse:
-        results = reversed(list(results))
-    for line in results:
-        print(line)
+    # Implement reverse() use with the minimum possible loss of
+    # streaming display
+    for resultset in results:
+        if not opts.reverse:
+            resultset = reversed(list(resultset))
+        for line in resultset:
+            print(line)
 
 if __name__ == '__main__':
     main()
