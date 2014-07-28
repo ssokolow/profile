@@ -72,7 +72,7 @@ def walk(top, topdown=True, onerror=None, followlinks=False,
         new_path = join(top, name)
         if followlinks or not islink(new_path):
             for x in walk(new_path, topdown, onerror, followlinks,
-                         traversal_filter_cb=traversal_filter_cb):
+                          traversal_filter_cb=traversal_filter_cb):
                 yield x
     if not topdown:
         yield top, dirs, nondirs
