@@ -235,25 +235,26 @@ EOF
 # Set up LCDproc for the case LCD if I'm running on monolith
 if [ "$(hostname)" = "monolith" ]; then
     apt-get install -y lcdproc
-    cp "supplemental/LCDd.conf /etc/"
-    cp "supplemental/lcdproc.conf /etc/"
+    cp supplemental/LCDd.conf /etc/
+    cp supplemental/lcdproc.conf /etc/
     /etc/init.d/LCDd restart
 
-    #TODO: Set up lcdproc to run on boot via /etc/rc.local
+    #TODO: Set up lcdproc to run on boot via /etc/rc.local on monolith
+    #      rather than on login.
 fi
 
 # Set up TrueRNG entropy source if I'm running on monolith
 if [ "$(hostname)" = "monolith" ]; then
     apt-get install -y rng-tools
-    cp "supplemental/99-TrueRNG.rules" /etc/udev/rules.d/
-    cp "supplemental/rng-tools" /etc/default/rng-tools
+    cp supplemental/99-TrueRNG.rules /etc/udev/rules.d/
+    cp supplemental/rng-tools /etc/default/rng-tools
     update-rc.d rng-tools defaults
 fi
 
 # Set up SpaceNavD for my 3D Mouse if I'm running on monolith
 if [ "$(hostname)" = "monolith" ]; then
     apt-get install -y spacenavd
-    cp "supplemental/spnavrc /etc/"
+    cp supplemental/spnavrc /etc/
     /etc/init.d/spacenavd restart
 fi
 
@@ -264,7 +265,7 @@ if [ "$(hostname)" = "monolith" ]; then
     #TODO: Add nvclock once it no longer segfaults
 
     # Set up master config
-    cp "supplemental/munin.conf /etc/munin/"
+    cp supplemental/munin.conf /etc/munin/
 
     # Set up node plugins
     rm /etc/munin/plugins/*
@@ -317,11 +318,11 @@ apt-get install -y basket-trinity
 apt-get install -y eawpatches
 apt-get install -y skype
 apt-get install -y opera
-apt-get install -t cdemu-daemon cdemu-client gcdemu
-cp "supplemental/skype" /usr/local/bin/
-cp "supplemental/49-teensy.rules" /etc/udev/rules.d/
-cp "supplemental/99-escpos.rules" /etc/udev/rules.d/
+apt-get install -y cdemu-daemon cdemu-client gcdemu
 apt-get install -y lgogdownloader
+cp supplemental/skype /usr/local/bin/
+cp supplemental/49-teensy.rules /etc/udev/rules.d/
+cp supplemental/99-escpos.rules /etc/udev/rules.d/
 
 #TODO: How did one hold a package as uninstalled again?
 echo " * Removing pulseaudio for pegging one of my CPU cores when I game"
