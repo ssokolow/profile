@@ -16,6 +16,11 @@ cd "$(dirname "$0")"
 DEBIAN_FRONTEND=noninteractive
 export DEBIAN_FRONTEND
 
+echo " * Enabling multiarch"
+dpkg --add-architecture i386
+
+echo " * Enabling external package sources"
+
 # The following PPAs and/or external sources must be enabled:
 add-apt-repository -y ppa:nilarimogard/webupd8 # (for up-to-date Audacious)
 add-apt-repository -y ppa:ubuntu-mozilla-daily/firefox-aurora # (for up-to-date Firefox)
@@ -32,7 +37,6 @@ apt-key adv --keyserver keyserver.quickbuild.pearsoncomputing.net --recv-keys 2B
 # Skype
 # TODO: Figure out how to make this always use the right release keyword
 add-apt-repository -y 'deb http://archive.canonical.com/ubuntu precise partner'
-echo foreign-architecture i386 | tee /etc/dpkg/dpkg.cfg.d/multiarch
 # eawpatches
 add-apt-repository -y 'deb http://www.fbriere.net/debian stable misc'
 wget -O- http://www.fbriere.net/public_key.html | sudo apt-key add -
@@ -56,6 +60,9 @@ done
 # Update the package cache to include the newly-added repos
 apt-get update -y
 
+echo " * Removing iBus to unbreak Chromium"
+apt-get purge ibus -y
+
 echo " * Installing base set of desired Debian/Ubuntu packages"
 (egrep -v '^#' - | xargs sudo apt-get install -y) << EOF
 
@@ -71,7 +78,6 @@ keepass2
 mercurial
 ncdu
 nodejs
-nodejs-dev
 pychecker
 pylint
 python-nose
@@ -106,7 +112,7 @@ git
 git-gui
 gksu
 gpm
-gqview
+geeqie
 htop
 incron
 jpegoptim
@@ -143,7 +149,7 @@ calibre
 conky-all
 dhex
 evince
-rubygems
+ruby
 gimp
 hddtemp
 inkscape
@@ -177,7 +183,6 @@ python-psutil
 python3
 python3-doc
 python3-examples
-python3-qt4
 python3-setuptools
 qjoypad
 samba
@@ -186,7 +191,8 @@ wxhexeditor
 xsane
 
 # Porteus Status Unknown:
-chmsee
+chm2pdf
+elementary-icon-theme
 graphviz
 fuseiso
 kdiff3
@@ -215,6 +221,7 @@ units
 wdiff
 xdotool
 xbindkeys
+xchm
 
 # For programming in vala
 gdb
