@@ -66,6 +66,7 @@ nautilus-dropbox
 fortune-mod
 gaffitter
 gmrun
+keepass2
 mercurial
 ncdu
 nodejs
@@ -350,6 +351,9 @@ chmod +x /etc/cron.monthly/upd_hosts.py
 echo " * Cursing VirtualBox devs for not allowing snapshot CD image paths to be edited"
 ln -s virtualbox /usr/share/virtualbox-ose
 
+echo " * Linking in KeePass2 Plugins"
+ln -s ~/.profile_repo/supplemental/keepass2_plugins/ /usr/lib/keepass2/plugins
+
 if [ ! -e /etc/sensors3.conf ]; then
     echo " * Setting up sensors"
     yes | sensors-detect
@@ -408,7 +412,6 @@ echo "IMPORTANT:"
 echo " - Now edit /etc/ssh/sshd_config to allow only non-root, pubkey authentication."
 echo " - Don't forget to copy xorg.conf from supplemental if you need TwinView."
 echo " - Don't forget to restore your crontab and set Cyphertite back up."
-echo " - Don't forget to reinstall KeePass2 and link in the plugins folder."
 echo " - Don't forget to reinstall lap."
 echo " - Don't forget to reinstall hub (https://github.com/github/hub)."
 echo " - If upgrading, run virtualenv -p /usr/bin/python ~/.virtualenvs/<name> for all virtualenvs"
