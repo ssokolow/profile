@@ -23,6 +23,7 @@ add-apt-repository -y ppa:ubuntu-wine/ppa # (for up-to-date Wine)
 add-apt-repository -y ppa:chris-lea/node.js # (for up-to-date Node.js)
 add-apt-repository -y ppa:anay/ppa # (http://docs.travis-ci.com/user/cc-menu/ )
 add-apt-repository -y ppa:cdemu/ppa
+add-apt-repository -y ppa:gabriel-thornblad/lgogdownloader # LGOGDownloader
 # BasKet (http://www.trinitydesktop.org/installation.php#ubuntu)
 # TODO: Figure out how to make this reliably up-to-date when Trinity sometimes lags behind
 add-apt-repository -y 'deb http://ppa.quickbuild.pearsoncomputing.net/trinity/trinity-v3.5.13/ubuntu oneiric main'
@@ -313,6 +314,7 @@ apt-get install -t cdemu-daemon cdemu-client gcdemu
 cp "supplemental/skype" /usr/local/bin/
 cp "supplemental/49-teensy.rules" /etc/udev/rules.d/
 cp "supplemental/99-escpos.rules" /etc/udev/rules.d/
+apt-get install -y lgogdownloader
 
 #TODO: How did one hold a package as uninstalled again?
 echo " * Removing pulseaudio for pegging one of my CPU cores when I game"
