@@ -151,6 +151,7 @@ bottlerocket
 calibre
 conky-all
 dhex
+dosbox
 evince
 ruby
 gimp
@@ -194,7 +195,9 @@ wxhexeditor
 xsane
 
 # Porteus Status Unknown:
+checkinstall
 chm2pdf
+cifs-utils
 deluge-gtk
 elementary-icon-theme
 graphviz
@@ -224,9 +227,10 @@ pidgin-plugin-pack
 libpurple-bin
 units
 wdiff
-xdotool
+wmctrl
 xbindkeys
 xchm
+xdotool
 
 # For programming in vala
 gdb
