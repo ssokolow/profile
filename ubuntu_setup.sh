@@ -427,6 +427,11 @@ for X in OpenSSH VNC Deluge Dropbox Samba avahi-daemon dhclient ntpd pidgin syne
     ufw allow "$X"
 done
 
+if pgrep lxpanel >/dev/null; then
+    echo " * Restarting lxpanel to acknowledge new launchers"
+    lxpanelctl restart
+fi
+
 echo "IMPORTANT:"
 echo " - Now edit /etc/ssh/sshd_config to allow only non-root, pubkey authentication."
 echo " - Don't forget to restore your crontab and set Cyphertite back up."
