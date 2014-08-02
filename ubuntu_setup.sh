@@ -221,6 +221,7 @@ smem
 sox
 sshfs
 synergy
+task
 units
 wdiff
 wmctrl
