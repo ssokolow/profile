@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 
 # User to permission and customize
 ME="ssokolow"
@@ -314,6 +314,16 @@ if [ "$(hostname)" = "monolith" ]; then
     echo " * Setting up nVidia drivers for monolith"
     apt-get install -y nvidia-current nvidia-settings
     cp supplemental/xorg.conf /etc/X11/
+
+    echo " * Downloading WinTV-HVR 1600 firmware (can't hurt, may help)"
+    pushd /lib/firmware
+    for X in v4l-cx23418-cpu.fw v4l-cx23418-apu.fw v4l-cx23418-dig.fw; do
+        if [ ! -e "$X" ]; then
+            echo " ... $X"
+            wget http://linuxtv.org/downloads/firmware/"$X"
+        fi
+    done
+    popd
 fi
 
 echo " * Removing 'Floppy Drive' from Places menu"
@@ -358,12 +368,6 @@ EOF
 
 echo " * Installing ruby gems"
 gem install jekyll travis-lint
-
-echo " * Downloading WinTV-HVR 1600 firmware (can't hurt, may help)"
-cd /lib/firmware
-wget http://linuxtv.org/downloads/firmware/v4l-cx23418-cpu.fw
-wget http://linuxtv.org/downloads/firmware/v4l-cx23418-apu.fw
-wget http://linuxtv.org/downloads/firmware/v4l-cx23418-dig.fw
 
 echo " * Setting up ad-blocking hosts file"
 wget http://ssokolow.com/scripts/upd_hosts.py -O /etc/cron.monthly/upd_hosts.py
