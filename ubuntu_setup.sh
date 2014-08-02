@@ -301,6 +301,10 @@ if [ "$(hostname)" = "monolith" ]; then
     # Allow only loopback connections to the local munin node
     sed -i -e 's@\(^host \*$\)@# \1@' -e 's@^# \(host 127.0.0.1\)@\1@' /etc/munin/munin-node.conf
     /etc/init.d/munin-node restart
+
+    echo " * Setting up nVidia drivers for monolith"
+    apt-get install -y nvidia-current nvidia-settings
+    cp supplemental/xorg.conf /etc/X11/
 fi
 
 
@@ -412,7 +416,6 @@ done
 
 echo "IMPORTANT:"
 echo " - Now edit /etc/ssh/sshd_config to allow only non-root, pubkey authentication."
-echo " - Don't forget to copy xorg.conf from supplemental if you need TwinView."
 echo " - Don't forget to restore your crontab and set Cyphertite back up."
 echo " - Don't forget to reinstall lap."
 echo " - Don't forget to reinstall hub (https://github.com/github/hub)."
