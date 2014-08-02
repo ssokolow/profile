@@ -34,9 +34,10 @@ echo " ... BasKet (TDE)"
 
 # BasKet (http://www.trinitydesktop.org/installation.php#ubuntu)
 # TODO: Figure out how to make this reliably up-to-date when Trinity sometimes lags behind
-add-apt-repository -y 'deb http://ppa.quickbuild.pearsoncomputing.net/trinity/trinity-v3.5.13/ubuntu oneiric main'
-add-apt-repository -y 'deb http://ppa.quickbuild.pearsoncomputing.net/trinity/trinity-builddeps-v3.5.13/ubuntu oneiric main'
-apt-key adv --keyserver keyserver.quickbuild.pearsoncomputing.net --recv-keys 2B8638D0
+add-apt-repository -y 'deb http://ppa.quickbuild.pearsoncomputing.net/trinity/trinity-nightly-builds/ubuntu trusty main'
+add-apt-repository -y 'deb http://ppa.quickbuild.pearsoncomputing.net/trinity/trinity-nightly-build-dependencies/ubuntu trusty main'
+apt-key adv --keyserver keyserver.quickbuild.pearsoncomputing.net --recv-keys F5CFC95C
+
 #TODO: Come up with a solution for the imminent removal of support for non-PulseAudio Skype"
 
 echo " ... eawpatches"
@@ -335,7 +336,7 @@ update-initramfs -u
 echo " * Setting packages from 3rd-party repos"
 # TODO: Figure out how to rework this to prevent Wine from mucking around in my launcher
 apt-get install -y wine
-apt-get install -y basket-trinity
+apt-get install -y --no-install-recommends basket-trinity
 apt-get install -y eawpatches
 apt-get install -y cdemu-daemon cdemu-client gcdemu
 apt-get install -y lgogdownloader
