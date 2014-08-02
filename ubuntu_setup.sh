@@ -40,13 +40,6 @@ add-apt-repository -y 'deb http://archive.canonical.com/ubuntu precise partner'
 # eawpatches
 add-apt-repository -y 'deb http://www.fbriere.net/debian stable misc'
 wget -O- http://www.fbriere.net/public_key.html | sudo apt-key add -
-# Opera
-if egrep -q '^deb http://deb.opera.com/opera/' /etc/apt/sources.list; then
-    echo "Opera source already present."
-else
-    echo 'deb http://deb.opera.com/opera/ stable non-free' >> /etc/apt/sources.list
-    wget -O - http://deb.opera.com/archive.key | sudo apt-key add -
-fi
 
 # Stuff Lubuntu installs which I don't want:
 apt-get purge sylpheed ace-of-penguins gnumeric gnumeric-common mtpaint modemmanager transmission{,-gtk,-common} -y
@@ -317,7 +310,6 @@ apt-get install -y wine
 apt-get install -y basket-trinity
 apt-get install -y eawpatches
 apt-get install -y skype
-apt-get install -y opera
 apt-get install -y cdemu-daemon cdemu-client gcdemu
 apt-get install -y lgogdownloader
 cp supplemental/skype /usr/local/bin/
