@@ -307,6 +307,11 @@ if [ "$(hostname)" = "monolith" ]; then
     cp supplemental/xorg.conf /etc/X11/
 fi
 
+echo " * Removing 'Floppy Drive' from Places menu"
+rm -rf /media/floppy*
+echo "blacklist floppy" | sudo tee /etc/modprobe.d/blacklist-floppy.conf
+rmmod floppy
+update-initramfs -u
 
 # Separate out stuff only found in alternate repos to avoid problems if the
 # apt-get update fails
