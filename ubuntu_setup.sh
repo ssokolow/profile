@@ -185,6 +185,7 @@ xsane
 
 # Porteus Status Unknown:
 chm2pdf
+deluge-gtk
 elementary-icon-theme
 graphviz
 fuseiso
@@ -195,6 +196,7 @@ lynx
 normalize-audio
 python-dbus
 python-dev
+python-libtorrent
 python-setuptools
 python-xlib
 python-xpyb
