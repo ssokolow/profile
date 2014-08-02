@@ -37,11 +37,6 @@ add-apt-repository -y 'deb http://ppa.quickbuild.pearsoncomputing.net/trinity/tr
 add-apt-repository -y 'deb http://ppa.quickbuild.pearsoncomputing.net/trinity/trinity-builddeps-v3.5.13/ubuntu oneiric main'
 apt-key adv --keyserver keyserver.quickbuild.pearsoncomputing.net --recv-keys 2B8638D0
 #TODO: Come up with a solution for the imminent removal of support for non-PulseAudio Skype"
-echo " ... Skype"
-# TODO: Figure out how to make this always use the right release keyword
-if [ ! "$(egrep '^deb http://archive\.canonical\.com/ubuntu trusty partner\$' /etc/apt/sources.list)" ]; then
-    add-apt-repository -y 'deb http://archive.canonical.com/ubuntu trusty partner'
-fi
 
 echo " ... eawpatches"
 add-apt-repository -y 'deb http://www.fbriere.net/debian stable misc'
@@ -339,10 +334,8 @@ echo " * Setting packages from 3rd-party repos"
 apt-get install -y wine
 apt-get install -y basket-trinity
 apt-get install -y eawpatches
-apt-get install -y skype
 apt-get install -y cdemu-daemon cdemu-client gcdemu
 apt-get install -y lgogdownloader
-cp supplemental/skype /usr/local/bin/
 cp supplemental/49-teensy.rules /etc/udev/rules.d/
 cp supplemental/99-escpos.rules /etc/udev/rules.d/
 
