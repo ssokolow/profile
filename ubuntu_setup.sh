@@ -424,5 +424,5 @@ echo " - Now edit /etc/ssh/sshd_config to allow only non-root, pubkey authentica
 echo " - Don't forget to restore your crontab and set Cyphertite back up."
 echo " - Don't forget to reinstall lap."
 echo " - Don't forget to reinstall hub (https://github.com/github/hub)."
-echo " - If upgrading, run virtualenv -p /usr/bin/python ~/.virtualenvs/<name> for all virtualenvs"
+echo ' - If upgrading, run find . -maxdepth 1 -type d -exec virtualenv -p `which python` {} \;'
 echo " - Don't forget to run vim once and then build the compiled part of YouCompleteMe"
