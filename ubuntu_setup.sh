@@ -21,7 +21,6 @@ dpkg --add-architecture i386
 
 echo " * Enabling external package sources"
 
-# The following PPAs and/or external sources must be enabled:
 add-apt-repository -y ppa:nilarimogard/webupd8 # (for up-to-date Audacious)
 add-apt-repository -y ppa:ubuntu-mozilla-daily/firefox-aurora # (for up-to-date Firefox)
 add-apt-repository -y ppa:ubuntu-wine/ppa # (for up-to-date Wine)
@@ -29,15 +28,20 @@ add-apt-repository -y ppa:chris-lea/node.js # (for up-to-date Node.js)
 add-apt-repository -y ppa:anay/ppa # (http://docs.travis-ci.com/user/cc-menu/ )
 add-apt-repository -y ppa:cdemu/ppa
 add-apt-repository -y ppa:gabriel-thornblad/lgogdownloader # LGOGDownloader
+
+echo " ... BasKet (TDE)"
+
 # BasKet (http://www.trinitydesktop.org/installation.php#ubuntu)
 # TODO: Figure out how to make this reliably up-to-date when Trinity sometimes lags behind
 add-apt-repository -y 'deb http://ppa.quickbuild.pearsoncomputing.net/trinity/trinity-v3.5.13/ubuntu oneiric main'
 add-apt-repository -y 'deb http://ppa.quickbuild.pearsoncomputing.net/trinity/trinity-builddeps-v3.5.13/ubuntu oneiric main'
 apt-key adv --keyserver keyserver.quickbuild.pearsoncomputing.net --recv-keys 2B8638D0
+#TODO: Come up with a solution for the imminent removal of support for non-PulseAudio Skype"
 # Skype
 # TODO: Figure out how to make this always use the right release keyword
 add-apt-repository -y 'deb http://archive.canonical.com/ubuntu precise partner'
-# eawpatches
+
+echo " ... eawpatches"
 add-apt-repository -y 'deb http://www.fbriere.net/debian stable misc'
 wget -O- http://www.fbriere.net/public_key.html | sudo apt-key add -
 
@@ -51,10 +55,16 @@ for X in appmenu-gtk3 appmenu-gtk appmenu-qt indicator-applet-appmenu indicator-
 done
 
 # Update the package cache to include the newly-added repos
+echo " * Updating the package cache"
 apt-get update -y
 
+# TODO: Keep an eye on the necessity of this. Being able to type kana would be
+#       a nice option to have.
 echo " * Removing iBus to unbreak Chromium"
 apt-get purge ibus -y
+
+echo " * Updating remaining packages"
+apt-get dist-upgrade -y
 
 echo " * Installing base set of desired Debian/Ubuntu packages"
 (egrep -v '^#' - | xargs sudo apt-get install -y) << EOF
@@ -232,6 +242,7 @@ if [ "$(hostname)" = "monolith" ]; then
     echo " * Enabling hddtemp daemon"
     sed -i 's@^RUN_DAEMON="\(false\|no\)"$@RUN_DAEMON="true"@' /etc/default/hddtemp
 
+    echo " * Setting up lcdproc for monolith"
     apt-get install -y lcdproc
     cp supplemental/LCDd.conf /etc/
     cp supplemental/lcdproc.conf /etc/
@@ -239,26 +250,19 @@ if [ "$(hostname)" = "monolith" ]; then
 
     #TODO: Set up lcdproc to run on boot via /etc/rc.local on monolith
     #      rather than on login.
-fi
 
-# Set up TrueRNG entropy source if I'm running on monolith
-if [ "$(hostname)" = "monolith" ]; then
+    echo " * Setting up TrueRNG entropy source for monolith"
     apt-get install -y rng-tools
     cp supplemental/99-TrueRNG.rules /etc/udev/rules.d/
     cp supplemental/rng-tools /etc/default/rng-tools
     update-rc.d rng-tools defaults
-fi
 
-# Set up SpaceNavD for my 3D Mouse if I'm running on monolith
-if [ "$(hostname)" = "monolith" ]; then
+    echo " * Setting up SpaceNavD for my 3D mouse on monolith"
     apt-get install -y spacenavd
     cp supplemental/spnavrc /etc/
     /etc/init.d/spacenavd restart
-fi
 
-
-# Set up munin if I'm running on monolith
-if [ "$(hostname)" = "monolith" ]; then
+    echo " * Setting up munin for monolith"
     apt-get install -y munin munin-plugins-extra snmp
     #TODO: Add nvclock once it no longer segfaults
 
@@ -320,6 +324,8 @@ update-initramfs -u
 
 # Separate out stuff only found in alternate repos to avoid problems if the
 # apt-get update fails
+echo " * Setting packages from 3rd-party repos"
+# TODO: Figure out how to rework this to prevent Wine from mucking around in my launcher
 apt-get install -y wine
 apt-get install -y basket-trinity
 apt-get install -y eawpatches
