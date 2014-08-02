@@ -37,9 +37,11 @@ add-apt-repository -y 'deb http://ppa.quickbuild.pearsoncomputing.net/trinity/tr
 add-apt-repository -y 'deb http://ppa.quickbuild.pearsoncomputing.net/trinity/trinity-builddeps-v3.5.13/ubuntu oneiric main'
 apt-key adv --keyserver keyserver.quickbuild.pearsoncomputing.net --recv-keys 2B8638D0
 #TODO: Come up with a solution for the imminent removal of support for non-PulseAudio Skype"
-# Skype
+echo " ... Skype"
 # TODO: Figure out how to make this always use the right release keyword
-add-apt-repository -y 'deb http://archive.canonical.com/ubuntu precise partner'
+if [ ! "$(egrep '^deb http://archive\.canonical\.com/ubuntu trusty partner\$' /etc/apt/sources.list)" ]; then
+    add-apt-repository -y 'deb http://archive.canonical.com/ubuntu trusty partner'
+fi
 
 echo " ... eawpatches"
 add-apt-repository -y 'deb http://www.fbriere.net/debian stable misc'
