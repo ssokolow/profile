@@ -341,7 +341,7 @@ cp supplemental/99-escpos.rules /etc/udev/rules.d/
 
 #TODO: How did one hold a package as uninstalled again?
 echo " * Removing pulseaudio for pegging one of my CPU cores when I game"
-apt-get purge pulseaudio gst.*-pulseaudio -y
+apt-get purge pulseaudio.* gst.*-pulseaudio -y
 apt-get autoremove -y
 
 echo " * Using pip to install python packages not covered by apt-get"
