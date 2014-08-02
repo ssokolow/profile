@@ -45,18 +45,12 @@ echo " ... eawpatches"
 add-apt-repository -y 'deb http://www.fbriere.net/debian stable misc'
 wget -O- http://www.fbriere.net/public_key.html | sudo apt-key add -
 
-# Stuff Lubuntu installs which I don't want:
-apt-get purge sylpheed ace-of-penguins gnumeric gnumeric-common mtpaint modemmanager transmission{,-gtk,-common} -y
-
-# Stuff Ubuntu installs which I DEFINITELY don't want:
-# TODO: What's a cleaner way to say "remove any of the following if installed"?
-for X in appmenu-gtk3 appmenu-gtk appmenu-qt indicator-applet-appmenu indicator-appmenu liboverlay-scrollbar;
-    do apt-get purge "$X" -y
-done
-
 # Update the package cache to include the newly-added repos
 echo " * Updating the package cache"
 apt-get update -y
+
+echo " * Purging undesired Lubuntu and Ubuntu stuff"
+apt-get purge sylpheed ace-of-penguins gnumeric gnumeric-common mtpaint modemmanager transmission transmission-gtk transmission-common appmenu-gtk3 appmenu-gtk appmenu-qt indicator-applet-appmenu indicator-appmenu liboverlay-scrollbar unity-gtk2-module unity-gtk3-module light-locker -y
 
 # TODO: Keep an eye on the necessity of this. Being able to type kana would be
 #       a nice option to have.
