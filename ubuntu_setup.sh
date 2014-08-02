@@ -229,6 +229,9 @@ EOF
 
 # Set up LCDproc for the case LCD if I'm running on monolith
 if [ "$(hostname)" = "monolith" ]; then
+    echo " * Enabling hddtemp daemon"
+    sed -i 's@^RUN_DAEMON="\(false\|no\)"$@RUN_DAEMON="true"@' /etc/default/hddtemp
+
     apt-get install -y lcdproc
     cp supplemental/LCDd.conf /etc/
     cp supplemental/lcdproc.conf /etc/
