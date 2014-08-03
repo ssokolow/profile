@@ -137,6 +137,7 @@ virtualbox
 virtualbox-guest-additions-iso
 xchat
 zsh
+zsh-doc
 
 # May exclude from Porteus:
 arduino
@@ -411,8 +412,10 @@ else
     echo " * WARNING: Installation of eawpatches for timidity appears to have FAILED\!"
 fi
 
-echo " * Setting login shell to zsh..."
-chsh -s /bin/zsh "$ME"
+if [ -e /bin/zsh ]; then
+    echo " * Setting login shell to zsh..."
+    chsh -s /bin/zsh "$ME"
+fi
 
 echo " * Creating group 'family' for limited file sharing"
 addgroup family
