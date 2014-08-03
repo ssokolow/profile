@@ -1,0 +1,9 @@
+[Desktop Entry]
+Name=LCDProc
+GenericName=Case LCD System Monitor
+Comment=LCDProc System Monitor client
+Exec=sh -c "killall lcdproc; exec lcdproc -f"
+Terminal=false
+Type=Application
+Categories=
+StartupNotify=false

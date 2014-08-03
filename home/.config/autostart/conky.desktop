@@ -1,0 +1,9 @@
+[Desktop Entry]
+Name=Conky
+GenericName=Desktop System Monitor
+Comment=Crash-recovering launch wrapper for Conky
+Exec=sh -c "until conky; do false; done"
+Terminal=false
+Type=Application
+Categories=
+StartupNotify=false

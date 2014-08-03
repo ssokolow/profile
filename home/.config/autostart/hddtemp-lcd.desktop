@@ -1,0 +1,9 @@
+[Desktop Entry]
+Name=hddtemp-lcd
+GenericName=Case LCD Drive Temperature Monitor
+Comment=LCDProc Drive Temperature Monitor client
+Exec=sh -c "pkill -f hddtemp-lcd-0.3.tcl; exec ~/bin/hddtemp-lcd-0.3.tcl"
+Terminal=false
+Type=Application
+Categories=
+StartupNotify=false
