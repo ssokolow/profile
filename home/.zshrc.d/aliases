@@ -1,3 +1,13 @@
 function 457mv() {
      mergemove.py ~/.local/share/geeqie/collections/*.gqv(P:--rewrite:) "$@" ../dvd_saved
 }
+
+# Convenience wrapper for moving music without breaking my playlists
+function audmv() {
+     audtool shutdown
+     sleep 2 # Wait for it to write any pending playlist changes
+     mergemove.py ~/.config/audacious/playlists/*.audpl(P:--rewrite:) "$@"
+     audacious &>/dev/null &
+}
+
+# vim: set ft=zsh :
