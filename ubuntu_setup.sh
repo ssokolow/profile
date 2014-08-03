@@ -28,6 +28,7 @@ add-apt-repository -y ppa:chris-lea/node.js # (for up-to-date Node.js)
 add-apt-repository -y ppa:anay/ppa # (http://docs.travis-ci.com/user/cc-menu/ )
 add-apt-repository -y ppa:makson96/desurium-stable
 add-apt-repository -y ppa:cdemu/ppa
+add-apt-repository -y ppa:unit193/conformal # Cyphertite
 add-apt-repository -y ppa:gabriel-thornblad/lgogdownloader # LGOGDownloader
 
 echo " ... BasKet (TDE)"
@@ -341,6 +342,7 @@ apt-get install -y wine
 apt-get install -y --no-install-recommends basket-trinity
 apt-get install -y eawpatches
 apt-get install -y cdemu-daemon cdemu-client gcdemu
+apt-get install -y cyphertite
 apt-get install -y lgogdownloader
 cp supplemental/49-teensy.rules /etc/udev/rules.d/
 cp supplemental/99-escpos.rules /etc/udev/rules.d/
@@ -378,6 +380,9 @@ ln -s virtualbox /usr/share/virtualbox-ose
 
 echo " * Linking in KeePass2 Plugins"
 ln -s ~/.profile_repo/supplemental/keepass2_plugins/ /usr/lib/keepass2/plugins
+
+echo " * Restoring backup crontab for $ME"
+crontab supplemental/crontab_backup
 
 if [ ! -e /etc/sensors3.conf ]; then
     echo " * Setting up sensors"
@@ -440,7 +445,7 @@ fi
 
 echo "IMPORTANT:"
 echo " - Now edit /etc/ssh/sshd_config to allow only non-root, pubkey authentication."
-echo " - Don't forget to restore your crontab and set Cyphertite back up."
+echo " - Verify that all automated backup mechanisms got set up correctly."
 echo " - Don't forget to reinstall lap."
 echo " - Don't forget to reinstall hub (https://github.com/github/hub)."
 echo ' - If upgrading, run find . -maxdepth 1 -type d -exec virtualenv -p `which python` {} \;'
