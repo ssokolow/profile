@@ -1,4 +1,4 @@
 #!/bin/sh
 
 # Restart urxvt if exited from within, but not if killed from outside
-while urxvt -name urxvt_kuake -e screen -RR; do echo; done
+while urxvt -name urxvt_kuake -e screen -RR; do false; done
