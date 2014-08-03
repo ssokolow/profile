@@ -179,6 +179,7 @@ nitrogen
 numlockx
 okular
 opensp
+php-codesniffer
 playonlinux
 python-buildnotify
 python-examples
