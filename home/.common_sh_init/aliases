@@ -112,7 +112,7 @@ t() {
 
 # Colorized wdiff
 cwdiff() {
-    if `which dwdiff &>/dev/null`; then
+    if which dwdiff >/dev/null 2>&1; then
         dwdiff -R "$@" | command colordiff
     else
         wdiff -n "$@" | command colordiff
@@ -120,7 +120,7 @@ cwdiff() {
 }
 
 # A helper that makes an alias which is conditional on the lack of arguments.
-function cond_alias() { eval "function ${1}() { [ -z \"\$*\" ] && $2 || command $1 \"\$@\"; }"; }
+cond_alias() { eval "function ${1}() { [ -z \"\$*\" ] && $2 || command $1 \"\$@\"; }"; }
 
 # Stuff for KIO LAN transfers
 andre() { kioclient copy "$@" "smb://Slick.multiverse/inbound/"; }
@@ -199,7 +199,7 @@ else
 fi
 
 # Set up an OSD alias which will just work to the best of its ability.
-if `which aosd_cat &> /dev/null`; then
+if which aosd_cat >/dev/null 2>&1; then
 	alias osd="aosd_cat --font='Bitstream Vera Sans Bold 36' --fade-in=300 --fade-out=300"
 else
 	alias osd="osd_cat --font '-*-*-*-r-*-*-*-390-*-*-*-*-*-*' -p bottom -A left -o -75 -i 50 -c green"
