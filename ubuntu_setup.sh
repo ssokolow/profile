@@ -30,6 +30,7 @@ add-apt-repository -y ppa:makson96/desurium-stable
 add-apt-repository -y ppa:cdemu/ppa
 add-apt-repository -y ppa:unit193/conformal # Cyphertite
 add-apt-repository -y ppa:gabriel-thornblad/lgogdownloader # LGOGDownloader
+sudo add-apt-repository ppa:richardgv/compton
 
 echo " ... BasKet (TDE)"
 
@@ -144,6 +145,7 @@ arduino
 arduino-mk
 bottlerocket
 calibre
+compton
 conky-all
 desurium
 dhex
