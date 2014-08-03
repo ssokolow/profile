@@ -449,10 +449,16 @@ if pgrep lxpanel >/dev/null; then
     lxpanelctl restart
 fi
 
+if [ "$1" == "--upgrade" ]; then
+    echo " * Upgrading Python virtualenvs"
+    find . -maxdepth 1 -type d -exec virtualenv -p "$(which python)" {} \;
+else
+    echo "IMPORTANT: If upgrading, please re-run this script with --upgrade"
+fi
+
 echo "IMPORTANT:"
 echo " - Now edit /etc/ssh/sshd_config to allow only non-root, pubkey authentication."
 echo " - Verify that all automated backup mechanisms got set up correctly."
 echo " - Don't forget to reinstall lap."
 echo " - Don't forget to reinstall hub (https://github.com/github/hub)."
-echo ' - If upgrading, run find . -maxdepth 1 -type d -exec virtualenv -p `which python` {} \;'
 echo " - Don't forget to run vim once and then build the compiled part of YouCompleteMe"
