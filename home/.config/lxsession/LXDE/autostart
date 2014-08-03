@@ -1,4 +1,3 @@
-@sh -c "exec ~/bin/urxvt_kuake"
 @sh -c "killall lcdproc; exec lcdproc -f"
 @sh -c "pkill -f hddtemp-lcd-0.3.tcl; exec ~/bin/hddtemp-lcd-0.3.tcl"
 @sh -c "until conky; do echo; done"

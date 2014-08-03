@@ -1,0 +1,9 @@
+[Desktop Entry]
+Name=URxvt_Kuake
+GenericName=Quake-Style Terminal
+Comment=Wrapper script to maintain a Quake-style URxvt instance
+Exec=sh -c "exec ~/bin/urxvt_kuake"
+Terminal=false
+Type=Application
+Categories=
+StartupNotify=false
