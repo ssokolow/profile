@@ -194,6 +194,7 @@ wxhexeditor
 xsane
 
 # Porteus Status Unknown:
+aosd-cat
 checkinstall
 chm2pdf
 cifs-utils
