@@ -217,10 +217,12 @@ bindkey ' '       magic-space
 setopt HIST_FCNTL_LOCK 2>/dev/null
 setopt HIST_ALLOW_CLOBBER
 setopt HIST_IGNORE_ALL_DUPS HIST_FIND_NO_DUPS
-setopt HIST_REDUCE_BLANKS
 setopt HIST_IGNORE_SPACE # Easy way to omit things from history
 setopt APPEND_HISTORY # Default, but let's be sure
 setopt INC_APPEND_HISTORY SHARE_HISTORY
+
+# http://www.zsh.org/mla/workers/2013/msg00807.html
+setopt NO_HIST_REDUCE_BLANKS # TODO: Keep an eye on when this is fixed
 
 HISTFILE=$HOME/.zhistory
 HISTSIZE=1100
