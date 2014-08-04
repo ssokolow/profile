@@ -189,6 +189,7 @@ python3-doc
 python3-examples
 python3-setuptools
 qjoypad
+qt4-dev-tools
 samba
 uptimed
 wxhexeditor
