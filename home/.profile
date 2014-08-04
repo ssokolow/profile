@@ -9,9 +9,10 @@
 #umask 022
 
 # If this isn't an interactive shell, connect to any existing global ssh-agent and gpg-agent sessions now
-if [[ $- != *i* ]]; then
-    eval `/usr/bin/keychain --eval --quick --noask 2> /dev/null`
-fi
+case $- in
+    *i*) ;;
+    *) eval $(/usr/bin/keychain --eval --quick --noask 2> /dev/null) ;;
+esac
 
 # Source my common environment here for zsh-like behaviour.
 . ~/.common_sh_init/env
@@ -27,4 +28,4 @@ fi
 # TODO: Figure out if this works better than my solution
 #[ -x /usr/bin/screen-launcher ] && /usr/bin/screen-launcher
 
-[[ -s "$HOME/.rvm/scripts/rvm" ]] && source "$HOME/.rvm/scripts/rvm" # Load RVM into a shell session *as a function*
+[ -s "$HOME/.rvm/scripts/rvm" ] && . "$HOME/.rvm/scripts/rvm" # Load RVM into a shell session *as a function*
