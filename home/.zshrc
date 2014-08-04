@@ -191,8 +191,9 @@ bindkey "\er"     reverse-menu-complete # everything else
 # Set up Alt-Del to match Alt-Backspace if I'm ever stuck on VTE.
 bindkey "\e[3;3~" kill-word
 
-# Adjust WORDCHARS so word-by-word basically means "until a space or slash"
-WORDCHARS='*?+_-.[]~=&;!#$%^(){}<>:@,\\'
+# Adjust WORDCHARS so word-by-word basically means "until a space, slash, or
+# ampersand"
+WORDCHARS='*?+_-.[]~=;!#$%^(){}<>:@,\\'
 
 # Rebind Up/Down arrows to get what I like about bash's cmdhist option
 # (ensure that 3 keypresses will move 3 commands up/down the history)
