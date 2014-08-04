@@ -38,7 +38,7 @@ Plugin {
             id=/usr/share/applications/kde4/konqbrowser.desktop
         }
         Button {
-            id=/usr/share/applications/chromium-browser.desktop
+            id=/home/ssokolow/.local/share/applications/chromium-browser.desktop
         }
         Button {
             id=/usr/share/applications/keepass2.desktop
