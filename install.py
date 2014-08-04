@@ -19,7 +19,7 @@ __license__ = "GNU GPL 2.0 or later"
 import logging, os, shutil
 log = logging.getLogger(__name__)
 
-#TODO: Make this support paths to be exploded for clean and specific syntax.
+# TODO: Make this support paths to be exploded for clean and specific syntax.
 RECURSE = [
     'applications',
     'bin',
@@ -36,7 +36,7 @@ RECURSE = [
     'share'
 ]
 
-#TODO: Hook this in
+# TODO: Hook this in
 def relpath(path, start=os.curdir):
     """Return a relative version of a path
     Borrowed from Python 2.7's posixpath.py for compatibility with Slax.
