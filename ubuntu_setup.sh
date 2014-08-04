@@ -204,6 +204,7 @@ elementary-icon-theme
 graphviz
 fuseiso
 kdiff3
+libnotify-bin
 links
 libpurple-bin
 lm-sensors
