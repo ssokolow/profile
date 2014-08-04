@@ -26,12 +26,12 @@ YT_FEED = YT_PAT % 'TheYoungTurks'
 DOWNLOADER_CMD = ['youtube-dl', '-f', '44/35/43/18/34']
 TARGET_DIR = os.path.expanduser('~/Desktop/pandora')
 
-THUMBDRIVE_PATH = '/media/16GB_Flash'
+THUMBDRIVE_PATH = '/media/ssokolow/16GB_Flash'
 
 SELF_DIR = os.path.abspath(os.path.split(__file__)[0])
 NOTIFY_ICON = os.path.join(SELF_DIR, 'tyt_logo.png')
 NOTIFY_MSG = 'Young Turks videos downloaded'
-NOTIFY_CMD = ['notify-send', '-i', NOTIFY_ICON]
+NOTIFY_CMD = ['notify-send', '--expire-time=0', '-i', NOTIFY_ICON]
 
 class BadUrlError(Exception):
     """Raised when the sanitizer received a URL it didn't understand."""
