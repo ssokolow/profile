@@ -184,7 +184,7 @@ def main():
     # pylint: disable=bad-continuation
     from optparse import OptionParser
     parser = OptionParser(version="%%prog v%s" % __version__,
-            usage="%prog [options] [url] ...",
+            usage="%prog [options] [feed url] ...",
             description=__doc__.replace('\r\n', '\n').split('\n--snip--\n')[0])
     parser.add_option('-v', '--verbose', action="count", dest="verbose",
         default=2, help="Increase the verbosity. Use twice for extra effect")
@@ -245,15 +245,18 @@ def main():
         try:
             dev = mountpoint_to_devnode(THUMBDRIVE_PATH)
             unmount_and_eject(dev)
-        except BadDeviceError, err:
+        except (BadDeviceError, OSError), err:
             log.error(str(err))
             details = '...could not eject the thumbdrive'
         else:
             details = 'You may now remove the thumbdrive'
 
     state.close()
-    notify_argv = NOTIFY_CMD[:] + [NOTIFY_MSG, details]
-    subprocess.call(notify_argv)
+    try:
+        notify_argv = NOTIFY_CMD[:] + [NOTIFY_MSG, details]
+        subprocess.call(notify_argv)
+    except OSError:
+        logging.error("Could not call subprocess: %r", notify_argv)
 
 if __name__ == '__main__':
     main()
