@@ -53,10 +53,12 @@ apt-get update -y
 echo " * Purging undesired Lubuntu and Ubuntu stuff"
 apt-get purge sylpheed ace-of-penguins gnumeric gnumeric-common mtpaint modemmanager transmission transmission-gtk transmission-common appmenu-gtk3 appmenu-gtk appmenu-qt indicator-applet-appmenu indicator-appmenu liboverlay-scrollbar unity-gtk2-module unity-gtk3-module light-locker gpicview -y
 
-# TODO: Keep an eye on the necessity of this. Being able to type kana would be
-#       a nice option to have.
-echo " * Removing iBus to unbreak Chromium"
-apt-get purge ibus -y
+if [ "$(lsb_release -sr)" == "14.04" ]; then
+    echo " * Removing iBus to unbreak Chromium"
+    apt-get purge ibus -y
+else
+    echo "TODO: Test iBus with Chromium and remove this code."
+fi
 
 echo " * Updating remaining packages"
 apt-get dist-upgrade -y
