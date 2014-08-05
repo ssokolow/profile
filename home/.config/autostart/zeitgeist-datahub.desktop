@@ -1,0 +1,15 @@
+[Desktop Entry]
+Version=1.0
+Encoding=UTF-8
+Name=Zeitgeist Datahub
+Name[es]=Zeitgeist Datahub
+Comment=Start the Zeitgeist Datahub for passive loggers
+Comment[es]=Iniciar Zeitgeist Datahub para los monitores pasivos
+Exec=zeitgeist-datahub
+Terminal=false
+Type=Application
+Categories=
+GenericName=
+NoDisplay=true
+X-GNOME-Autostart-Delay=20
+NotShowIn=Lubuntu;LXDE;
