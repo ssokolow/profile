@@ -47,7 +47,7 @@ Plugin {
             id=/usr/share/applications/audacious.desktop
         }
         Button {
-            id=/usr/share/applications/geeqie.desktop
+            id=/home/ssokolow/.local/share/applications/geeqie-standard.desktop
         }
         Button {
             id=/usr/share/applications/comix.desktop
