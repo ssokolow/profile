@@ -2,6 +2,7 @@
 Name=Set XKB Map
 GenericName=Configure Keyboard
 Comment=Set up my preferred keyboard layout options
+# altgr-intl      us: English (international AltGr dead keys
 Exec=setxkbmap -variant altgr-intl -option -option lv3:ralt_switch -option compose:rctrl -option terminate:ctrl_alt_bkspc -option eurosign:e -option nbsp:level3n -option caps:hyper
 Terminal=false
 Type=Application
