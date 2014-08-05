@@ -246,6 +246,12 @@ libgee-dev
 
 EOF
 
+# Now that dependencies have been pulled in...
+echo " * Downgrading Geeqie to a working version"
+dpkg -i supplemental/geeqie_1.0/*.deb
+echo "geeqie hold" | sudo dpkg --set-selections
+apt-get install -f
+
 # Set up LCDproc for the case LCD if I'm running on monolith
 if [ "$(hostname)" = "monolith" ]; then
     echo " * Enabling hddtemp daemon"
