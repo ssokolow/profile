@@ -675,6 +675,9 @@ if has("autocmd") && exists("+filetype")
     " TODO: Why isn't this working as I expect?
     autocmd FileType html,xml,xsl iabbrev <buffer> </ </
 
+    " Hook up :make to preview GraphViz dot rendering
+    autocmd FileType dot set makeprg=dot\ %\ -Tpng\ -o\ %.png;\ display\ %
+
     " Set up an 'escpos' filetype which makes the width of my thermal printer's
     " paper clear and sets up :make to print things.
     autocmd FileType escpos set colorcolumn=32
