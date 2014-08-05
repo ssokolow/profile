@@ -16,6 +16,8 @@ cd "$(dirname "$0")"
 DEBIAN_FRONTEND=noninteractive
 export DEBIAN_FRONTEND
 
+APT_RELEASE="$(lsb_release -cs)"
+
 echo " * Enabling multiarch"
 dpkg --add-architecture i386
 
@@ -36,8 +38,8 @@ echo " ... BasKet (TDE)"
 
 # BasKet (http://www.trinitydesktop.org/installation.php#ubuntu)
 # TODO: Figure out how to make this reliably up-to-date when Trinity sometimes lags behind
-add-apt-repository -y 'deb http://ppa.quickbuild.pearsoncomputing.net/trinity/trinity-nightly-builds/ubuntu trusty main'
-add-apt-repository -y 'deb http://ppa.quickbuild.pearsoncomputing.net/trinity/trinity-nightly-build-dependencies/ubuntu trusty main'
+add-apt-repository -y "deb http://ppa.quickbuild.pearsoncomputing.net/trinity/trinity-nightly-builds/ubuntu ${APT_RELEASE} main"
+add-apt-repository -y "deb http://ppa.quickbuild.pearsoncomputing.net/trinity/trinity-nightly-build-dependencies/ubuntu ${APT_RELEASE} main"
 apt-key adv --keyserver keyserver.quickbuild.pearsoncomputing.net --recv-keys F5CFC95C
 
 #TODO: Come up with a solution for the imminent removal of support for non-PulseAudio Skype"
