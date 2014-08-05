@@ -194,6 +194,7 @@ samba
 uptimed
 wxhexeditor
 xsane
+xserver-xorg-input-joystick
 
 # Porteus Status Unknown:
 aosd-cat
