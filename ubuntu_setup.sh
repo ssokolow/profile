@@ -31,6 +31,7 @@ add-apt-repository -y ppa:anay/ppa # (http://docs.travis-ci.com/user/cc-menu/ )
 add-apt-repository -y ppa:makson96/desurium-stable
 add-apt-repository -y ppa:cdemu/ppa
 add-apt-repository -y ppa:unit193/conformal # Cyphertite
+add-apt-repository -y ppa:jd-team/jdownloader
 add-apt-repository -y ppa:gabriel-thornblad/lgogdownloader # LGOGDownloader
 add-apt-repository -y ppa:richardgv/compton
 
@@ -76,6 +77,7 @@ nautilus-dropbox
 fortune-mod
 gaffitter
 gmrun
+jdownloader
 keepass2
 mercurial
 ncdu
