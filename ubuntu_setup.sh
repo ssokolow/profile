@@ -284,6 +284,15 @@ if [ "$(hostname)" = "monolith" ]; then
     cp supplemental/spnavrc /etc/
     /etc/init.d/spacenavd restart
 
+    echo " * Setting up Samba shares for monolith"
+    addgroup family
+    cp supplemental/smb.conf /etc/samba/smb.conf
+    for NICK in beverly andre nicky; do
+        useradd "$NICK"
+        gpasswd "$NICK" family
+    done
+    gpasswd "$ME" family
+
     echo " * Setting up munin for monolith"
     apt-get install -y munin munin-plugins-extra snmp
     #TODO: Add nvclock once it no longer segfaults
@@ -436,9 +445,6 @@ if [ -e /bin/zsh ]; then
     chsh -s /bin/zsh "$ME"
 fi
 
-echo " * Creating group 'family' for limited file sharing"
-addgroup family
-
 echo " * Adding '$ME' to requisite groups"
 for GRP in tty dialout video lpadmin vboxusers family; do
     gpasswd -a "$ME" "$GRP"
@@ -472,9 +478,11 @@ else
     echo "IMPORTANT: If upgrading, please re-run this script with --upgrade"
 fi
 
-echo "IMPORTANT:"
-echo " - Now edit /etc/ssh/sshd_config to allow only non-root, pubkey authentication."
-echo " - Verify that all automated backup mechanisms got set up correctly."
-echo " - Don't forget to reinstall lap."
-echo " - Don't forget to reinstall hub (https://github.com/github/hub)."
-echo " - Don't forget to run vim once and then build the compiled part of YouCompleteMe"
+echo "IMPORTANT: Don't forget to..."
+echo " - verify that all automated backup mechanisms got set up correctly."
+echo " - edit /etc/ssh/sshd_config to allow only non-root, pubkey authentication."
+echo " - re-run 'smbpasswd -a' for all permissioned users"
+echo " - run vim once and then build the compiled part of YouCompleteMe"
+echo " - reinstall lap."
+echo " - reinstall hub (https://github.com/github/hub)."
+echo " - reinstall the fonts from https://github.com/Lokaltog/powerline-fonts"
