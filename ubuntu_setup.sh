@@ -137,6 +137,7 @@ python-gtk2
 python-imaging
 python-lxml
 rdiff-backup
+rss-glx
 timidity
 unrar
 vim-doc
@@ -144,6 +145,9 @@ vim-gtk
 virtualbox
 virtualbox-guest-additions-iso
 xchat
+xscreensaver
+xscreensaver-gl
+xscreensaver-screensaver-bsod
 zsh
 zsh-doc
 
