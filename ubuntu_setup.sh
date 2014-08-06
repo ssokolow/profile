@@ -107,6 +107,7 @@ youtube-dl
 # Already in my Porteus or not necessary:
 advancecomp
 aptitude
+ark
 audacious
 comix
 curl
