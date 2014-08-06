@@ -37,9 +37,9 @@ source ~/.common_sh_init/env
 # So things like 'exec zsh' work as I intend.
 export SHELL==zsh
 
-# Not sure if I need this, but it can't hurt. Fix for rcp and scp.
+# Not sure if I need this, but it can't hurt. Fix for rcp, scp, and sudo -s.
 # See the copy in .bashrc for a full explanation of its purpose
-if [[ $- != *i* ]]; then
+if [[ $- != *i* ]] || [ "$(id -u)" -eq 0 ] ; then
 	return
 fi
 

@@ -25,6 +25,12 @@ if [ -n "$BASH_VERSION" ]; then
     fi
 fi
 
+# Protect against anything which thinks its being clever by appending to
+# profile files that `sudo -s`, rcp, and scp might source.
+if [ "$(id -u)" -eq 0 ] ; then
+    return
+fi
+
 # TODO: Figure out if this works better than my solution
 #[ -x /usr/bin/screen-launcher ] && /usr/bin/screen-launcher
 
