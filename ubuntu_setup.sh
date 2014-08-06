@@ -491,3 +491,6 @@ echo " - run vim once and then build the compiled part of YouCompleteMe"
 echo " - reinstall lap."
 echo " - reinstall hub (https://github.com/github/hub)."
 echo " - reinstall the fonts from https://github.com/Lokaltog/powerline-fonts"
+echo " - run 'dpkg-reconfigure -a -u'"
+# TODO: Find a way to ask just the dpkg-reconfigure questions which were
+#       skipped by the noninteractive frontend.
