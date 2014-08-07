@@ -387,7 +387,7 @@ apt-get autoremove -y
 echo "pulseaudio hold" | dpkg --set-selections
 
 echo " * Using pip to install python packages not covered by apt-get"
-pip install -r requirements.txt
+pip install --upgrade -r requirements.txt
 
 echo " * Installing npm and node packages"
 curl http://npmjs.org/install.sh | sh
