@@ -229,6 +229,7 @@ pidgin-otr
 pidgin-plugin-pack
 python-dbus
 python-dev
+python-epydoc
 python-libtorrent
 python-setuptools
 python-wnck
