@@ -92,6 +92,7 @@ python-tz
 python-virtualenv
 rxvt-unicode
 sqlite3
+sqliteman
 tellico
 thunderbird
 tig
