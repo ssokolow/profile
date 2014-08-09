@@ -14,11 +14,11 @@ __license__ = "MIT"
 import logging
 log = logging.getLogger(__name__)
 
-import os, shelve, shutil, subprocess, urlparse, urllib
+import os, shutil, subprocess, urlparse, urllib
 
 import feedparser
 
-STATE_FILE = os.path.expanduser('~/.cache/tyt.shelf')
+STATE_FILE = os.path.expanduser('~/.cache/tyt_state.sqlite3')
 
 YT_PAT = 'https://gdata.youtube.com/feeds/api/users/%s/uploads?orderby=updated'
 YT_FEED = YT_PAT % 'TheYoungTurks'
@@ -40,6 +40,62 @@ class BadTargetError(Exception):
 class BadDeviceError(Exception):
     """Raised when a failure occurs in resolving or ejecting a device."""
 
+# {{{ SQLite3-backed shelve-like persistent storage
+
+import UserDict, cPickle
+from sqlite3 import dbapi2 as sqlite
+
+class DBDict(UserDict.DictMixin):
+    """dbdict, a dictionary-like object for large datasets (several TiB)
+
+    Modified from source at
+    http://sebsauvage.net/python/snyppets/index.html#dbdict
+    to take a full path to the database and use cPickle to store arbitrary
+    values like the shelve module.
+    """
+
+    def __init__(self, path):
+        self.db_filename = path
+        if not os.path.isfile(self.db_filename):
+            self.con = sqlite.connect(self.db_filename)
+            self.con.execute("create table data (key PRIMARY KEY,value BLOB)")
+        else:
+            self.con = sqlite.connect(self.db_filename)
+        self.con.text_factory = str
+
+    def __getitem__(self, key):
+        row = self.con.execute("select value from data where key=?",
+                               (key,)).fetchone()
+        if not row:
+            raise KeyError
+
+        return cPickle.loads(row[0])
+
+    def __setitem__(self, key, item):
+        item = cPickle.dumps(item)
+        if self.con.execute("select key from data where key=?",
+                            (key,)).fetchone():
+            self.con.execute("update data set value=? where key=?",
+                             (item, key))
+        else:
+            self.con.execute("insert into data (key,value) values (?,?)",
+                             (key, item))
+        self.con.commit()
+
+    def __delitem__(self, key):
+        if self.con.execute("select key from data where key=?",
+                            (key,)).fetchone():
+            self.con.execute("delete from data where key=?", (key,))
+            self.con.commit()
+        else:
+            raise KeyError
+
+    def keys(self):
+        """D.keys() -> list of D's keys"""
+        return [row[0] for row in
+                self.con.execute("select key from data").fetchall()]
+
+# }}}
 # {{{ Removable Media Control
 
 def mountpoint_to_devnode(path):
@@ -179,6 +235,24 @@ def get_new_vids(feed_url, cache):
 
 # }}}
 
+def migrate_from_shelve(target_dict,
+                        old_file=os.path.expanduser('~/.cache/tyt.shelf')):
+    """Migrate data from the old, corruption-prone bdb-backed shelve store to
+       the SQLite-backed DBDict."""
+    if not os.path.exists(old_file):
+        return
+
+    import shelve
+    old_dict = shelve.open(old_file)
+
+    # Only migrate keys not already present in the new dict
+    for key, value in old_dict.items():
+        if key not in target_dict:
+            target_dict[key] = value
+
+    old_dict.close()
+    os.remove(old_file)
+
 def main():
     """The main entry point, compatible with setuptools entry points."""
     # pylint: disable=bad-continuation
@@ -215,8 +289,10 @@ def main():
     # Set the target directory for youtube-dl and the source for copying
     os.chdir(opts.target_dir)
 
+    state = DBDict(STATE_FILE)
+    migrate_from_shelve(state)
+
     # Get the list of new videos
-    state = shelve.open(STATE_FILE)
     if args:
         urls = args
     else:
@@ -251,7 +327,6 @@ def main():
         else:
             details = 'You may now remove the thumbdrive'
 
-    state.close()
     try:
         notify_argv = NOTIFY_CMD[:] + [NOTIFY_MSG, details]
         subprocess.call(notify_argv)
