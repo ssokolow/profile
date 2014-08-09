@@ -47,7 +47,7 @@ apt-key adv --keyserver keyserver.quickbuild.pearsoncomputing.net --recv-keys F5
 
 echo " ... eawpatches"
 add-apt-repository -y 'deb http://www.fbriere.net/debian stable misc'
-wget -O- http://www.fbriere.net/public_key.html | sudo apt-key add -
+wget -O- http://www.fbriere.net/public_key.html | apt-key add -
 
 # Update the package cache to include the newly-added repos
 echo " * Updating the package cache"
@@ -67,7 +67,7 @@ echo " * Updating remaining packages"
 apt-get dist-upgrade -y
 
 echo " * Installing base set of desired Debian/Ubuntu packages"
-(egrep -v '^#' - | xargs sudo apt-get install -y) << EOF
+(egrep -v '^#' - | xargs apt-get install -y) << EOF
 
 # Still need to be installed in Porteus:
 ack-grep
@@ -264,7 +264,7 @@ EOF
 # Now that dependencies have been pulled in...
 echo " * Downgrading Geeqie to a working version"
 dpkg -i supplemental/geeqie_1.0/*.deb
-echo "geeqie hold" | sudo dpkg --set-selections
+echo "geeqie hold" | dpkg --set-selections
 apt-get install -f
 
 # Set up LCDproc for the case LCD if I'm running on monolith
@@ -367,7 +367,7 @@ fi
 
 echo " * Removing 'Floppy Drive' from Places menu"
 rm -rf /media/floppy*
-echo "blacklist floppy" | sudo tee /etc/modprobe.d/blacklist-floppy.conf
+echo "blacklist floppy" | tee /etc/modprobe.d/blacklist-floppy.conf
 rmmod floppy
 update-initramfs -u
 
@@ -460,9 +460,9 @@ done
 
 if [ -e /srv/inbound ]; then
     echo " * Found /srv/inbound. Setting permissions."
-    sudo chown -R "$ME:family" /srv/inbound
-    sudo find /srv/inbound -type d -exec chmod 2775 {} \;
-    sudo find /srv/inbound -type f -exec chmod a-x {} \;
+    chown -R "$ME:family" /srv/inbound
+    find /srv/inbound -type d -exec chmod 2775 {} \;
+    find /srv/inbound -type f -exec chmod a-x {} \;
 else
     echo " * No /srv/inbound found. Skipping permissions fix."
 fi
