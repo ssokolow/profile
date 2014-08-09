@@ -34,6 +34,7 @@ add-apt-repository -y ppa:unit193/conformal # Cyphertite
 add-apt-repository -y ppa:jd-team/jdownloader
 add-apt-repository -y ppa:gabriel-thornblad/lgogdownloader # LGOGDownloader
 add-apt-repository -y ppa:richardgv/compton
+add-apt-repository -y ppa:glennric/dolphin-emu
 
 echo " ... BasKet (TDE)"
 
@@ -381,6 +382,7 @@ apt-get install -y eawpatches
 apt-get install -y cdemu-daemon cdemu-client gcdemu
 apt-get install -y cyphertite
 apt-get install -y lgogdownloader
+apt-get install -y dolphin-emu || apt-get install -y dolphin-emu-master
 cp supplemental/49-teensy.rules /etc/udev/rules.d/
 cp supplemental/99-escpos.rules /etc/udev/rules.d/
 
