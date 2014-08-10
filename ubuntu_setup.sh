@@ -432,12 +432,8 @@ else
 fi
 
 if [ -e /etc/incron.allow ]; then
-    if [ ! "$(egrep ^$ME\$ /etc/incron.allow)" ]; then
-        echo " * Adding '$ME' to permitted incron users"
-        echo "ssokolow" >> /etc/incron.allow
-    else
-        echo " * '$ME' already in /etc/incron.allow"
-    fi
+    echo " * Ensuring '$ME' is permitted to use incron"
+    grep -Fx "$ME" /etc/incron.allow || echo "$ME" >> /etc/incron.allow
 fi
 
 echo " * Setting up eawpatches in Timidity"
