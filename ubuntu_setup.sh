@@ -217,6 +217,7 @@ chm2pdf
 cifs-utils
 deluge-gtk
 elementary-icon-theme
+expect
 graphviz
 fuseiso
 kdiff3
