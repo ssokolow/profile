@@ -13,7 +13,7 @@
 0       0       *       *       *       chmod 600 ~/Documents/*.kdbx
 1       1       *       *       *       rm -f ~/.xsession-errors{,.old}
 2       1       *       *       *       rm -rf ~/incoming/gtk-gnutella-downloads/corrupt/*
-6       0       *       *       *       DISPLAY=:0 ~/bin/update_check.sh
+0       6       *       *       *       DISPLAY=:0 ~/bin/update_check.sh
 
 # Nightly backup for stuff that's too volatile for DVD-Rs.
 0       2       *       *       *       cyphertite -cf monolith_critical.ct ~/Documents/Critical; ctctl cull
