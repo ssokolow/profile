@@ -223,6 +223,7 @@ fuseiso
 kdiff3
 libnotify-bin
 links
+links2
 libpurple-bin
 lm-sensors
 lynx
