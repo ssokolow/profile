@@ -6,6 +6,9 @@
 "  TODO: Decide what to do with *this* quick reference:
 "        https://cdn.shopify.com/s/files/1/0165/4168/files/preview.png
 "
+"  NOTE: See ":help \%V" for forcing a regex to match what was actually
+"        selected in visual mode.
+"
 "  :e {file}    Edit {file} in new buffer
 "  :ene         Edit new (empty) file in new buffer
 "
