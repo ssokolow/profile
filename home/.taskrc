@@ -69,10 +69,9 @@ report.recurring.filter=status.not:completed status.not:deleted parent.any:
 report.oldest.filter=status:pending limit:page
 
 # A cross between the "next" and "unblocked" reports
-#TODO: Needs a smarter alternative to depends.none:
 report.brief.columns=id,project,priority,due,start.active,entry.age,urgency,eta,description
 report.brief.description=* Lists the most urgent unblocked tasks
-report.brief.filter=status:pending depends.none: limit:page
+report.brief.filter=status:pending -BLOCKED limit:page
 report.brief.labels=ID,Project,Pri,Due,Active,Age,Urgency,ETA,Description
 report.brief.sort=urgency-,due+,priority-,start-,project+
 
