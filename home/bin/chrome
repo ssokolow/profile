@@ -1,9 +1,9 @@
 #!/bin/bash
 
 if which google-chrome &> /dev/null; then
-    exec google-chrome --enable-extension-timeline-api "$@"
+    exec google-chrome --incognito "$@"
 elif which chromium &> /dev/null; then
-    exec chromium  --enable-extension-timeline-api "$@"
+    exec chromium  --incognito "$@"
 else
-    exec chromium-browser  --enable-extension-timeline-api "$@"
+    exec chromium-browser  --incognito "$@"
 fi
