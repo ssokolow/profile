@@ -226,6 +226,7 @@ links2
 libpurple-bin
 lm-sensors
 lynx
+mencoder
 normalize-audio
 pidgin
 pidgin-otr
