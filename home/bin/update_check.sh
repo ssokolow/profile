@@ -10,7 +10,9 @@ APT_COMMAND="/usr/bin/apt-get dist-upgrade"
 ICON_PATH=~/.local/share/icons/elementary/apps/16/update-notifier.svg
 
 UPGRADES=$($APT_COMMAND -s -q -y --allow-unauthenticated | \
-    /bin/grep '^Inst' | sed 's@Inst \(\S*\) \[\(\S*\)\] (\(\S*\) .*@\1 \2 \3@g' | /usr/bin/sort)
+    /bin/grep '^Inst' | \
+    /bin/sed 's@Inst \(\S*\) \(\[\(\S*\)\]\)\?[ ]\?(\(\S*\) .*@"\1" "\3" "\4"@g'  | \
+    /usr/bin/sort)
 
 if [ -z "$UPGRADES" ]; then
     exit
