@@ -5,6 +5,7 @@ devnode=$(grep "$FLASH" /proc/mounts | awk '{ print $1 }')
 if [ -e "$FLASH" ]; then
 	killall smplayer2
 	rm -f "$FLASH"/*.{mp4,webm}
+	sync
 	exo-mount -de "$devnode"
 	sudo -n /usr/pandora/scripts/op_usbhost.sh
 	sudo -n /usr/pandora/scripts/op_cpuspeed.sh -n 600
