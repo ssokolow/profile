@@ -8,7 +8,7 @@ same partition)
 """
 
 from __future__ import (absolute_import, division, print_function,
-                        with_statement, unicode_literals)
+                        with_statement)
 
 __author__ = "Stephan Sokolow (deitarion/SSokolow)"
 __appname__ = "MergeMove"
