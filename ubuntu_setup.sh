@@ -438,7 +438,7 @@ echo " * Cursing VirtualBox devs for not allowing snapshot CD image paths to be 
 ln -s virtualbox /usr/share/virtualbox-ose
 
 echo " * Linking in KeePass2 Plugins"
-ln -s ~/.profile_repo/supplemental/keepass2_plugins/ /usr/lib/keepass2/plugins
+ln -s "$HOMEDIR"/.profile_repo/supplemental/keepass2_plugins/ /usr/lib/keepass2/plugins
 
 echo " * Restoring backup crontab for $ME"
 crontab supplemental/crontab_backup
