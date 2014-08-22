@@ -38,6 +38,8 @@ add-apt-repository -y ppa:jd-team/jdownloader
 add-apt-repository -y ppa:gabriel-thornblad/lgogdownloader # LGOGDownloader
 add-apt-repository -y ppa:richardgv/compton
 add-apt-repository -y ppa:glennric/dolphin-emu
+add-apt-repository -y ppa:fkrull/deadsnakes # Various Python version for tox
+add-apt-repository -y ppa:pypy/ppa # ...and PyPy for tox
 
 echo " ... BasKet (TDE)"
 
@@ -399,6 +401,8 @@ apt-get install -y cdemu-daemon cdemu-client gcdemu
 apt-get install -y cyphertite
 apt-get install -y lgogdownloader
 apt-get install -y dolphin-emu || apt-get install -y dolphin-emu-master
+apt-get install -y python{2.6,3.1,3.2,3.3}-complete # ...for tox
+apt-get install -y pypy # ...for tox
 cp supplemental/49-teensy.rules /etc/udev/rules.d/
 cp supplemental/99-escpos.rules /etc/udev/rules.d/
 

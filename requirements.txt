@@ -5,4 +5,5 @@ flake8
 virtualenvwrapper
 virtualenvwrapper.django
 ropevim
+tox
 youtube_dl
