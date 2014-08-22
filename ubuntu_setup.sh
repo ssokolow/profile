@@ -41,6 +41,11 @@ add-apt-repository -y ppa:glennric/dolphin-emu
 add-apt-repository -y ppa:fkrull/deadsnakes # Various Python version for tox
 add-apt-repository -y ppa:pypy/ppa # ...and PyPy for tox
 
+if [ "$(hostname)" = "monolith" -a "$(lsb_release -sr)" = "14.04" ]; then
+    echo " * Adding updated nvidia-331 source to bypass *buntu 14.04 bug"
+    add-apt-repository -y ppa:xorg-edgers/ppa
+fi
+
 echo " ... BasKet (TDE)"
 
 # BasKet (http://www.trinitydesktop.org/installation.php#ubuntu)
@@ -361,7 +366,7 @@ if [ "$(hostname)" = "monolith" ]; then
     echo " * Setting up nVidia drivers for monolith"
     apt-get install -y nvidia-current nvidia-settings
     cp supplemental/xorg.conf /etc/X11/
-    if [ "$(lsb_release -sr)" == "14.04" ]; then
+    if [ "$(lsb_release -sr)" = "14.04" ]; then
         echo " * Updating nvidia-drivers to bypass *buntu 14.04 bug"
         apt-get install nvidia-331 -y
     fi
