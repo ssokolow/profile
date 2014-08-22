@@ -384,6 +384,12 @@ if [ "$(hostname)" = "monolith" ]; then
     fi
 fi
 
+echo " * Ensuring a verbose (debug-friendly), non-splash Linux boot process"
+sed -i 's@GRUB_CMDLINE_LINUX_DEFAULT="quiet splash"@GRUB_CMDLINE_LINUX_DEFAULT="verbose"@' /etc/default/grub
+update-grub
+
+# TODO: How do I specify that only the X newest kernels should be kept?
+
 echo " * Removing 'Floppy Drive' from Places menu"
 rm -rf /media/floppy*
 echo "blacklist floppy" | tee /etc/modprobe.d/blacklist-floppy.conf
