@@ -1,10 +1,15 @@
 [alias]
-	both = diff HEAD
-	br = branch -a
-	ca = commit -a
+	wdiff = diff --color-words
+	wshow = show --color-words
+
 	ci = commit
 	co = checkout
 	di = diff
+	wdi = diff --color-words
+
+	both = diff HEAD
+	br = branch -a
+	ca = commit -a
 	oneline = log --pretty=oneline
 	pick = cherry-pick
 	re = checkout HEAD --
