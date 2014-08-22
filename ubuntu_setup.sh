@@ -70,8 +70,13 @@ apt-get purge sylpheed ace-of-penguins gnumeric gnumeric-common mtpaint modemman
 if [ "$(lsb_release -sr)" == "14.04" ]; then
     echo " * Removing iBus to unbreak Chromium"
     apt-get purge ibus -y
+
+    echo " * Removing GUI update notifier in favour of one that doesn't nag"
+    # ...because LXSession is too broken to let me disable it
+    apt-get autoremove update-notifier -y
 else
     echo "TODO: Test iBus with Chromium and remove this code."
+    echo "TODO: Text whether LXSession's autostart disabling is fixed."
 fi
 
 echo " * Updating remaining packages"
