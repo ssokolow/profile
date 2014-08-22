@@ -12,6 +12,9 @@ fi
 # Do this once up here to keep paths simple
 cd "$(dirname "$0")"
 
+# Get $HOME for $ME
+HOMEDIR="$( getent passwd "$ME" | cut -d: -f6 )"
+
 # Make sure apt-get doesn't pause to prompt for input
 DEBIAN_FRONTEND=noninteractive
 export DEBIAN_FRONTEND
@@ -370,6 +373,13 @@ if [ "$(hostname)" = "monolith" ]; then
         fi
     done
     popd
+
+    if grep 'echo 1 > /proc/sys/abi/ldt16' /etc/rc.local; then
+        echo " * 16-bit segments already allowed"
+    else
+        echo " * Re-allowing 16-bit segments. Gotta have my BrickLayer."
+        sed -i 's@exit 0@echo 1 > /proc/sys/abi/ldt16\nexit 0@' /etc/rc.local
+    fi
 fi
 
 echo " * Removing 'Floppy Drive' from Places menu"
@@ -478,6 +488,24 @@ for X in OpenSSH VNC Deluge Dropbox Samba avahi-daemon dhclient ntpd pidgin syne
     ufw allow "$X"
 done
 
+function add_polconf_postprefixcreate() {
+    polconf_dir="$2"/.PlayOnLinux/configurations/
+    ppfix_path="$polconf_dir"/post_prefixcreate
+
+    if [ -e "$ppfix_path" ]; then
+        echo "Skipping. Already exists: $ppfix_path"
+        return
+    fi
+
+    me_group="$( getent passwd "$1" | cut -d: -f1 )"
+
+    mkdir -p "$polconf_dir"
+    echo "POL_Call POL_Install_PrivateUserDirs" > "$ppfix_path"
+    chown -R "$1:$me_group" "$polconf_dir"
+}
+echo " * Setting up 'winetricks sandbox'-like PlayOnLinux behaviour"
+add_polconf_postprefixcreate "$ME" "$HOMEDIR"
+
 if pgrep lxpanel >/dev/null; then
     echo " * Restarting lxpanel to acknowledge new launchers"
     lxpanelctl restart
@@ -499,6 +527,7 @@ echo " - reinstall lap."
 echo " - reinstall hub (https://github.com/github/hub)."
 echo " - reinstall the fonts from https://github.com/Lokaltog/powerline-fonts"
 echo " - run 'dpkg-reconfigure -a -u'"
+echo " - Run 'POL_Config_Write NO_DESKTOP_ICON \"TRUE\"' in the POL console"
 # TODO: Find a way to ask just the dpkg-reconfigure questions which were
 #       skipped by the noninteractive frontend.
 # TODO: Drop back to unprivileged operation after this runs and force a run
