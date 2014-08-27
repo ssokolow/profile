@@ -35,7 +35,7 @@ add-apt-repository -y ppa:makson96/desurium-stable
 add-apt-repository -y ppa:cdemu/ppa
 add-apt-repository -y ppa:unit193/conformal # Cyphertite
 add-apt-repository -y ppa:jd-team/jdownloader
-add-apt-repository -y ppa:gabriel-thornblad/lgogdownloader # LGOGDownloader
+add-apt-repository -y ppa:nilarimogard/webupd8 # LGOGDownloader
 add-apt-repository -y ppa:richardgv/compton
 add-apt-repository -y ppa:glennric/dolphin-emu
 add-apt-repository -y ppa:fkrull/deadsnakes # Various Python version for tox
