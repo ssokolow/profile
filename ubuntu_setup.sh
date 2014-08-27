@@ -54,8 +54,6 @@ add-apt-repository -y "deb http://ppa.quickbuild.pearsoncomputing.net/trinity/tr
 add-apt-repository -y "deb http://ppa.quickbuild.pearsoncomputing.net/trinity/trinity-nightly-build-dependencies/ubuntu ${APT_RELEASE} main"
 apt-key adv --keyserver keyserver.quickbuild.pearsoncomputing.net --recv-keys F5CFC95C
 
-#TODO: Come up with a solution for the imminent removal of support for non-PulseAudio Skype"
-
 echo " ... eawpatches"
 add-apt-repository -y 'deb http://www.fbriere.net/debian stable misc'
 wget -O- http://www.fbriere.net/public_key.html | apt-key add -
