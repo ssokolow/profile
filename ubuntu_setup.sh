@@ -220,6 +220,7 @@ python3-setuptools
 qjoypad
 qt4-dev-tools
 samba
+timelimit
 uptimed
 wxhexeditor
 xsane
@@ -232,8 +233,9 @@ cifs-utils
 deluge-gtk
 elementary-icon-theme
 expect
-graphviz
 fuseiso
+graphviz
+irssi
 kdiff3
 libnotify-bin
 links
