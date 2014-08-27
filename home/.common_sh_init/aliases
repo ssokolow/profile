@@ -101,7 +101,7 @@ dl() {
     done
 }
 
-# Shorthand alias for TaskWarrior
+# Shorthand aliases for TaskWarrior
 t() {
     if [ -z "$*" ]; then
         clear; task
@@ -109,6 +109,7 @@ t() {
         task "$@"
     fi
 }
+alias tpending='task add +pending due:30d'
 
 # Colorized wdiff
 cwdiff() {
