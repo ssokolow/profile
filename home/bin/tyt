@@ -1,14 +1,20 @@
 #!/usr/bin/env python2
 # -*- coding: utf-8 -*-
 """Simple script to streamline my typical use of youtube-dl with
-The Young Turks."""
+The Young Turks.
+
+Requirements:
+- requests (http://docs.python-requests.org/en/latest/)
+- CacheControl (http://cachecontrol.readthedocs.org/en/latest/)
+    - lockfile
+"""
 
 from __future__ import (absolute_import, division, print_function,
                         with_statement)
 
 __author__ = "Stephan Sokolow (deitarion/SSokolow)"
 __appname__ = "TYT youtube-dl streamliner"
-__version__ = "0.0pre0"
+__version__ = "0.1pre0"
 __license__ = "MIT"
 
 import logging
@@ -16,12 +22,18 @@ log = logging.getLogger(__name__)
 
 import os, shutil, subprocess, urlparse, urllib
 
-import feedparser
+import requests
+from cachecontrol import CacheControl
+from cachecontrol.caches.file_cache import FileCache
+import lxml.html
+from lxml.cssselect import CSSSelector
+
+ENTRY_SELECTOR = CSSSelector('#channels-browse-content-grid a.spf-link')
 
 STATE_FILE = os.path.expanduser('~/.cache/tyt_state.sqlite3')
 
-YT_PAT = 'https://gdata.youtube.com/feeds/api/users/%s/uploads?orderby=updated'
-YT_FEED = YT_PAT % 'TheYoungTurks'
+YT_CHANNEL = ('https://www.youtube.com/user/TheYoungTurks/videos'
+              '?sort=dd&view=0&shelf_index=1')
 
 DOWNLOADER_CMD = ['youtube-dl', '-f', '44/35/43/18/34']
 TARGET_DIR = os.path.expanduser('~/Desktop/pandora')
@@ -32,6 +44,10 @@ SELF_DIR = os.path.abspath(os.path.split(__file__)[0])
 NOTIFY_ICON = os.path.join(SELF_DIR, 'tyt_logo.png')
 NOTIFY_MSG = 'Young Turks videos downloaded'
 NOTIFY_CMD = ['notify-send', '--expire-time=0', '-i', NOTIFY_ICON]
+
+sess = requests.session()
+cached_sess = CacheControl(sess, cache=FileCache(
+    os.path.expanduser('~/.cache/tyt.httpcache')))
 
 class BadUrlError(Exception):
     """Raised when the sanitizer received a URL it didn't understand."""
@@ -192,45 +208,35 @@ def download_vids(urls, cache):
 
 # {{{ Getting the Young Turks Feed
 
-def get_new_vids(feed_url, cache):
+def get_new_vids(channel_url):
     """Retrieve the list of the 25 newest Young Turks videos from YouTube RSS
 
     (To feed into C{download_vids})
     """
 
-    # Parse the YouTube Feed
-    parsed = feedparser.parse(feed_url,
-                              etag=cache.get('feed-etag'),
-                              modified=cache.get('feed-modified'))
-
-    # Handle HTTP bandwidth-saving features
-    if parsed.status == 304:
-        parsed = cache.get('feed-cached')
-        if not parsed:
-            raise ValueError("Cache file is broken. Please delete %s" %
-                             STATE_FILE)
-    elif parsed.status == 200:
-        cache['feed-cached'] = parsed
-        cache['feed-etag'] = parsed.get('etag')
-        cache['feed-modified'] = parsed.get('modified')
-    elif parsed.status == 410:
+    response = cached_sess.get(channel_url, headers={
+        'User-Agent': 'Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:33.0) '
+                      'Gecko/20100101 Firefox/33.0'
+    })
+    if response.status_code == 200:
+        parsed = lxml.html.fromstring(response.text)
+    elif response.status_code == 410:
         raise BadUrlError("He's Dead Jim! (Channel Feed returned "
                           "HTTP 410 Gone)")
     else:
         # pylint: disable=bad-continuation
-        raise BadUrlError("Unexpected HTTP response: %s %s" % (
-                          parsed.status, parsed.debug_message))
+        raise BadUrlError("Unexpected HTTP response: %s" %
+                          response.status_code)
 
     # Return a list of non-stream video URLs
-    relevant_entries = []
-    for entry in parsed['entries']:
-        vid_url = entry.get('link')
+    relevant_entries = set()
+    for entry in ENTRY_SELECTOR(parsed):
+        vid_url = entry.get('href')
         if not vid_url:
             log.warn("Skipping entry without a URL: %r", entry)
-        elif entry.get('yt_duration', {}).get('seconds', '0') == '0':
-            log.warn("0-length video (stream?) skipped: %s", entry.get('link'))
         else:
-            relevant_entries.append(vid_url)
+            vid_url = urlparse.urljoin(channel_url, vid_url)
+            relevant_entries.add(vid_url)
     return relevant_entries
 
 # }}}
@@ -297,7 +303,7 @@ def main():
         urls = args
     else:
         try:
-            urls = get_new_vids(YT_FEED, state)
+            urls = get_new_vids(YT_CHANNEL)
         except BadUrlError, err:
             log.critical(str(err))
             return
