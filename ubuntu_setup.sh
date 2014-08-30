@@ -285,6 +285,13 @@ dpkg -i supplemental/geeqie_1.0/*.deb
 echo "geeqie hold" | dpkg --set-selections
 apt-get install -f
 
+if [ "$(lsb_release -sr)" == "14.04" ]; then
+    echo " * Installing zsh manpages to work around idiot Ubuntu maintainers"
+    cp supplemental/zsh_manpages/*.1 /usr/share/man/man1/
+else
+    echo "TODO: Check whether I still need to install zsh manpages manually."
+fi
+
 # Set up LCDproc for the case LCD if I'm running on monolith
 if [ "$(hostname)" = "monolith" ]; then
     echo " * Enabling hddtemp daemon"
