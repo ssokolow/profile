@@ -429,6 +429,9 @@ apt-get install -y pypy # ...for tox
 cp supplemental/49-teensy.rules /etc/udev/rules.d/
 cp supplemental/99-escpos.rules /etc/udev/rules.d/
 
+echo " * Overwriting gcdemu tray icon since it ignores my icon theme"
+cp home/.local/share/icons/hicolor/scalable/apps/gcdemu-icon.svg /usr/share/icons/hicolor/scalable/apps/gcdemu-icon.svg
+
 echo " * Removing pulseaudio for pegging one of my CPU cores when I game"
 apt-get purge pulseaudio.* gst.*-pulseaudio -y
 apt-get autoremove -y
