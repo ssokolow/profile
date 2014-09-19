@@ -5,7 +5,7 @@
 nojoystick=yes
 
 vo=vdpau,gl2,gl,xv,x11,ggi,fbdev,fbdev2
-ao=alsa,openal,pulse,oss
+ao=pulse,alsa,openal,oss
 
 vc=ffh264vdpau,ffmpeg12vdpau,ffwmv3vdpau,ffvc1vdpau,
 
