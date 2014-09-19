@@ -569,11 +569,11 @@ call SetupVAM()
 " {{{ Load Plugin Bundles
 
 " Basic IDE functionality
-VAMActivate Syntastic                " Syntax check on save
-VAMActivate YouCompleteMe            " Smart Competion
-VAMActivate ragtag surround          " Editing aid shortcuts for XML and HTML
-VAMActivate UltiSnips vim-snippets   " Code Snippets
-VAMActivate bwHomeEndAdv             " Smart Home/End
+VAMActivate Syntastic                   " Syntax check on save
+VAMActivate YouCompleteMe               " Smart Competion
+VAMActivate ragtag surround matchit.zip " Editing aid for XML and HTML
+VAMActivate UltiSnips vim-snippets      " Code Snippets
+VAMActivate bwHomeEndAdv                " Smart Home/End
 
 " Ack support (Must come before The_NERD_tree)
 VAMActivate ack nerdtree-ack
