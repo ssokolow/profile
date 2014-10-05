@@ -53,6 +53,11 @@
 [url "git@github.com:ssokolow/"]
 	insteadOf = "git://github.com/ssokolow/"
 
+# Even further shorthand
+# Source: http://www.jwir3.com/blog/2014/10/01/git-transfusion/
+[url "git@github.com:ssokolow/"]
+	insteadOf = "github:"
+
 # vim: noexpandtab
 [gui]
 	recentrepo = /home/ssokolow/.profile_repo
