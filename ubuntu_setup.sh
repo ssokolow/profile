@@ -551,6 +551,7 @@ fi
 echo "IMPORTANT: Don't forget to..."
 echo " - verify that all automated backup mechanisms got set up correctly."
 echo " - edit /etc/ssh/sshd_config to allow only non-root, pubkey authentication."
+echo "   ( http://www.gentoo.org/doc/en/security/security-handbook.xml?part=1&chap=10#doc_chap11 )"
 echo " - re-run 'smbpasswd -a' for all permissioned users"
 echo " - run vim once and then build the compiled part of YouCompleteMe"
 echo " - reinstall lap."
@@ -558,6 +559,7 @@ echo " - reinstall hub (https://github.com/github/hub)."
 echo " - reinstall the fonts from https://github.com/Lokaltog/powerline-fonts"
 echo " - run 'dpkg-reconfigure -a -u'"
 echo " - Run 'POL_Config_Write NO_DESKTOP_ICON \"TRUE\"' in the POL console"
+echo " - Add "/mnt/incoming/.backups /srv/backups" to /etc/updatedb.conf and uncomment PRUNENAMES."
 # TODO: Find a way to ask just the dpkg-reconfigure questions which were
 #       skipped by the noninteractive frontend.
 # TODO: Drop back to unprivileged operation after this runs and force a run
