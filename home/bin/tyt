@@ -215,8 +215,8 @@ def get_new_vids(channel_url):
     """
 
     response = cached_sess.get(channel_url, headers={
-        'User-Agent': 'Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:33.0) '
-                      'Gecko/20100101 Firefox/33.0'
+        'User-Agent': 'Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:34.0) '
+                      'Gecko/20100101 Firefox/34.0'
     })
     if response.status_code == 200:
         parsed = lxml.html.fromstring(response.text)
