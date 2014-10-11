@@ -122,6 +122,7 @@ youtube-dl
 
 # Already in my Porteus or not necessary:
 advancecomp
+apt-file
 aptitude
 ark
 audacious
@@ -148,6 +149,7 @@ p7zip-rar
 parcellite
 pinfo
 pngcrush
+postgresql
 pv
 pydf
 python-gtk2
