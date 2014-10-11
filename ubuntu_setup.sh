@@ -156,6 +156,7 @@ rdiff-backup
 rss-glx
 timidity
 unrar
+veromix
 vim-doc
 vim-gtk
 virtualbox
@@ -383,6 +384,9 @@ if [ "$(hostname)" = "monolith" ]; then
         apt-get install nvidia-331 -y
     fi
 
+    echo " * Adding tsched=0 to PulseAudio config for proper function"
+    sed -i 's/^\(load-module module-udev-detect\)\s*$/\1 tsched=0/' /etc/pulse/default.pa
+
     echo " * Downloading WinTV-HVR 1600 firmware (can't hurt, may help)"
     pushd /lib/firmware
     for X in v4l-cx23418-cpu.fw v4l-cx23418-apu.fw v4l-cx23418-dig.fw; do
@@ -432,10 +436,10 @@ cp supplemental/99-escpos.rules /etc/udev/rules.d/
 echo " * Overwriting gcdemu tray icon since it ignores my icon theme"
 cp home/.local/share/icons/hicolor/scalable/apps/gcdemu-icon.svg /usr/share/icons/hicolor/scalable/apps/gcdemu-icon.svg
 
-echo " * Removing pulseaudio for pegging one of my CPU cores when I game"
-apt-get purge pulseaudio.* gst.*-pulseaudio -y
-apt-get autoremove -y
-echo "pulseaudio hold" | dpkg --set-selections
+#echo " * Removing pulseaudio for pegging one of my CPU cores when I game"
+#apt-get purge pulseaudio.* gst.*-pulseaudio -y
+#apt-get autoremove -y
+#echo "pulseaudio hold" | dpkg --set-selections
 
 echo " * Using pip to install python packages not covered by apt-get"
 pip install --upgrade -r requirements.txt
