@@ -40,6 +40,7 @@ add-apt-repository -y ppa:richardgv/compton
 add-apt-repository -y ppa:glennric/dolphin-emu
 add-apt-repository -y ppa:fkrull/deadsnakes # Various Python version for tox
 add-apt-repository -y ppa:pypy/ppa # ...and PyPy for tox
+add-apt-repository -y ppa:gottcode/gcppa # FocusWriter
 
 if [ "$(hostname)" = "monolith" -a "$(lsb_release -sr)" = "14.04" ]; then
     echo " * Adding updated nvidia-331 source to bypass *buntu 14.04 bug"
@@ -430,6 +431,7 @@ apt-get install -y lgogdownloader
 apt-get install -y dolphin-emu || apt-get install -y dolphin-emu-master
 apt-get install -y python{2.6,3.1,3.2,3.3}-complete # ...for tox
 apt-get install -y pypy # ...for tox
+apt-get install -y focuswriter
 cp supplemental/49-teensy.rules /etc/udev/rules.d/
 cp supplemental/99-escpos.rules /etc/udev/rules.d/
 
