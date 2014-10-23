@@ -77,7 +77,9 @@ yt() {
 
 # Alias for grabbing The Cinema Snob episodes
 tcs() {
-    cd ~"/incoming/Videos/The Cinema Snob"
+    local TARGET=~"/incoming/Videos/The Cinema Snob"
+    mkdir -p "$TARGET"
+    pushd "$TARGET"
     for X in "$@"; do
         # Grab the SD file for eventual fservroot use
         youtube-dl -f 'Blip SD' "$X"
@@ -86,6 +88,7 @@ tcs() {
         # Grab the HD file for archival
         youtube-dl "$X"
     done
+    popd
 }
 
 # Smart wrapper for multiple site-specific download tools
