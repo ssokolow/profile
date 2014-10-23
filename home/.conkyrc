@@ -119,7 +119,8 @@ use_spacer none
 
 template2 ${color \2} ${top name \1} ${alignr}${top pid \1} ${top cpu \1} ${top mem \1} $color
 template3 ${color \2} ${top_mem name \1} ${alignr}${top_mem pid \1} ${top_mem cpu \1} ${top_mem mem \1} $color
-template4 ${color lightgrey} \1 ${goto 65}${hddtemp \2}°C ${fs_bar 5,40 \3} ${alignr}${fs_free \3} ${goto 0}${alignr}/ ${fs_size \3} $color
+template4 ${color lightgrey} \1 ${goto 65}${hddtemp \2}°C ${fs_bar 5,40 \3} ${goto 146}${fs_free \3} ${goto 195}/ ${goto 0}${alignr}${fs_size \3} $color
+template5 ${color lightgrey} \1 ${goto 65}  °C ${fs_bar 5,40 \3} ${goto 146}${fs_free \3} ${goto 195}/ ${goto 0}${alignr}${fs_size \3} $color
 
 # stuff after 'TEXT' will be formatted on screen
 
@@ -146,7 +147,8 @@ $color$stippled_hr
 ${template4 root /dev/sda /}
 ${template4 home /dev/sda /home}
 ${template4 srv /dev/sdb /srv}
-${template4 incoming /dev/sdc /home/ssokolow/incoming}
+${template4 incoming /dev/sdc /mnt/incoming}
+${template5 external /dev/sdh /mnt/buffalo_ext}
  ${hwmon 0 temp 1}°C ${alignr 5}| GPU ${nvidia temp}°C
 # CPU ${goto 65}${hwmon 1 temp 1}°C | ${alignc}Sys ${hwmon 0 temp 1}°C ${hwmon 0 temp 3}°C ${alignr 5}| GPU ${nvidia temp}°C
 # vim: fenc=latin1
