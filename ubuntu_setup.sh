@@ -437,6 +437,10 @@ apt-get install -y focuswriter
 cp supplemental/49-teensy.rules /etc/udev/rules.d/
 cp supplemental/99-escpos.rules /etc/udev/rules.d/
 
+# Source: https://lwn.net/Articles/616241/
+echo "* Limiting this machine's effect on bufferbloat"
+cp supplemental/99-bufferbloat.conf /etc/sysctl.d/
+
 echo " * Overwriting gcdemu tray icon since it ignores my icon theme"
 cp home/.local/share/icons/hicolor/scalable/apps/gcdemu-icon.svg /usr/share/icons/hicolor/scalable/apps/gcdemu-icon.svg
 
