@@ -1,0 +1,2 @@
+# Save this in /etc/sudoers.d/ as "update_check" for password-less updating
+ssokolow ALL = NOPASSWD: /usr/bin/apt-get dist-upgrade

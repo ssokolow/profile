@@ -6,8 +6,17 @@
 #
 # License: MIT (http://opensource.org/licenses/MIT)
 
-APT_COMMAND="/usr/bin/apt-get dist-upgrade"
+APT_COMMAND="sudo /usr/bin/apt-get dist-upgrade"
 ICON_PATH=~/.local/share/icons/elementary/apps/16/update-notifier.svg
+
+# Used so this script can execute its second half within urxvt
+if [ "$1" = "--run-apt" ]; then
+    if ! $APT_COMMAND; then
+        echo "Exited with non-success!"
+        read
+    fi
+    exit
+fi
 
 UPGRADES=$($APT_COMMAND -s -q -y --allow-unauthenticated | \
     /bin/grep '^Inst' | \
@@ -30,5 +39,4 @@ if ! echo "$UPGRADES" | xargs zenity --list \
     exit
 fi
 
-# shellcheck disable=SC2086
-exec urxvt -hold -e sudo $APT_COMMAND
+exec urxvt -e "$0" --run-apt

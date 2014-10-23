@@ -481,6 +481,9 @@ ln -s "$HOMEDIR"/.profile_repo/supplemental/keepass2_plugins/ /usr/lib/keepass2/
 echo " * Restoring backup crontab for $ME"
 crontab supplemental/crontab_backup
 
+echo " * Making update_check.sh passwordless"
+cp supplemental/update_check.sudoers /etc/sudoers/update_checker
+
 if [ ! -e /etc/sensors3.conf ]; then
     echo " * Setting up sensors"
     yes | sensors-detect
