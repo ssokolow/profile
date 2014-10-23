@@ -64,7 +64,7 @@ echo " * Updating the package cache"
 apt-get update -y
 
 echo " * Purging undesired Lubuntu and Ubuntu stuff"
-apt-get purge sylpheed ace-of-penguins gnumeric gnumeric-common mtpaint modemmanager transmission transmission-gtk transmission-common appmenu-gtk3 appmenu-gtk appmenu-qt indicator-applet-appmenu indicator-appmenu liboverlay-scrollbar unity-gtk2-module unity-gtk3-module light-locker gpicview -y
+apt-get purge sylpheed ace-of-penguins gnumeric gnumeric-common mtpaint modemmanager transmission transmission-gtk transmission-common appmenu-gtk3 appmenu-gtk appmenu-qt indicator-applet-appmenu indicator-appmenu liboverlay-scrollbar unity-gtk2-module unity-gtk3-module light-locker gpicview gnome-exe-thumbnailer -y
 
 if [ "$(lsb_release -sr)" == "14.04" ]; then
     echo " * Removing iBus to unbreak Chromium"
