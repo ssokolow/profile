@@ -59,7 +59,7 @@ Plugin {
             id=/usr/share/applications/PlayOnLinux.desktop
         }
         Button {
-            id=/usr/share/applications/kde4/qjoypad.desktop
+            id=/usr/share/applications/antimicro.desktop
         }
         Button {
             id=/usr/share/applications/lyx.desktop

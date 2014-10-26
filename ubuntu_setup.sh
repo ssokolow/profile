@@ -41,6 +41,7 @@ add-apt-repository -y ppa:glennric/dolphin-emu
 add-apt-repository -y ppa:fkrull/deadsnakes # Various Python version for tox
 add-apt-repository -y ppa:pypy/ppa # ...and PyPy for tox
 add-apt-repository -y ppa:gottcode/gcppa # FocusWriter
+add-apt-repository -y ppa:ryochan7/antimicro
 
 if [ "$(hostname)" = "monolith" -a "$(lsb_release -sr)" = "14.04" ]; then
     echo " * Adding updated nvidia-331 source to bypass *buntu 14.04 bug"
@@ -172,6 +173,7 @@ zsh
 zsh-doc
 
 # May exclude from Porteus:
+antimicro
 arduino
 arduino-mk
 bottlerocket
@@ -219,7 +221,6 @@ python3
 python3-doc
 python3-examples
 python3-setuptools
-qjoypad
 qt4-dev-tools
 samba
 timelimit
