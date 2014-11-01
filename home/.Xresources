@@ -202,8 +202,8 @@ URxvt.keysym.S-C-V: perl:clipboard:paste
 URxvt.keysym.M-v: perl:clipboard:paste_escaped
 
 ! Prevent urxvt from letting me accidentally print garbage to the printer
-Rxvt.print-pipe: TGT="$(TMPDIR=$HOME mktemp urxvt.XXXXXX.txt)"; cat > "$TGT"; xdg-open "$TGT"
-URxvt.print-pipe: TGT="$(TMPDIR=$HOME mktemp urxvt.XXXXXX.txt)"; cat > "$TGT"; xdg-open "$TGT"
+Rxvt.print-pipe: ~/bin/confirm_print.sh
+URxvt.print-pipe: ~/bin/confirm_print.sh
 
 ! Unbreak zsh keys in URxvt
 URxvt*keysym.Home: \033[1~
