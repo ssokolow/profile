@@ -786,6 +786,10 @@ nnoremap <leader>g :YcmCompleter GoToDefinitionElseDeclaration<CR>
 " Alias :E as a shorter :tabe that accepts wildcards
 :command -nargs=+ -complete=file E args <args><bar>argdo tabe
 
+" Alias <Leader>qcl as a way to quickly prepare Pidgin chat logs to be quoted
+" in TiddlyWiki
+nnoremap <Leader>qcl :%s/\((\(\d\{2}:\)\{2}\d\{2})\) \(\S\{1,}\)/''\1 \3''/<CR>
+
 " }}}
 " {{{ Aliases to work around "physical race conditions" on some keyboards
 
