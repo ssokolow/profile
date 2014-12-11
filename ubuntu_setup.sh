@@ -463,6 +463,7 @@ docco
 jshint
 jsonlint
 nodemon
+svgo
 uglify-js
 coffeelint
 EOF
