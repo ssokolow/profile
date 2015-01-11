@@ -16,12 +16,14 @@ from zipfile import ZipFile
 # ---=== Actual Code ===---
 
 def parse_proj_directory(parent_path, node):
-    results = []
+    """Recursive helper for traversing k3b project XML"""
+    results = {}
     for item in node:
+        path = os.path.join(parent_path, item.get("name", ''))
         if item.tag == 'file':
-            results.append(item.find('.//url').text)
+            results[item.find('.//url').text] = path
         elif item.tag == 'directory':
-            results.extend(parse_proj_directory('TODO', item))
+            results.update(parse_proj_directory(path, item))
     return results
 
 def parse_k3b_proj(path):
