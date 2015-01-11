@@ -29,12 +29,12 @@ def parse_k3b_proj(path):
 def make_mock_data():
     """Generate all data necessary for a test run"""
     # Avoid importing these in non-test operation
-    import posixpath, zipfile
+    import posixpath, tempfile, zipfile
     from cStringIO import StringIO
 
-    # TODO: Make these dynamic
-    test_projfile_path = '/tmp/k3b-rm_test.k3b'
-    test_root = '/tmp/k3b-rm_test/'
+    test_root = tempfile.mkdtemp(prefix='k3b-rm_test-')
+    test_projfile = tempfile.NamedTemporaryFile(prefix='k3b-rm_test-',
+                                                suffix='.k3b')
 
     test_dom = ET.Element("k3b_data_project")
     files = ET.SubElement(test_dom, "files")
@@ -54,6 +54,7 @@ def make_mock_data():
             expect.append(fpath)
         if depth:
             for x in 'abcdef':
+                # TODO: Actually generate the temporary directory structure
                 subdir = ET.SubElement(dom_parent, "directory")
                 subdir.set("name", x)
 
@@ -68,17 +69,17 @@ def make_mock_data():
     xmldata = StringIO()
     test_tree.write(xmldata, encoding="UTF-8", xml_declaration=True)
 
-    with zipfile.ZipFile(test_projfile_path, 'w') as zobj:
+    with zipfile.ZipFile(test_projfile, 'w') as zobj:
         zobj.writestr("maindata.xml", xmldata.getvalue())
 
-    return test_projfile_path, expected
+    return test_projfile, test_root, expected
 
 def test_parse_k3b_proj():
+    testfile, testroot_path, expected_output = make_mock_data()
     try:
-        testfile_path, expected_output = make_mock_data()
-        got = parse_k3b_proj(testfile_path)
+        got = parse_k3b_proj(testfile.name)
     finally:
-        os.unlink(testfile_path)
+        shutil.rmtree(testroot_path)
 
     for x in expected_output:
         assert x in got, x
