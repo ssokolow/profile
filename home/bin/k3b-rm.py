@@ -14,6 +14,15 @@ from zipfile import ZipFile
 
 # ---=== Actual Code ===---
 
+def parse_proj_directory(parent_path, node):
+    results = []
+    for item in node:
+        if item.tag == 'file':
+            results.append(item.find('.//url').text)
+        elif item.tag == 'directory':
+            results.extend(parse_proj_directory('TODO', item))
+    return results
+
 def parse_k3b_proj(path):
     """Parse a K3b project file into a list of paths"""
     with ZipFile(path) as zfh:
@@ -22,7 +31,7 @@ def parse_k3b_proj(path):
     root = ET.fromstring(xml)
     del xml
 
-    return [x.text for x in root.findall('./files//file/url')]
+    return parse_proj_directory('/', root.find('./files'))
 
 def main():
     """setuptools-compatible entry point"""
