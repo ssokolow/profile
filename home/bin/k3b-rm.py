@@ -8,9 +8,11 @@ __author__ = "Stephan Sokolow (deitarion/SSokolow)"
 __version__ = "0.0pre0"
 __license__ = "MIT"
 
-import os, posixpath, shutil, sys
+import os, shutil, sys
 import xml.etree.cElementTree as ET
 from zipfile import ZipFile
+
+# ---=== Actual Code ===---
 
 def parse_k3b_proj(path):
     """Parse a K3b project file into a list of paths"""
@@ -22,30 +24,62 @@ def parse_k3b_proj(path):
 
     return [x.text for x in root.findall('./files//file/url')]
 
-def test_parse_k3b_proj():
-    test_root = '/tmp/k3b-rm_test/'  # TODO: Make this dynamic
+# ---=== Test Suite ===---
 
-    def add_files(parent, parent_names=None, depth=0):
-        """Generate the list of expected test files"""
+def test_parse_k3b_proj():
+    # Avoid importing these in non-test operation
+    import posixpath, zipfile
+    from cStringIO import StringIO
+
+    # TODO: Make these dynamic
+    test_projfile_path = '/tmp/k3b-rm_test.k3b'
+    test_root = '/tmp/k3b-rm_test/'
+
+    test_dom = ET.Element("k3b_data_project")
+    files = ET.SubElement(test_dom, "files")
+
+    def add_files(parent, dom_parent, parent_names=None, depth=0):
+        """Generate the list of expected test files and populate test XML"""
         expect, parent_names = [], parent_names or []
         for x in range(1, 7):
-            expect.append(posixpath.join(parent,
-                                         '_'.join(parent_names + [str(x)])))
+            fname = '_'.join(parent_names + [str(x)])
+            fpath = posixpath.join(parent, fname)
+
+            fnode = ET.SubElement(dom_parent, "file")
+            fnode.set("name", fname)
+            unode = ET.SubElement(fnode, "url")
+            unode.text = fpath
+
+            expect.append(fpath)
         if depth:
             for x in 'abcdef':
+                subdir = ET.SubElement(dom_parent, "directory")
+                subdir.set("name", x)
+
                 expect.extend(add_files(posixpath.join(parent, x),
+                                        subdir,
                                         parent_names + [x],
                                         depth - 1))
         return expect
 
-    expected = add_files(test_root, depth=2)
-    got = parse_k3b_proj(os.path.join(
-        os.path.dirname(__file__), "k3b-rm_test.k3b"))
+    expected = add_files(test_root, files, depth=2)
+    test_tree = ET.ElementTree(test_dom)
+    xmldata = StringIO()
+    test_tree.write(xmldata, encoding="UTF-8", xml_declaration=True)
+
+    try:
+        with zipfile.ZipFile(test_projfile_path, 'w') as zobj:
+            zobj.writestr("maindata.xml", xmldata.getvalue())
+
+        got = parse_k3b_proj(test_projfile_path)
+    finally:
+        os.unlink(test_projfile_path)
 
     for x in expected:
         assert x in got, x
     for x in got:
         assert x in expected, x
+
 
 if __name__ == '__main__':
     # pylint: disable=bad-continuation
