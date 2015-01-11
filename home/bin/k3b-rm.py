@@ -124,6 +124,9 @@ class TestK3bRm(unittest.TestCase):  # pylint: disable=too-many-public-methods
             fname = '_'.join(parent_names + [str(x)])
             fpath = posixpath.join(parent, fname)
 
+            # `touch $fpath`
+            open(fpath, 'w').close()
+
             fnode = ET.SubElement(dom_parent, "file")
             fnode.set("name", fname)
             unode = ET.SubElement(fnode, "url")
@@ -132,11 +135,15 @@ class TestK3bRm(unittest.TestCase):  # pylint: disable=too-many-public-methods
             expect.append(fpath)
         if depth:
             for x in 'abcdef':
-                # TODO: Actually generate the temporary directory structure
+                path = posixpath.join(parent, x)
+
+                # XXX: Is it worth it to ensure this runs on non-POSIX OSes?
+                os.makedirs(path)
+
                 subdir = ET.SubElement(dom_parent, "directory")
                 subdir.set("name", x)
 
-                expect.extend(self._add_files(posixpath.join(parent, x),
+                expect.extend(self._add_files(path,
                                               subdir,
                                               parent_names + [x],
                                               depth - 1))
