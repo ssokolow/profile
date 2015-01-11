@@ -81,21 +81,44 @@ def main():
 
 # ---=== Test Suite ===---
 
-def make_mock_data():
-    """Generate all data necessary for a test run"""
-    # Avoid importing these in non-test operation
-    import posixpath, tempfile, zipfile
-    from cStringIO import StringIO
+import unittest
 
-    test_root = tempfile.mkdtemp(prefix='k3b-rm_test-')
-    test_projfile = tempfile.NamedTemporaryFile(prefix='k3b-rm_test-',
-                                                suffix='.k3b')
+class TestK3bRm(unittest.TestCase):  # pylint: disable=too-many-public-methods
+    """Test suite for k3b-rm to be run via C{nosetests}."""
+    def setUp(self):  # NOQA
+        """Generate all data necessary for a test run"""
+        # Avoid importing these in non-test operation
+        import tempfile, zipfile
+        from cStringIO import StringIO
 
-    test_dom = ET.Element("k3b_data_project")
-    files = ET.SubElement(test_dom, "files")
+        test_root = tempfile.mkdtemp(prefix='k3b-rm_test-')
+        test_projfile = tempfile.NamedTemporaryFile(prefix='k3b-rm_test-',
+                                                    suffix='.k3b')
 
-    def add_files(parent, dom_parent, parent_names=None, depth=0):
+        test_dom = ET.Element("k3b_data_project")
+        files = ET.SubElement(test_dom, "files")
+
+        expected = self._add_files(test_root, files, depth=2)
+        test_tree = ET.ElementTree(test_dom)
+        xmldata = StringIO()
+        test_tree.write(xmldata, encoding="UTF-8", xml_declaration=True)
+
+        with zipfile.ZipFile(test_projfile, 'w') as zobj:
+            zobj.writestr("maindata.xml", xmldata.getvalue())
+
+        self.project = test_projfile
+        self.root = test_root
+        self.expected = expected
+
+    def tearDown(self):  # NOQA
+        del self.project
+        shutil.rmtree(self.root)
+
+    def _add_files(self, parent, dom_parent, parent_names=None, depth=0):
         """Generate the list of expected test files and populate test XML"""
+        # Avoid importing this in non-test operation
+        import posixpath
+
         expect, parent_names = [], parent_names or []
         for x in range(1, 7):
             fname = '_'.join(parent_names + [str(x)])
@@ -113,33 +136,20 @@ def make_mock_data():
                 subdir = ET.SubElement(dom_parent, "directory")
                 subdir.set("name", x)
 
-                expect.extend(add_files(posixpath.join(parent, x),
-                                        subdir,
-                                        parent_names + [x],
-                                        depth - 1))
+                expect.extend(self._add_files(posixpath.join(parent, x),
+                                              subdir,
+                                              parent_names + [x],
+                                              depth - 1))
         return expect
 
-    expected = add_files(test_root, files, depth=2)
-    test_tree = ET.ElementTree(test_dom)
-    xmldata = StringIO()
-    test_tree.write(xmldata, encoding="UTF-8", xml_declaration=True)
+    def test_parse_k3b_proj(self):
+        """Test basic parsing of .k3b files"""
+        got = parse_k3b_proj(self.project.name)
 
-    with zipfile.ZipFile(test_projfile, 'w') as zobj:
-        zobj.writestr("maindata.xml", xmldata.getvalue())
-
-    return test_projfile, test_root, expected
-
-def test_parse_k3b_proj():
-    testfile, testroot_path, expected_output = make_mock_data()
-    try:
-        got = parse_k3b_proj(testfile.name)
-    finally:
-        shutil.rmtree(testroot_path)
-
-    for x in expected_output:
-        assert x in got, x
-    for x in got:
-        assert x in expected_output, x
+        for x in self.expected:
+            self.assertIn(x, got)
+        for x in got:
+            self.assertIn(x, self.expected)
 
 
 if __name__ == '__main__':
