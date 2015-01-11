@@ -26,7 +26,8 @@ def parse_k3b_proj(path):
 
 # ---=== Test Suite ===---
 
-def test_parse_k3b_proj():
+def make_test_data():
+    """Generate all data necessary for a test run"""
     # Avoid importing these in non-test operation
     import posixpath, zipfile
     from cStringIO import StringIO
@@ -67,18 +68,22 @@ def test_parse_k3b_proj():
     xmldata = StringIO()
     test_tree.write(xmldata, encoding="UTF-8", xml_declaration=True)
 
+    with zipfile.ZipFile(test_projfile_path, 'w') as zobj:
+        zobj.writestr("maindata.xml", xmldata.getvalue())
+
+    return test_projfile_path, expected
+
+def test_parse_k3b_proj():
     try:
-        with zipfile.ZipFile(test_projfile_path, 'w') as zobj:
-            zobj.writestr("maindata.xml", xmldata.getvalue())
-
-        got = parse_k3b_proj(test_projfile_path)
+        testfile_path, expected_output = make_test_data()
+        got = parse_k3b_proj(testfile_path)
     finally:
-        os.unlink(test_projfile_path)
+        os.unlink(testfile_path)
 
-    for x in expected:
+    for x in expected_output:
         assert x in got, x
     for x in got:
-        assert x in expected, x
+        assert x in expected_output, x
 
 
 if __name__ == '__main__':
