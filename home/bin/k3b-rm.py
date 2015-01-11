@@ -24,6 +24,51 @@ def parse_k3b_proj(path):
 
     return [x.text for x in root.findall('./files//file/url')]
 
+def main():
+    """setuptools-compatible entry point"""
+    # pylint: disable=bad-continuation
+    from optparse import OptionParser
+    parser = OptionParser(version="%%prog v%s" % __version__,
+            usage="%prog [options] <K3b Project File> ...",
+            description=__doc__.replace('\r\n', '\n').split('\n--snip--\n')[0])
+    parser.add_option('-m', '--move', action="store", dest="target",
+        default=None, help="Move the files to the provided path.")
+    parser.add_option('--remove', action="store_true", dest="remove",
+        default=False, help="Actually remove the files found.")
+
+    # Allow pre-formatted descriptions
+    parser.formatter.format_description = lambda description: description
+
+    opts, args = parser.parse_args()
+
+    if opts.target and not os.path.isdir(opts.target):
+        print "Target path is not a directory: %s" % opts.target
+        sys.exit(2)
+
+    dry_run = False
+    for path in args:
+        files = parse_k3b_proj(path)
+
+        for fpath in files:
+            if not os.path.exists(fpath):
+                print "Doesn't exist (Already handled?): %s" % fpath
+            elif opts.target:
+                # XXX: How should I handle potential overwriting?
+                print "%r -> %r" % (fpath, opts.target)
+                shutil.move(fpath, opts.target)
+            elif opts.remove:
+                print "REMOVING: %s" % fpath
+                if os.path.isdir(fpath):
+                    shutil.rmtree(fpath)
+                else:
+                    os.remove(fpath)
+            else:
+                dry_run = True
+                print fpath
+    if dry_run:
+        print ("\nRe-run this command with the --remove option to actually "
+               "remove these files.")
+
 # ---=== Test Suite ===---
 
 def make_mock_data():
@@ -88,45 +133,4 @@ def test_parse_k3b_proj():
 
 
 if __name__ == '__main__':
-    # pylint: disable=bad-continuation
-    from optparse import OptionParser
-    parser = OptionParser(version="%%prog v%s" % __version__,
-            usage="%prog [options] <K3b Project File> ...",
-            description=__doc__.replace('\r\n', '\n').split('\n--snip--\n')[0])
-    parser.add_option('-m', '--move', action="store", dest="target",
-        default=None, help="Move the files to the provided path.")
-    parser.add_option('--remove', action="store_true", dest="remove",
-        default=False, help="Actually remove the files found.")
-
-    # Allow pre-formatted descriptions
-    parser.formatter.format_description = lambda description: description
-
-    opts, args = parser.parse_args()
-
-    if opts.target and not os.path.isdir(opts.target):
-        print "Target path is not a directory: %s" % opts.target
-        sys.exit(2)
-
-    DRY_RUN = False
-    for path in args:
-        files = parse_k3b_proj(path)
-
-        for fpath in files:
-            if not os.path.exists(fpath):
-                print "Doesn't exist (Already handled?): %s" % fpath
-            elif opts.target:
-                # XXX: How should I handle potential overwriting?
-                print "%r -> %r" % (fpath, opts.target)
-                shutil.move(fpath, opts.target)
-            elif opts.remove:
-                print "REMOVING: %s" % fpath
-                if os.path.isdir(fpath):
-                    shutil.rmtree(fpath)
-                else:
-                    os.remove(fpath)
-            else:
-                DRY_RUN = True
-                print fpath
-    if DRY_RUN:
-        print ("\nRe-run this command with the --remove option to actually "
-               "remove these files.")
+    main()
