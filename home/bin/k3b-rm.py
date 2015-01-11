@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
+# pylint: disable=invalid-name
 """A simple tool for deleting the files listed in a K3b project after it has
 been written to a disc. (Useful in concert with gaff-k3b)"""
 
