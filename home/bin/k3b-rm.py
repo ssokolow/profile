@@ -26,7 +26,7 @@ def parse_k3b_proj(path):
 
 # ---=== Test Suite ===---
 
-def make_test_data():
+def make_mock_data():
     """Generate all data necessary for a test run"""
     # Avoid importing these in non-test operation
     import posixpath, zipfile
@@ -75,7 +75,7 @@ def make_test_data():
 
 def test_parse_k3b_proj():
     try:
-        testfile_path, expected_output = make_test_data()
+        testfile_path, expected_output = make_mock_data()
         got = parse_k3b_proj(testfile_path)
     finally:
         os.unlink(testfile_path)
