@@ -22,6 +22,31 @@ def parse_k3b_proj(path):
 
     return [x.text for x in root.findall('./files//file/url')]
 
+def test_parse_k3b_proj():
+    test_root = '/tmp/k3b-rm_test/'  # TODO: Make this dynamic
+
+    def add_files(parent, parent_names=None, depth=0):
+        """Generate the list of expected test files"""
+        expect, parent_names = [], parent_names or []
+        for x in range(1, 7):
+            expect.append(posixpath.join(parent,
+                                         '_'.join(parent_names + [str(x)])))
+        if depth:
+            for x in 'abcdef':
+                expect.extend(add_files(posixpath.join(parent, x),
+                                        parent_names + [x],
+                                        depth - 1))
+        return expect
+
+    expected = add_files(test_root, depth=2)
+    got = parse_k3b_proj(os.path.join(
+        os.path.dirname(__file__), "k3b-rm_test.k3b"))
+
+    for x in expected:
+        assert x in got, x
+    for x in got:
+        assert x in expected, x
+
 if __name__ == '__main__':
     # pylint: disable=bad-continuation
     from optparse import OptionParser
