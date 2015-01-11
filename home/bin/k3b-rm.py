@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python2
 # -*- coding: utf-8 -*-
 # pylint: disable=invalid-name
 """A simple tool for deleting the files listed in a K3b project after it has
@@ -10,6 +10,10 @@ been written to a disc. (Useful in concert with gaff-k3b)
 
 @todo: Need test directory and filenames containing unicode characters.
 """
+
+from __future__ import (absolute_import, division, print_function,
+                        with_statement, unicode_literals)
+
 __appname__ = "File-Deleting Companion for gaff-k3b"
 __author__ = "Stephan Sokolow (deitarion/SSokolow)"
 __version__ = "0.0pre0"
@@ -87,7 +91,7 @@ def main():
     opts, args = parser.parse_args()
 
     if opts.target and not os.path.isdir(opts.target):
-        print "Target path is not a directory: %s" % opts.target
+        print("Target path is not a directory: %s" % opts.target)
         sys.exit(2)
 
     for path in args:
