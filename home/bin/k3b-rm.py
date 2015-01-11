@@ -4,6 +4,8 @@
 """A simple tool for deleting the files listed in a K3b project after it has
 been written to a disc. (Useful in concert with gaff-k3b)
 
+--snip--
+
 @note: This currently explicitly uses C{posixpath} rather than C{os.path}
        since, as a POSIX-only program, K3b is going to be writing project files
        that always use UNIX path separators.
@@ -68,7 +70,8 @@ def rm_batch(src_pairs):
     """Given the output of L{parse_k3b_proj}, remove all files"""
     for src_path, _ in sorted(src_pairs.items()):
         print("REMOVING: %s" % src_path)
-        if os.path.isdir(src_path):
+        if os.path.isdir(src_path):  # pragma: nocover
+            # Don't know if this is actually possible, but let's be safe.
             shutil.rmtree(src_path)
         else:
             os.remove(src_path)
@@ -84,9 +87,6 @@ def main():
         default=None, help="Move the files to the provided path.")
     parser.add_option('--remove', action="store_true", dest="remove",
         default=False, help="Actually remove the files found.")
-
-    # Allow pre-formatted descriptions
-    parser.formatter.format_description = lambda description: description
 
     opts, args = parser.parse_args()
 
@@ -178,24 +178,24 @@ try:
             return expect
 
         def test_parse_k3b_proj(self):
-            """Test basic parsing of .k3b files"""
+            """parse_k3b_proj: basic functionality"""
             got = parse_k3b_proj(self.project.name)
-            self.assertEqual(self.expected, got)
+            self.assertDictEqual(self.expected, got)
 
         @patch("os.remove")
         @patch("os.unlink")
         @patch("shutil.rmtree")
         def test_rm_batch(self, *mocks):
-            """Test that rm_batch deletes exactly the right files"""
+            """rm_batch: deletes exactly the right files"""
             rm_batch(self.expected)
             results = [y[0][0] for x in mocks for y in x.call_args_list]
-            self.assertEqual(sorted(self.expected), sorted(results))
+            self.assertListEqual(sorted(self.expected), sorted(results))
 
         def test_move_batch(self, *mocks):
-            """Test that move_batch puts files in the right places"""
+            """move_batch: puts files in the right places"""
             self.fail("TODO: Implement this")
 
-except ImportError, err:
+except ImportError, err:  # pragma: nocover
     print("Skipping declaration of test suite: %s" % err)
 
 if __name__ == '__main__':
