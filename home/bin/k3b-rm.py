@@ -69,6 +69,10 @@ def move_batch(src_pairs, dest_dir):
 def rm_batch(src_pairs):
     """Given the output of L{parse_k3b_proj}, remove all files"""
     for src_path, _ in sorted(src_pairs.items()):
+        if not os.path.exists(src_path):
+            print("Doesn't exist (Already handled?): %s" % src_path)
+            continue
+
         print("REMOVING: %s" % src_path)
         if os.path.isdir(src_path):  # pragma: nocover
             # Don't know if this is actually possible, but let's be safe.
@@ -190,6 +194,17 @@ try:
             rm_batch(self.expected)
             results = [y[0][0] for x in mocks for y in x.call_args_list]
             self.assertListEqual(sorted(self.expected), sorted(results))
+
+        def test_rm_batch_nonexistant(self):
+            """rm_batch: handles missing files gracefully"""
+            os.unlink(posixpath.join(self.root, 'b', 'b_3'))
+            rm_batch(self.expected)
+            rm_batch(self.expected)
+            for x in self.expected:
+                self.assertFalse(os.path.exists(x))
+
+            # TODO: This requires the directory-clearing code
+            # self.assertListEqual(os.listdir(self.root), [])
 
         def test_move_batch(self, *mocks):
             """move_batch: puts files in the right places"""
