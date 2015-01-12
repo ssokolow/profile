@@ -306,51 +306,53 @@ if sys.argv[0].endswith('nosetests'):  # pragma: nobranch
         def test_main_bad_destdir(self, sysexit):
             """main: calls sys.exit(2) for a bad -m path"""
             main()
-            self.assertIsNotNone(sysexit.call_args)
-            self.assertEqual(sysexit.call_args[0][0], 2)
+            sysexit.assert_called_once_with(2)
 
         @patch.object(sys.modules[__name__], "list_batch")
         def test_main_list(self, lsbatch):
             """main: list_batch is default but only with args"""
             with patch.object(sys, 'argv', [__file__]):
                 main()
-                self.assertFalse(lsbatch.called)
+                self.assertFalse(lsbatch.called,
+                                 "Nothing should happen if no args provided")
 
             with patch.object(sys, 'argv',
                               [__file__, self.project.name]):
                 main()
-                self.assertTrue(lsbatch.called)
+                lsbatch.assert_called_once_with(self.expected)
 
         @patch.object(sys.modules[__name__], "rm_batch")
         def test_main_remove(self, rmbatch):
             """main: --remove triggers rm_batch but only with args"""
             with patch.object(sys, 'argv', [__file__, '--remove']):
                 main()
-                self.assertFalse(rmbatch.called)
+                self.assertFalse(rmbatch.called,
+                                 "--remove shouldn't be called without args")
 
             with patch.object(sys, 'argv',
                               [__file__, '--remove', self.project.name]):
                 main()
-                self.assertTrue(rmbatch.called)
+                rmbatch.assert_called_once_with(self.expected)
 
         @patch.object(sys.modules[__name__], "move_batch")
         def test_main_move(self, mvbatch):
             """main: --move triggers move_batch but only with args"""
             with patch.object(sys, 'argv', [__file__, '--move', '/']):
                 main()
-                self.assertFalse(mvbatch.called)
+                self.assertFalse(mvbatch.called,
+                                 "--move shouldn't be called without args")
 
             with patch.object(sys, 'argv',
                               [__file__, '--move', '/', self.project.name]):
                 main()
-                mvbatch.assert_called_with(self.expected, '/',
+                mvbatch.assert_called_once_with(self.expected, '/',
                                            overwrite=False)
 
             mvbatch.reset_mock()
             with patch.object(sys, 'argv', [__file__, '--move', '/',
                                             self.project.name, '--overwrite']):
                 main()
-                mvbatch.assert_called_with(self.expected, '/',
+                mvbatch.assert_called_once_with(self.expected, '/',
                                            overwrite=True)
 
 if __name__ == '__main__':  # pragma: nocover
