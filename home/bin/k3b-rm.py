@@ -35,7 +35,6 @@ def list_batch(src_pairs):
 
 def main():
     """setuptools-compatible entry point"""
-    # pylint: disable=bad-continuation
     from optparse import OptionParser
     parser = OptionParser(version="%%prog v%s" % __version__,
             usage="%prog [options] <K3b Project File> ...",
@@ -269,9 +268,10 @@ if sys.argv[0].endswith('nosetests'):  # pragma: nobranch
             """L: list_batch: doesn't raise exception when called"""
             list_batch(self.expected_tmpl)
 
+        @staticmethod
         @patch("sys.exit")
         @patch.object(sys, 'argv', [__file__, '-m', tempfile.mktemp()])
-        def test_main_bad_destdir(self, sysexit):  # pylint: disable=R0201
+        def test_main_bad_destdir(sysexit):
             """L: main: calls sys.exit(2) for a bad -m path"""
             main()
             sysexit.assert_called_once_with(2)
