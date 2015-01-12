@@ -16,7 +16,7 @@ from __future__ import (absolute_import, division, print_function,
 
 __appname__ = "File-Deleting Companion for gaff-k3b"
 __author__ = "Stephan Sokolow (deitarion/SSokolow)"
-__version__ = "0.0pre0"
+__version__ = "0.1"
 __license__ = "MIT"
 
 import logging
