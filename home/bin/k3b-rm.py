@@ -122,13 +122,21 @@ def main():
 # ---=== Test Suite ===---
 
 if sys.argv[0].endswith('nosetests'):  # pragma: nobranch
-    import tempfile, unittest
+    import errno, tempfile, unittest
     from cStringIO import StringIO
 
     try:
-        from unittest.mock import patch  # pylint: disable=E0611,F0401
+        from unittest.mock import patch, DEFAULT  # pylint: disable=E0611,F0401
     except ImportError:
-        from mock import patch
+        from mock import patch, DEFAULT
+
+    def _file_exists(src, *_):
+        """Used with C{side_effect} to make filesystem mocks stricter"""
+        if os.path.exists(src):
+            return DEFAULT
+        else:
+            raise IOError(errno.ENOENT, '%s: %r' %
+                           (os.strerror(errno.ENOENT), src))
 
     class TestK3bRm(unittest.TestCase):  # pylint: disable=R0904
         """Test suite for k3b-rm to be run via C{nosetests}."""
@@ -187,6 +195,7 @@ if sys.argv[0].endswith('nosetests'):  # pragma: nobranch
 
         @staticmethod
         def _touch_with_parents(path):
+            """Touch a file into existence, including parents if needed"""
             parent = posixpath.dirname(path)
             if not os.path.exists(parent):
                 os.makedirs(parent)
@@ -239,9 +248,9 @@ if sys.argv[0].endswith('nosetests'):  # pragma: nobranch
             got = parse_k3b_proj(self.project.name)
             self.assertDictEqual(self.expected, got)
 
-        @patch("os.remove")
-        @patch("os.unlink")
-        @patch("shutil.rmtree")
+        @patch("os.remove", side_effect=_file_exists)
+        @patch("os.unlink", side_effect=_file_exists)
+        @patch("shutil.rmtree", side_effect=_file_exists)
         def test_rm_batch(self, *mocks):
             """rm_batch: deletes exactly the right files"""
             rm_batch(self.expected)
@@ -264,6 +273,11 @@ if sys.argv[0].endswith('nosetests'):  # pragma: nobranch
             # TODO: This requires the directory-clearing code
             # self.assertListEqual(os.listdir(self.root), [])
 
+        def test__file_exists(self):
+            """_file_exists helper for @patch: normal function"""
+            self.assertEquals(_file_exists('/'), DEFAULT)
+            self.assertRaises(IOError, _file_exists, tempfile.mktemp())
+
         def test_mounty_join(self):
             """mounty_join: proper behaviour"""
             for path_a in ('/foo', '/foo/'):
@@ -271,7 +285,7 @@ if sys.argv[0].endswith('nosetests'):  # pragma: nobranch
                     self.assertEqual(mounty_join(path_a, path_b),
                                      '/foo/baz', "%s + %s" % (path_a, path_b))
 
-        @patch("shutil.move")
+        @patch("shutil.move", side_effect=_file_exists)
         def test_move_batch(self, move):
             """move_batch: puts files in the right places"""
             for overwrite, needed in ((0, 0), (0, 1), (1, 0), (1, 1)):
@@ -303,7 +317,7 @@ if sys.argv[0].endswith('nosetests'):  # pragma: nobranch
 
         @patch("sys.exit")
         @patch.object(sys, 'argv', [__file__, '-m', tempfile.mktemp()])
-        def test_main_bad_destdir(self, sysexit):
+        def test_main_bad_destdir(self, sysexit):  # pylint: disable=R0201
             """main: calls sys.exit(2) for a bad -m path"""
             main()
             sysexit.assert_called_once_with(2)
