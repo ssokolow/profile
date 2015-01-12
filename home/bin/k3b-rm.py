@@ -221,8 +221,8 @@ if sys.argv[0].rstrip('3').endswith('nosetests'):  # pragma: nobranch
         @classmethod
         def _make_file_node(cls, dom_parent, fpath):
             """Add a file/url node stack as a child of the given parent"""
-            fnode = ET.SubElement(dom_parent, "file")
-            fnode.set("name", posixpath.basename(fpath))
+            fnode = ET.SubElement(dom_parent, "file",
+                                  name=posixpath.basename(fpath))
             unode = ET.SubElement(fnode, "url")
             unode.text = mounty_join(cls.root_placeholder, fpath)
 
@@ -231,29 +231,19 @@ if sys.argv[0].rstrip('3').endswith('nosetests'):  # pragma: nobranch
             """Generate a list of expected test files and populate test XML"""
             expect, parent = {}, os.sep + os.sep.join(ancestors)
 
-            for x in u'12µñの':
+            for x in list(u'12µñの') + ['dir']:
                 fpath = posixpath.join(parent, '_'.join(ancestors + [x]))
-
                 cls._make_file_node(dom_parent, fpath)
-                abs_fpath = mounty_join(cls.root_placeholder, fpath)
-                expect[abs_fpath] = fpath
+                expect[mounty_join(cls.root_placeholder, fpath)] = fpath
 
             # For robustness-testing
             ET.SubElement(dom_parent, "garbage")
 
-            # To test a purely hypothetical case
-            dpath = posixpath.join(parent, '_'.join(ancestors + ['dir']))
-            cls._make_file_node(dom_parent, dpath)
-            abs_dpath = mounty_join(cls.root_placeholder, dpath)
-            expect[abs_dpath] = dpath
-
             if depth:
                 for x in u'45ßðあ':
-                    subdir = ET.SubElement(dom_parent, "directory")
-                    subdir.set("name", x)
-
-                    expect.update(cls._add_files(ancestors + [x], subdir,
-                                                 depth - 1))
+                    expect.update(cls._add_files(ancestors + [x],
+                        ET.SubElement(dom_parent, "directory", name=x),
+                        depth - 1))
             return expect
 
     class TestK3bRmLightweight(unittest.TestCase, MockDataMixin
