@@ -70,10 +70,10 @@ def main():
 
         if opts.target:
             move_batch(files, opts.target, overwrite=opts.overwrite)
-            remove_emptied_dirs(files.keys())  # TODO: Mock this and check
+            remove_emptied_dirs(files)
         elif opts.remove:
             rm_batch(files)
-            remove_emptied_dirs(files.keys())  # TODO: Mock this and check
+            remove_emptied_dirs(files)
         else:
             list_batch(files)
             log.info("Re-run this command with the --remove option to actually"
@@ -349,39 +349,47 @@ if sys.argv[0].endswith('nosetests'):  # pragma: nobranch
                     main()
                     lsbatch.assert_called_once_with(self.expected)
 
+        @patch.object(sys.modules[__name__], "remove_emptied_dirs")
         @patch.object(sys.modules[__name__], "move_batch")
-        def test_main_move(self, mvbatch):
+        def test_main_move(self, mvbatch, remdirs):
             """H: main: --move triggers move_batch but only with args"""
             with patch.object(sys, 'argv', [__file__, '--move', '/']):
                 main()
                 self.assertFalse(mvbatch.called,
                                  "--move shouldn't be called without args")
+                self.assertFalse(remdirs.called)
 
             with patch.object(sys, 'argv',
                               [__file__, '--move', '/', self.project.name]):
                 main()
                 mvbatch.assert_called_once_with(self.expected, '/',
                                            overwrite=False)
+                remdirs.assert_called_once_with(self.expected)
 
             mvbatch.reset_mock()
+            remdirs.reset_mock()
             with patch.object(sys, 'argv', [__file__, '--move', '/',
                                             self.project.name, '--overwrite']):
                 main()
                 mvbatch.assert_called_once_with(self.expected, '/',
                                            overwrite=True)
+                remdirs.assert_called_once_with(self.expected)
 
+        @patch.object(sys.modules[__name__], "remove_emptied_dirs")
         @patch.object(sys.modules[__name__], "rm_batch")
-        def test_main_remove(self, rmbatch):
+        def test_main_remove(self, rmbatch, remdirs):
             """H: main: --remove triggers rm_batch but only with args"""
             with patch.object(sys, 'argv', [__file__, '--remove']):
                 main()
                 self.assertFalse(rmbatch.called,
                                  "--remove shouldn't be called without args")
+                self.assertFalse(remdirs.called)
 
             with patch.object(sys, 'argv',
                               [__file__, '--remove', self.project.name]):
                 main()
                 rmbatch.assert_called_once_with(self.expected)
+                remdirs.assert_called_once(self.expected)
 
         @patch("shutil.move", side_effect=_file_exists)
         def test_move_batch(self, move):
