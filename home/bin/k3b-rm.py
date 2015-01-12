@@ -70,8 +70,10 @@ def main():
 
         if opts.target:
             move_batch(files, opts.target, overwrite=opts.overwrite)
+            remove_emptied_dirs(files.keys())  # TODO: Mock this and check
         elif opts.remove:
             rm_batch(files)
+            remove_emptied_dirs(files.keys())  # TODO: Mock this and check
         else:
             list_batch(files)
             log.info("Re-run this command with the --remove option to actually"
@@ -120,6 +122,30 @@ def parse_proj_directory(parent_path, node):
         elif item.tag == 'directory':
             results.update(parse_proj_directory(path, item))
     return results
+
+def remove_emptied_dirs(file_paths):
+    """Remove folders which have been emptied by removing the given files"""
+
+    # TODO: Proper test suite for this
+    while file_paths:
+        diminished = set()
+
+        #  Sort in reverse order to appromixate os.walk(topdown=False) for
+        #  improved efficiency.
+        for path in sorted(file_paths, reverse=True):
+            parent = os.path.dirname(path)
+            try:  # We do this for atomic test/act behaviour
+                os.rmdir(parent)
+            except OSError, err:
+                if err.errno in (errno.ENOENT, errno.EACCES, errno.ENOTEMPTY):
+                    pass
+                else:
+                    raise
+            else:
+                diminished.add(parent)
+
+        # Iteratively walk up until we run out of emptied ancestors
+        file_paths = diminished
 
 def rm_batch(src_pairs):
     """Given the output of L{parse_k3b_proj}, remove all files"""
@@ -398,8 +424,9 @@ if sys.argv[0].endswith('nosetests'):  # pragma: nobranch
             for x in self.expected:
                 self.assertFalse(os.path.exists(x))
 
-            # TODO: This requires the directory-clearing code
-            # self.assertListEqual(os.listdir(self.root), [])
+            remove_emptied_dirs(x.replace(self.root_placeholder, self.root)
+                                for x in self.expected.keys())
+            self.assertFalse(os.path.exists(self.root))
 
 if __name__ == '__main__':  # pragma: nocover
     main()
