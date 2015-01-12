@@ -74,8 +74,7 @@ def rm_batch(src_pairs):
             continue
 
         print("REMOVING: %s" % src_path)
-        if os.path.isdir(src_path):  # pragma: nocover
-            # Don't know if this is actually possible, but let's be safe.
+        if os.path.isdir(src_path):
             shutil.rmtree(src_path)
         else:
             os.remove(src_path)
@@ -148,24 +147,37 @@ try:
             del self.project
             del self.expected
 
+        def _make_file_node(self, dom_parent, fpath):  # pylint: disable=R0201
+            """Add a file/url node stack as a child of the given parent"""
+            fnode = ET.SubElement(dom_parent, "file")
+            fnode.set("name", posixpath.basename(fpath))
+            unode = ET.SubElement(fnode, "url")
+            unode.text = fpath
+
         def _add_files(self, parent, dom_parent, parent_names=None, depth=0):
             """Generate a list of expected test files and populate test XML"""
             # Avoid importing this in non-test operation
 
             expect, parent_names = {}, parent_names or []
             for x in range(1, 7):
-                fname = '_'.join(parent_names + [str(x)])
-                fpath = posixpath.join(parent, fname)
+                fpath = posixpath.join(parent,
+                                       '_'.join(parent_names + [str(x)]))
 
                 # `touch $fpath`
                 open(fpath, 'w').close()
-
-                fnode = ET.SubElement(dom_parent, "file")
-                fnode.set("name", fname)
-                unode = ET.SubElement(fnode, "url")
-                unode.text = fpath
+                self._make_file_node(dom_parent, fpath)
 
                 expect[fpath] = fpath[len(self.root):]
+
+            # For robustness-testing
+            ET.SubElement(dom_parent, "garbage")
+
+            # To test a purely hypothetical case
+            dpath = posixpath.join(parent, '_'.join(parent_names + ['dir']))
+            os.makedirs(dpath)
+            self._make_file_node(dom_parent, dpath)
+            expect[dpath] = dpath[len(self.root):]
+
             if depth:
                 for x in 'abcdef':
                     path = posixpath.join(parent, x)
