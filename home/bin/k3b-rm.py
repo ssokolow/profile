@@ -19,6 +19,9 @@ __author__ = "Stephan Sokolow (deitarion/SSokolow)"
 __version__ = "0.0pre0"
 __license__ = "MIT"
 
+import logging
+log = logging.getLogger(__name__)
+
 import os, posixpath, shutil, sys
 import xml.etree.cElementTree as ET
 from zipfile import ZipFile
@@ -27,8 +30,8 @@ from zipfile import ZipFile
 
 def list_batch(src_pairs):
     """Given the output of L{parse_k3b_proj}, list all files"""
-    for src_path, _ in sorted(src_pairs.items()):
-        print(src_path)
+    for src_path in sorted(src_pairs.keys()):
+        log.info(src_path)
 
 def main():
     """setuptools-compatible entry point"""
@@ -37,6 +40,10 @@ def main():
     parser = OptionParser(version="%%prog v%s" % __version__,
             usage="%prog [options] <K3b Project File> ...",
             description=__doc__.replace('\r\n', '\n').split('\n--snip--\n')[0])
+    parser.add_option('-v', '--verbose', action="count", dest="verbose",
+        default=3, help="Increase the verbosity. Use twice for extra effect")
+    parser.add_option('-q', '--quiet', action="count", dest="quiet",
+        default=0, help="Decrease the verbosity. Use twice for extra effect")
     parser.add_option('-m', '--move', action="store", dest="target",
         default=None, help="Move the files to the provided path.")
     parser.add_option('--overwrite', action="store_true", dest="overwrite",
@@ -46,8 +53,16 @@ def main():
 
     opts, args = parser.parse_args()
 
+    # Set up clean logging to stderr
+    log_levels = [logging.CRITICAL, logging.ERROR, logging.WARNING,
+                  logging.INFO, logging.DEBUG]
+    opts.verbose = min(opts.verbose - opts.quiet, len(log_levels) - 1)
+    opts.verbose = max(opts.verbose, 0)
+    logging.basicConfig(level=log_levels[opts.verbose],
+                        format='%(levelname)s: %(message)s')
+
     if opts.target and not os.path.isdir(opts.target):
-        print("Target path is not a directory: %s" % opts.target)
+        log.critical("Target path is not a directory: %s", opts.target)
         sys.exit(2)
 
     for path in args:
@@ -59,8 +74,8 @@ def main():
             rm_batch(files)
         else:
             list_batch(files)
-            print("\nRe-run this command with the --remove option to "
-                  "actually remove these files.")
+            log.info("Re-run this command with the --remove option to actually"
+                     " remove these files.")
 
 def mounty_join(a, b):
     """Join paths C{a} and C{b} while ignoring leading separators on C{b}"""
@@ -73,16 +88,16 @@ def move_batch(src_pairs, dest_dir, overwrite=False):
     """
     for src_path, dest_rel in sorted(src_pairs.items()):
         if not os.path.exists(src_path):
-            print("Doesn't exist (Already handled?): %s" % src_path)
+            log.warn("Doesn't exist (Already handled?): %s", src_path)
             continue
 
         dest_path = mounty_join(dest_dir, dest_rel)
 
         if os.path.exists(dest_path) and not overwrite:
-            print("Skipping (target already exists): %r -> %r" %
-                  (src_path, dest_path))
+            log.warn("Skipping (target already exists): %r -> %r",
+                  src_path, dest_path)
         else:
-            print("%r -> %r" % (src_path, dest_path))
+            log.info("%r -> %r", src_path, dest_path)
             shutil.move(src_path, dest_path)
 
 def parse_k3b_proj(path):
@@ -110,10 +125,10 @@ def rm_batch(src_pairs):
     """Given the output of L{parse_k3b_proj}, remove all files"""
     for src_path, _ in sorted(src_pairs.items()):
         if not os.path.exists(src_path):
-            print("Doesn't exist (Already handled?): %s" % src_path)
+            log.warn("Doesn't exist (Already handled?): %s", src_path)
             continue
 
-        print("REMOVING: %s" % src_path)
+        log.info("REMOVING: %s", src_path)
         if os.path.isdir(src_path):
             shutil.rmtree(src_path)
         else:
@@ -293,8 +308,9 @@ if sys.argv[0].endswith('nosetests'):  # pragma: nobranch
 
             with patch.object(sys, 'argv',
                               [__file__, self.project.name]):
-                main()
-                lsbatch.assert_called_once_with(self.expected)
+                with patch.object(log, 'info'):  # Avoid polluting output
+                    main()
+                    lsbatch.assert_called_once_with(self.expected)
 
         @patch.object(sys.modules[__name__], "move_batch")
         def test_main_move(self, mvbatch):
