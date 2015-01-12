@@ -223,17 +223,12 @@ try:
             self.fail("TODO: Implement this")
 
         @patch("sys.exit")
+        @patch.object(sys, 'argv', [__file__, '-m', tempfile.mktemp()])
         def test_main_bad_destdir(self, sysexit):
             """main: calls sys.exit(2) for a bad -m path"""
-            import tempfile
-            old_sys_argv, sys.argv = sys.argv, [__file__, '-m',
-                                                tempfile.mktemp()]
-            try:
-                main()
-                self.assertIsNotNone(sysexit.call_args)
-                self.assertEqual(sysexit.call_args[0][0], 2)
-            finally:
-                sys.argv = old_sys_argv
+            main()
+            self.assertIsNotNone(sysexit.call_args)
+            self.assertEqual(sysexit.call_args[0][0], 2)
 
 except ImportError, err:  # pragma: nocover
     print("Skipping declaration of test suite: %s" % err)
