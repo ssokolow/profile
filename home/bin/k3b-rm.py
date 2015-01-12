@@ -54,7 +54,7 @@ def list_batch(src_pairs):
 def mounty_join(a, b):
     """Join paths C{a} and C{b} while ignoring leading separators on C{b}"""
     b = b.lstrip(os.sep).lstrip(os.altsep or os.sep)
-    return os.path.join(a, b)
+    return posixpath.join(a, b)
 
 def move_batch(src_pairs, dest_dir):
     """Given output from L{parse_k3b_proj}, move all files and preserve paths
@@ -118,6 +118,8 @@ def main():
 
 if sys.argv[0].endswith('nosetests'):  # pragma: nobranch
     import tempfile, unittest
+    from cStringIO import StringIO
+
     try:
         from unittest.mock import patch  # pylint: disable=E0611,F0401
     except ImportError:
@@ -131,10 +133,6 @@ if sys.argv[0].endswith('nosetests'):  # pragma: nobranch
 
         def setUp(self):  # NOQA
             """Generate all data necessary for a test run"""
-            # Avoid importing these in non-test operation
-            import zipfile
-            from cStringIO import StringIO
-
             self.dest = tempfile.mkdtemp(prefix='k3b-rm_test-dest-')
             self.root = tempfile.mkdtemp(prefix='k3b-rm_test-src-')
             self.project = tempfile.NamedTemporaryFile(prefix='k3b-rm_test-',
@@ -148,7 +146,7 @@ if sys.argv[0].endswith('nosetests'):  # pragma: nobranch
             xmldata = StringIO()
             test_tree.write(xmldata, encoding="UTF-8", xml_declaration=True)
 
-            with zipfile.ZipFile(self.project, 'w') as zobj:
+            with ZipFile(self.project, 'w') as zobj:
                 zobj.writestr("maindata.xml", xmldata.getvalue())
 
         def tearDown(self):  # NOQA
@@ -168,8 +166,6 @@ if sys.argv[0].endswith('nosetests'):  # pragma: nobranch
 
         def _add_files(self, parent, dom_parent, parent_names=None, depth=0):
             """Generate a list of expected test files and populate test XML"""
-            # Avoid importing this in non-test operation
-
             expect, parent_names = {}, parent_names or []
             for x in '1234567ïœøµñó':
                 fpath = posixpath.join(parent,
