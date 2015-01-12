@@ -53,6 +53,11 @@ def list_batch(src_pairs):
     for src_path, _ in sorted(src_pairs.items()):
         print(src_path)
 
+def mounty_join(a, b):
+    """Join paths C{a} and C{b} while ignoring leading separators on C{b}"""
+    b = b.lstrip(os.sep).lstrip(os.altsep or os.sep)
+    return os.path.join(a, b)
+
 def move_batch(src_pairs, dest_dir):
     """Given output from L{parse_k3b_proj}, move all files and preserve paths
        relative to the project root.
@@ -62,9 +67,11 @@ def move_batch(src_pairs, dest_dir):
             print("Doesn't exist (Already handled?): %s" % src_path)
             continue
 
+        dest_path = mounty_join(dest_dir, dest_rel)
+
         # XXX: How should I handle potential overwriting?
-        print("%r -> %r" % (src_path, dest_dir))
-        shutil.move(src_path, dest_dir)
+        print("%r -> %r" % (src_path, dest_path))
+        shutil.move(src_path, dest_path)
 
 def rm_batch(src_pairs):
     """Given the output of L{parse_k3b_proj}, remove all files"""
@@ -111,7 +118,7 @@ def main():
 
 # ---=== Test Suite ===---
 
-try:
+if sys.argv[0].endswith('nosetests'):  # pragma: nobranch
     import tempfile, unittest
     try:
         from unittest.mock import patch  # pylint: disable=E0611,F0401
@@ -126,7 +133,8 @@ try:
             import zipfile
             from cStringIO import StringIO
 
-            self.root = tempfile.mkdtemp(prefix='k3b-rm_test-')
+            self.dest = tempfile.mkdtemp(prefix='k3b-rm_test-dest-')
+            self.root = tempfile.mkdtemp(prefix='k3b-rm_test-src-')
             self.project = tempfile.NamedTemporaryFile(prefix='k3b-rm_test-',
                                                        suffix='.k3b')
 
@@ -143,7 +151,9 @@ try:
 
         def tearDown(self):  # NOQA
             shutil.rmtree(self.root)
+            shutil.rmtree(self.dest)
             del self.root
+            del self.dest
             del self.project
             del self.expected
 
@@ -218,9 +228,25 @@ try:
             # TODO: This requires the directory-clearing code
             # self.assertListEqual(os.listdir(self.root), [])
 
-        def test_move_batch(self, *mocks):
+        def test_mounty_join(self):
+            """mounty_join: proper behaviour"""
+            for path_a in ('/foo', '/foo/'):
+                for path_b in ('baz', '/baz', '//baz', '///baz'):
+                    self.assertEqual(mounty_join(path_a, path_b),
+                                     '/foo/baz', "%s + %s" % (path_a, path_b))
+
+        @patch("shutil.move")
+        def test_move_batch(self, move):
             """move_batch: puts files in the right places"""
-            self.fail("TODO: Implement this")
+            move_batch(self.expected, self.dest)
+
+            results = {x[0][0]: x[0][1] for x in move.call_args_list}
+            for src, dest_rel in self.expected.items():
+                self.assertIn(src, results)
+                self.assertEqual(mounty_join(self.dest, dest_rel),
+                                 results[src])
+                del results[src]
+            self.assertDictEqual(results, {})
 
         def test_list_batch(self):
             """list_batch: doesn't raise exception when called"""
