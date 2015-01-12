@@ -112,7 +112,7 @@ def main():
 # ---=== Test Suite ===---
 
 try:
-    import unittest
+    import tempfile, unittest
     try:
         from unittest.mock import patch  # pylint: disable=E0611,F0401
     except ImportError:
@@ -123,7 +123,7 @@ try:
         def setUp(self):  # NOQA
             """Generate all data necessary for a test run"""
             # Avoid importing these in non-test operation
-            import tempfile, zipfile
+            import zipfile
             from cStringIO import StringIO
 
             self.root = tempfile.mkdtemp(prefix='k3b-rm_test-')
@@ -222,6 +222,10 @@ try:
             """move_batch: puts files in the right places"""
             self.fail("TODO: Implement this")
 
+        def test_list_batch(self):
+            """list_batch: doesn't raise exception when called"""
+            list_batch(self.expected)
+
         @patch("sys.exit")
         @patch.object(sys, 'argv', [__file__, '-m', tempfile.mktemp()])
         def test_main_bad_destdir(self, sysexit):
@@ -230,8 +234,41 @@ try:
             self.assertIsNotNone(sysexit.call_args)
             self.assertEqual(sysexit.call_args[0][0], 2)
 
-except ImportError, err:  # pragma: nocover
-    print("Skipping declaration of test suite: %s" % err)
+        @patch.object(sys.modules[__name__], "list_batch")
+        def test_main_list(self, lsbatch):
+            """main: list_batch is default but only with args"""
+            with patch.object(sys, 'argv', [__file__]):
+                main()
+                self.assertFalse(lsbatch.called)
+
+            with patch.object(sys, 'argv',
+                              [__file__, self.project.name]):
+                main()
+                self.assertTrue(lsbatch.called)
+
+        @patch.object(sys.modules[__name__], "rm_batch")
+        def test_main_remove(self, rmbatch):
+            """main: --remove triggers rm_batch but only with args"""
+            with patch.object(sys, 'argv', [__file__, '--remove']):
+                main()
+                self.assertFalse(rmbatch.called)
+
+            with patch.object(sys, 'argv',
+                              [__file__, '--remove', self.project.name]):
+                main()
+                self.assertTrue(rmbatch.called)
+
+        @patch.object(sys.modules[__name__], "move_batch")
+        def test_main_move(self, mvbatch):
+            """main: --move triggers move_batch but only with args"""
+            with patch.object(sys, 'argv', [__file__, '--move', '/']):
+                main()
+                self.assertFalse(mvbatch.called)
+
+            with patch.object(sys, 'argv',
+                              [__file__, '--move', '/', self.project.name]):
+                main()
+                self.assertTrue(mvbatch.called)
 
 if __name__ == '__main__':
     main()
