@@ -186,13 +186,6 @@ if sys.argv[0].rstrip('3').endswith('nosetests'):  # pragma: nobranch
             raise IOError(errno.ENOENT, '%s: %r' %
                           (os.strerror(errno.ENOENT), src))
 
-    def _make_file_node(dom_parent, fpath):
-        """Add a file/url node stack as a child of the given parent"""
-        fnode = ET.SubElement(dom_parent, "file")
-        fnode.set("name", posixpath.basename(fpath))
-        unode = ET.SubElement(fnode, "url")
-        unode.text = fpath
-
     def touch_with_parents(path):
         """Touch a file into existence, including parents if needed"""
         parent = posixpath.dirname(path)
@@ -218,8 +211,7 @@ if sys.argv[0].rstrip('3').endswith('nosetests'):  # pragma: nobranch
             test_dom = ET.Element("k3b_data_project")
             files = ET.SubElement(test_dom, "files")
 
-            cls.expected_tmpl = cls._add_files(cls.root_placeholder,
-                                               files, depth=2)
+            cls.expected_tmpl = cls._add_files([], files, depth=2)
             cls.xmldata_tmpl = BytesIO()
             test_tree = ET.ElementTree(test_dom)
             test_tree.write(cls.xmldata_tmpl,
@@ -227,34 +219,40 @@ if sys.argv[0].rstrip('3').endswith('nosetests'):  # pragma: nobranch
                             xml_declaration=True)
 
         @classmethod
-        def _add_files(cls, parent, dom_parent, parent_names=None, depth=0):
-            """Generate a list of expected test files and populate test XML"""
-            expect, parent_names = {}, parent_names or []
-            for x in u'12µñの':
-                fpath = posixpath.join(parent,
-                                       '_'.join(parent_names + [x]))
+        def _make_file_node(cls, dom_parent, fpath):
+            """Add a file/url node stack as a child of the given parent"""
+            fnode = ET.SubElement(dom_parent, "file")
+            fnode.set("name", posixpath.basename(fpath))
+            unode = ET.SubElement(fnode, "url")
+            unode.text = mounty_join(cls.root_placeholder, fpath)
 
-                _make_file_node(dom_parent, fpath)
-                expect[fpath] = fpath[len(cls.root_placeholder):]
+        @classmethod
+        def _add_files(cls, ancestors, dom_parent, depth=0):
+            """Generate a list of expected test files and populate test XML"""
+            expect, parent = {}, os.sep + os.sep.join(ancestors)
+
+            for x in u'12µñの':
+                fpath = posixpath.join(parent, '_'.join(ancestors + [x]))
+
+                cls._make_file_node(dom_parent, fpath)
+                abs_fpath = mounty_join(cls.root_placeholder, fpath)
+                expect[abs_fpath] = fpath
 
             # For robustness-testing
             ET.SubElement(dom_parent, "garbage")
 
             # To test a purely hypothetical case
-            dpath = posixpath.join(parent, '_'.join(parent_names + ['dir']))
-            _make_file_node(dom_parent, dpath)
-            expect[dpath] = dpath[len(cls.root_placeholder):]
+            dpath = posixpath.join(parent, '_'.join(ancestors + ['dir']))
+            cls._make_file_node(dom_parent, dpath)
+            abs_dpath = mounty_join(cls.root_placeholder, dpath)
+            expect[abs_dpath] = dpath
 
             if depth:
                 for x in u'45ßðあ':
-                    path = posixpath.join(parent, x)
-
                     subdir = ET.SubElement(dom_parent, "directory")
                     subdir.set("name", x)
 
-                    expect.update(cls._add_files(path,
-                                                 subdir,
-                                                 parent_names + [x],
+                    expect.update(cls._add_files(ancestors + [x], subdir,
                                                  depth - 1))
             return expect
 
