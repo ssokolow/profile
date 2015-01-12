@@ -130,6 +130,24 @@ if sys.argv[0].endswith('nosetests'):  # pragma: nobranch
 
         maxDiff = None
         longMessage = True
+        root_placeholder = u'~ROOT~'
+
+        @classmethod
+        def setUpClass(cls):  # NOQA
+            """Profiling showed over 25% of test time spent on ElementTree.
+
+            This cuts that in half.
+            """
+            test_dom = ET.Element("k3b_data_project")
+            files = ET.SubElement(test_dom, "files")
+
+            cls.expected_tmpl = cls._add_files(cls.root_placeholder,
+                                               files, depth=2)
+            cls.xmldata_tmpl = StringIO()
+            test_tree = ET.ElementTree(test_dom)
+            test_tree.write(cls.xmldata_tmpl,
+                            encoding="UTF-8",
+                            xml_declaration=True)
 
         def setUp(self):  # NOQA
             """Generate all data necessary for a test run"""
@@ -138,16 +156,26 @@ if sys.argv[0].endswith('nosetests'):  # pragma: nobranch
             self.project = tempfile.NamedTemporaryFile(prefix='k3b-rm_test-',
                                                        suffix='.k3b')
 
-            test_dom = ET.Element("k3b_data_project")
-            files = ET.SubElement(test_dom, "files")
-
-            self.expected = self._add_files(self.root, files, depth=2)
-            test_tree = ET.ElementTree(test_dom)
-            xmldata = StringIO()
-            test_tree.write(xmldata, encoding="UTF-8", xml_declaration=True)
-
+            xmldata = StringIO(
+                self.xmldata_tmpl.getvalue().decode('UTF-8').replace(
+                    self.root_placeholder, self.root).encode('UTF-8'))
             with ZipFile(self.project, 'w') as zobj:
                 zobj.writestr("maindata.xml", xmldata.getvalue())
+
+            self.expected = {}
+            for key, value in self.expected_tmpl.items():
+                path = key.replace(self.root_placeholder, self.root)
+
+                self.expected[path] = value
+                if path.endswith('dir'):
+                    os.makedirs(path)
+                else:
+                    parent = posixpath.dirname(path)
+                    if not os.path.exists(parent):
+                        os.makedirs(parent)
+
+                    # `touch $fpath`
+                    open(path, 'w').close()
 
         def tearDown(self):  # NOQA
             for x in ('dest', 'root'):
@@ -157,49 +185,44 @@ if sys.argv[0].endswith('nosetests'):  # pragma: nobranch
             del self.project
             del self.expected
 
-        def _make_file_node(self, dom_parent, fpath):  # pylint: disable=R0201
+        @staticmethod
+        def _make_file_node(dom_parent, fpath):
             """Add a file/url node stack as a child of the given parent"""
             fnode = ET.SubElement(dom_parent, "file")
             fnode.set("name", posixpath.basename(fpath))
             unode = ET.SubElement(fnode, "url")
             unode.text = fpath
 
-        def _add_files(self, parent, dom_parent, parent_names=None, depth=0):
+        @classmethod
+        def _add_files(cls, parent, dom_parent, parent_names=None, depth=0):
             """Generate a list of expected test files and populate test XML"""
             expect, parent_names = {}, parent_names or []
-            for x in '1234567ïœøµñó':
+            for x in '123ïøµñ':
                 fpath = posixpath.join(parent,
                                        '_'.join(parent_names + [x]))
 
-                # `touch $fpath`
-                print(fpath)
-                open(fpath, 'w').close()
-                self._make_file_node(dom_parent, fpath)
-
-                expect[fpath] = fpath[len(self.root):]
+                cls._make_file_node(dom_parent, fpath)
+                expect[fpath] = fpath[len(cls.root_placeholder):]
 
             # For robustness-testing
             ET.SubElement(dom_parent, "garbage")
 
             # To test a purely hypothetical case
             dpath = posixpath.join(parent, '_'.join(parent_names + ['dir']))
-            os.makedirs(dpath)
-            self._make_file_node(dom_parent, dpath)
-            expect[dpath] = dpath[len(self.root):]
+            cls._make_file_node(dom_parent, dpath)
+            expect[dpath] = dpath[len(cls.root_placeholder):]
 
             if depth:
                 for x in 'æßçð€f':
                     path = posixpath.join(parent, x)
 
-                    os.makedirs(path.encode(sys.getfilesystemencoding()))
-
                     subdir = ET.SubElement(dom_parent, "directory")
                     subdir.set("name", x)
 
-                    expect.update(self._add_files(path,
-                                                  subdir,
-                                                  parent_names + [x],
-                                                  depth - 1))
+                    expect.update(cls._add_files(path,
+                                                 subdir,
+                                                 parent_names + [x],
+                                                 depth - 1))
             return expect
 
         def test_parse_k3b_proj(self):
