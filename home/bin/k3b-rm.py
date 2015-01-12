@@ -56,7 +56,7 @@ def mounty_join(a, b):
     b = b.lstrip(os.sep).lstrip(os.altsep or os.sep)
     return posixpath.join(a, b)
 
-def move_batch(src_pairs, dest_dir):
+def move_batch(src_pairs, dest_dir, overwrite=False):
     """Given output from L{parse_k3b_proj}, move all files and preserve paths
        relative to the project root.
     """
@@ -67,9 +67,12 @@ def move_batch(src_pairs, dest_dir):
 
         dest_path = mounty_join(dest_dir, dest_rel)
 
-        # XXX: How should I handle potential overwriting?
-        print("%r -> %r" % (src_path, dest_path))
-        shutil.move(src_path, dest_path)
+        if os.path.exists(dest_path) and not overwrite:
+            print("Skipping (target already exists): %r -> %r" %
+                  (src_path, dest_path))
+        else:
+            print("%r -> %r" % (src_path, dest_path))
+            shutil.move(src_path, dest_path)
 
 def rm_batch(src_pairs):
     """Given the output of L{parse_k3b_proj}, remove all files"""
@@ -93,6 +96,8 @@ def main():
             description=__doc__.replace('\r\n', '\n').split('\n--snip--\n')[0])
     parser.add_option('-m', '--move', action="store", dest="target",
         default=None, help="Move the files to the provided path.")
+    parser.add_option('--overwrite', action="store_true", dest="overwrite",
+        default=False, help="Allow --move to overwrite files at the target.")
     parser.add_option('--remove', action="store_true", dest="remove",
         default=False, help="Actually remove the files found.")
 
@@ -106,7 +111,7 @@ def main():
         files = parse_k3b_proj(path)
 
         if opts.target:
-            move_batch(files, opts.target)
+            move_batch(files, opts.target, overwrite=opts.overwrite)
         elif opts.remove:
             rm_batch(files)
         else:
@@ -170,12 +175,7 @@ if sys.argv[0].endswith('nosetests'):  # pragma: nobranch
                 if path.endswith('dir'):
                     os.makedirs(path)
                 else:
-                    parent = posixpath.dirname(path)
-                    if not os.path.exists(parent):
-                        os.makedirs(parent)
-
-                    # `touch $fpath`
-                    open(path, 'w').close()
+                    self._touch_with_parents(path)
 
         def tearDown(self):  # NOQA
             for x in ('dest', 'root'):
@@ -184,6 +184,15 @@ if sys.argv[0].endswith('nosetests'):  # pragma: nobranch
 
             del self.project
             del self.expected
+
+        @staticmethod
+        def _touch_with_parents(path):
+            parent = posixpath.dirname(path)
+            if not os.path.exists(parent):
+                os.makedirs(parent)
+
+            # `touch $fpath`
+            open(path, 'w').close()
 
         @staticmethod
         def _make_file_node(dom_parent, fpath):
@@ -241,7 +250,12 @@ if sys.argv[0].endswith('nosetests'):  # pragma: nobranch
 
         def test_rm_batch_nonexistant(self):
             """rm_batch: handles missing files gracefully"""
-            os.unlink(self.expected.keys()[3])
+            omitted = self.expected.keys()[3]
+            if os.path.isdir(omitted):
+                shutil.rmtree(omitted)
+            else:
+                os.unlink(self.expected.keys()[3])
+
             rm_batch(self.expected)
             rm_batch(self.expected)
             for x in self.expected:
@@ -260,15 +274,28 @@ if sys.argv[0].endswith('nosetests'):  # pragma: nobranch
         @patch("shutil.move")
         def test_move_batch(self, move):
             """move_batch: puts files in the right places"""
-            move_batch(self.expected, self.dest)
+            for overwrite, needed in ((0, 0), (0, 1), (1, 0), (1, 1)):
+                omitted = None
+                if needed:
+                    omitted = self.expected.values()[0]
+                    self._touch_with_parents(mounty_join(
+                        self.dest, omitted))
 
-            results = {x[0][0]: x[0][1] for x in move.call_args_list}
-            for src, dest_rel in self.expected.items():
-                self.assertIn(src, results)
-                self.assertEqual(mounty_join(self.dest, dest_rel),
-                                 results[src])
-                del results[src]
-            self.assertDictEqual(results, {})
+                move_batch(self.expected, self.dest, overwrite)
+
+                results = {x[0][0]: x[0][1] for x in move.call_args_list}
+                for src, dest_rel in self.expected.items():
+                    if dest_rel == omitted and not overwrite:
+                        self.assertNotIn(src, results,
+                                         "Overwrote when not allowed")
+                    else:
+                        self.assertIn(src, results, "Failed to move file")
+                        self.assertEqual(mounty_join(self.dest, dest_rel),
+                                         results[src],
+                                         "Moved to wrong location")
+                        del results[src]
+                self.assertDictEqual(results, {}, "Spurious extra move(s)")
+                move.reset_mock()
 
         def test_list_batch(self):
             """list_batch: doesn't raise exception when called"""
@@ -316,7 +343,15 @@ if sys.argv[0].endswith('nosetests'):  # pragma: nobranch
             with patch.object(sys, 'argv',
                               [__file__, '--move', '/', self.project.name]):
                 main()
-                self.assertTrue(mvbatch.called)
+                mvbatch.assert_called_with(self.expected, '/',
+                                           overwrite=False)
+
+            mvbatch.reset_mock()
+            with patch.object(sys, 'argv', [__file__, '--move', '/',
+                                            self.project.name, '--overwrite']):
+                main()
+                mvbatch.assert_called_with(self.expected, '/',
+                                           overwrite=True)
 
 if __name__ == '__main__':  # pragma: nocover
     main()
