@@ -296,5 +296,5 @@ if sys.argv[0].endswith('nosetests'):  # pragma: nobranch
                 main()
                 self.assertTrue(mvbatch.called)
 
-if __name__ == '__main__':
+if __name__ == '__main__':  # pragma: nocover
     main()
