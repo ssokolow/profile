@@ -193,24 +193,6 @@ if sys.argv[0].endswith('nosetests'):  # pragma: nobranch
             del self.project
             del self.expected
 
-        @staticmethod
-        def _touch_with_parents(path):
-            """Touch a file into existence, including parents if needed"""
-            parent = posixpath.dirname(path)
-            if not os.path.exists(parent):
-                os.makedirs(parent)
-
-            # `touch $fpath`
-            open(path, 'w').close()
-
-        @staticmethod
-        def _make_file_node(dom_parent, fpath):
-            """Add a file/url node stack as a child of the given parent"""
-            fnode = ET.SubElement(dom_parent, "file")
-            fnode.set("name", posixpath.basename(fpath))
-            unode = ET.SubElement(fnode, "url")
-            unode.text = fpath
-
         @classmethod
         def _add_files(cls, parent, dom_parent, parent_names=None, depth=0):
             """Generate a list of expected test files and populate test XML"""
@@ -243,40 +225,86 @@ if sys.argv[0].endswith('nosetests'):  # pragma: nobranch
                                                  depth - 1))
             return expect
 
-        def test_parse_k3b_proj(self):
-            """parse_k3b_proj: basic functionality"""
-            got = parse_k3b_proj(self.project.name)
-            self.assertDictEqual(self.expected, got)
+        @staticmethod
+        def _make_file_node(dom_parent, fpath):
+            """Add a file/url node stack as a child of the given parent"""
+            fnode = ET.SubElement(dom_parent, "file")
+            fnode.set("name", posixpath.basename(fpath))
+            unode = ET.SubElement(fnode, "url")
+            unode.text = fpath
 
-        @patch("os.remove", side_effect=_file_exists)
-        @patch("os.unlink", side_effect=_file_exists)
-        @patch("shutil.rmtree", side_effect=_file_exists)
-        def test_rm_batch(self, *mocks):
-            """rm_batch: deletes exactly the right files"""
-            rm_batch(self.expected)
-            results = [y[0][0] for x in mocks for y in x.call_args_list]
-            self.assertListEqual(sorted(self.expected), sorted(results))
+        @staticmethod
+        def _touch_with_parents(path):
+            """Touch a file into existence, including parents if needed"""
+            parent = posixpath.dirname(path)
+            if not os.path.exists(parent):
+                os.makedirs(parent)
 
-        def test_rm_batch_nonexistant(self):
-            """rm_batch: handles missing files gracefully"""
-            omitted = self.expected.keys()[3]
-            if os.path.isdir(omitted):
-                shutil.rmtree(omitted)
-            else:
-                os.unlink(self.expected.keys()[3])
-
-            rm_batch(self.expected)
-            rm_batch(self.expected)
-            for x in self.expected:
-                self.assertFalse(os.path.exists(x))
-
-            # TODO: This requires the directory-clearing code
-            # self.assertListEqual(os.listdir(self.root), [])
+            # `touch $fpath`
+            open(path, 'w').close()
 
         def test__file_exists(self):
             """_file_exists helper for @patch: normal function"""
             self.assertEquals(_file_exists('/'), DEFAULT)
             self.assertRaises(IOError, _file_exists, tempfile.mktemp())
+
+        def test_list_batch(self):
+            """list_batch: doesn't raise exception when called"""
+            list_batch(self.expected)
+
+        @patch("sys.exit")
+        @patch.object(sys, 'argv', [__file__, '-m', tempfile.mktemp()])
+        def test_main_bad_destdir(self, sysexit):  # pylint: disable=R0201
+            """main: calls sys.exit(2) for a bad -m path"""
+            main()
+            sysexit.assert_called_once_with(2)
+
+        @patch.object(sys.modules[__name__], "list_batch")
+        def test_main_list(self, lsbatch):
+            """main: list_batch is default but only with args"""
+            with patch.object(sys, 'argv', [__file__]):
+                main()
+                self.assertFalse(lsbatch.called,
+                                 "Nothing should happen if no args provided")
+
+            with patch.object(sys, 'argv',
+                              [__file__, self.project.name]):
+                main()
+                lsbatch.assert_called_once_with(self.expected)
+
+        @patch.object(sys.modules[__name__], "move_batch")
+        def test_main_move(self, mvbatch):
+            """main: --move triggers move_batch but only with args"""
+            with patch.object(sys, 'argv', [__file__, '--move', '/']):
+                main()
+                self.assertFalse(mvbatch.called,
+                                 "--move shouldn't be called without args")
+
+            with patch.object(sys, 'argv',
+                              [__file__, '--move', '/', self.project.name]):
+                main()
+                mvbatch.assert_called_once_with(self.expected, '/',
+                                           overwrite=False)
+
+            mvbatch.reset_mock()
+            with patch.object(sys, 'argv', [__file__, '--move', '/',
+                                            self.project.name, '--overwrite']):
+                main()
+                mvbatch.assert_called_once_with(self.expected, '/',
+                                           overwrite=True)
+
+        @patch.object(sys.modules[__name__], "rm_batch")
+        def test_main_remove(self, rmbatch):
+            """main: --remove triggers rm_batch but only with args"""
+            with patch.object(sys, 'argv', [__file__, '--remove']):
+                main()
+                self.assertFalse(rmbatch.called,
+                                 "--remove shouldn't be called without args")
+
+            with patch.object(sys, 'argv',
+                              [__file__, '--remove', self.project.name]):
+                main()
+                rmbatch.assert_called_once_with(self.expected)
 
         def test_mounty_join(self):
             """mounty_join: proper behaviour"""
@@ -311,63 +339,35 @@ if sys.argv[0].endswith('nosetests'):  # pragma: nobranch
                 self.assertDictEqual(results, {}, "Spurious extra move(s)")
                 move.reset_mock()
 
-        def test_list_batch(self):
-            """list_batch: doesn't raise exception when called"""
-            list_batch(self.expected)
+        def test_parse_k3b_proj(self):
+            """parse_k3b_proj: basic functionality"""
+            got = parse_k3b_proj(self.project.name)
+            self.assertDictEqual(self.expected, got)
 
-        @patch("sys.exit")
-        @patch.object(sys, 'argv', [__file__, '-m', tempfile.mktemp()])
-        def test_main_bad_destdir(self, sysexit):  # pylint: disable=R0201
-            """main: calls sys.exit(2) for a bad -m path"""
-            main()
-            sysexit.assert_called_once_with(2)
+        @patch("os.remove", side_effect=_file_exists)
+        @patch("os.unlink", side_effect=_file_exists)
+        @patch("shutil.rmtree", side_effect=_file_exists)
+        def test_rm_batch(self, *mocks):
+            """rm_batch: deletes exactly the right files"""
+            rm_batch(self.expected)
+            results = [y[0][0] for x in mocks for y in x.call_args_list]
+            self.assertListEqual(sorted(self.expected), sorted(results))
 
-        @patch.object(sys.modules[__name__], "list_batch")
-        def test_main_list(self, lsbatch):
-            """main: list_batch is default but only with args"""
-            with patch.object(sys, 'argv', [__file__]):
-                main()
-                self.assertFalse(lsbatch.called,
-                                 "Nothing should happen if no args provided")
+        def test_rm_batch_nonexistant(self):
+            """rm_batch: handles missing files gracefully"""
+            omitted = self.expected.keys()[3]
+            if os.path.isdir(omitted):
+                shutil.rmtree(omitted)
+            else:
+                os.unlink(self.expected.keys()[3])
 
-            with patch.object(sys, 'argv',
-                              [__file__, self.project.name]):
-                main()
-                lsbatch.assert_called_once_with(self.expected)
+            rm_batch(self.expected)
+            rm_batch(self.expected)
+            for x in self.expected:
+                self.assertFalse(os.path.exists(x))
 
-        @patch.object(sys.modules[__name__], "rm_batch")
-        def test_main_remove(self, rmbatch):
-            """main: --remove triggers rm_batch but only with args"""
-            with patch.object(sys, 'argv', [__file__, '--remove']):
-                main()
-                self.assertFalse(rmbatch.called,
-                                 "--remove shouldn't be called without args")
-
-            with patch.object(sys, 'argv',
-                              [__file__, '--remove', self.project.name]):
-                main()
-                rmbatch.assert_called_once_with(self.expected)
-
-        @patch.object(sys.modules[__name__], "move_batch")
-        def test_main_move(self, mvbatch):
-            """main: --move triggers move_batch but only with args"""
-            with patch.object(sys, 'argv', [__file__, '--move', '/']):
-                main()
-                self.assertFalse(mvbatch.called,
-                                 "--move shouldn't be called without args")
-
-            with patch.object(sys, 'argv',
-                              [__file__, '--move', '/', self.project.name]):
-                main()
-                mvbatch.assert_called_once_with(self.expected, '/',
-                                           overwrite=False)
-
-            mvbatch.reset_mock()
-            with patch.object(sys, 'argv', [__file__, '--move', '/',
-                                            self.project.name, '--overwrite']):
-                main()
-                mvbatch.assert_called_once_with(self.expected, '/',
-                                           overwrite=True)
+            # TODO: This requires the directory-clearing code
+            # self.assertListEqual(os.listdir(self.root), [])
 
 if __name__ == '__main__':  # pragma: nocover
     main()
