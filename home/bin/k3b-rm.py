@@ -269,7 +269,7 @@ if sys.argv[0].endswith('nosetests'):  # pragma: nobranch
             list_batch(self.expected_tmpl)
 
         @staticmethod
-        @patch("sys.exit")
+        @patch("sys.exit", autospec=True)
         @patch.object(sys, 'argv', [__file__, '-m', tempfile.mktemp()])
         def test_main_bad_destdir(sysexit):
             """L: main: calls sys.exit(2) for a bad -m path"""
@@ -284,7 +284,7 @@ if sys.argv[0].endswith('nosetests'):  # pragma: nobranch
                                      '/foo/baz', "%s + %s" % (path_a, path_b))
 
         @staticmethod
-        @patch("os.makedirs")
+        @patch("os.makedirs", autospec=True)
         @patch("__builtin__.open", mock_open(), create=True)
         def test_touch_with_parents(makedirs):
             """L: touch_with_parents: basic operation"""
@@ -335,7 +335,7 @@ if sys.argv[0].endswith('nosetests'):  # pragma: nobranch
             del self.project
             del self.expected
 
-        @patch.object(sys.modules[__name__], "list_batch")
+        @patch.object(sys.modules[__name__], "list_batch", autospec=True)
         def test_main_list(self, lsbatch):
             """H: main: list_batch is default but only with args"""
             with patch.object(sys, 'argv', [__file__]):
@@ -343,14 +343,15 @@ if sys.argv[0].endswith('nosetests'):  # pragma: nobranch
                 self.assertFalse(lsbatch.called,
                                  "Nothing should happen if no args provided")
 
-            with patch.object(sys, 'argv',
-                              [__file__, self.project.name]):
-                with patch.object(log, 'info'):  # Avoid polluting output
+            with patch.object(sys, 'argv', [__file__, self.project.name]):
+                # Avoid polluting output
+                with patch.object(log, 'info', autospec=True):
                     main()
                     lsbatch.assert_called_once_with(self.expected)
 
-        @patch.object(sys.modules[__name__], "remove_emptied_dirs")
-        @patch.object(sys.modules[__name__], "move_batch")
+        @patch.object(sys.modules[__name__], "remove_emptied_dirs",
+                      autospec=True)
+        @patch.object(sys.modules[__name__], "move_batch", autospec=True)
         def test_main_move(self, mvbatch, remdirs):
             """H: main: --move triggers move_batch but only with args"""
             with patch.object(sys, 'argv', [__file__, '--move', '/']):
@@ -376,7 +377,7 @@ if sys.argv[0].endswith('nosetests'):  # pragma: nobranch
                 remdirs.assert_called_once_with(self.expected)
 
         @patch.object(sys.modules[__name__], "remove_emptied_dirs")
-        @patch.object(sys.modules[__name__], "rm_batch")
+        @patch.object(sys.modules[__name__], "rm_batch", autospec=True)
         def test_main_remove(self, rmbatch, remdirs):
             """H: main: --remove triggers rm_batch but only with args"""
             with patch.object(sys, 'argv', [__file__, '--remove']):
@@ -391,7 +392,7 @@ if sys.argv[0].endswith('nosetests'):  # pragma: nobranch
                 rmbatch.assert_called_once_with(self.expected)
                 remdirs.assert_called_once(self.expected)
 
-        @patch("shutil.move", side_effect=_file_exists)
+        @patch("shutil.move", side_effect=_file_exists, autospec=True)
         def test_move_batch(self, move):
             """H: move_batch: puts files in the right places"""
             for overwrite, needed in ((0, 0), (0, 1), (1, 0), (1, 1)):
@@ -421,9 +422,9 @@ if sys.argv[0].endswith('nosetests'):  # pragma: nobranch
             got = parse_k3b_proj(self.project.name)
             self.assertDictEqual(self.expected, got)
 
-        @patch("os.remove", side_effect=_file_exists)
-        @patch("os.unlink", side_effect=_file_exists)
-        @patch("shutil.rmtree", side_effect=_file_exists)
+        @patch("os.remove", side_effect=_file_exists, autospec=True)
+        @patch("os.unlink", side_effect=_file_exists, autospec=True)
+        @patch("shutil.rmtree", side_effect=_file_exists, autospec=True)
         def test_rm_batch(self, *mocks):
             """H: rm_batch: deletes exactly the right files"""
             rm_batch(self.expected)
