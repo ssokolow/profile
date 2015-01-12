@@ -25,67 +25,10 @@ from zipfile import ZipFile
 
 # ---=== Actual Code ===---
 
-def parse_proj_directory(parent_path, node):
-    """Recursive helper for traversing k3b project XML"""
-    results = {}
-    for item in node:
-        path = posixpath.join(parent_path, item.get("name", ''))
-        if item.tag == 'file':
-            results[item.find('.//url').text] = path
-        elif item.tag == 'directory':
-            results.update(parse_proj_directory(path, item))
-    return results
-
-def parse_k3b_proj(path):
-    """Parse a K3b project file into a list of paths"""
-    with ZipFile(path) as zfh:
-        xml = zfh.read('maindata.xml')
-
-    root = ET.fromstring(xml)
-    del xml
-
-    return parse_proj_directory('/', root.find('./files'))
-
 def list_batch(src_pairs):
     """Given the output of L{parse_k3b_proj}, list all files"""
     for src_path, _ in sorted(src_pairs.items()):
         print(src_path)
-
-def mounty_join(a, b):
-    """Join paths C{a} and C{b} while ignoring leading separators on C{b}"""
-    b = b.lstrip(os.sep).lstrip(os.altsep or os.sep)
-    return posixpath.join(a, b)
-
-def move_batch(src_pairs, dest_dir, overwrite=False):
-    """Given output from L{parse_k3b_proj}, move all files and preserve paths
-       relative to the project root.
-    """
-    for src_path, dest_rel in sorted(src_pairs.items()):
-        if not os.path.exists(src_path):
-            print("Doesn't exist (Already handled?): %s" % src_path)
-            continue
-
-        dest_path = mounty_join(dest_dir, dest_rel)
-
-        if os.path.exists(dest_path) and not overwrite:
-            print("Skipping (target already exists): %r -> %r" %
-                  (src_path, dest_path))
-        else:
-            print("%r -> %r" % (src_path, dest_path))
-            shutil.move(src_path, dest_path)
-
-def rm_batch(src_pairs):
-    """Given the output of L{parse_k3b_proj}, remove all files"""
-    for src_path, _ in sorted(src_pairs.items()):
-        if not os.path.exists(src_path):
-            print("Doesn't exist (Already handled?): %s" % src_path)
-            continue
-
-        print("REMOVING: %s" % src_path)
-        if os.path.isdir(src_path):
-            shutil.rmtree(src_path)
-        else:
-            os.remove(src_path)
 
 def main():
     """setuptools-compatible entry point"""
@@ -118,6 +61,63 @@ def main():
             list_batch(files)
             print("\nRe-run this command with the --remove option to "
                   "actually remove these files.")
+
+def mounty_join(a, b):
+    """Join paths C{a} and C{b} while ignoring leading separators on C{b}"""
+    b = b.lstrip(os.sep).lstrip(os.altsep or os.sep)
+    return posixpath.join(a, b)
+
+def move_batch(src_pairs, dest_dir, overwrite=False):
+    """Given output from L{parse_k3b_proj}, move all files and preserve paths
+       relative to the project root.
+    """
+    for src_path, dest_rel in sorted(src_pairs.items()):
+        if not os.path.exists(src_path):
+            print("Doesn't exist (Already handled?): %s" % src_path)
+            continue
+
+        dest_path = mounty_join(dest_dir, dest_rel)
+
+        if os.path.exists(dest_path) and not overwrite:
+            print("Skipping (target already exists): %r -> %r" %
+                  (src_path, dest_path))
+        else:
+            print("%r -> %r" % (src_path, dest_path))
+            shutil.move(src_path, dest_path)
+
+def parse_k3b_proj(path):
+    """Parse a K3b project file into a list of paths"""
+    with ZipFile(path) as zfh:
+        xml = zfh.read('maindata.xml')
+
+    root = ET.fromstring(xml)
+    del xml
+
+    return parse_proj_directory('/', root.find('./files'))
+
+def parse_proj_directory(parent_path, node):
+    """Recursive helper for traversing k3b project XML"""
+    results = {}
+    for item in node:
+        path = posixpath.join(parent_path, item.get("name", ''))
+        if item.tag == 'file':
+            results[item.find('.//url').text] = path
+        elif item.tag == 'directory':
+            results.update(parse_proj_directory(path, item))
+    return results
+
+def rm_batch(src_pairs):
+    """Given the output of L{parse_k3b_proj}, remove all files"""
+    for src_path, _ in sorted(src_pairs.items()):
+        if not os.path.exists(src_path):
+            print("Doesn't exist (Already handled?): %s" % src_path)
+            continue
+
+        print("REMOVING: %s" % src_path)
+        if os.path.isdir(src_path):
+            shutil.rmtree(src_path)
+        else:
+            os.remove(src_path)
 
 # ---=== Test Suite ===---
 
