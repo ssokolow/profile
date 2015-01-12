@@ -136,10 +136,27 @@ if sys.argv[0].endswith('nosetests'):  # pragma: nobranch
             return DEFAULT
         else:
             raise IOError(errno.ENOENT, '%s: %r' %
-                           (os.strerror(errno.ENOENT), src))
+                          (os.strerror(errno.ENOENT), src))
 
-    class TestK3bRm(unittest.TestCase):  # pylint: disable=R0904
-        """Test suite for k3b-rm to be run via C{nosetests}."""
+    def _make_file_node(dom_parent, fpath):
+        """Add a file/url node stack as a child of the given parent"""
+        fnode = ET.SubElement(dom_parent, "file")
+        fnode.set("name", posixpath.basename(fpath))
+        unode = ET.SubElement(fnode, "url")
+        unode.text = fpath
+
+    def touch_with_parents(path):
+        """Touch a file into existence, including parents if needed"""
+        parent = posixpath.dirname(path)
+        if not os.path.exists(parent):
+            os.makedirs(parent)
+
+        # `touch $fpath`
+        # TODO: Test case to ensure this doesn't blank existing files
+        open(path, 'a').close()
+
+    class MockDataMixin(object):  # pylint: disable=R0903
+        """Code common to both light and heavy tests"""
 
         maxDiff = None
         longMessage = True
@@ -162,6 +179,76 @@ if sys.argv[0].endswith('nosetests'):  # pragma: nobranch
                             encoding="UTF-8",
                             xml_declaration=True)
 
+        @classmethod
+        def _add_files(cls, parent, dom_parent, parent_names=None, depth=0):
+            """Generate a list of expected test files and populate test XML"""
+            expect, parent_names = {}, parent_names or []
+            for x in '123ïøµñ':
+                fpath = posixpath.join(parent,
+                                       '_'.join(parent_names + [x]))
+
+                _make_file_node(dom_parent, fpath)
+                expect[fpath] = fpath[len(cls.root_placeholder):]
+
+            # For robustness-testing
+            ET.SubElement(dom_parent, "garbage")
+
+            # To test a purely hypothetical case
+            dpath = posixpath.join(parent, '_'.join(parent_names + ['dir']))
+            _make_file_node(dom_parent, dpath)
+            expect[dpath] = dpath[len(cls.root_placeholder):]
+
+            if depth:
+                for x in 'æßçð€f':
+                    path = posixpath.join(parent, x)
+
+                    subdir = ET.SubElement(dom_parent, "directory")
+                    subdir.set("name", x)
+
+                    expect.update(cls._add_files(path,
+                                                 subdir,
+                                                 parent_names + [x],
+                                                 depth - 1))
+            return expect
+
+    class TestK3bRmLightweight(unittest.TestCase, MockDataMixin
+                               ):  # pylint: disable=R0904
+        """Tests k3b-rm which require no test tree on the filesystem."""
+
+        @classmethod
+        def setUpClass(cls):  # NOQA
+            MockDataMixin.setUpClass()
+
+        def test__file_exists(self):
+            """L: _file_exists helper for @patch: normal function"""
+            self.assertEquals(_file_exists('/'), DEFAULT)
+            self.assertRaises(IOError, _file_exists, tempfile.mktemp())
+
+        def test_list_batch(self):
+            """L: list_batch: doesn't raise exception when called"""
+            list_batch(self.expected_tmpl)
+
+        @patch("sys.exit")
+        @patch.object(sys, 'argv', [__file__, '-m', tempfile.mktemp()])
+        def test_main_bad_destdir(self, sysexit):  # pylint: disable=R0201
+            """L: main: calls sys.exit(2) for a bad -m path"""
+            main()
+            sysexit.assert_called_once_with(2)
+
+        def test_mounty_join(self):
+            """L: mounty_join: proper behaviour"""
+            for path_a in ('/foo', '/foo/'):
+                for path_b in ('baz', '/baz', '//baz', '///baz'):
+                    self.assertEqual(mounty_join(path_a, path_b),
+                                     '/foo/baz', "%s + %s" % (path_a, path_b))
+
+    class TestK3bRm(unittest.TestCase, MockDataMixin):  # pylint: disable=R0904
+        """Test suite for k3b-rm to be run via C{nosetests}."""
+
+        @classmethod
+        def setUpClass(cls):  # NOQA
+            MockDataMixin.setUpClass()
+
         def setUp(self):  # NOQA
             """Generate all data necessary for a test run"""
             self.dest = tempfile.mkdtemp(prefix='k3b-rm_test-dest-')
@@ -183,85 +270,22 @@ if sys.argv[0].endswith('nosetests'):  # pragma: nobranch
                 if path.endswith('dir'):
                     os.makedirs(path)
                 else:
-                    self._touch_with_parents(path)
+                    touch_with_parents(path)
 
         def tearDown(self):  # NOQA
             for x in ('dest', 'root'):
-                shutil.rmtree(getattr(self, x))
+                try:
+                    shutil.rmtree(getattr(self, x))
+                except OSError:
+                    pass
                 delattr(self, x)
 
             del self.project
             del self.expected
 
-        @classmethod
-        def _add_files(cls, parent, dom_parent, parent_names=None, depth=0):
-            """Generate a list of expected test files and populate test XML"""
-            expect, parent_names = {}, parent_names or []
-            for x in '123ïøµñ':
-                fpath = posixpath.join(parent,
-                                       '_'.join(parent_names + [x]))
-
-                cls._make_file_node(dom_parent, fpath)
-                expect[fpath] = fpath[len(cls.root_placeholder):]
-
-            # For robustness-testing
-            ET.SubElement(dom_parent, "garbage")
-
-            # To test a purely hypothetical case
-            dpath = posixpath.join(parent, '_'.join(parent_names + ['dir']))
-            cls._make_file_node(dom_parent, dpath)
-            expect[dpath] = dpath[len(cls.root_placeholder):]
-
-            if depth:
-                for x in 'æßçð€f':
-                    path = posixpath.join(parent, x)
-
-                    subdir = ET.SubElement(dom_parent, "directory")
-                    subdir.set("name", x)
-
-                    expect.update(cls._add_files(path,
-                                                 subdir,
-                                                 parent_names + [x],
-                                                 depth - 1))
-            return expect
-
-        @staticmethod
-        def _make_file_node(dom_parent, fpath):
-            """Add a file/url node stack as a child of the given parent"""
-            fnode = ET.SubElement(dom_parent, "file")
-            fnode.set("name", posixpath.basename(fpath))
-            unode = ET.SubElement(fnode, "url")
-            unode.text = fpath
-
-        @staticmethod
-        def _touch_with_parents(path):
-            """Touch a file into existence, including parents if needed"""
-            parent = posixpath.dirname(path)
-            if not os.path.exists(parent):
-                os.makedirs(parent)
-
-            # `touch $fpath`
-            open(path, 'w').close()
-
-        def test__file_exists(self):
-            """_file_exists helper for @patch: normal function"""
-            self.assertEquals(_file_exists('/'), DEFAULT)
-            self.assertRaises(IOError, _file_exists, tempfile.mktemp())
-
-        def test_list_batch(self):
-            """list_batch: doesn't raise exception when called"""
-            list_batch(self.expected)
-
-        @patch("sys.exit")
-        @patch.object(sys, 'argv', [__file__, '-m', tempfile.mktemp()])
-        def test_main_bad_destdir(self, sysexit):  # pylint: disable=R0201
-            """main: calls sys.exit(2) for a bad -m path"""
-            main()
-            sysexit.assert_called_once_with(2)
-
         @patch.object(sys.modules[__name__], "list_batch")
         def test_main_list(self, lsbatch):
-            """main: list_batch is default but only with args"""
+            """H: main: list_batch is default but only with args"""
             with patch.object(sys, 'argv', [__file__]):
                 main()
                 self.assertFalse(lsbatch.called,
@@ -274,7 +298,7 @@ if sys.argv[0].endswith('nosetests'):  # pragma: nobranch
 
         @patch.object(sys.modules[__name__], "move_batch")
         def test_main_move(self, mvbatch):
-            """main: --move triggers move_batch but only with args"""
+            """H: main: --move triggers move_batch but only with args"""
             with patch.object(sys, 'argv', [__file__, '--move', '/']):
                 main()
                 self.assertFalse(mvbatch.called,
@@ -295,7 +319,7 @@ if sys.argv[0].endswith('nosetests'):  # pragma: nobranch
 
         @patch.object(sys.modules[__name__], "rm_batch")
         def test_main_remove(self, rmbatch):
-            """main: --remove triggers rm_batch but only with args"""
+            """H: main: --remove triggers rm_batch but only with args"""
             with patch.object(sys, 'argv', [__file__, '--remove']):
                 main()
                 self.assertFalse(rmbatch.called,
@@ -306,22 +330,14 @@ if sys.argv[0].endswith('nosetests'):  # pragma: nobranch
                 main()
                 rmbatch.assert_called_once_with(self.expected)
 
-        def test_mounty_join(self):
-            """mounty_join: proper behaviour"""
-            for path_a in ('/foo', '/foo/'):
-                for path_b in ('baz', '/baz', '//baz', '///baz'):
-                    self.assertEqual(mounty_join(path_a, path_b),
-                                     '/foo/baz', "%s + %s" % (path_a, path_b))
-
         @patch("shutil.move", side_effect=_file_exists)
         def test_move_batch(self, move):
-            """move_batch: puts files in the right places"""
+            """H: move_batch: puts files in the right places"""
             for overwrite, needed in ((0, 0), (0, 1), (1, 0), (1, 1)):
                 omitted = None
                 if needed:
                     omitted = self.expected.values()[0]
-                    self._touch_with_parents(mounty_join(
-                        self.dest, omitted))
+                    touch_with_parents(mounty_join(self.dest, omitted))
 
                 move_batch(self.expected, self.dest, overwrite)
 
@@ -340,7 +356,7 @@ if sys.argv[0].endswith('nosetests'):  # pragma: nobranch
                 move.reset_mock()
 
         def test_parse_k3b_proj(self):
-            """parse_k3b_proj: basic functionality"""
+            """H: parse_k3b_proj: basic functionality"""
             got = parse_k3b_proj(self.project.name)
             self.assertDictEqual(self.expected, got)
 
@@ -348,13 +364,13 @@ if sys.argv[0].endswith('nosetests'):  # pragma: nobranch
         @patch("os.unlink", side_effect=_file_exists)
         @patch("shutil.rmtree", side_effect=_file_exists)
         def test_rm_batch(self, *mocks):
-            """rm_batch: deletes exactly the right files"""
+            """H: rm_batch: deletes exactly the right files"""
             rm_batch(self.expected)
             results = [y[0][0] for x in mocks for y in x.call_args_list]
             self.assertListEqual(sorted(self.expected), sorted(results))
 
         def test_rm_batch_nonexistant(self):
-            """rm_batch: handles missing files gracefully"""
+            """H: rm_batch: handles missing files gracefully"""
             omitted = self.expected.keys()[3]
             if os.path.isdir(omitted):
                 shutil.rmtree(omitted)
