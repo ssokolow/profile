@@ -89,13 +89,13 @@ def move_batch(src_pairs, dest_dir, overwrite=False):
     """
     for src_path, dest_rel in sorted(src_pairs.items()):
         if not os.path.exists(src_path):
-            log.warn("Doesn't exist (Already handled?): %s", src_path)
+            log.warning("Doesn't exist (Already handled?): %s", src_path)
             continue
 
         dest_path = mounty_join(dest_dir, dest_rel)
 
         if os.path.exists(dest_path) and not overwrite:
-            log.warn("Skipping (target already exists): %r -> %r",
+            log.warning("Skipping (target already exists): %r -> %r",
                   src_path, dest_path)
         else:
             log.info("%r -> %r", src_path, dest_path)
@@ -125,7 +125,7 @@ def parse_proj_directory(parent_path, node):
 def remove_emptied_dirs(file_paths):
     """Remove folders which have been emptied by removing the given files"""
 
-    # TODO: Proper test suite for this
+    # TODO: Proper test cases for this
     while file_paths:
         diminished = set()
 
@@ -135,7 +135,7 @@ def remove_emptied_dirs(file_paths):
             parent = os.path.dirname(path)
             try:  # We do this for atomic test/act behaviour
                 os.rmdir(parent)
-            except OSError, err:
+            except OSError as err:
                 if err.errno in (errno.ENOENT, errno.EACCES, errno.ENOTEMPTY):
                     pass
                 else:
@@ -150,7 +150,7 @@ def rm_batch(src_pairs):
     """Given the output of L{parse_k3b_proj}, remove all files"""
     for src_path, _ in sorted(src_pairs.items()):
         if not os.path.exists(src_path):
-            log.warn("Doesn't exist (Already handled?): %s", src_path)
+            log.warning("Doesn't exist (Already handled?): %s", src_path)
             continue
 
         log.info("REMOVING: %s", src_path)
@@ -161,9 +161,16 @@ def rm_batch(src_pairs):
 
 # ---=== Test Suite ===---
 
-if sys.argv[0].endswith('nosetests'):  # pragma: nobranch
+if sys.argv[0].rstrip('3').endswith('nosetests'):  # pragma: nobranch
     import errno, tempfile, unittest
-    from cStringIO import StringIO
+
+    if sys.version_info.major < 3:
+        from cStringIO import StringIO
+        BytesIO = StringIO
+        open_path = '__builtin__.open'
+    else:
+        from io import StringIO, BytesIO
+        open_path = 'builtins.open'
 
     try:
         from unittest.mock import patch, DEFAULT  # pylint: disable=E0611,F0401
@@ -213,7 +220,7 @@ if sys.argv[0].endswith('nosetests'):  # pragma: nobranch
 
             cls.expected_tmpl = cls._add_files(cls.root_placeholder,
                                                files, depth=2)
-            cls.xmldata_tmpl = StringIO()
+            cls.xmldata_tmpl = BytesIO()
             test_tree = ET.ElementTree(test_dom)
             test_tree.write(cls.xmldata_tmpl,
                             encoding="UTF-8",
@@ -223,7 +230,7 @@ if sys.argv[0].endswith('nosetests'):  # pragma: nobranch
         def _add_files(cls, parent, dom_parent, parent_names=None, depth=0):
             """Generate a list of expected test files and populate test XML"""
             expect, parent_names = {}, parent_names or []
-            for x in '123ïøµñ':
+            for x in u'123ïøµñ':
                 fpath = posixpath.join(parent,
                                        '_'.join(parent_names + [x]))
 
@@ -239,7 +246,7 @@ if sys.argv[0].endswith('nosetests'):  # pragma: nobranch
             expect[dpath] = dpath[len(cls.root_placeholder):]
 
             if depth:
-                for x in 'æßçð€f':
+                for x in u'æßçð€f':
                     path = posixpath.join(parent, x)
 
                     subdir = ET.SubElement(dom_parent, "directory")
@@ -261,7 +268,7 @@ if sys.argv[0].endswith('nosetests'):  # pragma: nobranch
 
         def test__file_exists(self):
             """L: _file_exists helper for @patch: normal function"""
-            self.assertEquals(_file_exists('/'), DEFAULT)
+            self.assertEqual(_file_exists('/'), DEFAULT)
             self.assertRaises(IOError, _file_exists, tempfile.mktemp())
 
         def test_list_batch(self):
@@ -285,7 +292,7 @@ if sys.argv[0].endswith('nosetests'):  # pragma: nobranch
 
         @staticmethod
         @patch("os.makedirs", autospec=True)
-        @patch("__builtin__.open", mock_open(), create=True)
+        @patch(open_path, mock_open(), create=True)
         def test_touch_with_parents(makedirs):
             """L: touch_with_parents: basic operation"""
             touch_with_parents('/bar/foo')
@@ -308,9 +315,12 @@ if sys.argv[0].endswith('nosetests'):  # pragma: nobranch
             self.project = tempfile.NamedTemporaryFile(prefix='k3b-rm_test-',
                                                        suffix='.k3b')
 
-            xmldata = StringIO(
-                self.xmldata_tmpl.getvalue().decode('UTF-8').replace(
-                    self.root_placeholder, self.root).encode('UTF-8'))
+            tmp = self.xmldata_tmpl.getvalue().decode('UTF-8').replace(
+                self.root_placeholder, self.root)
+            if sys.version_info.major < 3:
+                tmp = tmp.encode('UTF-8')
+
+            xmldata = StringIO(tmp)
             with ZipFile(self.project, 'w') as zobj:
                 zobj.writestr("maindata.xml", xmldata.getvalue())
 
@@ -398,7 +408,7 @@ if sys.argv[0].endswith('nosetests'):  # pragma: nobranch
             for overwrite, needed in ((0, 0), (0, 1), (1, 0), (1, 1)):
                 omitted = None
                 if needed:
-                    omitted = self.expected.values()[0]
+                    omitted = list(self.expected.values())[0]
                     touch_with_parents(mounty_join(self.dest, omitted))
 
                 move_batch(self.expected, self.dest, overwrite)
@@ -433,11 +443,11 @@ if sys.argv[0].endswith('nosetests'):  # pragma: nobranch
 
         def test_rm_batch_nonexistant(self):
             """H: rm_batch: handles missing files gracefully"""
-            omitted = self.expected.keys()[3]
+            omitted = list(self.expected.keys())[3]
             if os.path.isdir(omitted):
                 shutil.rmtree(omitted)
             else:
-                os.unlink(self.expected.keys()[3])
+                os.unlink(list(self.expected.keys())[3])
 
             rm_batch(self.expected)
             rm_batch(self.expected)
