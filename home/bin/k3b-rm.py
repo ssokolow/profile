@@ -230,7 +230,7 @@ if sys.argv[0].rstrip('3').endswith('nosetests'):  # pragma: nobranch
         def _add_files(cls, parent, dom_parent, parent_names=None, depth=0):
             """Generate a list of expected test files and populate test XML"""
             expect, parent_names = {}, parent_names or []
-            for x in u'123ïøµñ':
+            for x in u'12µñの':
                 fpath = posixpath.join(parent,
                                        '_'.join(parent_names + [x]))
 
@@ -246,7 +246,7 @@ if sys.argv[0].rstrip('3').endswith('nosetests'):  # pragma: nobranch
             expect[dpath] = dpath[len(cls.root_placeholder):]
 
             if depth:
-                for x in u'æßçð€f':
+                for x in u'45ßðあ':
                     path = posixpath.join(parent, x)
 
                     subdir = ET.SubElement(dom_parent, "directory")
