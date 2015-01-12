@@ -9,8 +9,6 @@ been written to a disc. (Useful in concert with gaff-k3b)
 @note: This currently explicitly uses C{posixpath} rather than C{os.path}
        since, as a POSIX-only program, K3b is going to be writing project files
        that always use UNIX path separators.
-
-@todo: Need test directory and filenames containing unicode characters.
 """
 
 from __future__ import (absolute_import, division, print_function,
@@ -127,6 +125,10 @@ if sys.argv[0].endswith('nosetests'):  # pragma: nobranch
 
     class TestK3bRm(unittest.TestCase):  # pylint: disable=R0904
         """Test suite for k3b-rm to be run via C{nosetests}."""
+
+        maxDiff = None
+        longMessage = True
+
         def setUp(self):  # NOQA
             """Generate all data necessary for a test run"""
             # Avoid importing these in non-test operation
@@ -150,10 +152,10 @@ if sys.argv[0].endswith('nosetests'):  # pragma: nobranch
                 zobj.writestr("maindata.xml", xmldata.getvalue())
 
         def tearDown(self):  # NOQA
-            shutil.rmtree(self.root)
-            shutil.rmtree(self.dest)
-            del self.root
-            del self.dest
+            for x in ('dest', 'root'):
+                shutil.rmtree(getattr(self, x))
+                delattr(self, x)
+
             del self.project
             del self.expected
 
@@ -169,11 +171,12 @@ if sys.argv[0].endswith('nosetests'):  # pragma: nobranch
             # Avoid importing this in non-test operation
 
             expect, parent_names = {}, parent_names or []
-            for x in range(1, 7):
+            for x in '1234567ïœøµñó':
                 fpath = posixpath.join(parent,
-                                       '_'.join(parent_names + [str(x)]))
+                                       '_'.join(parent_names + [x]))
 
                 # `touch $fpath`
+                print(fpath)
                 open(fpath, 'w').close()
                 self._make_file_node(dom_parent, fpath)
 
@@ -189,10 +192,10 @@ if sys.argv[0].endswith('nosetests'):  # pragma: nobranch
             expect[dpath] = dpath[len(self.root):]
 
             if depth:
-                for x in 'abcdef':
+                for x in 'æßçð€f':
                     path = posixpath.join(parent, x)
 
-                    os.makedirs(path)
+                    os.makedirs(path.encode(sys.getfilesystemencoding()))
 
                     subdir = ET.SubElement(dom_parent, "directory")
                     subdir.set("name", x)
@@ -219,7 +222,7 @@ if sys.argv[0].endswith('nosetests'):  # pragma: nobranch
 
         def test_rm_batch_nonexistant(self):
             """rm_batch: handles missing files gracefully"""
-            os.unlink(posixpath.join(self.root, 'b', 'b_3'))
+            os.unlink(self.expected.keys()[3])
             rm_batch(self.expected)
             rm_batch(self.expected)
             for x in self.expected:
