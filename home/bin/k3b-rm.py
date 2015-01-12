@@ -168,8 +168,9 @@ if sys.argv[0].endswith('nosetests'):  # pragma: nobranch
 
     try:
         from unittest.mock import patch, DEFAULT  # pylint: disable=E0611,F0401
+        from unittest.mock import mock_open  # pylint: disable=E0611,F0401
     except ImportError:
-        from mock import patch, DEFAULT
+        from mock import patch, DEFAULT, mock_open
 
     def _file_exists(src, *_):
         """Used with C{side_effect} to make filesystem mocks stricter"""
@@ -193,7 +194,6 @@ if sys.argv[0].endswith('nosetests'):  # pragma: nobranch
             os.makedirs(parent)
 
         # `touch $fpath`
-        # TODO: Test case to ensure this doesn't blank existing files
         open(path, 'a').close()
 
     class MockDataMixin(object):  # pylint: disable=R0903
@@ -282,6 +282,17 @@ if sys.argv[0].endswith('nosetests'):  # pragma: nobranch
                 for path_b in ('baz', '/baz', '//baz', '///baz'):
                     self.assertEqual(mounty_join(path_a, path_b),
                                      '/foo/baz', "%s + %s" % (path_a, path_b))
+
+        @staticmethod
+        @patch("os.makedirs")
+        @patch("__builtin__.open", mock_open(), create=True)
+        def test_touch_with_parents(makedirs):
+            """L: touch_with_parents: basic operation"""
+            touch_with_parents('/bar/foo')
+            makedirs.assert_called_once_with('/bar')
+
+            # pylint: disable=E1101
+            open.assert_called_once_with('/bar/foo', 'a')
 
     class TestK3bRm(unittest.TestCase, MockDataMixin):  # pylint: disable=R0904
         """Test suite for k3b-rm to be run via C{nosetests}."""
