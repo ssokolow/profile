@@ -115,6 +115,9 @@ def main():
         log.critical("Target path is not a directory: %s", opts.target)
         sys.exit(2)
 
+    # TODO: Hook up dry_run
+    filesystem = FSWrapper(overwrite=opts.overwrite)
+
     for path in args:
         files = parse_k3b_proj(path)
         # TODO: Log and continue in case of exception here
@@ -126,7 +129,8 @@ def main():
             move_batch(files, opts.target, overwrite=opts.overwrite)
             remove_emptied_dirs(files)
         elif opts.remove:
-            rm_batch(files)
+            for src_path in sorted(files.keys()):
+                filesystem.remove(src_path)
             remove_emptied_dirs(files)
         else:
             list_batch(files)
@@ -199,21 +203,6 @@ def remove_emptied_dirs(file_paths):
 
         # Iteratively walk up until we run out of emptied ancestors
         file_paths = diminished
-
-def rm_batch(src_pairs):
-    """Given the output of L{parse_k3b_proj}, remove all files"""
-    for src_path, _ in sorted(src_pairs.items()):
-        if not os.path.exists(src_path):
-            log.warning("Doesn't exist (Already handled?): %s", src_path)
-            continue
-
-        log.info("REMOVING: %s", src_path)
-        if os.path.isdir(src_path):
-            shutil.rmtree(src_path)
-        else:
-            os.remove(src_path)
-        # TODO: Log and continue in case of exception here
-
 
 # ---=== Test Suite ===---
 
@@ -565,20 +554,28 @@ if sys.argv[0].rstrip('3').endswith('nosetests'):  # pragma: nobranch
                 remdirs.assert_called_once_with(self.expected)
 
         @patch.object(sys.modules[__name__], "remove_emptied_dirs")
-        @patch.object(sys.modules[__name__], "rm_batch", autospec=True)
-        def test_main_remove(self, rmbatch, remdirs):
-            """H: main: --remove triggers rm_batch but only with args"""
+        @patch.object(FSWrapper, "move", autospec=True)
+        @patch.object(FSWrapper, "remove", autospec=True)
+        def test_main_remove(self, remove, move, remdirs):
+            """H: main: --remove calls remove() but only properly"""
             with patch.object(sys, 'argv', [__file__, '--remove']):
                 main()
-                self.assertFalse(rmbatch.called,
+                self.assertFalse(move.called)
+                self.assertFalse(remove.called,
                                  "--remove shouldn't be called without args")
                 self.assertFalse(remdirs.called)
 
             with patch.object(sys, 'argv',
                               [__file__, '--remove', self.project.name]):
                 main()
-                rmbatch.assert_called_once_with(self.expected)
+                self.assertFalse(move.called)
                 remdirs.assert_called_once(self.expected)
+
+                results = [x[0][1] for x in remove.call_args_list]
+                self.assertListEqual(sorted(self.expected), sorted(results))
+
+            # TODO: I'll want a test analogous to the old
+            #       test_rm_batch_nonexistant
 
         @patch("shutil.move", side_effect=_file_exists, autospec=True)
         def test_move_batch(self, move):
@@ -641,32 +638,6 @@ if sys.argv[0].rstrip('3').endswith('nosetests'):  # pragma: nobranch
             for path in keepers:
                 self.assertTrue(os.path.exists(path),
                                 "Must not remove files or sub-target dirs")
-
-        @patch("os.remove", side_effect=_file_exists, autospec=True)
-        @patch("os.unlink", side_effect=_file_exists, autospec=True)
-        @patch("shutil.rmtree", side_effect=_file_exists, autospec=True)
-        def test_rm_batch(self, *mocks):
-            """H: rm_batch: deletes exactly the right files"""
-            rm_batch(self.expected)
-            results = [y[0][0] for x in mocks for y in x.call_args_list]
-            self.assertListEqual(sorted(self.expected), sorted(results))
-
-        def test_rm_batch_nonexistant(self):
-            """H: rm_batch: handles missing files gracefully"""
-            omitted = list(self.expected.keys())[3]
-            if os.path.isdir(omitted):
-                shutil.rmtree(omitted)
-            else:
-                os.unlink(list(self.expected.keys())[3])
-
-            rm_batch(self.expected)
-            rm_batch(self.expected)
-            for x in self.expected:
-                self.assertFalse(os.path.exists(x))
-
-            remove_emptied_dirs(x.replace(self.root_placeholder, self.root)
-                                for x in self.expected.keys())
-            self.assertFalse(os.path.exists(self.root))
 
 if __name__ == '__main__':  # pragma: nocover
     main()
