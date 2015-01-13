@@ -135,10 +135,9 @@ def remove_emptied_dirs(file_paths):
             try:  # We do this for atomic test/act behaviour
                 os.rmdir(parent)
             except OSError as err:
-                if err.errno == errno.ENOTEMPTY:
-                    pass
-                else:
-                    log.warning("Could not remove: %s", parent)
+                if err.errno != errno.ENOTEMPTY:
+                    log.warning("Could not remove: %s (%s)", parent,
+                                errno.errorcode[err.errno])
             else:
                 diminished.add(parent)
 
@@ -302,12 +301,12 @@ if sys.argv[0].rstrip('3').endswith('nosetests'):  # pragma: nobranch
             # Test that a failure to normalize input doesn't cause EINVAL
             remove_emptied_dirs(['/.' + os.path.join(
                 tempfile.mktemp(dir='/'))])
-            mock.assert_called_once_with(ANY, '/')
+            mock.assert_called_once_with(ANY, '/', 'EBUSY')
             mock.reset_mock()
 
             # Separately test response to EBUSY by trying to rmdir('/')
             remove_emptied_dirs(['/bin'])
-            mock.assert_called_once_with(ANY, '/')
+            mock.assert_called_once_with(ANY, '/', 'EBUSY')
 
         @staticmethod
         @patch("os.makedirs", autospec=True)
