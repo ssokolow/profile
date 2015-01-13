@@ -306,7 +306,8 @@ if sys.argv[0].rstrip('3').endswith('nosetests'):  # pragma: nobranch
                 patcher.start()
                 self.addCleanup(patcher.stop)
 
-            for mpath in ("os.remove", "os.unlink", "shutil.rmtree"):
+            for mpath in ("os.remove", "os.unlink", "shutil.rmtree",
+                          "os.rename", "shutil.move"):
                 set_mock(patch(mpath, side_effect=_file_exists, autospec=True))
             for meth in ('warn', 'info'):
                 set_mock(patch.object(log, meth, autospec=True))
@@ -324,10 +325,66 @@ if sys.argv[0].rstrip('3').endswith('nosetests'):  # pragma: nobranch
             assert getattr(shutil.rmtree, 'called', None) is None
             shutil.rmtree(self.testroot)
 
+        def _do_move_tsts(self, wrapper, src, dest):
+            """The actual subTest code for test_move"""
+            should_succeed = wrapper.overwrite or not os.path.exists(dest)
+
+            for m in (os.rename, shutil.move):
+                self.assertFalse(m.called)  # pylint: disable=E1101
+
+            self.assertEqual(should_succeed, wrapper.move(src, dest),
+                   "Must return True on successful removal")
+            if wrapper.dry_run or not should_succeed:
+                for m in (os.rename, shutil.move):
+                    self.assertFalse(m.called)  # pylint: disable=E1101
+            else:
+                m = shutil.move
+                m.assert_called_once_with(      # pylint: disable=E1101
+                                          src, dest)
+                m.reset_mock()                  # pylint: disable=E1101
+
+            if should_succeed:
+                log.info.assert_called_once_with(ANY, src, dest)
+                log.info.reset_mock()
+            else:
+                log.warn.assert_called_once_with(ANY, dest)
+                log.warn.reset_mock()
+
+        def test_init_members(self):
+            """FSWrapper.__init__: public members are set properly"""
+            wrapper = FSWrapper()
+            self.assertFalse(wrapper.overwrite, "overwrite=False not default!")
+            self.assertFalse(wrapper.dry_run, "dry_run=False not default!")
+
+            for overwrite in (True, False):
+                for dry_run in (True, False):
+                    wrapper = FSWrapper(overwrite, dry_run)
+                    self.assertEqual(overwrite, wrapper.overwrite)
+                    self.assertEqual(dry_run, wrapper.dry_run)
+
         def test_move(self):
             """FSWrapper.move: normal operation"""
+
+            paths = []
+            for _ in range(2):
+                fd, fpath = tempfile.mkstemp(dir=self.testroot)
+                dpath = tempfile.mkdtemp(dir=self.testroot)
+                os.close(fd)
+                paths.extend([fpath, dpath])
+
             for dry_run in (True, False):
-                self.fail("TODO")
+                for owrite in (True, False):
+                    wrapper = FSWrapper(dry_run=dry_run, overwrite=owrite)
+
+                    for src_idx in (0, 1):
+                        self._do_move_tsts(wrapper, paths[src_idx],
+                                           paths[src_idx] + '_a')
+
+                        # Test overwrite behaviour for both files and folders
+                        # as both source and destination
+                        for dest_idx in (2, 3):
+                            self._do_move_tsts(wrapper, paths[src_idx],
+                                               paths[dest_idx])
 
         def test_move_bad_paths(self):
             """FSWrapper.move: failures due to bad source/destination"""
