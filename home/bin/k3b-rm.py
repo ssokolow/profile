@@ -66,7 +66,11 @@ def main():
 
     for path in args:
         files = parse_k3b_proj(path)
+        # TODO: Log and continue in case of exception here
 
+        # TODO: Rewrite to use argparse so these can be subcommands and there
+        #       will be no ambiguity over order of priority.
+        # TODO: Audit that bad parse_k3b_output is handled gracefully
         if opts.target:
             move_batch(files, opts.target, overwrite=opts.overwrite)
             remove_emptied_dirs(files)
@@ -100,6 +104,7 @@ def move_batch(src_pairs, dest_dir, overwrite=False):
         else:
             log.info("%r -> %r", src_path, dest_path)
             shutil.move(src_path, dest_path)
+            # TODO: Log and continue in case of exception here
 
 def parse_k3b_proj(path):
     """Parse a K3b project file into a list of paths"""
@@ -156,6 +161,8 @@ def rm_batch(src_pairs):
             shutil.rmtree(src_path)
         else:
             os.remove(src_path)
+        # TODO: Log and continue in case of exception here
+
 
 # ---=== Test Suite ===---
 
