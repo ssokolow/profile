@@ -167,7 +167,7 @@ if sys.argv[0].rstrip('3').endswith('nosetests'):  # pragma: nobranch
         from cStringIO import StringIO
         BytesIO = StringIO
         open_path = '__builtin__.open'
-    else:
+    else:  # pragma: nocover
         from io import StringIO, BytesIO
         open_path = 'builtins.open'
 
@@ -285,8 +285,9 @@ if sys.argv[0].rstrip('3').endswith('nosetests'):  # pragma: nobranch
             move_batch({missing_path: '/foo'}, '/tmp')
             mock.assert_called_once_with(ANY, missing_path)
 
+        @staticmethod
         @patch.object(log, 'warning', autospec=True)
-        def test_remove_emptied_dirs_exceptional(self, mock):
+        def test_remove_emptied_dirs_exceptional(mock):
             """L: remove_emptied_dirs: exceptional input"""
 
             # Test that an empty options list doesn't cause errors
