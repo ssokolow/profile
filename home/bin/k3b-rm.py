@@ -310,6 +310,9 @@ if sys.argv[0].rstrip('3').endswith('nosetests'):  # pragma: nobranch
         """
 
         def setUp(self):  # NOQA
+            self.testroot = tempfile.mkdtemp(prefix='k3b-rm_test-')
+            self.addCleanup(self.cleanup)
+
             def set_mock(patcher):  # pylint: disable=C0111
                 patcher.start()
                 self.addCleanup(patcher.stop)
@@ -319,12 +322,21 @@ if sys.argv[0].rstrip('3').endswith('nosetests'):  # pragma: nobranch
             for meth in ('warn', 'info'):
                 set_mock(patch.object(log, meth, autospec=True))
 
+
         def tearDown(self):  # NOQA
             #  Simplify tests by expecting reset_mock() on used mocks.
             for mock in (os.remove, os.unlink, shutil.rmtree,
                          log.info, log.warn):
                 self.assertFalse(mock.called,  # pylint: disable=E1103
                                 "Shouldn't have been called: %s" % mock)
+
+        def cleanup(self):
+            """Stuff which should be called after other cleanups, regardless"""
+            # Make sure we call this after the mocks are deactivated
+            assert getattr(shutil.rmtree, 'called', None) is None
+
+            if os.path.exists(self.testroot):
+                shutil.rmtree(self.testroot)
 
         def test_move(self):
             """L: FSWrapper.move: normal operation"""
@@ -356,7 +368,23 @@ if sys.argv[0].rstrip('3').endswith('nosetests'):  # pragma: nobranch
         def test_remove(self):
             """L: FSWrapper.remove: normal operation"""
             for dry_run in (True, False):
-                self.fail("TODO")
+                wrapper = FSWrapper(dry_run=dry_run)
+
+                test_fd, test_path = tempfile.mkstemp(dir=self.testroot)
+                os.close(test_fd)
+
+                for mock, path in ((os.remove, test_path),
+                                   (shutil.rmtree, self.testroot)):
+                    self.assertFalse(mock.called)
+                    self.assertTrue(wrapper.remove(path),
+                                   "Must return True on successful removal")
+                    if dry_run:
+                        self.assertFalse(mock.called)
+                    else:
+                        mock.assert_called_once_with(path)
+                        mock.reset_mock()
+                    log.info.assert_called_once_with(ANY, path)
+                    log.info.reset_mock()
 
         def test_remove_nonexistant(self):
             """L: FSWrapper.remove: nonexistant targets"""
