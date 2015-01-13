@@ -280,6 +280,63 @@ if sys.argv[0].rstrip('3').endswith('nosetests'):  # pragma: nobranch
                         depth - 1))
             return expect
 
+    class TestFSWrapper(unittest.TestCase):  # pylint: disable=R0904
+        """Tests for L{FSWrapper}
+
+        @todo: Consider using unittest2 so I can get access to the Python 3.4
+            self.subTest context manager for things like "for dry_run in ..."
+        """
+
+        def setUp(self):  # NOQA
+            def set_mock(patcher):  # pylint: disable=C0111
+                patcher.start()
+                self.addCleanup(patcher.stop)
+
+            for mpath in ("os.remove", "os.unlink", "shutil.rmtree"):
+                set_mock(patch(mpath, side_effect=_file_exists, autospec=True))
+            for meth in ('warn', 'info'):
+                set_mock(patch.object(log, meth, autospec=True))
+
+        def tearDown(self):  # NOQA
+            #  Simplify tests by expecting reset_mock() on used mocks.
+            for mock in (os.remove, os.unlink, shutil.rmtree,
+                         log.info, log.warn):
+                self.assertFalse(mock.called,  # pylint: disable=E1103
+                                "Shouldn't have been called: %s" % mock)
+
+        def test_move(self):
+            """L: FSWrapper.move: normal operation"""
+            for dry_run in (True, False):
+                self.fail("TODO")
+
+        def test_move_nonexistant(self):
+            """L: FSWrapper.move: nonexistant sources"""
+            test_path = tempfile.mktemp()
+
+            for dry_run in (True, False):
+                wrapper = FSWrapper(dry_run=dry_run)
+
+                # This test also checks that "source missing" takes priority
+                # over "destination already exists" in all circumstances.
+                self.assertEqual([test_path], wrapper.move(test_path, '/'),
+                                 "Must return skipped entries")
+                log.warn.assert_called_once_with(ANY, test_path)
+                log.warn.reset_mock()
+
+        def test_move_target_exists(self):
+            """L: FSWrapper.move: target exists (overwrite=False)"""
+            for dry_run in (True, False):
+                src, dest = '/bin/sh', '/bin/echo'
+
+                wrapper = FSWrapper(dry_run=dry_run)
+                self.assertFalse(wrapper.overwrite,
+                                 "FSWrapper(overwrite=False) must be default")
+
+                self.assertEqual([src], wrapper.move(src, dest),
+                                 "Must return skipped entries")
+                log.warn.assert_called_once_with(ANY, dest)
+                log.warn.reset_mock()
+
     class TestK3bRmLightweight(unittest.TestCase, MockDataMixin
                                ):  # pylint: disable=R0904
         """Tests for k3b-rm which require no test tree on the filesystem."""
