@@ -236,7 +236,7 @@ if sys.argv[0].rstrip('3').endswith('nosetests'):  # pragma: nobranch
             """Generate a list of expected test files and populate test XML"""
             expect, parent = {}, os.sep + os.sep.join(ancestors)
 
-            for x in list(u'12µñの') + ['dir']:
+            for x in list(u'12ñの') + ['dir']:
                 fpath = posixpath.join(parent, '_'.join(ancestors + [x]))
                 cls._make_file_node(dom_parent, fpath)
                 expect[mounty_join(cls.root_placeholder, fpath)] = fpath
@@ -245,7 +245,7 @@ if sys.argv[0].rstrip('3').endswith('nosetests'):  # pragma: nobranch
             ET.SubElement(dom_parent, "garbage")
 
             if depth:
-                for x in u'45ßðあ':
+                for x in u'45ðあ':
                     expect.update(cls._add_files(ancestors + [x],
                         ET.SubElement(dom_parent, "directory", name=x),
                         depth - 1))
@@ -459,7 +459,7 @@ if sys.argv[0].rstrip('3').endswith('nosetests'):  # pragma: nobranch
 
         def test_remove_emptied_dirs(self):
             """H: remove_emptied_dirs: basic function"""
-            dir_names = u'56ð§あ'  # Make sure this is at least 3 entries long
+            dir_names = u'56ðあ'  # Make sure this is at least 3 entries long
             targets, keepers = [], set()
 
             def make_children(parent, depth=3):
