@@ -41,42 +41,42 @@ class FSWrapper(object):
     def move(self, src, dest):
         """See L{shutil.move}.
 
-        @return: List of paths not moved for use by L{rewrite}
+        @return: C{True} if the move was successful or failed because the
+            source doesn't exist and the destination already does.
+            (Used by the code for rewriting paths within other files)
+        @rtype: C{bool}
         """
+        dest_exists = os.path.exists(dest)
         if not os.path.exists(src):
             log.warn("Cannot move nonexistant path: %s", src)
-            return [src]
-            # TODO: Rethink. Where do I distinguish "target exists" and
-            #       "source missing" as reasons for skipping when returning?
-        if os.path.exists(dest) and not self.overwrite:
+            return dest_exists
+        elif dest_exists and not self.overwrite:
             log.warn("Target exists. Skipping: %s", dest)
-        else:
-            log.info("%r -> %r", src, dest)
-            if not self.dry_run:
-                shutil.move(src, dest)
-                # TODO: Log and continue in case of exception here
-                return []
-        return [src]
+            return False
+
+        log.info("%r -> %r", src, dest)
+        if not self.dry_run:
+            shutil.move(src, dest)
+            # TODO: Log and continue in case of exception here
+        return True
 
     def remove(self, path):
         """See L{os.unlink} or L{shutil.rmtree} as appropriate.
 
-        @return: List of paths not moved for use by L{rewrite}
+        @return: C{True} on success
         """
         if not os.path.exists(path):
             log.warn("Cannot remove nonexistant path: %s", path)
-            # TODO: Rethink. Where do I distinguish "target exists" and
-            #       "source missing" as reasons for skipping when returning?
-        else:
-            log.info("Removing: %s", path)
-            if self.dry_run:
-                return []
+            return False
+
+        log.info("Removing: %s", path)
+        if not self.dry_run:
             if os.path.isdir(path):
                 shutil.rmtree(path)
             else:
                 os.remove(path)
             # TODO: Log and continue in case of exception here
-        return [path]
+        return True
 
 
 def list_batch(src_pairs):
@@ -331,33 +331,27 @@ if sys.argv[0].rstrip('3').endswith('nosetests'):  # pragma: nobranch
             for dry_run in (True, False):
                 self.fail("TODO")
 
-        def test_move_nonexistant(self):
-            """L: FSWrapper.move: nonexistant sources"""
-            test_path = tempfile.mktemp()
+        def test_move_bad_paths(self):
+            """L: FSWrapper.move: failures due to bad source/destination"""
+            test_src = tempfile.mktemp()
+            test_dest = tempfile.mktemp()
 
             for dry_run in (True, False):
                 wrapper = FSWrapper(dry_run=dry_run)
 
-                # This test also checks that "source missing" takes priority
-                # over "destination already exists" in all circumstances.
-                self.assertEqual([test_path], wrapper.move(test_path, '/'),
-                                 "Must return skipped entries")
-                log.warn.assert_called_once_with(ANY, test_path)
-                log.warn.reset_mock()
-
-        def test_move_target_exists(self):
-            """L: FSWrapper.move: target exists (overwrite=False)"""
-            for dry_run in (True, False):
-                src, dest = '/bin/sh', '/bin/echo'
-
-                wrapper = FSWrapper(dry_run=dry_run)
-                self.assertFalse(wrapper.overwrite,
-                                 "FSWrapper(overwrite=False) must be default")
-
-                self.assertEqual([src], wrapper.move(src, dest),
-                                 "Must return skipped entries")
-                log.warn.assert_called_once_with(ANY, dest)
-                log.warn.reset_mock()
+                # Note: While it's less portable, I use POSIX command paths
+                #       to avoid the overhead of setting up and tearing down
+                #       test files when existence should be the only check.
+                for src, dest, expected in (
+                        (test_src, test_dest, False),
+                        (test_src, '/', True),
+                        ('/bin/sh', '/bin/echo', False)):
+                    self.assertEqual(wrapper.move(src, dest), expected,
+                                     "Must return %s for %s -> %s" %
+                                     (expected, src, dest))
+                    log.warn.assert_called_once_with(ANY,
+                                    dest if os.path.exists(src) else src)
+                    log.warn.reset_mock()
 
         def test_remove(self):
             """L: FSWrapper.remove: normal operation"""
@@ -370,8 +364,8 @@ if sys.argv[0].rstrip('3').endswith('nosetests'):  # pragma: nobranch
 
             for dry_run in (True, False):
                 wrapper = FSWrapper(dry_run=dry_run)
-                self.assertEqual([test_path], wrapper.remove(test_path),
-                                 "Must return skipped entries")
+                self.assertFalse(wrapper.remove(test_path),
+                                 "Must return False if file doesn't exist")
 
                 log.warn.assert_called_once_with(ANY, test_path)
                 log.warn.reset_mock()
