@@ -57,6 +57,28 @@ class FSWrapper(object):
                 # TODO: Log and continue in case of exception here
                 return []
         return [src]
+
+    def remove(self, path):
+        """See L{os.unlink} or L{shutil.rmtree} as appropriate.
+
+        @return: List of paths not moved for use by L{rewrite}
+        """
+        if not os.path.exists(path):
+            log.warn("Cannot remove nonexistant path: %s", path)
+            # TODO: Rethink. Where do I distinguish "target exists" and
+            #       "source missing" as reasons for skipping when returning?
+        else:
+            log.info("Removing: %s", path)
+            if self.dry_run:
+                return []
+            if os.path.isdir(path):
+                shutil.rmtree(path)
+            else:
+                os.remove(path)
+            # TODO: Log and continue in case of exception here
+        return [path]
+
+
 def list_batch(src_pairs):
     """Given the output of L{parse_k3b_proj}, list all files"""
     for src_path in sorted(src_pairs.keys()):
@@ -335,6 +357,23 @@ if sys.argv[0].rstrip('3').endswith('nosetests'):  # pragma: nobranch
                 self.assertEqual([src], wrapper.move(src, dest),
                                  "Must return skipped entries")
                 log.warn.assert_called_once_with(ANY, dest)
+                log.warn.reset_mock()
+
+        def test_remove(self):
+            """L: FSWrapper.remove: normal operation"""
+            for dry_run in (True, False):
+                self.fail("TODO")
+
+        def test_remove_nonexistant(self):
+            """L: FSWrapper.remove: nonexistant targets"""
+            test_path = tempfile.mktemp()
+
+            for dry_run in (True, False):
+                wrapper = FSWrapper(dry_run=dry_run)
+                self.assertEqual([test_path], wrapper.remove(test_path),
+                                 "Must return skipped entries")
+
+                log.warn.assert_called_once_with(ANY, test_path)
                 log.warn.reset_mock()
 
     class TestK3bRmLightweight(unittest.TestCase, MockDataMixin
