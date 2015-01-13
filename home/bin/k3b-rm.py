@@ -253,7 +253,7 @@ if sys.argv[0].rstrip('3').endswith('nosetests'):  # pragma: nobranch
 
     class TestK3bRmLightweight(unittest.TestCase, MockDataMixin
                                ):  # pylint: disable=R0904
-        """Tests k3b-rm which require no test tree on the filesystem."""
+        """Tests for k3b-rm which require no test tree on the filesystem."""
 
         @classmethod
         def setUpClass(cls):  # NOQA
@@ -342,7 +342,7 @@ if sys.argv[0].rstrip('3').endswith('nosetests'):  # pragma: nobranch
 
             tmp = self.xmldata_tmpl.getvalue().decode('UTF-8').replace(
                 self.root_placeholder, self.root)
-            if sys.version_info.major < 3:
+            if sys.version_info.major < 3:  # pragma: nobranch
                 tmp = tmp.encode('UTF-8')
 
             xmldata = StringIO(tmp)
