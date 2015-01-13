@@ -277,6 +277,14 @@ if sys.argv[0].rstrip('3').endswith('nosetests'):  # pragma: nobranch
                     self.assertEqual(mounty_join(path_a, path_b),
                                      '/foo/baz', "%s + %s" % (path_a, path_b))
 
+        @staticmethod
+        @patch.object(log, 'warning', autospec=True)
+        def test_move_batch_missing(mock):
+            """L: move_batch: missing input"""
+            missing_path = tempfile.mktemp()
+            move_batch({missing_path: '/foo'}, '/tmp')
+            mock.assert_called_once_with(ANY, missing_path)
+
         @patch.object(log, 'warning', autospec=True)
         def test_remove_emptied_dirs_exceptional(self, mock):
             """L: remove_emptied_dirs: exceptional input"""
