@@ -28,6 +28,35 @@ from zipfile import ZipFile
 
 # ---=== Actual Code ===---
 
+class FSWrapper(object):
+    """Centralized overwrite/dry-run control and log-as-fail wrapper."""
+
+    overwrite = False
+    dry_run = False
+
+    def __init__(self, overwrite=overwrite, dry_run=dry_run):
+        self.overwrite = overwrite
+        self.dry_run = dry_run
+
+    def move(self, src, dest):
+        """See L{shutil.move}.
+
+        @return: List of paths not moved for use by L{rewrite}
+        """
+        if not os.path.exists(src):
+            log.warn("Cannot move nonexistant path: %s", src)
+            return [src]
+            # TODO: Rethink. Where do I distinguish "target exists" and
+            #       "source missing" as reasons for skipping when returning?
+        if os.path.exists(dest) and not self.overwrite:
+            log.warn("Target exists. Skipping: %s", dest)
+        else:
+            log.info("%r -> %r", src, dest)
+            if not self.dry_run:
+                shutil.move(src, dest)
+                # TODO: Log and continue in case of exception here
+                return []
+        return [src]
 def list_batch(src_pairs):
     """Given the output of L{parse_k3b_proj}, list all files"""
     for src_path in sorted(src_pairs.keys()):
