@@ -173,9 +173,9 @@ if sys.argv[0].rstrip('3').endswith('nosetests'):  # pragma: nobranch
 
     try:
         from unittest.mock import (     # pylint: disable=E0611,F0401
-            patch, ANY, DEFAULT, mock_open)
+            patch, call, ANY, DEFAULT, mock_open)
     except ImportError:
-        from mock import patch, ANY, DEFAULT, mock_open
+        from mock import patch, call, ANY, DEFAULT, mock_open
 
     def _file_exists(src, *_):
         """Used with C{side_effect} to make filesystem mocks stricter"""
@@ -258,9 +258,15 @@ if sys.argv[0].rstrip('3').endswith('nosetests'):  # pragma: nobranch
             self.assertEqual(_file_exists('/'), DEFAULT)
             self.assertRaises(IOError, _file_exists, tempfile.mktemp())
 
-        def test_list_batch(self):
+        @patch.object(log, 'info', autospec=True)
+        def test_list_batch(self, mock):
             """L: list_batch: doesn't raise exception when called"""
+            list_batch({})
+            self.assertFalse(mock.called)
+
             list_batch(self.expected_tmpl)
+            self.assertListEqual(sorted(mock.call_args_list), sorted(
+                             [call(x) for x in self.expected_tmpl.keys()]))
 
         @staticmethod
         @patch("sys.exit", autospec=True)
