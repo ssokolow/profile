@@ -486,6 +486,7 @@ if sys.argv[0].rstrip('3').endswith('nosetests'):  # pragma: nobranch
             self.root = tempfile.mkdtemp(prefix='k3b-rm_test-src-')
             self.project = tempfile.NamedTemporaryFile(prefix='k3b-rm_test-',
                                                        suffix='.k3b')
+            self.addCleanup(self.cleanup)
 
             tmp = self.xmldata_tmpl.getvalue().decode('UTF-8').replace(
                 self.root_placeholder, self.root)
@@ -506,13 +507,18 @@ if sys.argv[0].rstrip('3').endswith('nosetests'):  # pragma: nobranch
                 else:
                     touch_with_parents(path)
 
-        def tearDown(self):  # NOQA
+        def cleanup(self):  # NOQA
             for x in ('dest', 'root'):
-                try:
-                    shutil.rmtree(getattr(self, x))
-                except OSError:
-                    pass
-                delattr(self, x)
+                path = getattr(self, x, None)
+                if path is not None:
+                    try:
+                        # Make sure we call this after mocks are deactivated
+                        assert getattr(shutil.rmtree, 'called', None) is None
+
+                        shutil.rmtree(getattr(self, x))
+                    except OSError:
+                        pass
+                    delattr(self, x)
 
             del self.project
             del self.expected
