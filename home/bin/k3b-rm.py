@@ -125,21 +125,20 @@ def parse_proj_directory(parent_path, node):
 def remove_emptied_dirs(file_paths):
     """Remove folders which have been emptied by removing the given files"""
 
-    # TODO: Proper test cases for this
     while file_paths:
         diminished = set()
 
         #  Sort in reverse order to appromixate os.walk(topdown=False) for
         #  improved efficiency.
         for path in sorted(file_paths, reverse=True):
-            parent = os.path.dirname(path)
+            parent = os.path.normpath(os.path.dirname(path))
             try:  # We do this for atomic test/act behaviour
                 os.rmdir(parent)
             except OSError as err:
-                if err.errno in (errno.ENOENT, errno.EACCES, errno.ENOTEMPTY):
+                if err.errno == errno.ENOTEMPTY:
                     pass
                 else:
-                    raise
+                    log.warning("Could not remove: %s", parent)
             else:
                 diminished.add(parent)
 
@@ -173,10 +172,10 @@ if sys.argv[0].rstrip('3').endswith('nosetests'):  # pragma: nobranch
         open_path = 'builtins.open'
 
     try:
-        from unittest.mock import patch, DEFAULT  # pylint: disable=E0611,F0401
-        from unittest.mock import mock_open  # pylint: disable=E0611,F0401
+        from unittest.mock import (     # pylint: disable=E0611,F0401
+            patch, ANY, DEFAULT, mock_open)
     except ImportError:
-        from mock import patch, DEFAULT, mock_open
+        from mock import patch, ANY, DEFAULT, mock_open
 
     def _file_exists(src, *_):
         """Used with C{side_effect} to make filesystem mocks stricter"""
@@ -277,6 +276,23 @@ if sys.argv[0].rstrip('3').endswith('nosetests'):  # pragma: nobranch
                 for path_b in ('baz', '/baz', '//baz', '///baz'):
                     self.assertEqual(mounty_join(path_a, path_b),
                                      '/foo/baz', "%s + %s" % (path_a, path_b))
+
+        @patch.object(log, 'warning', autospec=True)
+        def test_remove_emptied_dirs_exceptional(self, mock):
+            """L: remove_emptied_dirs: exceptional input"""
+
+            # Test that an empty options list doesn't cause errors
+            remove_emptied_dirs([])
+
+            # Test that a failure to normalize input doesn't cause EINVAL
+            remove_emptied_dirs(['/.' + os.path.join(
+                tempfile.mktemp(dir='/'))])
+            mock.assert_called_once_with(ANY, '/')
+            mock.reset_mock()
+
+            # Separately test response to EBUSY by trying to rmdir('/')
+            remove_emptied_dirs(['/bin'])
+            mock.assert_called_once_with(ANY, '/')
 
         @staticmethod
         @patch("os.makedirs", autospec=True)
@@ -419,6 +435,38 @@ if sys.argv[0].rstrip('3').endswith('nosetests'):  # pragma: nobranch
             """H: parse_k3b_proj: basic functionality"""
             got = parse_k3b_proj(self.project.name)
             self.assertDictEqual(self.expected, got)
+
+        def test_remove_emptied_dirs(self):
+            """H: remove_emptied_dirs: basic function"""
+            dir_names = u'56ð§あ'  # Make sure this is at least 3 entries long
+            targets, keepers = [], set()
+
+            def make_children(parent, depth=3):
+                """Recursive helper for generating a test tree"""
+                targets.append(os.path.join(parent, 'dummy'))
+                fpath = os.path.join(parent, u'keepœr')
+                idx = dir_names.find(os.path.basename(parent))
+                if idx == 1:
+                    touch_with_parents(fpath)
+                    keepers.add(fpath)
+                elif idx == 2:
+                    os.makedirs(fpath)
+                    keepers.add(fpath)
+
+                if depth:
+                    for x in dir_names:
+                        make_children(os.path.join(parent, x), depth - 1)
+            make_children(self.dest)
+
+            remove_emptied_dirs(targets)
+            for path, dirs, files in os.walk(self.dest):
+                if path.endswith(u'keepœr'):
+                    continue
+                self.assertNotEqual(dirs + files, [], "Must remove all emptied"
+                                    "dirs")
+            for path in keepers:
+                self.assertTrue(os.path.exists(path),
+                                "Must not remove files or sub-target dirs")
 
         @patch("os.remove", side_effect=_file_exists, autospec=True)
         @patch("os.unlink", side_effect=_file_exists, autospec=True)
