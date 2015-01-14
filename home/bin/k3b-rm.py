@@ -32,7 +32,7 @@ class FSWrapper(object):
     """Centralized overwrite/dry-run control and log-as-fail wrapper."""
 
     overwrite = False
-    dry_run = False
+    dry_run = True  # Fail safe if the connection to --dry-run is broken
 
     def __init__(self, overwrite=overwrite, dry_run=dry_run):
         self.overwrite = overwrite
@@ -138,7 +138,7 @@ def main():
         log.critical("Target path is not a directory: %s", args.target)
         return 2
 
-    # TODO: Test --dry-run
+    # TODO: Test that --overwrite and --dry-run always get passed through
     filesystem = FSWrapper(overwrite=args.overwrite, dry_run=args.dry_run)
 
     for path in args.paths:
@@ -376,7 +376,7 @@ if sys.argv[0].rstrip('3').endswith('nosetests'):  # pragma: nobranch
             """FSWrapper.__init__: public members are set properly"""
             wrapper = FSWrapper()
             self.assertFalse(wrapper.overwrite, "overwrite=False not default!")
-            self.assertFalse(wrapper.dry_run, "dry_run=False not default!")
+            self.assertTrue(wrapper.dry_run, "dry_run=True not default!")
 
             for overwrite in (True, False):
                 for dry_run in (True, False):
