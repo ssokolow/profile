@@ -310,15 +310,16 @@ if sys.argv[0].rstrip('3').endswith('nosetests'):  # pragma: nobranch
                 patcher.start()
                 self.addCleanup(patcher.stop)
 
-            for mpath in ("os.remove", "os.unlink", "shutil.rmtree",
-                          "os.rename", "shutil.move"):
+            for mpath in ("os.remove", "os.unlink", "os.rmdir", "os.rename",
+                          "shutil.rmtree", "shutil.move"):
                 set_mock(patch(mpath, side_effect=_file_exists, autospec=True))
             for meth in ('warn', 'info'):
                 set_mock(patch.object(log, meth, autospec=True))
 
         def tearDown(self):  # NOQA
             #  Simplify tests by expecting reset_mock() on used mocks.
-            for mock in (os.remove, os.unlink, shutil.rmtree,
+            for mock in (os.remove, os.unlink, os.rmdir,
+                         shutil.rmtree, shutil.move,
                          log.info, log.warn):
                 self.assertFalse(mock.called,  # pylint: disable=E1103
                                 "Shouldn't have been called: %s" % mock)
@@ -473,13 +474,15 @@ if sys.argv[0].rstrip('3').endswith('nosetests'):  # pragma: nobranch
                     self.assertEqual(mounty_join(path_a, path_b),
                                      '/foo/baz', "%s + %s" % (path_a, path_b))
 
-        @staticmethod
         @patch.object(log, 'warning', autospec=True)
-        def test_remove_emptied_dirs_exceptional(mock):
+        def test_remove_emptied_dirs_exceptional(self, mock):
             """L: remove_emptied_dirs: exceptional input"""
 
-            # Test that an empty options list doesn't cause errors
-            remove_emptied_dirs([])
+            with patch("os.rmdir", autospec=True):
+                # Test that an empty options list doesn't cause errors or call
+                # os.rmdir unnecessarily
+                remove_emptied_dirs([])
+                self.assertFalse(os.rmdir.called)  # pylint: disable=E1101
 
             # Test that a failure to normalize input doesn't cause EINVAL
             remove_emptied_dirs(['/.' + os.path.join(
