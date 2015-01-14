@@ -145,16 +145,14 @@ def main():
         files = parse_k3b_proj(path)
         # TODO: Log and continue in case of exception here
 
-        if args.mode == 'mv':
-            # TODO: Replace this with a looped call to filesystem.move,
-            # adjust the tests, and delete move_batch.
-            move_batch(files, args.target, overwrite=args.overwrite)
-        else:
-            for src_path, _ in sorted(files.items()):
-                if args.mode == 'rm':
-                    filesystem.remove(src_path)
-                elif args.mode == 'ls':
-                    _print(src_path)
+        for src_path, dest_rel in sorted(files.items()):
+            if args.mode == 'mv':
+                dest_path = mounty_join(args.target, dest_rel)
+                filesystem.move(src_path, dest_path)
+            elif args.mode == 'rm':
+                filesystem.remove(src_path)
+            elif args.mode == 'ls':
+                _print(src_path)
 
     if args.remove_leftovers:
         remove_emptied_dirs(files)
@@ -163,25 +161,6 @@ def mounty_join(a, b):
     """Join paths C{a} and C{b} while ignoring leading separators on C{b}"""
     b = b.lstrip(os.sep).lstrip(os.altsep or os.sep)
     return posixpath.join(a, b)
-
-def move_batch(src_pairs, dest_dir, overwrite=False):
-    """Given output from L{parse_k3b_proj}, move all files and preserve paths
-       relative to the project root.
-    """
-    for src_path, dest_rel in sorted(src_pairs.items()):
-        if not os.path.exists(src_path):
-            log.warning("Doesn't exist (Already handled?): %s", src_path)
-            continue
-
-        dest_path = mounty_join(dest_dir, dest_rel)
-
-        if os.path.exists(dest_path) and not overwrite:
-            log.warning("Skipping (target already exists): %r -> %r",
-                  src_path, dest_path)
-        else:
-            log.info("%r -> %r", src_path, dest_path)
-            shutil.move(src_path, dest_path)
-            # TODO: Log and continue in case of exception here
 
 def parse_k3b_proj(path):
     """Parse a K3b project file into a list of paths"""
@@ -493,14 +472,6 @@ if sys.argv[0].rstrip('3').endswith('nosetests'):  # pragma: nobranch
 
         @staticmethod
         @patch.object(log, 'warning', autospec=True)
-        def test_move_batch_missing(mock):
-            """L: move_batch: missing input"""
-            missing_path = tempfile.mktemp()
-            move_batch({missing_path: '/foo'}, '/tmp')
-            mock.assert_called_once_with(ANY, missing_path)
-
-        @staticmethod
-        @patch.object(log, 'warning', autospec=True)
         def test_remove_emptied_dirs_exceptional(mock):
             """L: remove_emptied_dirs: exceptional input"""
 
@@ -598,24 +569,21 @@ if sys.argv[0].rstrip('3').endswith('nosetests'):  # pragma: nobranch
 
         @patch.object(sys.modules[__name__], "remove_emptied_dirs",
                       autospec=True)
-        @patch.object(sys.modules[__name__], "move_batch", autospec=True)
-        def test_main_move(self, mvbatch, remdirs):
+        @patch.object(FSWrapper, "move", autospec=True)
+        def test_main_move(self, mv, remdirs):
             """H: main: mv triggers move_batch but only with args"""
-            with patch.object(sys, 'argv',
-                              [__file__, 'mv', self.project.name, '/']):
-                main()
-                mvbatch.assert_called_once_with(self.expected, '/',
-                                           overwrite=False)
-                remdirs.assert_called_once_with(self.expected)
+            for args in [[], ['--overwrite']]:
+                with patch.object(sys, 'argv',
+                        [__file__, 'mv', self.project.name, '/'] + args):
+                    main()
+                    results = [x[0][1:] for x in mv.call_args_list]
+                    self.assertListEqual(sorted(results),
+                        sorted([(x, mounty_join('/', self.expected[x]))
+                                for x in self.expected]))
+                    remdirs.assert_called_once_with(self.expected)
 
-            mvbatch.reset_mock()
-            remdirs.reset_mock()
-            with patch.object(sys, 'argv', [__file__, 'mv', self.project.name,
-                                            '/', '--overwrite']):
-                main()
-                mvbatch.assert_called_once_with(self.expected, '/',
-                                           overwrite=True)
-                remdirs.assert_called_once_with(self.expected)
+                    mv.reset_mock()
+                    remdirs.reset_mock()
 
         @patch.object(sys.modules[__name__], "remove_emptied_dirs")
         @patch.object(FSWrapper, "move", autospec=True)
@@ -633,31 +601,6 @@ if sys.argv[0].rstrip('3').endswith('nosetests'):  # pragma: nobranch
 
             # TODO: I'll want a test analogous to the old
             #       test_rm_batch_nonexistant
-
-        @patch("shutil.move", side_effect=_file_exists, autospec=True)
-        def test_move_batch(self, move):
-            """H: move_batch: puts files in the right places"""
-            for overwrite, needed in ((0, 0), (0, 1), (1, 0), (1, 1)):
-                omitted = None
-                if needed:
-                    omitted = list(self.expected.values())[0]
-                    touch_with_parents(mounty_join(self.dest, omitted))
-
-                move_batch(self.expected, self.dest, overwrite)
-
-                results = {x[0][0]: x[0][1] for x in move.call_args_list}
-                for src, dest_rel in self.expected.items():
-                    if dest_rel == omitted and not overwrite:
-                        self.assertNotIn(src, results,
-                                         "Overwrote when not allowed")
-                    else:
-                        self.assertIn(src, results, "Failed to move file")
-                        self.assertEqual(mounty_join(self.dest, dest_rel),
-                                         results[src],
-                                         "Moved to wrong location")
-                        del results[src]
-                self.assertDictEqual(results, {}, "Spurious extra move(s)")
-                move.reset_mock()
 
         def test_parse_k3b_proj(self):
             """H: parse_k3b_proj: basic functionality"""
