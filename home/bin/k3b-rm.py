@@ -183,6 +183,9 @@ def parse_proj_directory(parent_path, node):
             results.update(parse_proj_directory(path, item))
     return results
 
+# TODO: Amend the tests to make sure os.rmdir() isn't called with dry_run
+# TODO: Tie this into FSWrapper so it can dry-run.
+# TODO: Make this call log.info so dry-running has proper utility.
 def remove_emptied_dirs(file_paths):
     """Remove folders which have been emptied by removing the given files"""
 
