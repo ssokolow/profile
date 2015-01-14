@@ -78,64 +78,86 @@ class FSWrapper(object):
             # TODO: Log and continue in case of exception here
         return True
 
-
-def list_batch(src_pairs):
-    """Given the output of L{parse_k3b_proj}, list all files"""
-    for src_path in sorted(src_pairs.keys()):
-        log.info(src_path)
+def _print(*args, **kwargs):
+    """Wrapper for C{print} to allow mocking"""
+    print(*args, **kwargs)
 
 def main():
     """setuptools-compatible entry point"""
-    from optparse import OptionParser
-    parser = OptionParser(version="%%prog v%s" % __version__,
-            usage="%prog [options] <K3b Project File> ...",
-            description=__doc__.replace('\r\n', '\n').split('\n--snip--\n')[0])
-    parser.add_option('-v', '--verbose', action="count", dest="verbose",
-        default=3, help="Increase the verbosity. Use twice for extra effect")
-    parser.add_option('-q', '--quiet', action="count", dest="quiet",
-        default=0, help="Decrease the verbosity. Use twice for extra effect")
-    parser.add_option('-m', '--move', action="store", dest="target",
-        default=None, help="Move the files to the provided path.")
-    parser.add_option('--overwrite', action="store_true", dest="overwrite",
-        default=False, help="Allow --move to overwrite files at the target.")
-    parser.add_option('--remove', action="store_true", dest="remove",
-        default=False, help="Actually remove the files found.")
+    import argparse
+    parser = argparse.ArgumentParser(
+        description=__doc__.replace('\r\n', '\n').split('\n--snip--\n')[0])
+    parser.add_argument('--version', action='version',
+        version="%%(prog)s v%s" % __version__)
+    parser.set_defaults(overwrite=False, dry_run=False,
+                        verbose=False, quiet=False)
 
-    opts, args = parser.parse_args()
+    subparsers = parser.add_subparsers(title='available subcommands')
+
+    def new_subcommand(*args, **kwargs):
+        """C{subparsers.add_parser} wrapper which adds common arguments."""
+        parser = subparsers.add_parser(*args, **kwargs)
+        parser.add_argument('-v', '--verbose', action="count", dest="verbose",
+            default=3,
+            help="Increase the verbosity. Use twice for extra effect")
+        parser.add_argument('-q', '--quiet', action="count", dest="quiet",
+            default=0,
+            help="Decrease the verbosity. Use twice for extra effect")
+        parser.add_argument('-n', '--dry-run', action="store_true",
+            dest="dry_run",
+            help="Don't actually modify the filesystem. Just simulate.")
+        parser.add_argument('paths', metavar='project_file', nargs='+',
+            help="K3b project file to read from")
+        return parser
+
+    new_subcommand('rm', help='Remove the given files'
+                   ).set_defaults(remove_leftovers=True, mode='rm')
+
+    mv_parser = new_subcommand('mv', help='Move the files to the given path')
+    mv_parser.add_argument('--overwrite', action="store_true",
+        dest="overwrite",
+        help="Allow %(prog)s to overwrite files at the target location.")
+    mv_parser.add_argument('target', metavar='target_dir',
+        help="Directory to move files into")
+    mv_parser.set_defaults(remove_leftovers=True, mode='mv')
+
+    new_subcommand('ls', help='List paths retrieved'
+                   ).set_defaults(remove_leftovers=False, mode='ls')
+
+    args = parser.parse_args()
 
     # Set up clean logging to stderr
     log_levels = [logging.CRITICAL, logging.ERROR, logging.WARNING,
                   logging.INFO, logging.DEBUG]
-    opts.verbose = min(opts.verbose - opts.quiet, len(log_levels) - 1)
-    opts.verbose = max(opts.verbose, 0)
-    logging.basicConfig(level=log_levels[opts.verbose],
+    args.verbose = min(args.verbose - args.quiet, len(log_levels) - 1)
+    args.verbose = max(args.verbose, 0)
+    logging.basicConfig(level=log_levels[args.verbose],
                         format='%(levelname)s: %(message)s')
 
-    if opts.target and not os.path.isdir(opts.target):
-        log.critical("Target path is not a directory: %s", opts.target)
-        sys.exit(2)
+    if args.mode == 'mv' and not os.path.isdir(args.target):
+        log.critical("Target path is not a directory: %s", args.target)
+        return 2
 
-    # TODO: Hook up dry_run
-    filesystem = FSWrapper(overwrite=opts.overwrite)
+    # TODO: Test --dry-run
+    filesystem = FSWrapper(overwrite=args.overwrite, dry_run=args.dry_run)
 
-    for path in args:
+    for path in args.paths:
         files = parse_k3b_proj(path)
         # TODO: Log and continue in case of exception here
 
-        # TODO: Rewrite to use argparse so these can be subcommands and there
-        #       will be no ambiguity over order of priority.
-        # TODO: Audit that bad parse_k3b_output is handled gracefully
-        if opts.target:
-            move_batch(files, opts.target, overwrite=opts.overwrite)
-            remove_emptied_dirs(files)
-        elif opts.remove:
-            for src_path in sorted(files.keys()):
-                filesystem.remove(src_path)
-            remove_emptied_dirs(files)
+        if args.mode == 'mv':
+            # TODO: Replace this with a looped call to filesystem.move,
+            # adjust the tests, and delete move_batch.
+            move_batch(files, args.target, overwrite=args.overwrite)
         else:
-            list_batch(files)
-            log.info("Re-run this command with the --remove option to actually"
-                     " remove these files.")
+            for src_path, _ in sorted(files.items()):
+                if args.mode == 'rm':
+                    filesystem.remove(src_path)
+                elif args.mode == 'ls':
+                    _print(src_path)
+
+    if args.remove_leftovers:
+        remove_emptied_dirs(files)
 
 def mounty_join(a, b):
     """Join paths C{a} and C{b} while ignoring leading separators on C{b}"""
@@ -455,23 +477,12 @@ if sys.argv[0].rstrip('3').endswith('nosetests'):  # pragma: nobranch
             self.assertEqual(_file_exists('/'), DEFAULT)
             self.assertRaises(IOError, _file_exists, tempfile.mktemp())
 
-        @patch.object(log, 'info', autospec=True)
-        def test_list_batch(self, mock):
-            """L: list_batch: doesn't raise exception when called"""
-            list_batch({})
-            self.assertFalse(mock.called)
-
-            list_batch(self.expected_tmpl)
-            self.assertListEqual(sorted(mock.call_args_list), sorted(
-                             [call(x) for x in self.expected_tmpl.keys()]))
-
-        @staticmethod
-        @patch("sys.exit", autospec=True)
-        @patch.object(sys, 'argv', [__file__, '-m', tempfile.mktemp()])
-        def test_main_bad_destdir(sysexit):
-            """L: main: calls sys.exit(2) for a bad -m path"""
-            main()
-            sysexit.assert_called_once_with(2)
+        @patch.object(sys, 'argv',
+                      [__file__, 'mv', tempfile.mktemp(), tempfile.mktemp()])
+        def test_main_bad_destdir(self):
+            """L: main: calls sys.exit(2) for a bad mv target"""
+            self.assertEqual(main(), 2, "Must exit with status 2 on bad mv "
+                                        "target")
 
         def test_mounty_join(self):
             """L: mounty_join: proper behaviour"""
@@ -568,33 +579,30 @@ if sys.argv[0].rstrip('3').endswith('nosetests'):  # pragma: nobranch
             del self.project
             del self.expected
 
-        @patch.object(sys.modules[__name__], "list_batch", autospec=True)
-        def test_main_list(self, lsbatch):
-            """H: main: list_batch is default but only with args"""
-            with patch.object(sys, 'argv', [__file__]):
-                main()
-                self.assertFalse(lsbatch.called,
-                                 "Nothing should happen if no args provided")
+        # TODO: Decide how to address this
+        # @staticmethod
+        # def test_main_argparse_hole() :
+        #    """Hole in argparse isn't triggered"""
+        #    with patch.object(sys, 'argv', [__file__]):
+        #        main()
 
-            with patch.object(sys, 'argv', [__file__, self.project.name]):
-                # Avoid polluting output
-                with patch.object(log, 'info', autospec=True):
-                    main()
-                    lsbatch.assert_called_once_with(self.expected)
+        @patch.object(sys.modules[__name__], "_print")
+        def test_main_ls(self, mock):
+            """H: main: ls subcommand function"""
+            with patch.object(sys, 'argv',
+                              [__file__, 'ls', self.project.name]):
+                main()
+                self.assertListEqual(
+                    sorted(mock.call_args_list), sorted(
+                        [call(x) for x in self.expected.keys()]))
 
         @patch.object(sys.modules[__name__], "remove_emptied_dirs",
                       autospec=True)
         @patch.object(sys.modules[__name__], "move_batch", autospec=True)
         def test_main_move(self, mvbatch, remdirs):
-            """H: main: --move triggers move_batch but only with args"""
-            with patch.object(sys, 'argv', [__file__, '--move', '/']):
-                main()
-                self.assertFalse(mvbatch.called,
-                                 "--move shouldn't be called without args")
-                self.assertFalse(remdirs.called)
-
+            """H: main: mv triggers move_batch but only with args"""
             with patch.object(sys, 'argv',
-                              [__file__, '--move', '/', self.project.name]):
+                              [__file__, 'mv', self.project.name, '/']):
                 main()
                 mvbatch.assert_called_once_with(self.expected, '/',
                                            overwrite=False)
@@ -602,8 +610,8 @@ if sys.argv[0].rstrip('3').endswith('nosetests'):  # pragma: nobranch
 
             mvbatch.reset_mock()
             remdirs.reset_mock()
-            with patch.object(sys, 'argv', [__file__, '--move', '/',
-                                            self.project.name, '--overwrite']):
+            with patch.object(sys, 'argv', [__file__, 'mv', self.project.name,
+                                            '/', '--overwrite']):
                 main()
                 mvbatch.assert_called_once_with(self.expected, '/',
                                            overwrite=True)
@@ -613,16 +621,9 @@ if sys.argv[0].rstrip('3').endswith('nosetests'):  # pragma: nobranch
         @patch.object(FSWrapper, "move", autospec=True)
         @patch.object(FSWrapper, "remove", autospec=True)
         def test_main_remove(self, remove, move, remdirs):
-            """H: main: --remove calls remove() but only properly"""
-            with patch.object(sys, 'argv', [__file__, '--remove']):
-                main()
-                self.assertFalse(move.called)
-                self.assertFalse(remove.called,
-                                 "--remove shouldn't be called without args")
-                self.assertFalse(remdirs.called)
-
+            """H: main: rm subcommand calls remove() but only properly"""
             with patch.object(sys, 'argv',
-                              [__file__, '--remove', self.project.name]):
+                              [__file__, 'rm', self.project.name]):
                 main()
                 self.assertFalse(move.called)
                 remdirs.assert_called_once(self.expected)
@@ -696,4 +697,4 @@ if sys.argv[0].rstrip('3').endswith('nosetests'):  # pragma: nobranch
                                 "Must not remove files or sub-target dirs")
 
 if __name__ == '__main__':  # pragma: nocover
-    main()
+    sys.exit(main())
