@@ -151,7 +151,7 @@ def main():
                 filesystem.move(src_path, dest_path)
             elif args.mode == 'rm':
                 filesystem.remove(src_path)
-            elif args.mode == 'ls':
+            else:  # args.mode == 'ls'
                 _print(src_path)
 
     if args.remove_leftovers:
