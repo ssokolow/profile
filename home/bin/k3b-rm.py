@@ -564,8 +564,12 @@ if sys.argv[0].rstrip('3').endswith('nosetests'):  # pragma: nobranch
         #        main()
 
         @patch.object(sys.modules[__name__], "_print")
-        def test_main_ls(self, mock):
+        @patch.object(sys.modules[__name__], "FSWrapper", autospec=True)
+        def test_main_ls(self, fswrapper, mock):
             """H: main: ls subcommand function"""
+            # Allow FSWrapper to be initialized but don't allow method calls
+            fswrapper.return_value = None
+
             with patch.object(sys, 'argv',
                               [__file__, 'ls', self.project.name]):
                 main()
