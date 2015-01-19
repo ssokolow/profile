@@ -78,6 +78,37 @@ class FSWrapper(object):
             # TODO: Log and continue in case of exception here
         return True
 
+    def remove_empty_ancestors(self, file_paths):
+        """Recursively remove empty ancestors of the given paths.
+
+        (eg. Clean up leftover directory structures after removing a bunch
+             of files.)
+        """
+
+        while file_paths:
+            diminished = set()
+
+            #  Sort in reverse order to appromixate os.walk(topdown=False) for
+            #  improved efficiency.
+            for path in sorted(file_paths, reverse=True):
+                parent = os.path.normpath(os.path.dirname(path))
+                try:  # We do this for atomic test/act behaviour
+                    if not os.listdir(parent):
+                        log.info("Removing empty directory: %s", parent)
+                    if not self.dry_run:
+                        # TODO: Think of a more dry-run compatible approach
+                        os.rmdir(parent)
+                        if path != parent:
+                            diminished.add(parent)
+                except OSError as err:
+                    if err.errno not in (errno.ENOTEMPTY, errno.ENOENT):
+                        log.warning("Could not remove: %s (%s)", parent,
+                                    errno.errorcode[err.errno])
+
+            # Iteratively walk up until we run out of emptied ancestors
+            file_paths = diminished
+
+
 def _print(*args, **kwargs):
     """Wrapper for C{print} to allow mocking"""
     print(*args, **kwargs)
@@ -155,7 +186,7 @@ def main():
                 _print(src_path)
 
     if args.remove_leftovers:
-        remove_emptied_dirs(files)
+        filesystem.remove_empty_ancestors(files)
 
 def mounty_join(a, b):
     """Join paths C{a} and C{b} while ignoring leading separators on C{b}"""
@@ -182,31 +213,6 @@ def parse_proj_directory(parent_path, node):
         elif item.tag == 'directory':
             results.update(parse_proj_directory(path, item))
     return results
-
-# TODO: Amend the tests to make sure os.rmdir() isn't called with dry_run
-# TODO: Tie this into FSWrapper so it can dry-run.
-# TODO: Make this call log.info so dry-running has proper utility.
-def remove_emptied_dirs(file_paths):
-    """Remove folders which have been emptied by removing the given files"""
-
-    while file_paths:
-        diminished = set()
-
-        #  Sort in reverse order to appromixate os.walk(topdown=False) for
-        #  improved efficiency.
-        for path in sorted(file_paths, reverse=True):
-            parent = os.path.normpath(os.path.dirname(path))
-            try:  # We do this for atomic test/act behaviour
-                os.rmdir(parent)
-            except OSError as err:
-                if err.errno != errno.ENOTEMPTY:
-                    log.warning("Could not remove: %s (%s)", parent,
-                                errno.errorcode[err.errno])
-            else:
-                diminished.add(parent)
-
-        # Iteratively walk up until we run out of emptied ancestors
-        file_paths = diminished
 
 # ---=== Test Suite ===---
 
@@ -447,6 +453,71 @@ if sys.argv[0].rstrip('3').endswith('nosetests'):  # pragma: nobranch
                 log.warn.assert_called_once_with(ANY, test_path)
                 log.warn.reset_mock()
 
+        def test_remove_empty_ancestors(self):
+            """FSWrapper.remove_empty_ancestors: basic function"""
+            dir_names = u'56ðあ'  # Make sure this is at least 3 entries long
+            targets, keepers = [], set()
+
+            wrapper = FSWrapper(dry_run=False)  # TODO: Test dry_run=True
+
+            def make_children(parent, depth=3):
+                """Recursive helper for generating a test tree"""
+                targets.append(os.path.join(parent, 'dummy'))
+                fpath = os.path.join(parent, u'keepœr')
+                idx = dir_names.find(os.path.basename(parent))
+                if idx == 1:
+                    touch_with_parents(fpath)
+                    keepers.add(fpath)
+                elif idx == 2:
+                    os.makedirs(fpath)
+                    keepers.add(fpath)
+
+                if depth:
+                    for x in dir_names:
+                        make_children(os.path.join(parent, x), depth - 1)
+            make_children(self.testroot)
+
+            wrapper.remove_empty_ancestors(targets)
+            for path, dirs, files in os.walk(self.testroot):
+                if path.endswith(u'keepœr'):
+                    continue
+                self.assertNotEqual(dirs + files, [], "Must remove all emptied"
+                                    "dirs")
+            for path in keepers:
+                self.assertTrue(os.path.exists(path),
+                                "Must not remove files or sub-target dirs")
+
+            # TODO: Assert that log.info was called in a way that gives
+            # dry-running meaning.
+
+            if not wrapper.dry_run:
+                os.rmdir.reset_mock()  # pylint: disable=E1101
+
+        @patch.object(log, 'warning', autospec=True)
+        def test_remove_empty_ancestors_exceptional(self, mock):
+            """FSWrapper.remove_empty_ancestors: exceptional input"""
+
+            wrapper = FSWrapper(dry_run=False)  # TODO: Test dry_run=True
+
+            # Test that an empty options list doesn't cause errors or call
+            # os.rmdir unnecessarily
+            wrapper.remove_empty_ancestors([])
+            self.assertFalse(os.rmdir.called)  # pylint: disable=E1101
+
+            # Test that a failure to normalize input doesn't raise exceptions
+            # TODO: Redesign this so we can actually verify results
+            wrapper.remove_empty_ancestors(['/.' + os.path.join(
+                tempfile.mktemp(dir='/'))])
+            mock.reset_mock()
+
+            # Separately test response to EBUSY by trying to rmdir('/')
+            os.rmdir.side_effect = OSError(errno.EBUSY, "FOO")
+            wrapper.remove_empty_ancestors(['/bin'])
+            mock.assert_called_once_with(ANY, '/', 'EBUSY')
+
+            if not wrapper.dry_run:
+                os.rmdir.reset_mock()  # pylint: disable=E1101
+
     class TestK3bRmLightweight(unittest.TestCase, MockDataMixin
                                ):  # pylint: disable=R0904
         """Tests for k3b-rm which require no test tree on the filesystem."""
@@ -473,26 +544,6 @@ if sys.argv[0].rstrip('3').endswith('nosetests'):  # pragma: nobranch
                 for path_b in ('baz', '/baz', '//baz', '///baz'):
                     self.assertEqual(mounty_join(path_a, path_b),
                                      '/foo/baz', "%s + %s" % (path_a, path_b))
-
-        @patch.object(log, 'warning', autospec=True)
-        def test_remove_emptied_dirs_exceptional(self, mock):
-            """L: remove_emptied_dirs: exceptional input"""
-
-            with patch("os.rmdir", autospec=True):
-                # Test that an empty options list doesn't cause errors or call
-                # os.rmdir unnecessarily
-                remove_emptied_dirs([])
-                self.assertFalse(os.rmdir.called)  # pylint: disable=E1101
-
-            # Test that a failure to normalize input doesn't cause EINVAL
-            remove_emptied_dirs(['/.' + os.path.join(
-                tempfile.mktemp(dir='/'))])
-            mock.assert_called_once_with(ANY, '/', 'EBUSY')
-            mock.reset_mock()
-
-            # Separately test response to EBUSY by trying to rmdir('/')
-            remove_emptied_dirs(['/bin'])
-            mock.assert_called_once_with(ANY, '/', 'EBUSY')
 
         @staticmethod
         @patch("os.makedirs", autospec=True)
@@ -577,10 +628,9 @@ if sys.argv[0].rstrip('3').endswith('nosetests'):  # pragma: nobranch
                     sorted(mock.call_args_list), sorted(
                         [call(x) for x in self.expected.keys()]))
 
-        @patch.object(sys.modules[__name__], "remove_emptied_dirs",
-                      autospec=True)
         @patch.object(FSWrapper, "move", autospec=True)
-        def test_main_move(self, mv, remdirs):
+        @patch.object(FSWrapper, "remove_empty_ancestors", autospec=True)
+        def test_main_move(self, remdirs, mv):
             """H: main: mv triggers move_batch but only with args"""
             for args in [[], ['--overwrite']]:
                 with patch.object(sys, 'argv',
@@ -590,21 +640,21 @@ if sys.argv[0].rstrip('3').endswith('nosetests'):  # pragma: nobranch
                     self.assertListEqual(sorted(results),
                         sorted([(x, mounty_join('/', self.expected[x]))
                                 for x in self.expected]))
-                    remdirs.assert_called_once_with(self.expected)
+                    remdirs.assert_called_once_with(ANY, self.expected)
 
                     mv.reset_mock()
                     remdirs.reset_mock()
 
-        @patch.object(sys.modules[__name__], "remove_emptied_dirs")
         @patch.object(FSWrapper, "move", autospec=True)
         @patch.object(FSWrapper, "remove", autospec=True)
-        def test_main_remove(self, remove, move, remdirs):
+        @patch.object(FSWrapper, "remove_empty_ancestors", autospec=True)
+        def test_main_remove(self, remdirs, remove, move):
             """H: main: rm subcommand calls remove() but only properly"""
             with patch.object(sys, 'argv',
                               [__file__, 'rm', self.project.name]):
                 main()
                 self.assertFalse(move.called)
-                remdirs.assert_called_once(self.expected)
+                remdirs.assert_called_once_with(ANY, self.expected)
 
                 results = [x[0][1] for x in remove.call_args_list]
                 self.assertListEqual(sorted(self.expected), sorted(results))
@@ -616,38 +666,6 @@ if sys.argv[0].rstrip('3').endswith('nosetests'):  # pragma: nobranch
             """H: parse_k3b_proj: basic functionality"""
             got = parse_k3b_proj(self.project.name)
             self.assertDictEqual(self.expected, got)
-
-        def test_remove_emptied_dirs(self):
-            """H: remove_emptied_dirs: basic function"""
-            dir_names = u'56ðあ'  # Make sure this is at least 3 entries long
-            targets, keepers = [], set()
-
-            def make_children(parent, depth=3):
-                """Recursive helper for generating a test tree"""
-                targets.append(os.path.join(parent, 'dummy'))
-                fpath = os.path.join(parent, u'keepœr')
-                idx = dir_names.find(os.path.basename(parent))
-                if idx == 1:
-                    touch_with_parents(fpath)
-                    keepers.add(fpath)
-                elif idx == 2:
-                    os.makedirs(fpath)
-                    keepers.add(fpath)
-
-                if depth:
-                    for x in dir_names:
-                        make_children(os.path.join(parent, x), depth - 1)
-            make_children(self.dest)
-
-            remove_emptied_dirs(targets)
-            for path, dirs, files in os.walk(self.dest):
-                if path.endswith(u'keepœr'):
-                    continue
-                self.assertNotEqual(dirs + files, [], "Must remove all emptied"
-                                    "dirs")
-            for path in keepers:
-                self.assertTrue(os.path.exists(path),
-                                "Must not remove files or sub-target dirs")
 
 if __name__ == '__main__':  # pragma: nocover
     sys.exit(main())
