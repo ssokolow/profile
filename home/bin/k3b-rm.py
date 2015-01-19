@@ -129,7 +129,7 @@ def main():
         """C{subparsers.add_parser} wrapper which adds common arguments."""
         parser = subparsers.add_parser(*args, **kwargs)
         parser.add_argument('-v', '--verbose', action="count", dest="verbose",
-            default=3,
+            default=2,
             help="Increase the verbosity. Use twice for extra effect")
         parser.add_argument('-q', '--quiet', action="count", dest="quiet",
             default=0,
@@ -156,6 +156,10 @@ def main():
                    ).set_defaults(remove_leftovers=False, mode='ls')
 
     args = parser.parse_args()
+
+    # TODO: How do I prevent set_defaults from clobbering add_argument stuff?
+    if args.verbose is False:
+        args.verbose = 2
 
     # Set up clean logging to stderr
     log_levels = [logging.CRITICAL, logging.ERROR, logging.WARNING,
