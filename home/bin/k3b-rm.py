@@ -98,12 +98,12 @@ class FSWrapper(object):
                     if not self.dry_run:
                         # TODO: Think of a more dry-run compatible approach
                         os.rmdir(parent)
-                        if path != parent:
-                            diminished.add(parent)
                 except OSError as err:
                     if err.errno not in (errno.ENOTEMPTY, errno.ENOENT):
                         log.warning("Could not remove: %s (%s)", parent,
                                     errno.errorcode[err.errno])
+                    if err.errno == errno.ENOTEMPTY:
+                        return # TODO: Unit test this short-circuit optimization
 
             # Iteratively walk up until we run out of emptied ancestors
             file_paths = diminished
