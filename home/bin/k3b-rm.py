@@ -28,6 +28,9 @@ from zipfile import ZipFile
 
 # ---=== Actual Code ===---
 
+if sys.version_info.major >= 3:  # pragma: nobranch
+    basestring = str  # pylint: disable=redefined-builtin
+
 class FSWrapper(object):
     """Centralized overwrite/dry-run control and log-as-fail wrapper."""
 
@@ -104,14 +107,17 @@ class FSWrapper(object):
 
             #  Sort reversed to mimic os.walk(topdown=False) for efficiency
             for path in sorted(paths, reverse=True):
+                parent = os.path.normpath(os.path.dirname(path))
                 try:  # Use os.rmdir as final "do we do?" for atomic operation
                     if not (os.path.isdir(path) and not os.listdir(path)):
+                        if not os.path.exists(path):
+                            diminished.add(parent)
                         continue
 
                     log.info("Removing empty directory: %s", path)
                     if not self.dry_run:
                         os.rmdir(path)  # TODO: More dry_run-friendly approach
-                        diminished.add(os.path.normpath(os.path.dirname(path)))
+                        diminished.add(parent)
                 except OSError as err:
                     if err.errno == errno.ENOTEMPTY:
                         return  # TODO: Test this short-circuit optimization
@@ -331,6 +337,10 @@ if sys.argv[0].rstrip('3').endswith('nosetests'):  # pragma: nobranch
     class TestFSWrapper(unittest.TestCase):  # pylint: disable=R0904
         """Tests for L{FSWrapper}
 
+        @todo: Come up with a clean, robust way to either mock or generate
+               filesystem structures and then test postconditions.
+               My test suite is currently a mess.
+
         @todo: Consider using unittest2 so I can get access to the Python 3.4
             self.subTest context manager for things like "for dry_run in ..."
         """
@@ -344,6 +354,7 @@ if sys.argv[0].rstrip('3').endswith('nosetests'):  # pragma: nobranch
                 patcher.start()
                 self.addCleanup(patcher.stop)
 
+            self._rmd = os.rmdir
             for mpath in ("os.remove", "os.unlink", "os.rmdir", "os.rename",
                           "shutil.rmtree", "shutil.move"):
                 set_mock(patch(mpath, side_effect=_file_exists, autospec=True))
@@ -394,7 +405,10 @@ if sys.argv[0].rstrip('3').endswith('nosetests'):  # pragma: nobranch
             """Recursive helper for generating a test tree"""
             dir_names = u'56ðあ'  # Keep this at least 3 entries long
 
-            targets.append(os.path.join(parent, 'dummy'))
+            dpath = os.path.join(parent, 'target')
+            os.makedirs(dpath)
+            targets.append(dpath)
+
             fpath = os.path.join(parent, u'keepœr')
             idx = dir_names.find(os.path.basename(parent))
             if idx == 1:
@@ -552,26 +566,61 @@ if sys.argv[0].rstrip('3').endswith('nosetests'):  # pragma: nobranch
 
         def test_remove_emptied_dirs(self):
             """FSWrapper.remove_emptied_dirs: basic function"""
-            wrapper = FSWrapper(dry_run=False)  # TODO: Test dry_run=True
-
             targets, keepers = [], set()
             self._make_children(self.testroot, targets, keepers)
 
-            wrapper.remove_emptied_dirs(targets)
-            for path, dirs, files in os.walk(self.testroot):
+            # Test the handling of nonexistant paths too
+            targets.append(tempfile.mktemp())
+            # TODO: Test files and nonexistant children of otherwise empty dirs
+
+            for dry_run in (True, False):
+                if not dry_run:
+                    os.rmdir.side_effect = (
+                        lambda x: self._rmd(x))  # pylint: disable=E1101,W0108
+
+                wrapper = FSWrapper(dry_run=dry_run)
+                wrapper.remove_emptied_dirs(targets)
+
+                # TODO: Assert that log.info was called *in a way that gives
+                # dry-running meaning*.
+                self.assertTrue(log.info.called)
+                log.info.reset_mock()
+
+                self.assertEqual(
+                    os.rmdir.called, not dry_run)  # pylint: disable=E1101
+                if dry_run:
+                    continue
+
+            # Test actual os.rmdir use when not dry-running
+            try:
+                for path in targets:
+                    if not os.path.exists(path):
+                        continue
+                    self.assertIn(call(path),
+                        os.rmdir.call_args_list)  # pylint: disable=E1101
+
+                    # Rough test for parent traversal
+                    parent = os.path.dirname(path)
+                    if len(os.listdir(parent)) > 1:
+                        continue
+                    self.assertIn(call(parent),
+                        os.rmdir.call_args_list)  # pylint: disable=E1101
+            finally:
+                os.rmdir.reset_mock()  # pylint: disable=E1101
+
+            # Verify that the only remaining things are ancestors of stuff we
+            # wanted to keep.
+            for path, _, files in os.walk(self.testroot):
                 if path.endswith(u'keepœr'):
                     continue
-                self.assertNotEqual(dirs + files, [], "Must remove all emptied"
-                                    "dirs")
+                self.assertIn(files, [[], [u'keepœr']],
+                    "Must remove all emptied dirs")
             for path in keepers:
                 self.assertTrue(os.path.exists(path),
                                 "Must not remove files or sub-target dirs")
 
-            # TODO: Assert that log.info was called in a way that gives
-            # dry-running meaning.
-
-            if not wrapper.dry_run:
-                os.rmdir.reset_mock()  # pylint: disable=E1101
+            # Prevent tearDown from complaining about an expected mock call
+            os.rmdir.reset_mock()  # pylint: disable=E1101
 
         @patch.object(log, 'warning', autospec=True)
         def test_remove_emptied_dirs_exceptional(self, mock):
