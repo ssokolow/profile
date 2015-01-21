@@ -195,7 +195,7 @@ def main():
         for src_path, dest_rel in sorted(files.items()):
             if args.mode == 'mv':
                 dest_path = mounty_join(args.target, dest_rel)
-                filesystem.move(src_path, dest_path)
+                filesystem.mergemove(src_path, dest_path)
             elif args.mode == 'rm':
                 filesystem.remove(src_path)
             else:  # args.mode == 'ls'
@@ -693,21 +693,21 @@ if sys.argv[0].rstrip('3').endswith('nosetests'):  # pragma: nobranch
                     sorted(mock.call_args_list), sorted(
                         [call(x) for x in self.expected.keys()]))
 
-        @patch.object(FSWrapper, "move", autospec=True)
+        @patch.object(FSWrapper, "mergemove", autospec=True)
         @patch.object(FSWrapper, "remove_emptied_dirs", autospec=True)
-        def test_main_move(self, remdirs, mv):
+        def test_main_move(self, remdirs, mmv):
             """H: main: mv triggers move_batch but only with args"""
             for args in [[], ['--overwrite']]:
                 with patch.object(sys, 'argv',
                         [__file__, 'mv', self.project.name, '/'] + args):
                     main()
-                    results = [x[0][1:] for x in mv.call_args_list]
+                    results = [x[0][1:] for x in mmv.call_args_list]
                     self.assertListEqual(sorted(results),
                         sorted([(x, mounty_join('/', self.expected[x]))
                                 for x in self.expected]))
                     remdirs.assert_called_once_with(ANY, self.expected)
 
-                    mv.reset_mock()
+                    mmv.reset_mock()
                     remdirs.reset_mock()
 
         @patch.object(FSWrapper, "move", autospec=True)
