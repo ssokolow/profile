@@ -221,6 +221,11 @@ def fgrep_to_re_str(patterns):
 
     return '(%s)' % '|'.join(re.escape(x) for x in patterns)
 
+re_percent_escape = re.compile("%[0-9a-fA-F]{2}")
+def lower_percent_escapes(escaped_str):
+    """Lowercase the %3C-style escapes in a string."""
+    return re_percent_escape.sub(lambda x: x.group(0).lower(), escaped_str)
+
 def mounty_join(a, b):
     """Join paths C{a} and C{b} while ignoring leading separators on C{b}"""
     b = b.lstrip(os.sep).lstrip(os.altsep or os.sep)
@@ -698,6 +703,17 @@ if sys.argv[0].rstrip('3').endswith('nosetests'):  # pragma: nobranch
                 resc.return_value = ""  # Needed to prevent an exception
                 fgrep_to_re_str("abc")
                 resc.assert_called_once_with("abc")
+
+        def test_lower_percent_escapes(self):
+            """L: lower_percent_escapes: basic operation"""
+            for before, after in (
+                    ("ABCabc", "ABCabc"),                     # Percent-free
+                    ("%AFfoo%B0bar%0C", "%affoo%b0bar%0c"),   # start, mid, end
+                    ("%Affoo%Babar%EC", "%affoo%babar%ec"),   # mixed case
+                    ("%affoo%b0bar%0c", "%affoo%b0bar%0c"),   # already lower
+                    ("%02foo%35bar%22", "%02foo%35bar%22"),  # digit-only
+                    ("%ZaZ%KaZ", "%ZaZ%KaZ")):                 # Non-hex triple
+                self.assertEqual(lower_percent_escapes(before), after)
 
     class TestK3bRm(unittest.TestCase, MockDataMixin):  # pylint: disable=R0904
         """Test suite for k3b-rm to be run via C{nosetests}."""
