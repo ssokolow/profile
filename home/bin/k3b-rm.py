@@ -38,6 +38,23 @@ class FSWrapper(object):
         self.overwrite = overwrite
         self.dry_run = dry_run
 
+    def mergemove(self, src, dest):
+        """Move a file or folder, recursively merging it if the target exists.
+
+        @param dest: The B{exact} (not parent) path to which to move C{src}.
+        @return: Dict mapping old paths to new ones.
+        """
+        moved = {}
+        if os.path.isdir(src) and os.path.exists(dest):
+            for fname in os.listdir(src):
+                moved.update(self.mergemove(os.path.join(src, fname),
+                                            os.path.join(dest, fname)))
+        elif self.move(src, dest):
+            moved[src] = dest
+            self.remove_emptied_dirs(src)
+        return moved
+
+    # TODO: What if the parent of dest doesn't exist?
     def move(self, src, dest):
         """See L{shutil.move}.
 
@@ -309,6 +326,7 @@ if sys.argv[0].rstrip('3').endswith('nosetests'):  # pragma: nobranch
 
         def setUp(self):  # NOQA
             self.testroot = tempfile.mkdtemp(prefix='k3b-rm_test-')
+            self.destroot = tempfile.mkdtemp(prefix='k3b-rm_test-')
             self.addCleanup(self.cleanup)
 
             def set_mock(patcher):  # pylint: disable=C0111
@@ -334,6 +352,7 @@ if sys.argv[0].rstrip('3').endswith('nosetests'):  # pragma: nobranch
             # Make sure we call this after the mocks are deactivated
             assert getattr(shutil.rmtree, 'called', None) is None
             shutil.rmtree(self.testroot)
+            shutil.rmtree(self.destroot)
 
         def _do_move_tsts(self, wrapper, src, dest):
             """The actual subTest code for test_move"""
@@ -360,6 +379,25 @@ if sys.argv[0].rstrip('3').endswith('nosetests'):  # pragma: nobranch
                 log.warn.assert_called_once_with(ANY, dest)
                 log.warn.reset_mock()
 
+        def _make_children(self, parent, targets, keepers, depth=3):
+            """Recursive helper for generating a test tree"""
+            dir_names = u'56ðあ'  # Keep this at least 3 entries long
+
+            targets.append(os.path.join(parent, 'dummy'))
+            fpath = os.path.join(parent, u'keepœr')
+            idx = dir_names.find(os.path.basename(parent))
+            if idx == 1:
+                touch_with_parents(fpath)
+                keepers.add(fpath)
+            elif idx == 2:
+                os.makedirs(fpath)
+                keepers.add(fpath)
+
+            if depth:
+                for x in dir_names:
+                    self._make_children(os.path.join(parent, x),
+                                  targets, keepers, depth - 1)
+
         def test_init_members(self):
             """FSWrapper.__init__: public members are set properly"""
             wrapper = FSWrapper()
@@ -371,6 +409,55 @@ if sys.argv[0].rstrip('3').endswith('nosetests'):  # pragma: nobranch
                     wrapper = FSWrapper(overwrite, dry_run)
                     self.assertEqual(overwrite, wrapper.overwrite)
                     self.assertEqual(dry_run, wrapper.dry_run)
+
+        @patch.object(FSWrapper, "move", autospec=True)
+        @patch.object(FSWrapper, "remove_emptied_dirs", autospec=True)
+        def test_mergemove(self, remdirs, move):
+            """FSWrapper.mergemove: normal operation"""
+            # dry_run=False to catch stuff which should be within the mocks.
+            wrapper = FSWrapper(dry_run=False)
+            mergemove = wrapper.mergemove
+
+            with patch.object(FSWrapper, 'mergemove', autospec=True) as mmove:
+                targets, keepers = [], set()
+                self._make_children(self.testroot, targets, keepers)
+                new_dest = os.path.join(self.destroot, 'new_dest')
+                afile = os.path.join(self.testroot, 'afile')
+                touch_with_parents(afile)
+
+                # Directory that doesn't exist at dest
+                self.assertDictEqual(mergemove(self.testroot, new_dest),
+                                     {self.testroot: new_dest})
+                move.assert_called_once_with(ANY, self.testroot, new_dest)
+                move.reset_mock()
+                remdirs.assert_called_once_with(ANY, self.testroot)
+                remdirs.reset_mock()
+
+                # File that doesn't exist at dest
+                self.assertDictEqual(mergemove(afile, new_dest),
+                                     {afile: new_dest})
+                move.assert_called_once_with(ANY, afile, new_dest)
+                move.reset_mock()
+                remdirs.assert_called_once_with(ANY, afile)
+                remdirs.reset_mock()
+
+                # Directory that exists at dest
+                self.assertFalse(mmove.called)
+                mmove.return_value = {'FROM': 'TO'}
+                self.assertDictEqual(mergemove(self.testroot, self.destroot),
+                                     {'FROM': 'TO'})
+                self.assertListEqual(
+                    sorted(mmove.call_args_list), sorted(
+                        [call(ANY, os.path.join(self.testroot, x),
+                              os.path.join(self.destroot, x))
+                         for x in os.listdir(self.testroot)]))
+                mmove.reset_mock()
+
+                # Reaction to a failed self.move call in mergemove
+                move.return_value = False
+                self.assertDictEqual(mergemove(self.testroot, new_dest), {})
+                self.assertFalse(mmove.called)
+                move.assert_called_once_with(ANY, self.testroot, new_dest)
 
         def test_move(self):
             """FSWrapper.move: normal operation"""
@@ -454,27 +541,10 @@ if sys.argv[0].rstrip('3').endswith('nosetests'):  # pragma: nobranch
 
         def test_remove_emptied_dirs(self):
             """FSWrapper.remove_emptied_dirs: basic function"""
-            dir_names = u'56ðあ'  # Make sure this is at least 3 entries long
-            targets, keepers = [], set()
-
             wrapper = FSWrapper(dry_run=False)  # TODO: Test dry_run=True
 
-            def make_children(parent, depth=3):
-                """Recursive helper for generating a test tree"""
-                targets.append(os.path.join(parent, 'dummy'))
-                fpath = os.path.join(parent, u'keepœr')
-                idx = dir_names.find(os.path.basename(parent))
-                if idx == 1:
-                    touch_with_parents(fpath)
-                    keepers.add(fpath)
-                elif idx == 2:
-                    os.makedirs(fpath)
-                    keepers.add(fpath)
-
-                if depth:
-                    for x in dir_names:
-                        make_children(os.path.join(parent, x), depth - 1)
-            make_children(self.testroot)
+            targets, keepers = [], set()
+            self._make_children(self.testroot, targets, keepers)
 
             wrapper.remove_emptied_dirs(targets)
             for path, dirs, files in os.walk(self.testroot):
