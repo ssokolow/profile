@@ -341,7 +341,7 @@ if sys.argv[0].rstrip('3').endswith('nosetests'):  # pragma: nobranch
 
         def tearDown(self):  # NOQA
             #  Simplify tests by expecting reset_mock() on used mocks.
-            for mock in (os.remove, os.unlink, os.rmdir,
+            for mock in (os.remove, os.unlink, os.rmdir, os.rename,
                          shutil.rmtree, shutil.move,
                          log.info, log.warn):
                 self.assertFalse(mock.called,  # pylint: disable=E1103
