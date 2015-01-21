@@ -22,7 +22,7 @@ __license__ = "MIT"
 import logging
 log = logging.getLogger(__name__)
 
-import os, posixpath, shutil, sys
+import os, posixpath, re, shutil, sys
 import xml.etree.cElementTree as ET
 from zipfile import ZipFile
 
@@ -203,6 +203,17 @@ def main():
 
     if args.remove_leftovers:
         filesystem.remove_emptied_dirs(files)
+
+def fgrep_to_re_str(patterns):
+    """Escape a list of strings and return a regex string to match any of them.
+
+    @note: Does not C{re.compile} for you in case you want to incorporate it
+           into a larger regular expression.
+    """
+    if isinstance(patterns, basestring):
+        patterns = [patterns]
+
+    return '(%s)' % '|'.join(re.escape(x) for x in patterns)
 
 def mounty_join(a, b):
     """Join paths C{a} and C{b} while ignoring leading separators on C{b}"""
@@ -620,6 +631,24 @@ if sys.argv[0].rstrip('3').endswith('nosetests'):  # pragma: nobranch
 
             # pylint: disable=E1101
             open.assert_called_once_with('/bar/foo', 'a')
+
+        def test_fgrep_to_re_str(self):
+            """L: fgrep_to_re_str: basic operation
+
+            @todo: Consider using unittest2 so I can get access to the
+            Python 3.4 self.subTest context manager to simplify this.
+            """
+            self.assertEqual(fgrep_to_re_str("abc"), "(abc)")
+            self.assertEqual(fgrep_to_re_str(["abc"]), "(abc)")
+            self.assertEqual(fgrep_to_re_str(["abc", "def"]), "(abc|def)")
+            self.assertEqual(fgrep_to_re_str([r"\n[1]", r"|"]),
+                             r"(\\n\[1\]|\|)", "Must escape input strings")
+
+            # Verify that escaping is being done PROPERLY
+            with patch("re.escape") as resc:
+                resc.return_value = ""  # Needed to prevent an exception
+                fgrep_to_re_str("abc")
+                resc.assert_called_once_with("abc")
 
     class TestK3bRm(unittest.TestCase, MockDataMixin):  # pylint: disable=R0904
         """Test suite for k3b-rm to be run via C{nosetests}."""
