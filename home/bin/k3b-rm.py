@@ -9,6 +9,14 @@ been written to a disc. (Useful in concert with gaff-k3b)
 @note: This currently explicitly uses C{posixpath} rather than C{os.path}
        since, as a POSIX-only program, K3b is going to be writing project files
        that always use UNIX path separators.
+
+@note: When designing the internals of this tool, I strived to ensure that,
+       should a fatal bug be encountered, it would be possible to fix it and
+       then re-run the same command to complete the operation.
+
+@todo: For the love of God, make this its own project and split it into
+       multiple files!
+@todo: Refactor the test suite once I'm no longer burned out on this project.
 """
 
 from __future__ import (absolute_import, division, print_function,
@@ -25,6 +33,37 @@ log = logging.getLogger(__name__)
 import os, posixpath, re, shutil, sys
 import xml.etree.cElementTree as ET
 from zipfile import ZipFile
+
+if sys.version_info.major < 3:  # pragma: nobranch
+    from xml.sax.saxutils import escape as xmlescape
+    from urllib import (pathname2url as _pathname2url,
+                        quote as _urlquote,
+                        quote_plus as _urlquote_plus)
+
+    def pathname2url(text):
+        """Fixup wrapper to make C{urllib.quote} behave as in Python 3"""
+        return _pathname2url(text if isinstance(text, bytes)
+                            else text.encode('utf-8'))
+
+    def urlquote(text):
+        """Fixup wrapper to make C{urllib.quote} behave as in Python 3"""
+        return _urlquote(text if isinstance(text, bytes)
+                         else text.encode('utf-8'))
+
+    def urlquote_plus(text, safe=b''):
+        """Fixup wrapper to make C{urllib.quote_plus} behave as in Python 3"""
+        return _urlquote_plus(text if isinstance(text, bytes)
+                              else text.encode('utf-8'), safe)
+else:
+    from urllib.request import pathname2url       # pylint: disable=E0611,F0401
+    from urllib.parse import (quote as urlquote,  # pylint: disable=E0611,F0401
+                              quote_plus as urlquote_plus)
+    from xml.sax.saxutils import escape as _xmlescape
+
+    def xmlescape(text):
+        """Fixup wrapper to make C{xml.sax.saxutils.escape} work with bytes"""
+        return (_xmlescape(text.decode('latin1')).encode('latin1')
+                if isinstance(text, bytes) else _xmlescape(text))
 
 # ---=== Actual Code ===---
 
@@ -221,16 +260,21 @@ def fgrep_to_re_str(patterns):
 
     return '(%s)' % '|'.join(re.escape(x) for x in patterns)
 
-re_percent_escape = re.compile("%[0-9a-fA-F]{2}")
+re_percent_escape_u = re.compile(u"%[0-9a-fA-F]{2}")
+re_percent_escape_b = re.compile(re_percent_escape_u.pattern.encode('ascii'))
 def lower_percent_escapes(escaped_str):
     """Lowercase the %3C-style escapes in a string."""
-    return re_percent_escape.sub(lambda x: x.group(0).lower(), escaped_str)
+    rex = re_percent_escape_u
+    if isinstance(escaped_str, bytes):
+        rex = re_percent_escape_b
+    return rex.sub(lambda x: x.group(0).lower(), escaped_str)
 
 def mounty_join(a, b):
     """Join paths C{a} and C{b} while ignoring leading separators on C{b}"""
     b = b.lstrip(os.sep).lstrip(os.altsep or os.sep)
     return posixpath.join(a, b)
 
+# TODO: Decide on an exception-handling policy here
 def parse_k3b_proj(path):
     """Parse a K3b project file into a list of paths"""
     with ZipFile(path) as zfh:
@@ -252,15 +296,66 @@ def parse_proj_directory(parent_path, node):
             results.update(parse_proj_directory(path, item))
     return results
 
+def vary_escaped(path):
+    """Generate all known encodings of a path that a regex may need to expect.
+
+    Seen In the wild:
+        - Completely unescaped (.pls, .gqv)
+        - urllib.pathname2url()ed file:/// URLs with upcase %-encoding (.audpl)
+        - xml.sax.saxutils.escape()ed unicode (XSPF)
+
+    @note: For most versatile matching, the file:// portion is omitted from
+        the generated output in order to also match file://<host>/...
+
+    @note: Output ordering is guaranteed to remain consistent between runs
+        within the same process lifetime so that C{zip()} can be used to
+        generate before/after pairs.
+
+    @warning: This only addresses common encodings used to encapsulate a URI
+        or path within a structured data file. It is still your responsibility
+        to ensure that you provide a path in the correct character coding.
+
+        This also makes no attempt to hack around XML entity encodings. If you
+        want to C{sed} paths in an XML file, combine this with a SAX-based
+        stream filter so you can operate on Unicode codepoints without fear
+        of rendering the XML invalid or tripping over an entity reference.
+
+    @warning: This makes no attempt to work around badly normalized paths or
+        mixed-case percent-encoding. Attempting to do so would result in a
+        combinatorial explosion. If you want to deal with messy data, you need
+        to actually parse and then re-serialize the format.
+
+    @todo: Does .audpl perform path separator conversion like pathname2url()
+           or does it just escape blindly like quote()?
+
+    @todo: Do a survey of file formats to determine what else I should do.
+        Potential examples:
+            - urllib.quote()ed (pathname2url with no os.sep conversion)
+            - urllib.quote_plus()ed file:/// URLs with uppercase %-encoding
+            - urllib.quote_plus()ed file:/// URLs with lowercase %-encoding
+    """
+
+    # NOTE TO MAINTAINERS: This must return a consistently-ordered result
+    #           but there is currently no way to reliably unit test that.
+    p2url = pathname2url(path)
+    return [
+        path,                          # literal (.pls, .gqv)
+        p2url,                         # url escaped (.audpl)
+        lower_percent_escapes(p2url),
+        xmlescape(path),               # xml-escaped (XSPF)
+    ]
+
 # ---=== Test Suite ===---
 
 if sys.argv[0].rstrip('3').endswith('nosetests'):  # pragma: nobranch
     import errno, tempfile, unittest
+    from itertools import product
 
     if sys.version_info.major < 3:
         from cStringIO import StringIO
         BytesIO = StringIO
         open_path = '__builtin__.open'
+
     else:  # pragma: nocover
         from io import StringIO, BytesIO
         open_path = 'builtins.open'
@@ -287,6 +382,23 @@ if sys.argv[0].rstrip('3').endswith('nosetests'):  # pragma: nobranch
 
         # `touch $fpath`
         open(path, 'a').close()
+
+    def test_pathname2url():
+        """pathname2url: UTF-8 and Unicode input produce same output"""
+        assert pathname2url(b'abc/def ghi') == pathname2url(u'abc/def ghi')
+
+    def test_urlquote():
+        """urlquote: UTF-8 and Unicode input produce same output"""
+        assert urlquote(b'abc/def ghi') == urlquote(u'abc/def ghi')
+
+    def test_urlquote_plus():
+        """urlquote_plus: UTF-8 and Unicode input produce same output"""
+        assert urlquote_plus(b'abc/def ghi') == urlquote_plus(u'abc/def ghi')
+
+    def test_xmlescape():
+        """xmlescape: both bytes and unicode are supported"""
+        assert xmlescape(u'<abc & def>') == u'&lt;abc &amp; def&gt;'
+        assert xmlescape(b'<abc & def>') == b'&lt;abc &amp; def&gt;'
 
     class MockDataMixin(object):  # pylint: disable=R0903
         """Code common to both light and heavy tests"""
@@ -707,13 +819,44 @@ if sys.argv[0].rstrip('3').endswith('nosetests'):  # pragma: nobranch
         def test_lower_percent_escapes(self):
             """L: lower_percent_escapes: basic operation"""
             for before, after in (
-                    ("ABCabc", "ABCabc"),                     # Percent-free
-                    ("%AFfoo%B0bar%0C", "%affoo%b0bar%0c"),   # start, mid, end
-                    ("%Affoo%Babar%EC", "%affoo%babar%ec"),   # mixed case
-                    ("%affoo%b0bar%0c", "%affoo%b0bar%0c"),   # already lower
-                    ("%02foo%35bar%22", "%02foo%35bar%22"),  # digit-only
-                    ("%ZaZ%KaZ", "%ZaZ%KaZ")):                 # Non-hex triple
+                    (u"ABCabc", u"ABCabc"),                     # Percent-free
+                    (u"%AFfoo%B0bar%0C", u"%affoo%b0bar%0c"),   # start/mid/end
+                    (u"%Affoo%Babar%EC", u"%affoo%babar%ec"),   # mixed case
+                    (u"%affoo%b0bar%0c", u"%affoo%b0bar%0c"),   # already lower
+                    (u"%02foo%35bar%22", u"%02foo%35bar%22"),   # digit-only
+                    (u"%ZaZ%KaZ", u"%ZaZ%KaZ")):                # No-hex triple
+
+                # Verify that it works on both unicode and bytes
                 self.assertEqual(lower_percent_escapes(before), after)
+                self.assertEqual(lower_percent_escapes(before.encode('utf8')),
+                                 after.encode('utf8'))
+
+        def test_vary_escaped(self):
+            """L: vary_escaped: basic operation"""
+            # Manually-generated test strings (do not automate)
+            test_str = u"/01/fœ & bar/<Båz>"
+            expected = [u"/01/fœ & bar/<Båz>",
+                        u'/01/f%C5%93%20%26%20bar/%3CB%C3%A5z%3E',
+                        u'/01/f%c5%93%20%26%20bar/%3cB%c3%a5z%3e',
+                        u'/01/fœ &amp; bar/&lt;Båz&gt;']
+
+            result = vary_escaped(test_str)
+            self.assertIsInstance(result, (tuple, list),
+                                  "Result must have a consistent ordering")
+            self.assertListEqual(result, expected)
+
+            # ...and bytestrings to ensure type(input) = type(output)
+            test_str = b"/01/foo & bar/<Baz>"
+            expected = [b"/01/foo & bar/<Baz>",
+                        # TODO: Is this Py3 bytes->str conversion desirable?
+                        '/01/foo%20%26%20bar/%3CBaz%3E',
+                        '/01/foo%20%26%20bar/%3cBaz%3e',
+                        b'/01/foo &amp; bar/&lt;Baz&gt;']
+
+            result = vary_escaped(test_str)
+            self.assertIsInstance(result, (tuple, list),
+                                  "Result must have a consistent ordering")
+            self.assertListEqual(result, expected)
 
     class TestK3bRm(unittest.TestCase, MockDataMixin):  # pylint: disable=R0904
         """Test suite for k3b-rm to be run via C{nosetests}."""
