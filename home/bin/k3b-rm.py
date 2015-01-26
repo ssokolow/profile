@@ -16,7 +16,13 @@ been written to a disc. (Useful in concert with gaff-k3b)
 
 @todo: For the love of God, make this its own project and split it into
        multiple files!
+@todo: Wherever feasible, make mocks actually call what they're supposed to be
+       mocking so I can use them purely to determine that the right number of
+       calls were made with the right arguments.
+       (As is, I'm "testing the mock" too much.)
 @todo: Refactor the test suite once I'm no longer burned out on this project.
+@todo: Redesign the tests to ensure that Unicode in Python 2.x doesn't cause
+       errors with print().
 """
 
 from __future__ import (absolute_import, division, print_function,
@@ -68,7 +74,8 @@ else:
 # ---=== Actual Code ===---
 
 if sys.version_info.major >= 3:  # pragma: nobranch
-    basestring = str  # pylint: disable=redefined-builtin
+    basestring = (bytes, str)  # pylint: disable=redefined-builtin
+    unicode = str  # pylint: disable=redefined-builtin
 
 class FSWrapper(object):
     """Centralized overwrite/dry-run control and log-as-fail wrapper."""
@@ -252,13 +259,24 @@ def main():
 def fgrep_to_re_str(patterns):
     """Escape a list of strings and return a regex string to match any of them.
 
+    @type patterns: C{[unicode]} or C{[bytes]}
+    @warning: Providing a C{patterns} which contains both unicode and \
+              bytestrings is undefined behaviour. It's your own fault if your
+              Python 3.x program blows up because of it.
+
     @note: Does not C{re.compile} for you in case you want to incorporate it
            into a larger regular expression.
     """
+    if not patterns:
+        return b''  # FIXME: I know this is going to have unexpected results.
+
     if isinstance(patterns, basestring):
         patterns = [patterns]
 
-    return '(%s)' % '|'.join(re.escape(x) for x in patterns)
+    patterns = [re.escape(x) for x in patterns]
+    return (b'(' + b'|'.join(patterns) + b')'
+            if isinstance(patterns[0], bytes)
+            else u'(%s)' % u'|'.join(patterns))
 
 re_percent_escape_u = re.compile(u"%[0-9a-fA-F]{2}")
 re_percent_escape_b = re.compile(re_percent_escape_u.pattern.encode('ascii'))
@@ -804,13 +822,28 @@ if sys.argv[0].rstrip('3').endswith('nosetests'):  # pragma: nobranch
             @todo: Consider using unittest2 so I can get access to the
             Python 3.4 self.subTest context manager to simplify this.
             """
-            self.assertEqual(fgrep_to_re_str("abc"), "(abc)")
-            self.assertEqual(fgrep_to_re_str(["abc"]), "(abc)")
-            self.assertEqual(fgrep_to_re_str(["abc", "def"]), "(abc|def)")
-            self.assertEqual(fgrep_to_re_str([r"\n[1]", r"|"]),
-                             r"(\\n\[1\]|\|)", "Must escape input strings")
 
-            # Verify that escaping is being done PROPERLY
+            # Test support for unicode input
+            self.assertEqual(fgrep_to_re_str([u"abc"]), u"(abc)")
+            self.assertEqual(fgrep_to_re_str([u"abc", u"def"]), u"(abc|def)")
+            self.assertEqual(fgrep_to_re_str([br"\n[1]".decode('utf8'), u"|"]),
+                             br"(\\n\[1\]|\|)".decode('utf8'),
+                             "Must escape input strings")
+
+            # Test support for bytes input
+            self.assertEqual(fgrep_to_re_str([b"abc"]), b"(abc)")
+            self.assertEqual(fgrep_to_re_str([b"abc", b"def"]), b"(abc|def)")
+            self.assertEqual(fgrep_to_re_str([br"\n[1]", br"|"]),
+                             br"(\\n\[1\]|\|)", "Must escape input strings")
+
+            # Test convenience support for passing a bare string as input
+            self.assertEqual(fgrep_to_re_str(u"abc"), u"(abc)")
+            self.assertEqual(fgrep_to_re_str(b"abc"), b"(abc)")
+
+            # Test that an empty list doesn't break things
+            self.assertIn(fgrep_to_re_str([]), (b'', u'', b'()', u'()'))
+
+            # Verify that escaping isn't being reinvented
             with patch("re.escape") as resc:
                 resc.return_value = ""  # Needed to prevent an exception
                 fgrep_to_re_str("abc")
