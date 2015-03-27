@@ -60,6 +60,10 @@ gogu() {
     lgogdownloader --download --no-cover --no-extras --game "^($*)\$"
 }
 
+lgogd() {
+    local IFS=\|
+    lgogdownloader --download --platform=4 --game "^($*)\$"
+}
 lgogu() {
     local IFS=\|
     lgogdownloader --download --no-cover --no-extras --platform=4 --game "^($*)\$"
