@@ -3,7 +3,7 @@
 """A simple command-line interface for common python-escpos functionality
 
 Dependencies:
-- DavisGoglin/python-escpos
+- DavisGoglin/python-escpos or better
 - A file named weather.png (for the 'test' subcommand)
 
 Reasons for using the DavisGoglin/python-escpos fork:
@@ -84,7 +84,7 @@ def echo(args):  # pylint: disable=unused-argument
                 epson.set(align='left')
             else:
                 epson.text('%s\n' % line)
-    except KeyboardInterrupt:
+    except (EOFError, KeyboardInterrupt):
         epson.cut()
 
 # }}}
