@@ -7,4 +7,5 @@ virtualenvwrapper.django
 ropevim
 sphinx
 tox
+tzlocal
 youtube_dl
