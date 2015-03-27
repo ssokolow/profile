@@ -18,7 +18,6 @@ snippet boiler
 
 	def main():
 		"""The main entry point, compatible with setuptools entry points."""
-		# pylint: disable=bad-continuation
 		from optparse import OptionParser
 		parser = OptionParser(version="%%prog v%s" % __version__,
 				usage="%prog ${5:[options] <argument> ...}",
