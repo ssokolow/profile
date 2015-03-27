@@ -694,6 +694,10 @@ if has("autocmd") && exists("+filetype")
     autocmd BufRead,BufNewFile *.js set filetype=javascript syntax=jquery
     autocmd BufRead,BufNewFile *.jsm set filetype=javascript syntax=jquery
 
+    " Support JSON properly
+    autocmd FileType set equalprg=python\ -m\ json.tool
+    autocmd BufRead,BufNewFile *.json set filetype=json syntax=javascript
+
     " ...and work around a sudoedit-vim interaction quirk
     autocmd BufNewFile,BufRead *.ebuild.* set filetype=ebuild
 
