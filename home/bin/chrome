@@ -1,9 +1,9 @@
 #!/bin/bash
 
 if which google-chrome &> /dev/null; then
-    exec google-chrome --incognito "$@"
+    exec google-chrome --enable-easy-off-store-extension-install --incognito "$@"
 elif which chromium &> /dev/null; then
-    exec chromium  --incognito "$@"
+    exec chromium --enable-easy-off-store-extension-install --incognito "$@"
 else
-    exec chromium-browser  --incognito "$@"
+    exec chromium-browser --enable-easy-off-store-extension-install --incognito "$@"
 fi
