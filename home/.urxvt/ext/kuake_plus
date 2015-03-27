@@ -17,7 +17,9 @@ sub on_start {
 
    $self->{wmctrl_path} = $has_which ? which('wmctrl') : 0;
 
-   $self->XGrabKey ($self->{keycode}, urxvt::AnyModifier, $self->DefaultRootWindow);
+   # Grab both with and without NumLock
+   $self->XGrabKey ($self->{keycode}, 0, $self->DefaultRootWindow);
+   $self->XGrabKey ($self->{keycode}, 16, $self->DefaultRootWindow);
 
    $self->XUnmapWindow ($self->parent);
 
