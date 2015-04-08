@@ -61,6 +61,14 @@ Plugin {
 }
 
 Plugin {
+    type = dirmenu
+    Config {
+        path=/mnt/buffalo_ext
+        image=/home/ssokolow/.local/share/images/games.png
+    }
+}
+
+Plugin {
     type = taskbar
     expand=1
     Config {
