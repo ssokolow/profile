@@ -9,6 +9,12 @@ alias dirs="dirs -v"
 alias less="less -R"
 alias vids="egrep '\.(flv|mp4|webm|avi|ogv|ogm|mkv|mov|rm|wmv)'"
 
+# A helper that makes an alias which is conditional on the lack of arguments.
+cond_alias() { eval "function ${1}() { [ -z \"\$*\" ] && $2 || command $1 \"\$@\"; }"; }
+
+# TODO: Rework things to remove this duplication
+cond_alias_2() { eval "function ${1}() { [ -z \"\$*\" ] && $2 $3 $4 || command $2 \"\$@\" $4; }"; }
+
 # If github's "hub" wrapper is installed, hook it up
 if which hub >/dev/null 2>&1; then
     alias git=hub
@@ -21,6 +27,11 @@ if which sqliteman >/dev/null 2>&1; then
         rm -- -version
     }
 fi
+
+# Streamline my TYT-watching workflow
+#cond_alias_2 tytp "mplayer -ss 3" "*"
+cond_alias_2 tytp "mplayer" "*"
+cond_alias_2 tytc "mv" "*" "~/incoming/Videos/Young\ Turks"
 
 # Given an egrep path filter, use git filter-branch to throw out all files
 # which don't match.
@@ -126,9 +137,6 @@ cwdiff() {
         wdiff -n "$@" | command colordiff
     fi
 }
-
-# A helper that makes an alias which is conditional on the lack of arguments.
-cond_alias() { eval "function ${1}() { [ -z \"\$*\" ] && $2 || command $1 \"\$@\"; }"; }
 
 # Stuff for KIO LAN transfers
 andre() { kioclient copy "$@" "smb://Slick.multiverse/inbound/"; }
