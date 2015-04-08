@@ -2,7 +2,7 @@
 Name=The Procrastinator's Timeclock
 GenericName=Timeclock
 Comment=Keep track of time spent on "one more thing"
-Exec=sh -c "exec ~/src/timeclock/timeclock.py --ui compact"
+Exec=sh -c "exec ~/src/timeclock/run.sh"
 Terminal=false
 Type=Application
 Categories=

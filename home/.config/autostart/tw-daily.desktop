@@ -1,0 +1,9 @@
+[Desktop Entry]
+Name=tw-daily.py
+GenericName=Simple TaskWarrior GUI
+Comment=Simple GUI for showing tasks due today
+Exec=sh -c "~/src/3_DOES_WHAT_I_WANT/tw-daily/tw-daily.py"
+Terminal=false
+Type=Application
+Categories=
+StartupNotify=false
