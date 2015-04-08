@@ -227,7 +227,7 @@ if which ack-grep > /dev/null 2>&1; then
 fi
 
 if ! which download_ffn_fic >/dev/null 2>&1 && [ -e ~/src/fanfic2ebook ]; then
-    download_ffn_fic() { ~/src/fanfic2ebook/src/fanfic2html "$@"; }
+    download_ffn_fic() { PYTHONPATH=~/src/fanfic2ebook/src/ python -m fanfic2ebook -P fanfic2html "$@"; }
 fi
 
 # Set up rTorrent to interact more nicely with screen's window list
