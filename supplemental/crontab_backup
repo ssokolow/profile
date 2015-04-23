@@ -11,10 +11,12 @@
 0       0       *       *       *       rm -f ~/.local/share/icons/hicolor/*/apps/application-x-wine-extension-*
 0       0       *       *       *       rm -rf /home/ssokolow/.local/share/applications/wine/Programs
 0       0       *       *       *       chmod 600 ~/Documents/*.kdbx
+0       0       *       *       *       ~/bin/task_skip_daily
 1       1       *       *       *       rm -f ~/.xsession-errors{,.old}
 2       1       *       *       *       rm -rf ~/incoming/gtk-gnutella-downloads/corrupt/*
-0       6       *       *       *       DISPLAY=:0 ~/bin/update_check.sh
-0       6       *       *       *       DISPLAY=:0 timelimit -t 86000 urxvt -e bash --rcfile ~/bin/task_bashrc
+0       6       *       *       *       DISPLAY=:0 timelimit -t 86000 ~/bin/update_check.sh
+0       6       *       *       *       DISPLAY=:0 timelimit -t 86000 ~/src/3_DOES_WHAT_I_WANT/tw-daily/tw-daily.py
+#0       6       *       *       *       DISPLAY=:0 timelimit -t 86000 urxvt -e bash --rcfile ~/bin/task_bashrc
 
 # Nightly backup for stuff that's too volatile for DVD-Rs.
 0       2       *       *       *       cyphertite -cf monolith_critical.ct ~/Documents/Critical; ctctl cull

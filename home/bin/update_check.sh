@@ -6,12 +6,13 @@
 #
 # License: MIT (http://opensource.org/licenses/MIT)
 
-APT_COMMAND="sudo /usr/bin/apt-get dist-upgrade"
+APT_COMMAND="/usr/bin/apt-get dist-upgrade"
 ICON_PATH=~/.local/share/icons/elementary/apps/16/update-notifier.svg
 
 # Used so this script can execute its second half within urxvt
 if [ "$1" = "--run-apt" ]; then
-    if ! $APT_COMMAND; then
+    # shellcheck disable=SC2086
+    if ! sudo $APT_COMMAND; then
         echo "Exited with non-success!"
         read
     fi
