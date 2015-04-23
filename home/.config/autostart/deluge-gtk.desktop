@@ -1,0 +1,9 @@
+[Desktop Entry]
+Name=Deluge (GTK+ UI)
+GenericName=BitTorrent Client
+Exec=deluge-gtk
+Terminal=false
+Type=Application
+Icon=deluge
+Categories=Network;FileTransfer;
+StartupNotify=false
