@@ -11,7 +11,7 @@
 0       0       *       *       *       rm -f ~/.local/share/icons/hicolor/*/apps/application-x-wine-extension-*
 0       0       *       *       *       rm -rf /home/ssokolow/.local/share/applications/wine/Programs
 0       0       *       *       *       chmod 600 ~/Documents/*.kdbx
-0       0       *       *       *       ~/bin/task_skip_daily
+0       0       *       *       *       ~/bin/task_skip_daily >/dev/null
 1       1       *       *       *       rm -f ~/.xsession-errors{,.old}
 2       1       *       *       *       rm -rf ~/incoming/gtk-gnutella-downloads/corrupt/*
 0       6       *       *       *       DISPLAY=:0 timelimit -t 86000 ~/bin/update_check.sh
@@ -19,7 +19,7 @@
 #0       6       *       *       *       DISPLAY=:0 timelimit -t 86000 urxvt -e bash --rcfile ~/bin/task_bashrc
 
 # Nightly backup for stuff that's too volatile for DVD-Rs.
-0       2       *       *       *       cyphertite -cf monolith_critical.ct ~/Documents/Critical; ctctl cull
+0       2       *       *       *       cyphertite -cf monolith_critical.ct ~/Documents/Critical; ctctl cull 2>&1 | egrep -v 'still referenced by newer backups, keeping|prev filename'
 0       3       *       *       *       ionice -c3 ~/src/rdbackup_wrapper/backup.py 2>&1 | fgrep -v -f ~/.rdiff-backup_known_ok_failures
 
 # PostgreSQL maintenance (nightly light, monthly full)

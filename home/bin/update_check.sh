@@ -2,7 +2,7 @@
 # Simple replacement for the Ubuntu update notifier because I'm stubborn and
 # refuse to bow to removal of configuration keys
 #
-# Copyright (C) 2014 Stephan Sokolow (deitarion/SSokolow)
+# Copyright (C) 2014-2015 Stephan Sokolow (deitarion/SSokolow)
 #
 # License: MIT (http://opensource.org/licenses/MIT)
 
@@ -36,7 +36,7 @@ if ! echo "$UPGRADES" | xargs zenity --list \
         --column "Current" \
         --column "Available" \
         --cancel-label="Remind Me Later" \
-        --ok-label="Upgrade Now"; then
+        --ok-label="Upgrade Now" >/dev/null; then
     exit
 fi
 
