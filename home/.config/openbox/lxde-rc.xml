@@ -180,25 +180,25 @@
   <keyboard>
     <chainQuitKey>C-g</chainQuitKey>
     <!-- Keybindings for desktop switching -->
-    <keybind key="W-Left">
+    <keybind key="C-W-Left">
       <action name="DesktopLeft">
         <dialog>no</dialog>
         <wrap>no</wrap>
       </action>
     </keybind>
-    <keybind key="W-Right">
+    <keybind key="C-W-Right">
       <action name="DesktopRight">
         <dialog>no</dialog>
         <wrap>no</wrap>
       </action>
     </keybind>
-    <keybind key="W-Up">
+    <keybind key="C-W-Up">
       <action name="DesktopUp">
         <dialog>no</dialog>
         <wrap>no</wrap>
       </action>
     </keybind>
-    <keybind key="W-Down">
+    <keybind key="C-W-Down">
       <action name="DesktopDown">
         <dialog>no</dialog>
         <wrap>no</wrap>
