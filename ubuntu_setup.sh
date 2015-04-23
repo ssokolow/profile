@@ -554,6 +554,7 @@ function add_polconf_postprefixcreate() {
 }
 echo " * Setting up 'winetricks sandbox'-like PlayOnLinux behaviour"
 add_polconf_postprefixcreate "$ME" "$HOMEDIR"
+sudo -u "$ME" supplemental/configure_pol.sh
 
 if pgrep lxpanel >/dev/null; then
     echo " * Restarting lxpanel to acknowledge new launchers"
