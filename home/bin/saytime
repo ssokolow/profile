@@ -1,0 +1,6 @@
+#!/bin/bash
+
+TEMP=$(sed 's@AM@A.M.@' <<< "$(date "+%p")")
+DATESTRING="+The time is %H:%M... That's %l:%M $TEMP"
+
+date "$DATESTRING" | festival --tts

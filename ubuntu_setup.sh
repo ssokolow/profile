@@ -129,6 +129,7 @@ ark
 audacious
 comix
 curl
+festival
 filelight
 firefox
 git

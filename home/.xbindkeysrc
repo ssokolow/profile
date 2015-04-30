@@ -94,14 +94,14 @@
 "~/bin/note_song.py"
   XF86AudioRecord
 
+"~/bin/saytime"
+  F13
+
 # Shim away mplayer's inability to bind SunFront to fullscreen toggle.
 "xdotool getactivewindow key f"
   SunFront
 
 # --== Special Keyboard Key Bindings (TODO: rework) ==--
-
-#"~/bin/saytime"
-#  XF86Display
 
 # TODO: Decide how to bind these with my new keyboard
 #"audtool playlist-shuffle-toggle"

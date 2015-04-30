@@ -1,3 +1,5 @@
+keycode 222 = F13
+keycode 184 = F14
 remove mod4 = Hyper_L
 add mod3 = Hyper_L
 clear Lock
