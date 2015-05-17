@@ -315,7 +315,7 @@ def main():
     details = ''
     if os.path.exists(THUMBDRIVE_PATH):
         # Copy any new videos over
-        for fname in os.listdir('.'):
+        for fname in sorted(os.listdir('.')):
             if os.path.isdir(fname):
                 continue
 
