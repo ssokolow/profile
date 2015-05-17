@@ -4,6 +4,7 @@ pyflakes
 flake8
 virtualenvwrapper
 virtualenvwrapper.django
+restview
 ropevim
 sphinx
 tox
