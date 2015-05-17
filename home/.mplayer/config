@@ -23,6 +23,7 @@ slang=eng
 alang=eng
 
 #tv=driver=v4l2:width=640:height=480:fps=30:device=/dev/video1
+tv=norm=NTSC
 
 fixed-vo=yes
 stop-xscreensaver=yes
