@@ -612,6 +612,9 @@ VAMActivate github:jmcantrell/vim-virtualenv
 " TODO: Make this conditional on CoffeeScript files
 VAMActivate vim-coffee-script
 
+" TODO: Make this conditional on Rust files
+VAMActivate rust
+
 " TODO: Figure out how to rebuild my statusline using airline
 "VAMActivate  vim-airline
 "let g:airline#extensions#syntastic#enabled = 0
@@ -677,6 +680,9 @@ if has("autocmd") && exists("+filetype")
     " Autocomplete </ for closing tags in HTML/XML files
     " TODO: Why isn't this working as I expect?
     autocmd FileType html,xml,xsl iabbrev <buffer> </ </
+
+    " Adjust for Rust-specced maximum line length
+    autocmd FileType rust set textwidth=99
 
     " Hook up :make to preview GraphViz dot rendering
     autocmd FileType dot set makeprg=dot\ %\ -Tpng\ -o\ %.png;\ display\ %

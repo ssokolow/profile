@@ -13,6 +13,7 @@ set spell spelllang=en_ca
 " Make the 80th column visible
 if exists('+colorcolumn')
     set colorcolumn=80
+    autocmd FileType rust set colorcolumn=100
     highlight ColorColumn guibg=#eaffea
 else
   au BufWinEnter * let w:m2=matchadd('ErrorMsg', '\%>80v.\+', -1)
