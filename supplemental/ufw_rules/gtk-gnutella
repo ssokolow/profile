@@ -1,0 +1,4 @@
+[gtk-gnutella]
+title=ssokolow's copy of the gtk-gnutella
+description=A featureful, resource-efficient Gnutella client for Linux
+ports=28174/udp|28174/tcp
