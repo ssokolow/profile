@@ -320,6 +320,9 @@ if [ "$(hostname)" = "monolith" ]; then
     cp supplemental/rng-tools /etc/default/rng-tools
     update-rc.d rng-tools defaults
 
+    echo " * Setting up NES controller adapter fix for udev"
+    cp supplemental/99-nes-controller.rules /etc/udev/rules.d/
+
     echo " * Setting up SpaceNavD for my 3D mouse on monolith"
     apt-get install -y spacenavd
     cp supplemental/spnavrc /etc/
