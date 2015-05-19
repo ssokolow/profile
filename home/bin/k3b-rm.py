@@ -36,7 +36,7 @@ __license__ = "MIT"
 import logging
 log = logging.getLogger(__name__)
 
-import os, posixpath, re, shutil, sys
+import os, posixpath, re, shutil, sys, tempfile
 import xml.etree.cElementTree as ET
 from zipfile import ZipFile
 
@@ -177,6 +177,53 @@ class FSWrapper(object):
             # Iteratively walk up until we run out of emptied ancestors
             paths = diminished
 
+    # TODO: Use a separate SAX-based rewrite option for XML so entities are
+    #  handled automatically. (Use http://code.activestate.com/recipes/265881/)
+    #  ...and at least SUPPORT https://pypi.python.org/pypi/defusedxml/
+    # TODO: Consider a separate parser for YAML too since it's popular enough
+    # to potentially be encountered in the wild and has optional escaping that
+    # could result in an ASCII-to-Unicode path rewrite rendering the file's
+    # syntax invald.
+    # (Always a risk, but much less likely in other formats because of how the
+    #  src/dest mapping ensures the replacement will use the same encoding that
+    #  was matched.)
+    # TODO: Consider some kind of autodetect based on extension and, for gzip
+    #  and XML, headers.
+    def rewrite(self, fpath, mappings):
+        """Atomically rewrite substrings within a given file."""
+        def matcher(match):
+            """re.sub callback"""
+            src = match.group(0)
+            log.debug("Rewrite in %r: %r -> %r", fpath, src, mappings.get(src))
+            return mappings[src]
+
+        # If no mappings were provided, don't bother to read/write a no-op.
+        if not mappings:
+            return
+
+        # If any input string is unicode rather than bytes, encode as UTF-8
+        # (A "do what I probably mean" measure chosen as preferable to a
+        #  runtime exception, given that Python has no static typing)
+        mappings = {
+            x.encode('utf-8') if isinstance(x, unicode) else x:
+            y.encode('utf-8') if isinstance(y, unicode) else y
+            for x, y in mappings.items()
+            # TODO: The ifinstance(y, unicode) used to use "x" by mistake.
+            #       Write a test case for that using unicode input.
+        }
+
+        log.info("Rewriting paths in %r", fpath)
+        with open(fpath, 'rb') as fobj:
+            rex = re.compile(fgrep_to_re_str(mappings.keys()))
+            content = rex.sub(matcher, fobj.read())
+
+        if not self.dry_run:
+            # Replace atomically by renaming a temp file
+            with tempfile.NamedTemporaryFile(delete=False,
+                    dir=os.path.split(fpath)[0]) as fobj:
+                fobj.write(content)
+                tpath = fobj.name
+            os.rename(tpath, fpath)  # TODO: Did Windows need os.unlink first?
 
 def _print(*args, **kwargs):
     """Wrapper for C{print} to allow mocking"""
@@ -217,6 +264,9 @@ def main():
     mv_parser.add_argument('--overwrite', action="store_true",
         dest="overwrite",
         help="Allow %(prog)s to overwrite files at the target location.")
+    mv_parser.add_argument('--rewrite', metavar='path', action='append',
+        dest='rewrites', default=[],
+        help="Perform string substitution on paths within given file")
     mv_parser.add_argument('target', metavar='target_dir',
         help="Directory to move files into")
     mv_parser.set_defaults(remove_leftovers=True, mode='mv')
@@ -245,6 +295,7 @@ def main():
     # TODO: Test that --overwrite and --dry-run always get passed through
     filesystem = FSWrapper(overwrite=args.overwrite, dry_run=args.dry_run)
 
+    done = {}
     for path in args.paths:
         files = parse_k3b_proj(path)
         # TODO: Log and continue in case of exception here
@@ -253,6 +304,7 @@ def main():
             if args.mode == 'mv':
                 dest_path = mounty_join(args.target, dest_rel)
                 filesystem.mergemove(src_path, dest_path)
+                done[src_path] = dest_path
             elif args.mode == 'rm':
                 filesystem.remove(src_path)
             else:  # args.mode == 'ls'
@@ -260,6 +312,13 @@ def main():
 
     if args.remove_leftovers:
         filesystem.remove_emptied_dirs(files)
+
+    if args.mode == 'mv':
+        for path in args.rewrites:
+            if not os.path.isfile(path):
+                log.error("Not a file: %s", path)
+                continue
+            filesystem.rewrite(path, done)
 
 def fgrep_to_re_str(patterns):
     """Escape a list of strings and return a regex string to match any of them.
@@ -784,6 +843,194 @@ if sys.argv[0].rstrip('3').endswith('nosetests'):  # pragma: nobranch
             # Separately test response to EBUSY by trying to rmdir('/')
             os.rmdir.side_effect = OSError(errno.EBUSY, "FOO")
             wrapper.remove_emptied_dirs(['/bin'])
+
+    class TestFSWrapperRewriteFunc(unittest.TestCase):  # pylint: disable=R0904
+        """Tests for L{FSWrapper.rewrite}"""
+
+        # --==< Base rewrite() Testing Data >==--
+
+        # TODO: Decide how to handle paths on case-insensitive OSes
+        base_test_content = b'\n'.join([
+                    b"ABC", b"abc", b"AbC",           # Start+end, many cases
+                    b"  ABC ", b"KABC", b"ABCK",      # Various word boundaries
+                    b" ABCDEFGHIJKLMNOPQRSTUVWXYZ ",  # many on same line
+                     b"DEF", b"JKLMNOPQ",              # Other matches
+                    "Ð€F".encode('utf-8'),            # Non-ASCII content
+                    b"XYZ"                            # Non-match
+                ])
+        base_test_expected = b'\n'.join([
+                    b"DEF", b"abc", b"AbC",  # No ABC->DEF->GHI (one pass only)
+                    b"  DEF ", b"KDEF", b"DEFK",
+                    b" DEFGHIGHIJKLTunaPQRSTUVWXYZ ",
+                    b"GHI",
+                    b"JKLTunaPQ",            # Length-changing replacement
+                    "ð€F".encode('utf-8'),   # Non-ASCII content
+                    b"XYZ"
+        ])
+        base_expected_rewrites = (
+            [(b'ABC', b'DEF')] * 5 +
+            [(b'DEF', b'GHI'), (b'MNO', b'Tuna')] * 2 +
+            [('Ð€F'.encode('utf-8'), 'ð€F'.encode('utf-8'))]
+        )
+        base_test_map = {'ABC': 'DEF', 'DEF': 'GHI',
+                         'MNO': 'Tuna', 'Ð€F': 'ð€F'}
+
+        # --==< rewrite() Integration Testing Data >==--
+
+        test_map = {
+            # Pure 7-bit ASCII
+            u"/foo & bar/a/01 - thaz.thuz": u"/qaz & gud/b/01 - thaz.thuz",
+            # Plenty of Unicode
+            u"/foœ & bær/a/01 - ðaz.þuz": u"/qæz & güd/b/01 - ðaz.þuz",
+        }
+
+        # NOTE: For integration testing purposes, it's important to always keep
+        #       this up to date with all the formats I foresee operating on.
+        test_tmpls = (
+            u'#Geeqie collection\n"%(literal)s.jpg"\n#end',             # gqv
+            u'title=List\nurl=file://%(pathname2url)s.mp3\ntitle=Đaz',  # audpl
+            u'[playlist]\nNumberOfEntries=1\nFile1=%(literal)s.ogg',    # pls
+            u'<?xml ?><location>%(xmlescape)s.mp3</location>',          # xspf
+            u'file://%(pathname2url)s.mp3',                             # m3u8
+            u'#EXTM3U\nfile://%(pathname2url)s.mp3',                    # m3u8
+            # http://gonze.com/playlists/playlist-format-survey.html
+            # XXX: Should I bother attempting to deal with Windows-1252 in m3u?
+            # XXX: Should I try supporting paths relative to the playlist file?
+            # XXX: Is there a reasonable way to support B4S/WPL \-sep'd paths?
+        )
+
+        test_paths_encoded = [[{
+                                    'literal': x,
+                                    'pathname2url': pathname2url(x),
+                                    'xmlescape': xmlescape(x),
+                                } for x in pair]
+                              for pair in test_map.items()]
+
+        test_data = [[tmpl % path for path in pair]
+            for tmpl, pair in product(test_tmpls, test_paths_encoded)]
+
+        def setUp(self):  # NOQA
+            # Verify we have a (map, before, after) list, paths × tmpls long
+            # (And do it every time to make improve test isolation)
+            self.assertEqual(len(self.test_data),
+                             len(self.test_map) * len(self.test_tmpls))
+            self.assertTrue(all(len(x) == 2 for x in self.test_data))
+
+            # We want to make sure it works on both Unicode strings and
+            # bytestrings (and we want to regenerate on each run to be safe)
+            self.test_pairs = self.test_data + [
+                [x.encode('utf8') for x in pair] for pair in self.test_data]
+
+            self.testroot = tempfile.mkdtemp(prefix='k3b-rm_test-')
+            self.addCleanup(self.cleanup)
+
+            self.empty_path = os.path.join(self.testroot, 'empty_file')
+            open(self.empty_path, 'wb').close()
+
+            self.path_with_content = os.path.join(self.testroot, 'stuff_file')
+            with open(self.path_with_content, 'wb') as fobj:
+                # TODO: Decide how to handle paths on case-insensitive OSes
+                fobj.write(self.base_test_content)
+
+            def set_mock(patcher):  # pylint: disable=C0111
+                patcher.start()
+                self.addCleanup(patcher.stop)
+
+            for meth in ('warn', 'info', 'debug'):
+                set_mock(patch.object(log, meth, autospec=True))
+
+        def tearDown(self):  # NOQA
+            #  Simplify tests by expecting reset_mock() on used mocks.
+            for mock in (log.debug, log.info, log.warn):
+                self.assertFalse(mock.called,  # pylint: disable=E1103
+                                "Shouldn't have been called: %s" % mock)
+
+        def cleanup(self):
+            """Stuff which should be called after other cleanups, regardless"""
+            shutil.rmtree(self.testroot)
+
+        def _test_rewrite_empty(self, mappings):
+            """Shared code to test rewrite() with empty files"""
+            for dry_run in (True, False):
+                wrapper = FSWrapper(dry_run=dry_run)
+
+                # Verify that a missing mapping key doesn't cause chaos
+                wrapper.rewrite(self.empty_path, {})
+
+                # Verify that an empty file doesn't cause chaos
+                self.assertEqual(os.stat(self.empty_path).st_size, 0)
+                wrapper.rewrite(self.empty_path, mappings)
+                self.assertEqual(os.stat(self.empty_path).st_size, 0)
+                self.assertFalse(log.debug.called)
+                log.info.assert_called_once_with(ANY, self.empty_path)
+                log.info.reset_mock()
+
+        def _test_rewrite(self, mappings):
+            """Shared code to test rewrite() with content"""
+            for dry_run in (True, False):
+                wrapper = FSWrapper(dry_run=dry_run)
+
+                # TODO: Test non-empty files shorter than the match string.
+
+                wrapper.rewrite(self.path_with_content, self.base_test_map)
+                log.info.assert_called_once_with(ANY, self.path_with_content)
+                log.info.reset_mock()
+
+                self.assertListEqual(sorted(log.debug.call_args_list), sorted(
+                        [call(ANY, self.path_with_content, x[0], x[1])
+                         for x in self.base_expected_rewrites]))
+                log.debug.reset_mock()
+
+                # Verify actual on-disk result
+                if dry_run:
+                    with open(self.path_with_content, 'rb') as fobj:
+                        self.assertEqual(fobj.read(), self.base_test_content)
+                else:
+                    with open(self.path_with_content, 'rb') as fobj:
+                        self.assertEqual(fobj.read(), self.base_test_expected)
+
+        def test_rewrite(self):
+            """FSWrapper.rewrite: basic functionality (bytestring mappings)"""
+            self._test_rewrite_empty({b'foo': b'bar'})
+            self._test_rewrite({x.encode('utf8'): y.encode('utf8')
+                               for x, y in self.base_test_map.items()})
+
+        def test_rewrite_unicode(self):
+            """FSWrapper.rewrite: basic functionality (unicode mappings)"""
+            self._test_rewrite_empty({'foo': 'bar'})
+            self._test_rewrite(self.base_test_map)
+
+            # TODO: Decide how to handle these broken cases, if at all
+            #self._test_rewrite_empty({b'foo': 'bar'})
+            #self._test_rewrite_empty({'foo': b'bar'})
+
+        def test_rewrite_integration(self):
+            """FSWrapper.rewrite: in combination with vary_escaped()"""
+            print()
+            #TODO: Test with both unicode and bytes versions of test_map
+            for before, after in self.test_pairs:
+                with patch(open_path, mock_open(read_data=before)) as opn:
+                    for dry_run in (True, ): # False):  # TODO: Test dry_run=False
+                        print({x: y for x,y in self.test_map.items()})
+                        wrapper = FSWrapper(dry_run=dry_run)
+                        wrapper.rewrite('/testfile',
+                            # dict(zip(*[[1,2,3],['a','b','c']]))
+                            {vary_escaped(x): vary_escaped(y)
+                             for x,y in self.test_map.items()})
+
+                        print('---===<>===---')
+                        print(before)
+                        print('/testfile', self.test_map)
+                        print(log.debug.call_args_list)
+                        log.debug.assert_called_once_with(
+                            ANY, '/testfile', ANY, ANY)
+                        # FIXME: We need to check that the second two ANYs
+                        # are a pair from self.test_map.items()
+                        log.debug.reset_mock()
+
+            # TODO: We need to test a "no matches" case with both dry_run
+            # values
+
 
     class TestK3bRmLightweight(unittest.TestCase, MockDataMixin
                                ):  # pylint: disable=R0904
