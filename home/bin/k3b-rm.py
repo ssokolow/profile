@@ -36,7 +36,7 @@ __license__ = "MIT"
 import logging
 log = logging.getLogger(__name__)
 
-import os, posixpath, re, shutil, sys, tempfile
+import errno, os, posixpath, re, shutil, sys, tempfile
 import xml.etree.cElementTree as ET
 from zipfile import ZipFile
 
