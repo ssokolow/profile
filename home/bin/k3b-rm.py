@@ -122,8 +122,13 @@ class FSWrapper(object):
 
         log.info("%r -> %r", src, dest)
         if not self.dry_run:
-            shutil.move(src, dest)
-            # TODO: Log and continue in case of exception here
+            destdir = os.path.dirname(dest)
+            try:
+                if not os.path.exists(destdir):
+                    os.makedirs(destdir)
+                shutil.move(src, dest)
+            except IOError, err:
+                log.error(err)
         return True
 
     def remove(self, path):
@@ -621,6 +626,8 @@ if sys.argv[0].rstrip('3').endswith('nosetests'):  # pragma: nobranch
 
         def test_move(self):
             """FSWrapper.move: normal operation"""
+
+            # TODO: Extend test to cover the os.makedirs(destdir) step
 
             paths = []
             for _ in range(2):
