@@ -40,7 +40,7 @@ import errno, os, posixpath, re, shutil, sys, tempfile
 import xml.etree.cElementTree as ET
 from zipfile import ZipFile
 
-if sys.version_info.major < 3:  # pragma: nobranch
+if sys.version_info.major < 3:
     from xml.sax.saxutils import escape as xmlescape
     from urllib import (pathname2url as _pathname2url,
                         quote as _urlquote,
@@ -60,7 +60,7 @@ if sys.version_info.major < 3:  # pragma: nobranch
         """Fixup wrapper to make C{urllib.quote_plus} behave as in Python 3"""
         return _urlquote_plus(text if isinstance(text, bytes)
                               else text.encode('utf-8'), safe)
-else:
+else:  # pragma: nocover
     from urllib.request import pathname2url       # pylint: disable=E0611,F0401
     from urllib.parse import (quote as urlquote,  # pylint: disable=E0611,F0401
                               quote_plus as urlquote_plus)
@@ -73,7 +73,7 @@ else:
 
 # ---=== Actual Code ===---
 
-if sys.version_info.major >= 3:  # pragma: nobranch
+if sys.version_info.major >= 3:  # pragma: nocover
     basestring = (bytes, str)  # pylint: disable=redefined-builtin
     unicode = str  # pylint: disable=redefined-builtin
 
@@ -125,9 +125,9 @@ class FSWrapper(object):
             destdir = os.path.dirname(dest)
             try:
                 if not os.path.exists(destdir):
-                    os.makedirs(destdir)
+                    os.makedirs(destdir)  # TODO: Test this branch
                 shutil.move(src, dest)
-            except IOError, err:
+            except IOError as err:  # pragma: nocover
                 log.error(err)
         return True
 
@@ -195,6 +195,8 @@ class FSWrapper(object):
             """re.sub callback"""
             src = match.group(0)
             log.debug("Rewrite in %r: %r -> %r", fpath, src, mappings.get(src))
+            assert isinstance(src, bytes)
+            assert isinstance(mappings[src], bytes)
             return mappings[src]
 
         # If no mappings were provided, don't bother to read/write a no-op.
@@ -214,8 +216,16 @@ class FSWrapper(object):
 
         log.info("Rewriting paths in %r", fpath)
         with open(fpath, 'rb') as fobj:
+            re_str = fgrep_to_re_str(mappings.keys())
+            content = fobj.read()
+            if isinstance(content, unicode):
+                content = content.encode('utf-8')
+
+            assert isinstance(re_str, bytes)
+            assert isinstance(content, bytes)
+
             rex = re.compile(fgrep_to_re_str(mappings.keys()))
-            content = rex.sub(matcher, fobj.read())
+            content = rex.sub(matcher, content)
 
         if not self.dry_run:
             # Replace atomically by renaming a temp file
@@ -315,7 +325,7 @@ def main():
 
     if args.mode == 'mv':
         for path in args.rewrites:
-            if not os.path.isfile(path):
+            if not os.path.isfile(path):  # TODO: Test this branch
                 log.error("Not a file: %s", path)
                 continue
             filesystem.rewrite(path, done)
@@ -426,6 +436,13 @@ def vary_escaped(path):
         lower_percent_escapes(p2url),
         xmlescape(path),               # xml-escaped (XSPF)
     ]
+
+def vary_escaped_batch(mappings):
+    """Apply C{vary_escaped} to a dict of filename mappings."""
+    output = {}
+    for src, dest in mappings.items():
+        output.update(zip(vary_escaped(src), vary_escaped(dest)))
+    return output
 
 # ---=== Test Suite ===---
 
@@ -1006,31 +1023,39 @@ if sys.argv[0].rstrip('3').endswith('nosetests'):  # pragma: nobranch
 
         def test_rewrite_integration(self):
             """FSWrapper.rewrite: in combination with vary_escaped()"""
-            print()
+            failures = []
+
             #TODO: Test with both unicode and bytes versions of test_map
             for before, after in self.test_pairs:
                 with patch(open_path, mock_open(read_data=before)) as opn:
                     for dry_run in (True, ): # False):  # TODO: Test dry_run=False
-                        print({x: y for x,y in self.test_map.items()})
                         wrapper = FSWrapper(dry_run=dry_run)
                         wrapper.rewrite('/testfile',
-                            # dict(zip(*[[1,2,3],['a','b','c']]))
-                            {vary_escaped(x): vary_escaped(y)
-                             for x,y in self.test_map.items()})
+                                        vary_escaped_batch(self.test_map))
 
-                        print('---===<>===---')
-                        print(before)
-                        print('/testfile', self.test_map)
-                        print(log.debug.call_args_list)
-                        log.debug.assert_called_once_with(
-                            ANY, '/testfile', ANY, ANY)
+                        if not log.debug.called:
+                            failures.append((before, after))
+                        #log.debug.assert_called_once_with(
+                        #    ANY, '/testfile', ANY, ANY)
                         # FIXME: We need to check that the second two ANYs
                         # are a pair from self.test_map.items()
                         log.debug.reset_mock()
 
             # TODO: We need to test a "no matches" case with both dry_run
             # values
+            if failures:
+                self.fail("Failed to rewrite in one or more cases:\n\t%s" %
+                          '\n\t'.join(repr(x) for x in failures))
 
+        def test_vary_escaped_batch(self):
+                """H: vary_escaped_batch: most minimal test possible
+
+                (Used to localize bytes/unicode errors)
+                """
+                result = vary_escaped_batch(self.test_map)
+                self.assertIsInstance(result, dict)
+                self.assertGreater(len(result), len(self.test_map))
+                self.assertDictContainsSubset(self.test_map, result)
 
     class TestK3bRmLightweight(unittest.TestCase, MockDataMixin
                                ):  # pylint: disable=R0904
