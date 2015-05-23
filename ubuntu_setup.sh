@@ -123,6 +123,7 @@ youtube-dl
 
 # Already in my Porteus or not necessary:
 advancecomp
+apache2
 apt-file
 aptitude
 ark
@@ -286,6 +287,16 @@ libgtk-3-dev
 libgee-dev
 
 EOF
+
+# Set up planetfilter
+# http://feeding.cloud.geek.nz/posts/keeping-up-with-noisy-blog-aggregators-using-planetfilter/
+apt-get install planetfilter
+cp -n etc/planetfilter.d/* /etc/planetfilter.d/
+/usr/share/planetfilter/update-feeds
+# ...via apache so Thunderbird won't shun it for being file://
+cp etc/apache2/sites-available/100-planetfilter.conf /etc/apache2/sites-available/100-planetfilter.conf
+a2ensite 100-planetfilter
+service apache2 reload
 
 # Now that dependencies have been pulled in...
 echo " * Downgrading Geeqie to a working version"
