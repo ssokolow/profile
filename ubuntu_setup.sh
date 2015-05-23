@@ -307,8 +307,7 @@ if [ "$(hostname)" = "monolith" ]; then
 
     echo " * Setting up lcdproc for monolith"
     apt-get install -y lcdproc
-    cp supplemental/LCDd.conf /etc/
-    cp supplemental/lcdproc.conf /etc/
+    cp etc/LCDd.conf etc/lcdproc.conf /etc/
     /etc/init.d/LCDd restart
 
     #TODO: Set up lcdproc to run on boot via /etc/rc.local on monolith
@@ -316,21 +315,21 @@ if [ "$(hostname)" = "monolith" ]; then
 
     echo " * Setting up TrueRNG entropy source for monolith"
     apt-get install -y rng-tools
-    cp supplemental/99-TrueRNG.rules /etc/udev/rules.d/
-    cp supplemental/rng-tools /etc/default/rng-tools
+    cp etc/udev/rules.d/99-TrueRNG.rules /etc/udev/rules.d/
+    cp etc/default/rng-tools /etc/default/rng-tools
     update-rc.d rng-tools defaults
 
     echo " * Setting up NES controller adapter fix for udev"
-    cp supplemental/99-nes-controller.rules /etc/udev/rules.d/
+    cp etc/udev/rules.d/99-nes-controller.rules /etc/udev/rules.d/
 
     echo " * Setting up SpaceNavD for my 3D mouse on monolith"
     apt-get install -y spacenavd
-    cp supplemental/spnavrc /etc/
+    cp etc/spnavrc /etc/
     /etc/init.d/spacenavd restart
 
     echo " * Setting up Samba shares for monolith"
     addgroup family
-    cp supplemental/smb.conf /etc/samba/smb.conf
+    cp etc/samba/smb.conf /etc/samba/smb.conf
     for NICK in beverly andre nicky; do
         useradd "$NICK"
         gpasswd "$NICK" family
@@ -342,7 +341,7 @@ if [ "$(hostname)" = "monolith" ]; then
     #TODO: Add nvclock once it no longer segfaults
 
     # Set up master config
-    cp supplemental/munin.conf /etc/munin/
+    cp etc/munin/munin.conf /etc/munin/
 
     # Set up node plugins
     rm /etc/munin/plugins/*
@@ -388,7 +387,7 @@ if [ "$(hostname)" = "monolith" ]; then
 
     echo " * Setting up nVidia drivers for monolith"
     apt-get install -y nvidia-current nvidia-settings
-    cp supplemental/xorg.conf /etc/X11/
+    cp etc/X11/xorg.conf /etc/X11/
     if [ "$(lsb_release -sr)" = "14.04" ]; then
         echo " * Updating nvidia-drivers to bypass *buntu 14.04 bug"
         apt-get install nvidia-331 -y
@@ -441,12 +440,12 @@ apt-get install -y dolphin-emu || apt-get install -y dolphin-emu-master
 apt-get install -y python{2.6,3.1,3.2,3.3}-complete # ...for tox
 apt-get install -y pypy # ...for tox
 apt-get install -y focuswriter
-cp supplemental/49-teensy.rules /etc/udev/rules.d/
-cp supplemental/99-escpos.rules /etc/udev/rules.d/
+cp etc/udev/rules.d/49-teensy.rules /etc/udev/rules.d/
+cp etc/udev/rules.d/99-escpos.rules /etc/udev/rules.d/
 
 # Source: https://lwn.net/Articles/616241/
 echo "* Limiting this machine's effect on bufferbloat"
-cp supplemental/99-bufferbloat.conf /etc/sysctl.d/
+cp etc/sysctl.d/99-bufferbloat.conf /etc/sysctl.d/
 
 echo " * Overwriting gcdemu tray icon since it ignores my icon theme"
 cp home/.local/share/icons/hicolor/scalable/apps/gcdemu-icon.svg /usr/share/icons/hicolor/scalable/apps/gcdemu-icon.svg
@@ -490,7 +489,7 @@ echo " * Restoring backup crontab for $ME"
 crontab supplemental/crontab_backup
 
 echo " * Making update_check.sh passwordless"
-cp supplemental/update_check.sudoers /etc/sudoers/update_checker
+cp etc/sudoers/update_checker /etc/sudoers/update_checker
 
 if [ ! -e /etc/sensors3.conf ]; then
     echo " * Setting up sensors"
@@ -535,7 +534,7 @@ else
 fi
 
 echo " * Setting up basic firewall"
-cp -n "supplemental/ufw_rules/"* /etc/ufw/applications.d/
+cp -n etc/ufw/applications.d/* /etc/ufw/applications.d/
 ufw enable
 for X in OpenSSH VNC Deluge Dropbox Samba avahi-daemon dhclient ntpd pidgin synergy; do
     ufw allow "$X"
