@@ -225,6 +225,8 @@ python3-doc
 python3-examples
 python3-setuptools
 qt4-dev-tools
+redshift
+redshift-gtk
 samba
 texlive-xetex
 timelimit
