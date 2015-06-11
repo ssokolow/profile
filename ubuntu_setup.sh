@@ -82,6 +82,9 @@ fi
 echo " * Updating remaining packages"
 apt-get dist-upgrade -y
 
+#TODO: Identify all of the GTK+ 3.x apps on my system and find GTK+ 2.x
+#      alternatives so I don't have to deal with the GTK+ 3.x version of the
+#      Places sidebar in the Open/Save dialogs.
 echo " * Installing base set of desired Debian/Ubuntu packages"
 (egrep -v '^#' - | xargs apt-get install -y) << EOF
 
@@ -595,7 +598,7 @@ echo " - reinstall hub (https://github.com/github/hub)."
 echo " - reinstall the fonts from https://github.com/Lokaltog/powerline-fonts"
 echo " - run 'dpkg-reconfigure -a -u'"
 echo " - Run 'POL_Config_Write NO_DESKTOP_ICON \"TRUE\"' in the POL console"
-echo " - Add "/mnt/incoming/.backups /srv/backups" to /etc/updatedb.conf and uncomment PRUNENAMES."
+echo " - Add "/mnt/incoming/.backups /srv/backups /mnt/buffalo_ext/backups" to /etc/updatedb.conf and uncomment PRUNENAMES."
 echo " - Re-extract the EasyCap somagic firmware from the driver disk."
 echo " - cabal install pandoc pandoc-citeproc"
 # TODO: Find a way to ask just the dpkg-reconfigure questions which were
