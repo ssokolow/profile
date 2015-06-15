@@ -101,6 +101,7 @@ keepass2
 mercurial
 ncdu
 nodejs
+pidgin-bot-sentry
 pychecker
 pylint
 python-nose
