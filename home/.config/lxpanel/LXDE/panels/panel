@@ -98,8 +98,8 @@ Plugin {
 Plugin {
     type = dclock
     Config {
-        ClockFmt=%Y-%m-%d %R
-        TooltipFmt=%A, %B %d, %Y
+        ClockFmt=%F %R
+        TooltipFmt=%A, %B %d, %Y %n%T %Z (UTC%z)
         BoldFont=0
         IconOnly=0
         CenterText=0
