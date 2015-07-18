@@ -5,6 +5,8 @@
 --ignore-dir=twig_cache
 --pager=less -R -F -X
 
+--ignore-file=is:.coverage
+
 # Shockingly, there is no JSON in the default type map
 --type-add
 js=.json
