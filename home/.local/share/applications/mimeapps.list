@@ -86,6 +86,7 @@ audio/flac=audacious.desktop
 video/x-ms-asf=mpv.desktop
 audio/x-wav=audacious.desktop
 audio/x-vorbis+ogg=audacious.desktop
+x-scheme-handler/gogdownloader=lgogd_uri.desktop
 
 [Added Associations]
 application/javascript=gvim.desktop;
