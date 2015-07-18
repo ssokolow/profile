@@ -603,6 +603,7 @@ VAMActivate loremipsum unimpaired vis VisIncr
 VAMActivate fugitive vim-signify
 
 " -- TODO: Tune and sort --
+VAMActivate vim-json-bundle
 VAMActivate LargeFile
 
 " TODO: Make this conditional on Python files
