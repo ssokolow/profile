@@ -85,6 +85,7 @@ x-scheme-handler/xmpp=purple-url-handler.desktop
 x-scheme-handler/ymsgr=purple-url-handler.desktop
 application/sql=gvim.desktop
 audio/flac=audacious.desktop
+application/vnd.adobe.flash.movie=gnash.desktop
 video/x-ms-asf=mpv.desktop
 audio/x-wav=audacious.desktop
 audio/x-vorbis+ogg=audacious.desktop
@@ -169,6 +170,8 @@ x-scheme-handler/nntp=thunderbird.desktop;
 x-scheme-handler/snews=thunderbird.desktop;
 application/sql=gvim.desktop;
 audio/flac=audacious.desktop;
+application/vnd.adobe.flash.movie=gnash.desktop;
 video/x-ms-asf=mpv.desktop;mplayer.desktop;
 audio/x-wav=audacious.desktop;
 audio/x-vorbis+ogg=audacious.desktop;
+
