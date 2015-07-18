@@ -112,6 +112,7 @@ dl() {
         case $url in
             http://youtube.com/watch\?* | http://www.youtube.com/watch\?* | https://youtube.com/watch\?* | https://www.youtube.com/watch\?* ) ytdl "$url" ;;
             http://vimeo.com/* | https://vimeo.com/* | http://blip.tv/* ) ytdl "$url" ;;
+	    http://soundcloud.com/ | https://soundcloud.com/* ) ytdl "$url" ;;
             http://fanfiction.net/s/* | http://www.fanfiction.net/s/* | https://fanfiction.net/s/* | https://www.fanfiction.net/s/* ) download_ffn_fic "$url" ;;
             http://www.tthfanfic.org/Story-* | http://ficwad.com/story/* | http://www.ficwad.com/story/* ) download_ffn_fic "$url" ;;
             * ) echo "Unrecognized URL type: $url" ;;
