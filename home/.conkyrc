@@ -48,7 +48,9 @@ own_window_hints undecorated,below,sticky,skip_taskbar,skip_pager
 
 # Use pseudo transparency with own_window?
 #own_window_transparent yes
-own_window_transparent no
+#own_window_transparent no
+own_window_argb_visual true
+own_window_argb_value 128
 
 # If own_window_transparent is set to no, you can set the background colour here
 #own_window_colour hotpink
@@ -92,7 +94,8 @@ alignment top_left
 # Gap between borders of screen and text
 # same thing as passing -x at command line
 gap_x 1000
-gap_y 30
+gap_y 85
+#gap_y 440
 
 # Subtract file system buffers from used memory?
 no_buffers yes
