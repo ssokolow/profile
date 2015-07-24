@@ -249,7 +249,7 @@ ext-import-graph=
 # not be disabled)
 int-import-graph=
 
-extension-pkg-whitelist=gtk,pango
+extension-pkg-whitelist=gtk,pango,PyQt4
 
 [EXCEPTIONS]
 
