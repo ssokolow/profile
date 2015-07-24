@@ -158,13 +158,13 @@ URxvt.perl-ext-common: default,matcher,clipboard
 URxvt.urlLauncher: xdg-open
 
 urxvt_kuake.perl-ext-common: default,matcher,clipboard,kuake_plus<F12>
-urxvt_kuake.geometry: 212x60+0+0
+urxvt_kuake.geometry: 212x60+1280+0
 urxvt_kuake.borderLess: true
 urxvt_kuake.internalBorder: 0
 urxvt_kuake.externalBorder: 0
 urxvt_kuake.toggleFocusesIfVisible: true
 
-urxvt_desktop.geometry: 160x50+1480+150
+urxvt_desktop.geometry: 160x50+2760+150
 urxvt_desktop.transparent: true
 urxvt_desktop.tintColor: white
 urxvt_desktop.shading:70
