@@ -101,6 +101,12 @@
 "xdotool getactivewindow key f"
   SunFront
 
+# Port my Openbox keybinds to KWin
+"~/bin/kwin_desktop.sh +1"
+  b:8
+"~/bin/kwin_desktop.sh -1"
+  b:9
+
 # --== Special Keyboard Key Bindings (TODO: rework) ==--
 
 # TODO: Decide how to bind these with my new keyboard
