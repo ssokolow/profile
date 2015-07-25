@@ -282,6 +282,7 @@ task
 units
 wdiff
 wmctrl
+xautomation
 xbindkeys
 xchm
 xdotool

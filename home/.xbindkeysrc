@@ -107,6 +107,13 @@
 "~/bin/kwin_desktop.sh -1"
   b:9
 
+# Add horizontal scrolling to Firefox
+# Source: http://askubuntu.com/a/407233/23552
+"xte 'mouseclick 6'"
+  Shift + b:4
+"xte 'mouseclick 7'"
+  Shift + b:5
+
 # --== Special Keyboard Key Bindings (TODO: rework) ==--
 
 # TODO: Decide how to bind these with my new keyboard
