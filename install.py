@@ -16,7 +16,7 @@ __author__  = "Stephan Sokolow (deitarion/SSokolow)"
 __version__ = "0.1"
 __license__ = "GNU GPL 2.0 or later"
 
-import logging, os, shutil
+import difflib, logging, os, shutil
 log = logging.getLogger(__name__)
 
 # TODO: Make this support paths to be exploded for clean and specific syntax.
@@ -56,7 +56,8 @@ def relpath(path, start=os.curdir):
         return os.curdir
     return os.path.join(*rel_list)
 
-def symlink_path(source, target, dry_run=False, overwrite=False):
+def symlink_path(source, target, dry_run=False, overwrite=False,
+                 diff=False):
     tgt_dir = os.path.dirname(target)
 
     if os.path.exists(target) or os.path.islink(target):
@@ -69,6 +70,12 @@ def symlink_path(source, target, dry_run=False, overwrite=False):
                     os.unlink(target)
         else:
             log.warning("Skipping already existing target: %s", target)
+            if diff:
+                with open(source) as src, open(target) as dst:
+                    log.warning('Diff follows:\n' + ''.join(list(
+                        difflib.unified_diff(
+                            src.readlines(), dst.readlines(),
+                            fromfile=source, tofile=target))))
             return False
     elif os.path.exists(tgt_dir) and not os.path.isdir(tgt_dir):
         log.error("Target 'parent directory' not a directory: %s", tgt_dir)
@@ -85,7 +92,8 @@ def symlink_path(source, target, dry_run=False, overwrite=False):
     return True
 
 
-def symlink_profile(root, home_root, dry_run=False, overwrite=False):
+def symlink_profile(root, home_root, dry_run=False, overwrite=False,
+                    diff=False):
     """
     @param home_root: Target equivalent to C{root} used for recusive calling.
     """
@@ -105,9 +113,9 @@ def symlink_profile(root, home_root, dry_run=False, overwrite=False):
             log.debug("Skipping already-linked path: %s", tgt)
         elif os.path.isdir(src) and name in RECURSE:
             log.debug("Recursing: %s", src)
-            symlink_profile(src, tgt, dry_run, overwrite)
+            symlink_profile(src, tgt, dry_run, overwrite, diff)
         else:
-            symlink_path(src, tgt, dry_run, overwrite)
+            symlink_path(src, tgt, dry_run, overwrite, diff)
 
 if __name__ == '__main__':
     from optparse import OptionParser
@@ -120,6 +128,9 @@ if __name__ == '__main__':
         default=3, help="Increase the verbosity.")
     parser.add_option('-q', '--quiet', action="count", dest="quiet",
         default=0, help="Decrease the verbosity. Repeat for extra effect.")
+    parser.add_option('-d', '--diff', action='store_true', dest='diff',
+        default=False, help="Show a diff when a file is skipped for already "
+        "existing.")
     parser.add_option('--overwrite', action="store_true", dest="overwrite",
         default=False, help="Overwrite existing files if necessary.")
     parser.add_option('--prefix', action="store", dest="home",
@@ -142,6 +153,7 @@ if __name__ == '__main__':
 
     symlink_profile(os.path.join(root, 'home'), opts.home,
         dry_run=opts.dry_run,
-        overwrite=opts.overwrite)
+        overwrite=opts.overwrite,
+        diff=opts.diff)
 
 # vim: sw=4 sts=4 expandtab
