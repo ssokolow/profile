@@ -63,7 +63,13 @@ else
 	#TODO: Set MUSIC_PLAYER to a wrapper which can also call stuff like adplay
 fi
 
-# Make sure I can brink my Clearlooks Ttk theme everywhere I go.
+# Make sure I can bring my Clearlooks Ttk theme everywhere I go.
 export TCLLIBPATH=${HOME}/.local/share/tkthemes
+
+# Workaround for GTK+ 3.x bug on *buntu 14.04 LTS
+# Source:
+#   https://bugs.launchpad.net/ubuntu/+source/gtk+3.0/+bug/1240957
+#   https://bugs.kde.org/show_bug.cgi?id=348270
+export GDK_CORE_DEVICE_EVENTS=1
 
 # vim: ft=sh noexpandtab
