@@ -1,5 +1,5 @@
 # XScreenSaver Preferences File
-# Written by xscreensaver-demo 5.15 for ssokolow on Fri Mar 29 06:23:57 2013.
+# Written by xscreensaver-demo 5.15 for ssokolow on Sun Aug 10 03:17:29 2014.
 # http://www.jwz.org/xscreensaver/
 
 timeout:	0:30:00
@@ -35,7 +35,7 @@ chooseRandomImages: True
 imageDirectory:	/usr/share/backgrounds
 
 mode:		blank
-selected:	-1
+selected:	209
 
 textMode:	program
 textLiteral:	XScreenSaver
