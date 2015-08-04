@@ -17,7 +17,7 @@ __appname__ = "TYT youtube-dl streamliner"
 __version__ = "0.1pre0"
 __license__ = "MIT"
 
-import logging
+import logging, random, time
 log = logging.getLogger(__name__)
 
 import os, shutil, subprocess, urlparse, urllib
@@ -175,7 +175,7 @@ def sanitize_youtube_url(url):
     url[5] = ''  # Strip fragments
     return urlparse.urlunparse(url)
 
-def download_vids(urls, cache):
+def download_vids(urls, cache, quiet=False):
     """Download only YouTube videos I haven't seen before."""
     failed_urls = {}
 
@@ -190,8 +190,12 @@ def download_vids(urls, cache):
             log.info("Already downloaded %s. Skipping.", url)
             continue
 
+        dld_cmd = DOWNLOADER_CMD
+        if quiet:
+            dld_cmd.append('-q')
+
         try:
-            subprocess.check_call(DOWNLOADER_CMD + [url])
+            subprocess.check_call(dld_cmd + [url])
         except subprocess.CalledProcessError:
             failed_urls[url] = "Downloader returned failure"
             continue
@@ -230,7 +234,7 @@ def get_new_vids(channel_url):
 
     # Return a list of non-stream video URLs
     relevant_entries = set()
-    for entry in ENTRY_SELECTOR(parsed):
+    for entry in ENTRY_SELECTOR(parsed):  # pylint: disable=not-callable
         vid_url = entry.get('href')
         if not vid_url:
             log.warn("Skipping entry without a URL: %r", entry)
@@ -259,6 +263,27 @@ def migrate_from_shelve(target_dict,
     old_dict.close()
     os.remove(old_file)
 
+def prepare_thumbdrive(tgt_path):
+    """Copy videos to the given path and then eject the device"""
+    # Copy any new videos over
+    for fname in sorted(os.listdir('.')):
+        if os.path.isdir(fname):
+            continue
+
+        if not os.path.exists(os.path.join(tgt_path, fname)):
+            log.info("Copying %s to thumbdrive", fname)
+            shutil.copy(fname, tgt_path)
+
+    # Try to eject the thumbdrive
+    try:
+        dev = mountpoint_to_devnode(tgt_path)
+        unmount_and_eject(dev)
+    except (BadDeviceError, OSError), err:
+        log.error(str(err))
+        return '...could not eject the thumbdrive'
+    else:
+        return 'You may now remove the thumbdrive'
+
 def main():
     """The main entry point, compatible with setuptools entry points."""
     # pylint: disable=bad-continuation
@@ -267,16 +292,22 @@ def main():
             usage="%prog [options] [feed url] ...",
             description=__doc__.replace('\r\n', '\n').split('\n--snip--\n')[0])
     parser.add_option('-v', '--verbose', action="count", dest="verbose",
-        default=3, help="Increase the verbosity. Use twice for extra effect")
+        default=3, help="Increase the verbosity.")
     parser.add_option('-q', '--quiet', action="count", dest="quiet",
-        default=0, help="Decrease the verbosity. Use twice for extra effect")
+        default=0, help="Decrease the verbosity. Use thrice for extra effect")
     parser.add_option('-t', '--target', action="store", dest="target_dir",
         default=TARGET_DIR, help="Set target directory (Default: %default)")
+    parser.add_option('--cron', action="store_true", dest="cron_mode",
+        default=False, help="Fully non-interactive operation sans X11")
 
     # Allow pre-formatted descriptions
     parser.formatter.format_description = lambda description: description
 
     opts, args = parser.parse_args()
+
+    # Adjust default noise level to only show warnings or worse in cron
+    if opts.cron_mode:
+        opts.quiet = max(opts.quiet, 1)
 
     # Set up clean logging to stderr
     log_levels = [logging.CRITICAL, logging.ERROR, logging.WARNING,
@@ -285,6 +316,13 @@ def main():
     opts.verbose = max(opts.verbose, 0)
     logging.basicConfig(level=log_levels[opts.verbose],
                         format='%(levelname)s: %(message)s')
+
+    # Random wait to disguise from possible bot catching algorithms
+    if opts.cron_mode:
+        wait = random.randrange(0, 60 * 15)
+        log.info("Waiting a randomly-chosen %s seconds in case of bot "
+                 "catchers", wait)
+        time.sleep(wait)
 
     if not os.path.exists(opts.target_dir):
         raise BadTargetError("Target directory does not exist")
@@ -309,35 +347,19 @@ def main():
             return
 
     # Retrieve any of those videos we haven't seen before
-    download_vids(urls, state)
+    download_vids(urls, state, quiet=opts.cron_mode)
 
-    # If the thumbdrive is available...
-    details = ''
-    if os.path.exists(THUMBDRIVE_PATH):
-        # Copy any new videos over
-        for fname in sorted(os.listdir('.')):
-            if os.path.isdir(fname):
-                continue
+    # If the thumbdrive is available and not cron mode...
+    if os.path.exists(THUMBDRIVE_PATH) and not opts.cron_mode:
+        details = prepare_thumbdrive(THUMBDRIVE_PATH) or ''
 
-            if not os.path.exists(os.path.join(THUMBDRIVE_PATH, fname)):
-                log.info("Copying %s to thumbdrive", fname)
-                shutil.copy(fname, THUMBDRIVE_PATH)
-
-        # Try to eject the thumbdrive
+    # Display notification if not cron mode
+    if not opts.cron_mode:
         try:
-            dev = mountpoint_to_devnode(THUMBDRIVE_PATH)
-            unmount_and_eject(dev)
-        except (BadDeviceError, OSError), err:
-            log.error(str(err))
-            details = '...could not eject the thumbdrive'
-        else:
-            details = 'You may now remove the thumbdrive'
-
-    try:
-        notify_argv = NOTIFY_CMD[:] + [NOTIFY_MSG, details]
-        subprocess.call(notify_argv)
-    except OSError:
-        logging.error("Could not call subprocess: %r", notify_argv)
+            notify_argv = NOTIFY_CMD[:] + [NOTIFY_MSG, details]
+            subprocess.call(notify_argv)
+        except OSError:
+            logging.error("Could not call subprocess: %r", notify_argv)
 
 if __name__ == '__main__':
     main()

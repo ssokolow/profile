@@ -5,6 +5,9 @@
 @reboot /usr/bin/keychain &> /dev/null
 @reboot mkdir -p ~/.macromedia/Flash_Player/macromedia.com/support/flashplayer/sys/; cp ~/.profile_repo/supplemental/settings.sol ~/.macromedia/Flash_Player/macromedia.com/support/flashplayer/sys/settings.sol
 
+# Morning Housekeeping
+0       7       *       *       *       ~/bin/tyt --cron
+
 # Nightly housekeeping
 0       0       *       *       *       cp ~/.profile_repo/supplemental/settings.sol ~/.macromedia/Flash_Player/macromedia.com/support/flashplayer/sys/settings.sol
 0       0       *       *       *       rm -f ~/.local/share/applications/wine-extension-*
