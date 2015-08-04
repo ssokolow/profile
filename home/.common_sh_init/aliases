@@ -97,7 +97,7 @@ tcs() {
     pushd "$TARGET"
     for X in "$@"; do
         # Grab the SD file for eventual fservroot use
-        youtube-dl -f 'Blip SD' "$X"
+        youtube-dl -f 43 "$X"
     done
     for X in "$@"; do
         # Grab the HD file for archival
