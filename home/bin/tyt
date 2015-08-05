@@ -350,6 +350,7 @@ def main():
     download_vids(urls, state, quiet=opts.cron_mode)
 
     # If the thumbdrive is available and not cron mode...
+    details = ''
     if os.path.exists(THUMBDRIVE_PATH) and not opts.cron_mode:
         details = prepare_thumbdrive(THUMBDRIVE_PATH) or ''
 
