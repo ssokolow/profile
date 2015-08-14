@@ -33,7 +33,6 @@ add-apt-repository -y ppa:chris-lea/node.js # (for up-to-date Node.js)
 add-apt-repository -y ppa:anay/ppa # (http://docs.travis-ci.com/user/cc-menu/ )
 add-apt-repository -y ppa:makson96/desurium-stable
 add-apt-repository -y ppa:cdemu/ppa
-add-apt-repository -y ppa:unit193/conformal # Cyphertite
 add-apt-repository -y ppa:jd-team/jdownloader
 add-apt-repository -y ppa:nilarimogard/webupd8 # LGOGDownloader
 add-apt-repository -y ppa:richardgv/compton
@@ -453,7 +452,6 @@ apt-get install -y wine
 apt-get install -y --no-install-recommends basket-trinity
 apt-get install -y eawpatches
 apt-get install -y cdemu-daemon cdemu-client gcdemu
-apt-get install -y cyphertite
 apt-get install -y lgogdownloader
 apt-get install -y dolphin-emu || apt-get install -y dolphin-emu-master
 apt-get install -y python{2.6,3.1,3.2,3.3}-complete # ...for tox

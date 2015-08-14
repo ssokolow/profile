@@ -22,7 +22,6 @@
 #0       6       *       *       *       DISPLAY=:0 timelimit -t 86000 urxvt -e bash --rcfile ~/bin/task_bashrc
 
 # Nightly backup for stuff that's too volatile for DVD-Rs.
-0       2       *       *       *       (cyphertite -cf monolith_critical.ct ~/Documents/Critical ; ctctl cull) 2>&1 | sed '/prev backup time .*/,/.*/d' | egrep -v 'still referenced by newer backups, keeping|prev filename'
 0       3       *       *       *       ionice -c3 ~/src/rdbackup_wrapper/backup.py 2>&1 | fgrep -v -f ~/.rdiff-backup_known_ok_failures | sed '/Deleting increment at time:/,/.*/d'
 
 # PostgreSQL maintenance (nightly light, monthly full)
