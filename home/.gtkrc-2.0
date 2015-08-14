@@ -1,16 +1,17 @@
 # DO NOT EDIT! This file will be overwritten by LXAppearance.
 # Any customization should be done in ~/.gtkrc-2.0.mine instead.
 
-gtk-theme-name="Lubuntu-default"
+include "/usr/share/themes/Lubuntu-default/gtk-2.0/gtkrc"
 gtk-icon-theme-name="elementary-mono-dark"
 gnome-theme-icon-name="elementary-mono-dark"
 gtk-font-name="Ubuntu 11"
+gtk-theme-name="Lubuntu-default"
 gtk-cursor-theme-name="DMZ-White"
 gtk-cursor-theme-size=18
 gtk-toolbar-style=GTK_TOOLBAR_BOTH_HORIZ
 gtk-toolbar-icon-size=GTK_ICON_SIZE_LARGE_TOOLBAR
-gtk-button-images=1
 gtk-menu-images=1
+gtk-button-images=1
 gtk-xft-antialias=1
 gtk-xft-hinting=1
 gtk-xft-hintstyle="hintslight"
@@ -21,4 +22,5 @@ gtk-xft-rgba="rgb"
 # WARNING: Make sure this isn't overridden by other files in GTK2_RC_FILES
 gtk-alternative-button-order = 0
 
+include ".gtkrc-2.0-gnome-color-chooser"
 include "/home/ssokolow/.gtkrc-2.0.mine"
