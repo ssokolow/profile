@@ -31,6 +31,7 @@ fi
 # Streamline my TYT-watching workflow
 #cond_alias_2 tytp "mplayer -ss 3" "*"
 cond_alias_2 tytp "mplayer" "*"
+# shellcheck disable=SC2088
 cond_alias_2 tytc "mv" "*" "~/incoming/Videos/Young\ Turks"
 
 # Given an egrep path filter, use git filter-branch to throw out all files
