@@ -26,6 +26,14 @@ def monitor_file(path):
     class EventHandler(pyinotify.ProcessEvent):
         last_mtime = 0
 
+        def __init__(self):
+            super(EventHandler, self).__init__()
+            self.lcd = LCDSysInfo()
+            self.lcd.set_brightness(BRIGHTNESS)
+            self.lcd.dim_when_idle(False)
+            self.lcd.clear_lines(TextLines.ALL, BGCOLOR)
+            self.old_lines = [''] * 6
+
         @staticmethod
         def fmt_task(task):
             if task.startswith('+'):
@@ -36,6 +44,7 @@ def monitor_file(path):
 
         def process_IN_MODIFY(self, event):
             # Hack around a race condition
+            # TODO: See if we can solve this properly
             time.sleep(1)
 
             # Ensure we fire only once per change
@@ -58,15 +67,24 @@ def monitor_file(path):
             if not tasks:
                 return
 
-            lcd = LCDSysInfo()
-            lcd.set_brightness(BRIGHTNESS)
-            lcd.dim_when_idle(False)
-            lcd.clear_lines(TextLines.ALL, BGCOLOR)
 
+            # Waste as little time as possible overwriting lines that haven't
+            # changed
             lines = ["TODO:"] + [self.fmt_task(x) for x in tasks]
             for pos, line in enumerate(lines[:6]):
-                lcd.display_text_on_line(pos + 1, line, False,
-                                         TextAlignment.LEFT, FGCOLOR)
+                if line != self.old_lines[pos]:
+                    self.lcd.display_text_on_line(pos + 1, line, False,
+                                             TextAlignment.LEFT, FGCOLOR)
+                    self.old_lines[pos] = line
+
+            # Only erase lines that used to have something on them
+            mask, linecount = 0, len(lines)
+            for pos in range(len(lines), 6):
+                if self.old_lines[pos]:
+                    mask += 1 << int(pos)
+                    self.old_lines[pos] = ''
+            if mask:
+                self.lcd.clear_lines(mask, BGCOLOR)
 
     handler = EventHandler()
     handler.process_IN_MODIFY(None)
