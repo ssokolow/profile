@@ -24,7 +24,7 @@ log = logging.getLogger(__name__)
 
 def monitor_file(path):
     class EventHandler(pyinotify.ProcessEvent):
-        last_mtime = 0
+        last_updated = 0
 
         def __init__(self):
             super(EventHandler, self).__init__()
@@ -43,16 +43,14 @@ def monitor_file(path):
             return '____%s' % task
 
         def process_IN_MODIFY(self, event):
-            # Hack around a race condition
-            # TODO: See if we can solve this properly
-            time.sleep(1)
+            # TODO: There's a race condition on how we use inotify. See if we
+            #       there's a proper solution beyond "only update last_updated
+            #       on successful parse."
 
             # Ensure we fire only once per change
             this_mtime = os.stat(path).st_mtime
-            if self.last_mtime == this_mtime:
+            if self.last_updated == this_mtime:
                 return
-            else:
-                self.last_mtime = this_mtime
 
             try:
                 with open(path, 'rU') as fobj:
@@ -60,7 +58,7 @@ def monitor_file(path):
                     yobj.next()  # Skip header text
                     data = yobj.next()
             except StopIteration:
-                log.error("Couldn't parse data from file: %s", path)
+                log.debug("Couldn't parse data from file: %s", path)
                 return  # Don't die on a bad file
 
             tasks = data.get('TODO')
@@ -85,6 +83,9 @@ def monitor_file(path):
                     self.old_lines[pos] = ''
             if mask:
                 self.lcd.clear_lines(mask, BGCOLOR)
+
+            # Only update this if we successfuly parsed and applied an update
+            self.last_updated = this_mtime
 
     handler = EventHandler()
     handler.process_IN_MODIFY(None)
