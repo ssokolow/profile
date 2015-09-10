@@ -211,6 +211,7 @@ libreoffice-presentation-minimizer
 libreoffice-wiki-publisher
 libreoffice-writer2latex
 libreoffice-writer2xhtml
+lirc
 lua5.2
 lyx
 mutt
@@ -294,6 +295,10 @@ libgtk-3-dev
 libgee-dev
 
 EOF
+
+# Set up lirc
+mkdir -p /etc/lirc
+cp -n etc/lirc/* /etc/lirc/
 
 # Set up planetfilter
 # http://feeding.cloud.geek.nz/posts/keeping-up-with-noisy-blog-aggregators-using-planetfilter/

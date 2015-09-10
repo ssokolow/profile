@@ -1,0 +1,51 @@
+#! lircrcd
+
+   begin
+        button = KEY_MUTE
+        prog = irexec
+        config = ~/bin/saytime
+   end
+
+#Mplayer buttons
+   begin
+        button = KEY_VOLUMEUP
+        prog = mplayer
+        config = volume 1
+        repeat = 1
+   end
+   begin
+        button = KEY_VOLUMEDOWN
+        prog = mplayer
+        config = volume -1
+        repeat = 1
+   end
+   begin
+        button = KEY_PAUSE
+        prog = mplayer
+        config = pause
+   end
+   begin
+        button = KEY_MENU
+        prog = mplayer
+        config = vo_fullscreen
+   end
+   begin
+        button = KEY_REWIND
+        prog = mplayer
+        config = seek -10
+   end
+   begin
+        button = KEY_PREVIOUS
+        prog = mplayer
+        config = seek -60
+   end
+   begin
+        button = KEY_FORWARD
+        prog = mplayer
+        config = seek 10
+   end
+   begin
+        button = KEY_NEXT
+        prog = mplayer
+        config = seek 60
+   end
