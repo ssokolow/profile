@@ -38,7 +38,10 @@ YT_CHANNEL = ('https://www.youtube.com/user/TheYoungTurks/videos'
 DOWNLOADER_CMD = ['youtube-dl', '-f', '44/35/43/18/34']
 TARGET_DIR = os.path.expanduser('~/Desktop/pandora')
 
-THUMBDRIVE_PATH = '/media/ssokolow/16GB_Flash'
+THUMBDRIVE_PATHS = (
+    '/media/ssokolow/16GB_Flash',
+    '/media/ssokolow/Pandora64GB'
+)
 
 SELF_DIR = os.path.abspath(os.path.split(__file__)[0])
 NOTIFY_ICON = os.path.join(SELF_DIR, 'tyt_logo.png')
@@ -351,8 +354,11 @@ def main():
 
     # If the thumbdrive is available and not cron mode...
     details = ''
-    if os.path.exists(THUMBDRIVE_PATH) and not opts.cron_mode:
-        details = prepare_thumbdrive(THUMBDRIVE_PATH) or ''
+    for path in THUMBDRIVE_PATHS:
+        if os.path.exists(path) and not opts.cron_mode:
+            log.debug("Calling prepare_thumbdrive")
+            details = prepare_thumbdrive(path) or ''
+            break
 
     # Display notification if not cron mode
     if not opts.cron_mode:
