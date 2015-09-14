@@ -42,33 +42,41 @@ def monitor_file(path):
                 task = '- ' + task
             return '____%s' % task
 
+        @staticmethod
+        def _parse_todos(path):
+            with open(path, 'rU') as fobj:
+                yobj = yaml.safe_load_all(fobj)
+                yobj.next()  # Skip header text
+                return yobj.next() or {}
+
         def process_IN_MODIFY(self, event):
-            # TODO: There's a race condition on how we use inotify. See if we
-            #       there's a proper solution beyond "only update last_updated
-            #       on successful parse."
+            # Workaround for race condition when using IN_MODIFY
+            # (Because IN_CLOSE_WRITE | IN_MOVED_TO doesn't fire with Leafpad)
+            this_stat, waited = os.stat(path), 0
+            while this_stat.st_size == 0 and waited < 3:
+                time.sleep(0.3)
+                this_stat = os.stat(path)
+                waited += 0.3
 
             # Ensure we fire only once per change
-            this_mtime = os.stat(path).st_mtime
-            if self.last_updated == this_mtime:
+            if self.last_updated == this_stat.st_mtime:
                 return
 
             try:
-                with open(path, 'rU') as fobj:
-                    yobj = yaml.safe_load_all(fobj)
-                    yobj.next()  # Skip header text
-                    data = yobj.next()
-            except StopIteration:
+                data = self._parse_todos(path)
+            except BaseException:
                 log.debug("Couldn't parse data from file: %s", path)
-                return  # Don't die on a bad file
-
-            tasks = data.get('TODO')
-            if not tasks:
-                return
-
+                lines = ["Error parsing TODO YAML",
+                         "%d bytes" % this_stat.st_size]
+            else:
+                tasks = data.get('TODO', None)
+                if tasks:
+                    lines = ["TODO:"] + [self.fmt_task(x) for x in tasks]
+                else:
+                    lines = ["No TODOs found"]
 
             # Waste as little time as possible overwriting lines that haven't
             # changed
-            lines = ["TODO:"] + [self.fmt_task(x) for x in tasks]
             for pos, line in enumerate(lines[:6]):
                 if line != self.old_lines[pos]:
                     self.lcd.display_text_on_line(pos + 1, line, False,
@@ -76,7 +84,7 @@ def monitor_file(path):
                     self.old_lines[pos] = line
 
             # Only erase lines that used to have something on them
-            mask, linecount = 0, len(lines)
+            mask = 0
             for pos in range(len(lines), 6):
                 if self.old_lines[pos]:
                     mask += 1 << int(pos)
@@ -85,13 +93,13 @@ def monitor_file(path):
                 self.lcd.clear_lines(mask, BGCOLOR)
 
             # Only update this if we successfuly parsed and applied an update
-            self.last_updated = this_mtime
+            self.last_updated = this_stat.st_mtime
 
     handler = EventHandler()
     handler.process_IN_MODIFY(None)
 
     wm = pyinotify.WatchManager()
-    wdd = wm.add_watch(path, pyinotify.IN_MODIFY)
+    _ = wm.add_watch(path, pyinotify.IN_MODIFY)
     notifier = pyinotify.Notifier(wm, handler)
     notifier.loop()
 
