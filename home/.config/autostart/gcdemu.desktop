@@ -1,18 +1,18 @@
-
 [Desktop Entry]
-Version=1.0
-Name=gCDEmu
-Name[sl]=gCDEmu
+Categories=GTK;System;
 Comment=CDEmu GUI
 Comment[sl]=CDEmu grafični vmesnik
-Icon=gcdemu
-Terminal=false
-Type=Application
-StartupNotify=false
-Categories=GTK;System;
-TryExec=gcdemu
 Exec=gcdemu
-X-GNOME-Autostart-Phase=Applications
-X-GNOME-Autostart-Notify=false
-X-GNOME-Autostart-enabled=false
+Hidden=true
+Icon=gcdemu
+Name=gCDEmu
+Name[sl]=gCDEmu
 NotShowIn=LXDE;
+StartupNotify=false
+Terminal=false
+TryExec=gcdemu
+Type=Application
+Version=1.0
+X-GNOME-Autostart-Notify=false
+X-GNOME-Autostart-Phase=Applications
+X-GNOME-Autostart-enabled=false

@@ -1,9 +1,19 @@
 [Desktop Entry]
-Name=Conky
-GenericName=Desktop System Monitor
-Comment=Crash-recovering launch wrapper for Conky
-Exec=sh -c "until conky; do false; done"
-Terminal=false
-Type=Application
 Categories=
+Comment[en_US]=Crash-recovering launch wrapper for Conky
+Comment=Crash-recovering launch wrapper for Conky
+Exec=sh -c "until conky; do true; done"
+GenericName[en_US]=Desktop System Monitor
+GenericName=Desktop System Monitor
+MimeType=
+Name[en_US]=Conky
+Name=Conky
+Path=
 StartupNotify=false
+Terminal=false
+TerminalOptions=
+Type=Application
+X-DBUS-ServiceName=
+X-DBUS-StartupType=
+X-KDE-SubstituteUID=false
+X-KDE-Username=
