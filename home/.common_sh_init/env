@@ -72,4 +72,12 @@ export TCLLIBPATH=${HOME}/.local/share/tkthemes
 #   https://bugs.kde.org/show_bug.cgi?id=348270
 export GDK_CORE_DEVICE_EVENTS=1
 
+# Prevent Chrome from using KDialog for open dialogs. The startup time for the
+# KDialog subprocess cuts the speed at which I can flip between Ctrl+W and
+# RightClick-SaveImage to 1/3rd of before and, when using Ctrl+W, Ctrl+S,
+# KDialog doesn't start out sensitive to Enter=Accept keypresses.
+# (Also, KDialog doesn't ask for overwrite confirmation)
+# Source: https://forum.kde.org/viewtopic.php?t=100694
+export NO_CHROME_KDE_FILE_DIALOG=1
+
 # vim: ft=sh noexpandtab
