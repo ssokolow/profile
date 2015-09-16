@@ -173,7 +173,7 @@
         startup_path = "0" 
         exit_on_close = "false" 
 
-        main_window.x = "1280" 
+        main_window.x = "2560" 
         main_window.y = "0" 
         main_window.w = "1276" 
         main_window.h = "977" 
