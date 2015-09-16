@@ -81,3 +81,10 @@ report.quick.description=* Lists the tasks most suited to being productive in sp
 report.quick.labels=ID,Project,Pri,Due,A,Age,Urgency,ETA,Description
 report.quick.filter=status:pending limit:page eta.any:
 report.quick.sort=eta+,urgency-,due+,priority-,start-,project+
+
+# A report for feeding my USB LCD
+report.lcd.columns=description.truncated
+report.lcd.description=* Output suitable for my USB LCD
+report.lcd.labels=TODO:
+report.lcd.filter=status:pending limit:5
+report.lcd.sort=due+,urgency-,start-
