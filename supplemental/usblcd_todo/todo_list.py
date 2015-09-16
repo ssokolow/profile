@@ -22,80 +22,81 @@ BGCOLOR = BackgroundColours.BLACK
 FGCOLOR = TextColours.GREY
 log = logging.getLogger(__name__)
 
+class EventHandler(pyinotify.ProcessEvent):
+    last_updated = 0
+
+    def __init__(self, path):
+        super(EventHandler, self).__init__()
+        self.lcd = LCDSysInfo()
+        self.lcd.set_brightness(BRIGHTNESS)
+        self.lcd.dim_when_idle(False)
+        self.lcd.clear_lines(TextLines.ALL, BGCOLOR)
+        self.old_lines = [''] * 6
+        self.path = path
+
+    @staticmethod
+    def fmt_task(task):
+        if task.startswith('+'):
+            task = '+ ' + task[1:]
+        else:
+            task = '- ' + task
+        return '____%s' % task
+
+    @staticmethod
+    def _parse_todos(path):
+        with open(path, 'rU') as fobj:
+            yobj = yaml.safe_load_all(fobj)
+            yobj.next()  # Skip header text
+            return yobj.next() or {}
+
+    def process_IN_MODIFY(self, event):
+        # Workaround for race condition when using IN_MODIFY
+        # (Because IN_CLOSE_WRITE | IN_MOVED_TO doesn't fire with Leafpad)
+        this_stat, waited = os.stat(self.path), 0
+        while this_stat.st_size == 0 and waited < 3:
+            time.sleep(0.3)
+            this_stat = os.stat(self.path)
+            waited += 0.3
+
+        # Ensure we fire only once per change
+        if self.last_updated == this_stat.st_mtime:
+            return
+
+        try:
+            data = self._parse_todos(self.path)
+        except BaseException:
+            log.debug("Couldn't parse data from file: %s", self.path)
+            lines = ["Error parsing TODO YAML",
+                     "%d bytes" % this_stat.st_size]
+        else:
+            tasks = data.get('TODO', None)
+            if tasks:
+                lines = ["TODO:"] + [self.fmt_task(x) for x in tasks]
+            else:
+                lines = ["No TODOs found"]
+
+        # Waste as little time as possible overwriting lines that haven't
+        # changed
+        for pos, line in enumerate(lines[:6]):
+            if line != self.old_lines[pos]:
+                self.lcd.display_text_on_line(pos + 1, line, False,
+                                         TextAlignment.LEFT, FGCOLOR)
+                self.old_lines[pos] = line
+
+        # Only erase lines that used to have something on them
+        mask = 0
+        for pos in range(len(lines), 6):
+            if self.old_lines[pos]:
+                mask += 1 << int(pos)
+                self.old_lines[pos] = ''
+        if mask:
+            self.lcd.clear_lines(mask, BGCOLOR)
+
+        # Only update this if we successfuly parsed and applied an update
+        self.last_updated = this_stat.st_mtime
+
 def monitor_file(path):
-    class EventHandler(pyinotify.ProcessEvent):
-        last_updated = 0
-
-        def __init__(self):
-            super(EventHandler, self).__init__()
-            self.lcd = LCDSysInfo()
-            self.lcd.set_brightness(BRIGHTNESS)
-            self.lcd.dim_when_idle(False)
-            self.lcd.clear_lines(TextLines.ALL, BGCOLOR)
-            self.old_lines = [''] * 6
-
-        @staticmethod
-        def fmt_task(task):
-            if task.startswith('+'):
-                task = '+ ' + task[1:]
-            else:
-                task = '- ' + task
-            return '____%s' % task
-
-        @staticmethod
-        def _parse_todos(path):
-            with open(path, 'rU') as fobj:
-                yobj = yaml.safe_load_all(fobj)
-                yobj.next()  # Skip header text
-                return yobj.next() or {}
-
-        def process_IN_MODIFY(self, event):
-            # Workaround for race condition when using IN_MODIFY
-            # (Because IN_CLOSE_WRITE | IN_MOVED_TO doesn't fire with Leafpad)
-            this_stat, waited = os.stat(path), 0
-            while this_stat.st_size == 0 and waited < 3:
-                time.sleep(0.3)
-                this_stat = os.stat(path)
-                waited += 0.3
-
-            # Ensure we fire only once per change
-            if self.last_updated == this_stat.st_mtime:
-                return
-
-            try:
-                data = self._parse_todos(path)
-            except BaseException:
-                log.debug("Couldn't parse data from file: %s", path)
-                lines = ["Error parsing TODO YAML",
-                         "%d bytes" % this_stat.st_size]
-            else:
-                tasks = data.get('TODO', None)
-                if tasks:
-                    lines = ["TODO:"] + [self.fmt_task(x) for x in tasks]
-                else:
-                    lines = ["No TODOs found"]
-
-            # Waste as little time as possible overwriting lines that haven't
-            # changed
-            for pos, line in enumerate(lines[:6]):
-                if line != self.old_lines[pos]:
-                    self.lcd.display_text_on_line(pos + 1, line, False,
-                                             TextAlignment.LEFT, FGCOLOR)
-                    self.old_lines[pos] = line
-
-            # Only erase lines that used to have something on them
-            mask = 0
-            for pos in range(len(lines), 6):
-                if self.old_lines[pos]:
-                    mask += 1 << int(pos)
-                    self.old_lines[pos] = ''
-            if mask:
-                self.lcd.clear_lines(mask, BGCOLOR)
-
-            # Only update this if we successfuly parsed and applied an update
-            self.last_updated = this_stat.st_mtime
-
-    handler = EventHandler()
+    handler = EventHandler(path)
     handler.process_IN_MODIFY(None)
 
     wm = pyinotify.WatchManager()
