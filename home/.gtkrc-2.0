@@ -1,21 +1,19 @@
-# DO NOT EDIT! This file will be overwritten by LXAppearance.
-# Any customization should be done in ~/.gtkrc-2.0.mine instead.
+# File created by KDE Gtk Config
+# Configs for GTK2 programs
 
 include "/usr/share/themes/Lubuntu-default/gtk-2.0/gtkrc"
-gtk-icon-theme-name="elementary-mono-dark"
-gnome-theme-icon-name="elementary-mono-dark"
+style "user-font"
+{
+	font_name="Ubuntu Regular"
+}
+widget_class "*" style "user-font"
 gtk-font-name="Ubuntu 11"
 gtk-theme-name="Lubuntu-default"
-gtk-cursor-theme-name="DMZ-White"
-gtk-cursor-theme-size=18
+gtk-icon-theme-name="elementary"
+gtk-fallback-icon-theme="elementary"
 gtk-toolbar-style=GTK_TOOLBAR_BOTH_HORIZ
-gtk-toolbar-icon-size=GTK_ICON_SIZE_LARGE_TOOLBAR
 gtk-menu-images=1
 gtk-button-images=1
-gtk-xft-antialias=1
-gtk-xft-hinting=1
-gtk-xft-hintstyle="hintslight"
-gtk-xft-rgba="rgb"
 
 # Use sane button order
 # http://uxmovement.com/buttons/why-ok-buttons-in-dialog-boxes-work-best-on-the-right/
