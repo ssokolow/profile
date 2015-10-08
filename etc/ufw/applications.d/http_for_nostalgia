@@ -1,0 +1,4 @@
+[http_for_nostalgia]
+title=HTTP Nostalgia
+description=A forwarded port to easily allow offering up files to Nostalgia machines using python -m SimpleHTTPServer
+ports=8800/tcp

@@ -1,0 +1,30 @@
+UsePrivilegeSeparation yes
+
+PermitRootLogin no
+
+RSAAuthentication yes
+PubkeyAuthentication yes
+
+IgnoreRhosts yes
+RhostsRSAAuthentication no
+HostbasedAuthentication no
+
+PermitEmptyPasswords no
+
+ChallengeResponseAuthentication no
+PasswordAuthentication no
+
+Subsystem sftp internal-sftp
+
+UsePAM yes
+
+AllowUsers ssokolow@192.168.0.0/24 ssokolow@192.168.2.0/24 nostalgia-exchange@192.168.3.0/24
+
+# Source: https://wiki.archlinux.org/index.php/SFTP_chroot
+Match User nostalgia-exchange
+    ChrootDirectory %h
+    ForceCommand internal-sftp
+    AllowTcpForwarding no
+    PermitTunnel no
+    X11Forwarding no
+    AuthorizedKeysFile /etc/ssh/authorized_keys/%u

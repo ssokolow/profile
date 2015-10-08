@@ -359,6 +359,26 @@ if [ "$(hostname)" = "monolith" ]; then
     done
     gpasswd "$ME" family
 
+    echo " * Setting up SFTP chroot for file exchange with Nostalgia PCs"
+    apt-get install -y rssh
+    useradd -m nostalgia-exchange
+    chown root:root ~nostalgia-exchange
+    mkdir ~nostalgia-exchange/writable
+    chown nostalgia-exchange:ssokolow ~nostalgia-exchange/writable
+    chmod 775 ~nostalgia-exchange/writable
+    chmod +s ~nostalgia-exchange/writable
+    mkdir ~nostalgia-exchange/.ssh
+    chown nostalgia-exchange:nostalgia-exchange ~nostalgia-exchange/.ssh
+    chmod 700 ~nostalgia-exchange/.ssh
+    chsh -s /usr/bin/rssh nostalgia-exchange
+    mkdir /etc/ssh/authorized_keys/
+
+    echo " * Enabling UDP rsyslog reception for m0n0wall"
+    # shellcheck disable=SC2016
+    sed -i 's@#$ModLoad imudp@$ModLoad imudp@' /etc/rsyslog.conf
+    # shellcheck disable=SC2016
+    sed -i 's@#$UDPServerRun 514@$UDPServerRun 514@' /etc/rsyslog.conf
+
     echo " * Setting up munin for monolith"
     apt-get install -y munin munin-plugins-extra snmp
     #TODO: Add nvclock once it no longer segfaults
@@ -557,6 +577,8 @@ fi
 
 echo " * Setting up basic firewall"
 cp -n etc/ufw/applications.d/* /etc/ufw/applications.d/
+cp etc/cron.daily/ensure_ufw /etc/cron.daily/
+chmod +x /etc/cron.daily/ensure_ufw
 ufw enable
 for X in OpenSSH VNC Deluge Dropbox Samba avahi-daemon dhclient ntpd pidgin synergy; do
     ufw allow "$X"
@@ -596,6 +618,7 @@ fi
 echo "IMPORTANT: Don't forget to..."
 echo " - verify that all automated backup mechanisms got set up correctly."
 echo " - edit /etc/ssh/sshd_config to allow only non-root, pubkey authentication."
+echo " - Set up the keypair for ~nostalgia-exchange"
 echo "   ( http://www.gentoo.org/doc/en/security/security-handbook.xml?part=1&chap=10#doc_chap11 )"
 echo " - re-run 'smbpasswd -a' for all permissioned users"
 echo " - run vim once and then build the compiled part of YouCompleteMe"
