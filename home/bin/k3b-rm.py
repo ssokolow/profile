@@ -36,9 +36,8 @@ __license__ = "MIT"
 import logging
 log = logging.getLogger(__name__)
 
-import errno, os, posixpath, re, shutil, sys, tempfile
+import errno, os, posixpath, re, shutil, sys, tempfile, zipfile
 import xml.etree.cElementTree as ET
-from zipfile import ZipFile
 
 if sys.version_info.major < 3:
     from xml.sax.saxutils import escape as xmlescape
@@ -307,8 +306,12 @@ def main():
 
     done = {}
     for path in args.paths:
-        files = parse_k3b_proj(path)
-        # TODO: Log and continue in case of exception here
+        try:
+            files = parse_k3b_proj(path)
+            # TODO: Log and continue in case of exception here
+        except (IOError, zipfile.BadZipfile) as err:  # TODO: Test this branch
+            log.warning("Not a valid K3b project file. Moving: %s", path)
+            files = {os.path.abspath(path): os.path.basename(path)}
 
         for src_path, dest_rel in sorted(files.items()):
             if args.mode == 'mv':
@@ -369,7 +372,7 @@ def mounty_join(a, b):
 # TODO: Decide on an exception-handling policy here
 def parse_k3b_proj(path):
     """Parse a K3b project file into a list of paths"""
-    with ZipFile(path) as zfh:
+    with zipfile.ZipFile(path) as zfh:
         xml = zfh.read('maindata.xml')
 
     root = ET.fromstring(xml)
@@ -1191,7 +1194,7 @@ if sys.argv[0].rstrip('3').endswith('nosetests'):  # pragma: nobranch
                 tmp = tmp.encode('UTF-8')
 
             xmldata = StringIO(tmp)
-            with ZipFile(self.project, 'w') as zobj:
+            with zipfile.ZipFile(self.project, 'w') as zobj:
                 zobj.writestr("maindata.xml", xmldata.getvalue())
 
             self.expected = {}
