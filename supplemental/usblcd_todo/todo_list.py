@@ -15,6 +15,7 @@ import logging, os, time
 import yaml
 from pylcdsysinfo import (BackgroundColours, LCDSysInfo, TextAlignment,
                           TextColours, TextLines)
+from unidecode import unidecode
 import pyinotify
 
 BRIGHTNESS = 48
@@ -79,6 +80,11 @@ class EventHandler(pyinotify.ProcessEvent):
         # changed
         for pos, line in enumerate(lines[:6]):
             if line != self.old_lines[pos]:
+                # Work around the ASCII-only-ness of the USBLCD API
+                if isinstance(line, bytes):
+                    line = line.decode('utf8', 'replace')
+                line = unidecode(line)
+
                 self.lcd.display_text_on_line(pos + 1, line, False,
                                          TextAlignment.LEFT, FGCOLOR)
                 self.old_lines[pos] = line
