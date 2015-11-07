@@ -1,9 +1,0 @@
-[Desktop Entry]
-Name=irexec
-GenericName=LIRC exec daemon
-Comment=Launch processed from .lircrc
-Exec=irexec -d
-Terminal=false
-Type=Application
-Categories=
-StartupNotify=false
