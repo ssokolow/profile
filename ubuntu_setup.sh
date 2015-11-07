@@ -430,7 +430,9 @@ if [ "$(hostname)" = "monolith" ]; then
 
     echo " * Setting up nVidia drivers for monolith"
     apt-get install -y nvidia-current nvidia-settings
+    chattr -i /etc/X11/xorg.conf
     cp etc/X11/xorg.conf /etc/X11/
+    chattr +i /etc/X11/xorg.conf
     if [ "$(lsb_release -sr)" = "14.04" ]; then
         echo " * Updating nvidia-drivers to bypass *buntu 14.04 bug"
         apt-get install nvidia-346 -y
