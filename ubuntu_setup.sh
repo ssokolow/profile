@@ -433,8 +433,16 @@ if [ "$(hostname)" = "monolith" ]; then
     cp etc/X11/xorg.conf /etc/X11/
     if [ "$(lsb_release -sr)" = "14.04" ]; then
         echo " * Updating nvidia-drivers to bypass *buntu 14.04 bug"
-        apt-get install nvidia-331 -y
+        apt-get install nvidia-346 -y
     fi
+
+    echo " * Setting up deferred nVidia driver updates"
+    cp supplemental/update_nvidia.py /usr/local/sbin
+    chmod +x /usr/local/sbin/update_nvidia.py
+    cp etc/init/update_nvidia.conf /etc/init/
+
+    # Let it figure out which packages to hold
+    /usr/local/sbin/update_nvidia.py
 
     echo " * Adding tsched=0 to PulseAudio config for proper function"
     sed -i 's/^\(load-module module-udev-detect\)\s*$/\1 tsched=0/' /etc/pulse/default.pa
