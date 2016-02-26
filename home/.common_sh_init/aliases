@@ -91,9 +91,10 @@ yt() {
     youtube-dl -f 44/35/43/18/34 "$@"
 }
 
-# Alias for grabbing The Cinema Snob episodes
-tcs() {
-    local TARGET=~"/incoming/Videos/The Cinema Snob"
+# Alias for grabbing The Cinema Snob and Brad Tries episodes
+getsnob() {
+    local TARGET="$1"
+    shift
     mkdir -p "$TARGET"
     pushd "$TARGET"
     for X in "$@"; do
@@ -106,6 +107,8 @@ tcs() {
     done
     popd
 }
+tcs() { getsnob ~"/incoming/Videos/The Cinema Snob" "$@"; }
+bradtries() { getsnob ~"/incoming/Videos/Brad Tries" "$@"; }
 
 # Smart wrapper for multiple site-specific download tools
 dl() {
