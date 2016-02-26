@@ -11,7 +11,7 @@ ao=pulse,alsa,openal,oss
 af=drc
 softvol=auto
 
-sid=0
+sid=1
 slang=en,eng,fr
 alang=en,eng,jp,jpn,fr
 
@@ -26,8 +26,5 @@ tv=norm=NTSC
 # This interferes with my joystick evdev bindings (causes each button to do two different things in one push)
 no-joystick=yes
 
-# Something else to try for especially dirty videos
-[dirty]
-profile-desc="Post-Processing for Tiny, Dirty videos"
-vf=denoise3d,pp=hb/vb/dr/al
-
+# Try to match MPlayer default appearance
+osd-font-size=60
