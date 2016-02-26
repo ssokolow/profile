@@ -30,7 +30,7 @@ fi
 
 # Streamline my TYT-watching workflow
 #cond_alias_2 tytp "mplayer -ss 3" "*"
-cond_alias_2 tytp "mplayer" "*"
+cond_alias_2 tytp "mplayer -name tytp" "*"
 # shellcheck disable=SC2088
 cond_alias_2 tytc "mv" "*" "~/incoming/Videos/Young\ Turks"
 
