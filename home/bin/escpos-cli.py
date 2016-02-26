@@ -88,6 +88,26 @@ def echo(args):  # pylint: disable=unused-argument
         epson.cut()
 
 # }}}
+# {{{ 'compose' Subcommand
+
+import os, subprocess, tempfile
+
+def compose(args):
+    fhnd, fpath = tempfile.mkstemp(suffix='.escpos')
+    os.close(fhnd)
+
+    try:
+        editor = os.environ.get('VISUAL', os.environ.get('EDITOR', 'editor'))
+        subprocess.call([editor, fpath])
+
+        if os.stat(fpath).st_size > 0:
+            _print_text_file(fpath)
+            epson.cut()
+    finally:
+        if os.path.exists(fpath):
+            os.remove(fpath)
+
+# }}}
 # {{{ 'test' Subcommand
 
 from PIL import Image, ImageDraw
@@ -172,6 +192,10 @@ def main():
     echo_parser = subparsers.add_parser('echo', help='Echo the keyboard to '
         'the printer line-by-line (Exit with Ctrl+C)')
     echo_parser.set_defaults(func=echo)
+
+    compose_parser = subparsers.add_parser('compose', help='Open the user\'s '
+        'default text editor and print the result (if non-empty) on exit.')
+    compose_parser.set_defaults(func=compose)
 
     print_parser = subparsers.add_parser('print', help='Print the given files')
     print_parser.add_argument('--images', action='store_true',
