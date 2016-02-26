@@ -109,6 +109,8 @@ python-pip
 python-tidylib
 python-tz
 python-virtualenv
+python3-unidecode
+python3-yaml
 rxvt-unicode
 sqlite3
 sqliteman
@@ -295,6 +297,9 @@ libgtk-3-dev
 libgee-dev
 
 EOF
+
+# Install PyUSB for Python 3.x
+pip3 install pyusb --pre
 
 # Set up lirc
 mkdir -p /etc/lirc

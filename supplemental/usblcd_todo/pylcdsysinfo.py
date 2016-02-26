@@ -156,7 +156,7 @@ class LCDSysInfo(object):
             try:
                 self.devh.detachKernelDriver(0)
                 self.devh.claimInterface(0)
-            except usb.USBError, err:
+            except usb.USBError as err:
                 raise IOError("Failed to claim interface (%s)" % err)
 
     def __del__(self):

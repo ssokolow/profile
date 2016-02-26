@@ -37,18 +37,25 @@ class EventHandler(pyinotify.ProcessEvent):
 
     @staticmethod
     def fmt_task(task):
-        if task.startswith('+'):
-            task = '+ ' + task[1:]
-        else:
-            task = '- ' + task
-        return '____%s' % task
+        try:
+            if task.startswith('+'):
+                task = '+ ' + task[1:]
+            else:
+                task = '- ' + task
+            return '____%s' % task
+        except AttributeError as err:
+            return '- %s' % err
 
     @staticmethod
     def _parse_todos(path):
         with open(path, 'rU') as fobj:
             yobj = yaml.safe_load_all(fobj)
-            yobj.next()  # Skip header text
-            return yobj.next() or {}
+
+            # Skip header text
+            yobj_next = getattr(yobj, 'next', getattr(yobj, '__next__'))
+
+            yobj_next()
+            return yobj_next() or {}
 
     def process_IN_MODIFY(self, event):
         # Workaround for race condition when using IN_MODIFY
@@ -65,10 +72,13 @@ class EventHandler(pyinotify.ProcessEvent):
 
         try:
             data = self._parse_todos(self.path)
-        except BaseException:
+        except BaseException as err:
             log.debug("Couldn't parse data from file: %s", self.path)
             lines = ["Error parsing TODO YAML",
-                     "%d bytes" % this_stat.st_size]
+                     "%d bytes" % this_stat.st_size,
+                     "",
+                     str(err)]
+            print(err)
         else:
             tasks = data.get('TODO', None)
             if tasks:
