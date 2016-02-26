@@ -32,10 +32,16 @@
 	abbrev = 12
 [format]
 	numbered = auto
+[gui]
+	recentrepo = /home/ssokolow/.profile_repo
+[guitool "gitk"]
+	cmd = gitk
 [merge]
 	tool = kdiff3
 [push]
 	default = matching
+[rebase]
+	autostash = true
 [repack]
 	usedeltabaseoffset = true
 [sendemail]
@@ -46,6 +52,8 @@
 [user]
 	name = Stephan Sokolow
 	email = http://www.ssokolow.com/ContactMe
+[include]
+	path = .gitconfig.credentials
 
 # Seamless r/w checkouts for me.
 # Source: http://rentzsch.tumblr.com/post/564806957/public-but-hackable-git-submodules
@@ -59,9 +67,3 @@
 	insteadOf = "github:"
 
 # vim: noexpandtab
-[gui]
-	recentrepo = /home/ssokolow/.profile_repo
-[guitool "gitk"]
-	cmd = gitk
-[include]
-	path = .gitconfig.credentials
