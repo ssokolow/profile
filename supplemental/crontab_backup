@@ -1,8 +1,10 @@
 # Per-user initscript equivalent
-@reboot screen -wipe &> /dev/null
-@reboot rm ~/.config/audacious/lock
-@reboot rm /home/ssokolow/.DCOPserver_monolith__0
-@reboot /usr/bin/keychain &> /dev/null
+@reboot sh -c 'exec screen -wipe' &> /dev/null
+@reboot rm -f ~/.config/audacious/lock
+@reboot rm -f /home/ssokolow/.DCOPserver_monolith__0
+@reboot rm -f /home/ssokolow/.ganttproject.d/* /home/ssokolow/java?.log
+@reboot sh -c 'exec /usr/bin/keychain' &> /dev/null
+@reboot rm -rf /home/ssokolow/.config/deluge/ipc
 @reboot mkdir -p ~/.macromedia/Flash_Player/macromedia.com/support/flashplayer/sys/; cp ~/.profile_repo/supplemental/settings.sol ~/.macromedia/Flash_Player/macromedia.com/support/flashplayer/sys/settings.sol
 
 # Morning Housekeeping
