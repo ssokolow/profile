@@ -51,10 +51,18 @@ class EventHandler(pyinotify.ProcessEvent):
         with open(path, 'rU') as fobj:
             yobj = yaml.safe_load_all(fobj)
 
-            # Skip header text
-            yobj_next = getattr(yobj, 'next', getattr(yobj, '__next__'))
 
+            # Python 2/3 adapter
+            if hasattr(yobj, 'next'):
+                yobj_next = yobj.next
+            elif hasattr(yobj, '__next__'):
+                yobj_next = yobj.__next__
+            else:
+                raise Exception("Python is broken")
+
+            # Skip header text
             yobj_next()
+
             return yobj_next() or {}
 
     def process_IN_MODIFY(self, event):
