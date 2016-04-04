@@ -1,6 +1,8 @@
 " Stephan Sokolow's .vimrc (WIP)
 " If you are unfamiliar with vim's folding commands, type zR.
 
+" TODO: http://vim.wikia.com/wiki/Set_working_directory_to_the_current_file
+
 " {{{ Quick Reference
 "
 "  TODO: Decide what to do with *this* quick reference:
@@ -210,6 +212,8 @@
 "   <C-X> Space  Create tag pair from the typed word (single line)
 "   <C-X> Enter  Create tag pair from the typed word (multi-line)
 "
+"  Visual Mode:
+"   ,x           Reindent using HTML Tidy
 "
 "  Build An Incremented Sequence From A Selected Column In Visual Block Mode:
 "  :I  [#]      Left-Justified  (Supply # for non-default increment)
@@ -683,10 +687,13 @@ if has("autocmd") && exists("+filetype")
     autocmd FileType html,xml,xsl iabbrev <buffer> </ </
 
     " Adjust for Rust-specced maximum line length
-    autocmd FileType rust set textwidth=99
+    autocmd FileType rust setlocal textwidth=99
+
+    " Hook up :make to preview Sphinx docs
+    autocmd FileType rst setlocal makeprg=make\ html
 
     " Hook up :make to preview GraphViz dot rendering
-    autocmd FileType dot set makeprg=dot\ %\ -Tpng\ -o\ %.png;\ display\ %
+    autocmd FileType dot setlocal makeprg=dot\ %\ -Tpng\ -o\ %.png;\ display\ %
 
     " Set up an 'escpos' filetype which makes the width of my thermal printer's
     " paper clear and sets up :make to print things.
@@ -790,6 +797,9 @@ nnoremap <leader>l :ls<CR>:b<space>
 
 " Source: https://blog.dbrgn.ch/2013/5/27/using-jedi-with-ymc/
 nnoremap <leader>g :YcmCompleter GoToDefinitionElseDeclaration<CR>
+
+" Source: http://vim.wikia.com/wiki/Cleanup_your_HTML
+vmap ,x :!tidy -q -i --show-errors 0<CR>
 
 " }}}
 " {{{ Custom command aliases
