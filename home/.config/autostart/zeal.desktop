@@ -1,0 +1,21 @@
+[Desktop Entry]
+Categories=Development;
+Comment[en_US]=Simple API documentation browser
+Comment=Simple API documentation browser
+Exec=zeal %u
+GenericName[en_US]=Documentation Browser
+GenericName=Documentation Browser
+Icon=zeal
+MimeType=
+Name[en_US]=Zeal
+Name=Zeal
+Path=
+StartupNotify=true
+Terminal=false
+TerminalOptions=
+Type=Application
+Version=1.0
+X-DBUS-ServiceName=
+X-DBUS-StartupType=
+X-KDE-SubstituteUID=false
+X-KDE-Username=

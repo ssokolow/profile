@@ -41,6 +41,7 @@ add-apt-repository -y ppa:fkrull/deadsnakes # Various Python version for tox
 add-apt-repository -y ppa:pypy/ppa # ...and PyPy for tox
 add-apt-repository -y ppa:gottcode/gcppa # FocusWriter
 add-apt-repository -y ppa:ryochan7/antimicro
+add-apt-repository ppa:zeal-developers/ppa
 
 if [ "$(hostname)" = "monolith" -a "$(lsb_release -sr)" = "14.04" ]; then
     echo " * Adding updated nvidia-331 source to bypass *buntu 14.04 bug"
@@ -122,6 +123,7 @@ xclip
 xournal
 xpad
 youtube-dl
+zeal
 
 # Note: python-tidylib must be here so it can pull in tidylib for virtualenvs
 # which install their own copies of PyTidyLib.
