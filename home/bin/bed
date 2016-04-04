@@ -2,6 +2,9 @@
 # -*- coding: utf-8 -*-
 """Record-keeping helper for smarter bedtime playback practices.
 
+Dependencies:
+- pyalsaaudio (For changing volume for alarms)
+
 NOTE: Requires that mpv's input.conf be amended so `quit` is replaced with
       `quit 20` so premature exits can be detected and the queue aborted.
       (Also, use Ctrl+C to skip the current video without logging)
@@ -19,6 +22,10 @@ import itertools, logging, os, random, subprocess, sys, time
 from datetime import datetime, timedelta
 
 PLAY_CMD = ['mpv', '-name', 'bedtime_player', '--osd-level=3']
+ALARM_ARGS = ['-loop', 'inf',
+              os.path.join(os.path.dirname(__file__), 'alarm.mp4')]
+UNREADY_TIME_LIMIT = '15m'
+GRACE_PERIOD = 30  # seconds
 
 log = logging.getLogger(__name__)
 
@@ -90,6 +97,18 @@ def test_duration_str():
     assert parse_duration('15d') == timedelta(days=15)
     assert parse_duration('15w') == timedelta(weeks=15)
 
+def prompt(msg, valid='yn'):
+    result = ''
+    while not result or result not in valid:
+        msg = msg.strip()
+        if msg.endswith('?'):
+            prompt_str = "%s [%s]? " % (msg[:-1], valid)
+        else:
+            prompt_str = "%s [%s]: " % (msg, valid)
+
+        result = raw_input(prompt_str).lower()
+    return result
+
 def main():
     """The main entry point, compatible with setuptools entry points."""
     # If we're running on Python 2, take responsibility for preventing
@@ -151,6 +170,13 @@ def main():
             else:
                 files = sorted(files, key=lambda x: data.get(x, 0))
 
+    ready_for_bed = True
+    if not args.print:
+        ready_for_bed = (prompt("Are you ready to sleep? ") == 'y')
+    if not ready_for_bed:
+        # FIXME: Take the lesser of the two time limits
+        args.time_limit = UNREADY_TIME_LIMIT
+
     start_time = datetime.utcnow()
     end_time = None
     if args.limit:
@@ -166,6 +192,25 @@ def main():
             print('\n'.join(files))
         else:
             play(files, fobj, end_time=end_time)
+
+    # TODO: Factor in idleness calculations when deciding to alarm
+    if not ready_for_bed:
+        import alsaaudio
+        master = alsaaudio.Mixer()  # pylint: disable=no-member
+
+        grace_period = GRACE_PERIOD
+        while grace_period > 0:
+            sys.stdout.write("\rPress Ctrl+C to abort alarm... %s  " %
+                             grace_period)
+            sys.stdout.flush()
+            time.sleep(1)
+            grace_period -= 1
+        print("")
+
+        orig_vol = master.getvolume()[0]
+        master.setvolume(100)
+        subprocess.call(PLAY_CMD + ALARM_ARGS)
+        master.setvolume(orig_vol)
 
 if __name__ == '__main__':
     main()
