@@ -1,4 +1,3 @@
-fixed-vo=yes
 # vo=vdpau likes to freeze the player when KWin toggles fullscreen window
 # redirection to overlay something like AFK enforcer or a stupidly-placed
 # new window.
@@ -17,14 +16,13 @@ alang=en,eng,jp,jpn,fr
 
 stop-screensaver=yes
 
+osc=no
+
 #tv=driver=v4l2:width=640:height=480:fps=30:device=/dev/video1
 tv=norm=NTSC
 
 # Required to pan-and-scan in enough for The Cinema Snob - Gums
 #video-zoom=3
-
-# This interferes with my joystick evdev bindings (causes each button to do two different things in one push)
-no-joystick=yes
 
 # Try to match MPlayer default appearance
 osd-font-size=60
