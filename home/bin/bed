@@ -14,9 +14,9 @@ __appname__ = "[application name here]"
 __version__ = "0.0pre0"
 __license__ = "MIT"
 
+import itertools, logging, os, random, subprocess, sys, time
 PLAY_CMD = ['mpv', '-name', 'bedtime_player', '--osd-level=3']
 
-import itertools, logging, os, subprocess, sys, time
 log = logging.getLogger(__name__)
 
 this_dir = os.path.abspath(os.path.dirname(__file__))
@@ -78,6 +78,9 @@ def main():
         default=0, help="Decrease the verbosity. Use twice for extra effect")
     parser.add_argument('--recency', action='store_true',
         default=False, help="Sort by least recently played before playing.")
+    parser.add_argument('--randomize', action='store',
+        default=None, help="When using --recency, shuffle values played within"
+        " DAYS of each other.", metavar="DAYS", type=float)
     parser.add_argument('-p', '--print', action='store_true',
         default=False, help="Just print a list of files. Don't play them.")
     parser.add_argument('-n', '--limit', type=int,
@@ -105,7 +108,13 @@ def main():
             data = [x.strip().split(None, 1) for x in data]
             data = {x[1]: x[0] for x in data}
 
-            files = sorted(files, key=lambda x: data.get(x, 0))
+            if args.randomize is not None:
+                files = sorted(files, key=lambda x: (
+                    int(float(data.get(x, 0)) / (args.randomize * 3600 * 24)),
+                    random.random()
+                ))
+            else:
+                files = sorted(files, key=lambda x: data.get(x, 0))
 
     if args.limit:
         files = itertools.islice(files, args.limit)
