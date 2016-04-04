@@ -4,6 +4,7 @@
 
 NOTE: Requires that mpv's input.conf be amended so `quit` is replaced with
       `quit 20` so premature exits can be detected and the queue aborted.
+      (Also, use Ctrl+C to skip the current video without logging)
 """
 
 from __future__ import (absolute_import, division, print_function,
@@ -15,15 +16,20 @@ __version__ = "0.0pre0"
 __license__ = "MIT"
 
 import itertools, logging, os, random, subprocess, sys, time
+from datetime import datetime, timedelta
+
 PLAY_CMD = ['mpv', '-name', 'bedtime_player', '--osd-level=3']
 
 log = logging.getLogger(__name__)
 
 this_dir = os.path.abspath(os.path.dirname(__file__))
 
-def play(paths, log_fobj=None):
+def play(paths, log_fobj=None, end_time=None):
     """Play a sequence of files and log them unless the user exits"""
     for path in paths:
+        if end_time and datetime.utcnow() > end_time:
+            break
+
         path = os.path.abspath(path)
 
         # Transparently support EDLs for cutting out ads
@@ -58,6 +64,32 @@ def walk_args(args):
                 for fname in sorted(files):
                     yield os.path.join(path, fname)
 
+def parse_duration(duration_str, default_increment='m'):
+    increments = {
+        's': 'seconds',
+        'm': 'minutes',
+        'h': 'hours',
+        'd': 'days',
+        'w': 'weeks'
+    }
+    duration_str = duration_str.lower()
+
+    if duration_str[-1] in '0123456789':
+        duration_str += default_increment
+
+    if duration_str[-1] in increments:
+        duration_str, unit = duration_str[:-1], duration_str[-1]
+        return timedelta(**{increments[unit]: int(duration_str)})
+    else:
+        raise ValueError("Not a valid duration string: %s" % duration_str)
+
+def test_duration_str():
+    assert parse_duration('15s') == timedelta(seconds=15)
+    assert parse_duration('15m') == timedelta(minutes=15)
+    assert parse_duration('15h') == timedelta(hours=15)
+    assert parse_duration('15d') == timedelta(days=15)
+    assert parse_duration('15w') == timedelta(weeks=15)
+
 def main():
     """The main entry point, compatible with setuptools entry points."""
     # If we're running on Python 2, take responsibility for preventing
@@ -85,6 +117,9 @@ def main():
         default=False, help="Just print a list of files. Don't play them.")
     parser.add_argument('-n', '--limit', type=int,
                         help="Limit how many files are played")
+    parser.add_argument('-t', '--time-limit', default=None,
+                        help="Limit play time to this duration, rounded up to"
+                        "the nearest complete file")
     parser.add_argument('files', nargs='+')
 
     args = parser.parse_args()
@@ -116,10 +151,12 @@ def main():
             else:
                 files = sorted(files, key=lambda x: data.get(x, 0))
 
+    start_time = datetime.utcnow()
+    end_time = None
     if args.limit:
         files = itertools.islice(files, args.limit)
-
-    # TODO: Add a time-limit option which only works when playing.
+    if args.time_limit:
+        end_time = start_time + parse_duration(args.time_limit)
 
     # TODO: I need some kind of UI that lets me effectively un-mark the ones
     # that played after I fell asleep.
@@ -128,7 +165,7 @@ def main():
         if args.print:
             print('\n'.join(files))
         else:
-            play(files, fobj)
+            play(files, fobj, end_time=end_time)
 
 if __name__ == '__main__':
     main()
