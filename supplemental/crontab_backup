@@ -8,7 +8,7 @@
 @reboot mkdir -p ~/.macromedia/Flash_Player/macromedia.com/support/flashplayer/sys/; cp ~/.profile_repo/supplemental/settings.sol ~/.macromedia/Flash_Player/macromedia.com/support/flashplayer/sys/settings.sol
 
 # Morning Housekeeping
-0       7       *       *       *       PATH=~/bin:"$PATH" ~/bin/tyt --cron
+0       6       *       *       *       PATH=~/bin:"$PATH" ~/bin/tyt --cron
 
 # Nightly housekeeping
 0       0       *       *       *       cp ~/.profile_repo/supplemental/settings.sol ~/.macromedia/Flash_Player/macromedia.com/support/flashplayer/sys/settings.sol
@@ -17,14 +17,14 @@
 0       0       *       *       *       rm -rf /home/ssokolow/.local/share/applications/wine/Programs
 0       0       *       *       *       chmod 600 ~/Documents/*.kdbx
 0       0       *       *       *       ~/bin/task_skip_daily >/dev/null
-1       1       *       *       *       rm -f ~/.xsession-errors{,.old}
-2       1       *       *       *       rm -rf ~/incoming/gtk-gnutella-downloads/corrupt/*
-0       6       *       *       *       DISPLAY=:0 timelimit -q -t 86000 ~/bin/update_check.sh
-0       6       *       *       *       DISPLAY=:0 timelimit -q -t 86000 ~/src/3_DOES_WHAT_I_WANT/tw-daily/tw-daily.py
-#0       6       *       *       *       DISPLAY=:0 timelimit -t 86000 urxvt -e bash --rcfile ~/bin/task_bashrc
+1       0       *       *       *       rm -f ~/.xsession-errors{,.old}
+2       0       *       *       *       rm -rf ~/incoming/gtk-gnutella-downloads/corrupt/*
+0       5       *       *       *       DISPLAY=:0 timelimit -q -t 86000 ~/bin/update_check.sh
+0       5       *       *       *       DISPLAY=:0 timelimit -q -t 86000 ~/src/3_DOES_WHAT_I_WANT/tw-daily/tw-daily.py
+#0       5       *       *       *       DISPLAY=:0 timelimit -t 86000 urxvt -e bash --rcfile ~/bin/task_bashrc
 
 # Nightly backup for stuff that's too volatile for DVD-Rs.
-0       3       *       *       *       ionice -c3 ~/src/rdbackup_wrapper/backup.py 2>&1 | fgrep -v -f ~/.rdiff-backup_known_ok_failures | sed '/Deleting increment at time:/,/.*/d'
+0       1       *       *       *       ionice -c3 ~/src/rdbackup_wrapper/backup.py 2>&1 | fgrep -v -f ~/.rdiff-backup_known_ok_failures | sed '/Deleting increment at time:/,/.*/d'
 
 # PostgreSQL maintenance (nightly light, monthly full)
 3       0       *       *       *       vacuumdb --analyze --quiet ssokolow 2>&1 | egrep -v '(superuser|database owner) can vacuum it'
