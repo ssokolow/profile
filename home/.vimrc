@@ -1,8 +1,6 @@
 " Stephan Sokolow's .vimrc (WIP)
 " If you are unfamiliar with vim's folding commands, type zR.
 
-" TODO: http://vim.wikia.com/wiki/Set_working_directory_to_the_current_file
-
 " {{{ Quick Reference
 "
 "  TODO: Decide what to do with *this* quick reference:
@@ -669,6 +667,11 @@ endif
 " Run the DetectIndent plugin automatically
 if has("autocmd")
     autocmd BufReadPost * :DetectIndent
+
+    " Get the tab display and :tabopen behaviour I want at the cost of breaking
+    " session saving
+    " From http://vim.wikia.com/wiki/Set_working_directory_to_the_current_file
+    autocmd BufEnter * silent! lcd %:p:h
 endif
 
 " Filetype-specific autocommands
