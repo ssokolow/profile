@@ -103,6 +103,9 @@ termcapinfo xterm* ti@:te@
 # Launch a mouse-enabled Midnight Commander in window 0 and zsh in window 1.
 #screen 0 mc -x
 
+chdir /home/ssokolow/
+screen -t Fanfiction dash -c 'cd ~/Documents/Fanfiction; exec zsh'
+screen -t 'tyt' dash -c 'cd ~/Desktop/pandora; exec zsh'
 # Open the usual bare terminal in window 1 and start with it visible
 screen
 
