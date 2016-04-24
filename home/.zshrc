@@ -361,4 +361,14 @@ function url-encode; {
 setopt hashcmds hashdirs hashlistall
 
 #}}}
+
+if [ -n "$VENV_TO_ACTIVATE" ]; then
+    workon "$VENV_TO_ACTIVATE"
+    unset "$VENV_TO_ACTIVATE"
+
+    if [ -n "$RUN_IN_VENV" ]; then
+	$RUN_IN_VENV
+    fi
+fi
+unset "$RUN_IN_VENV"
 # vim:fdm=marker
