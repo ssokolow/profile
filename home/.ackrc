@@ -7,9 +7,12 @@
 
 --ignore-file=is:.coverage
 
-# Shockingly, there is no JSON in the default type map
+# Shockingly, there is no JSON or ReST in the default type map
 --type-add
 js=.json
+
+--type-add
+rst=.rst
 
 # --== Let's not forget common Pylons types ==--
 --type-set
