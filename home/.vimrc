@@ -476,9 +476,11 @@ if exists(":let")
     let g:miniBufExplCloseOnSelect = 1
 
     " Make sure NERDTree always opens with the right dimensions
-    let NERDTreeQuitOnOpen = 1
-    let NERDTreeWinSize = 30
+    "let NERDTreeQuitOnOpen = 1
+    "let NERDTreeWinSize = 30
 
+    "TODO: Make this work
+    "extend(g:NTPNames, ['setup.py', 'SConstruct', '*.sln', '*.csproj'])
 
     " TODO: Things to double-check the efficacy of:
     let python_highlight_all = 1
@@ -578,12 +580,20 @@ VAMActivate UltiSnips vim-snippets      " Code Snippets
 VAMActivate bwHomeEndAdv                " Smart Home/End
 
 " Ack support (Must come before The_NERD_tree)
-VAMActivate ack nerdtree-ack
+"VAMActivate ack nerdtree-ack
 
 " Basic Project Functionality
-VAMActivate sessionman                     " Session manager
-VAMActivate minibufexplorer                " Vim buffer sidebar
-VAMActivate The_NERD_tree nerdtree-execute " Filesystem sidebar
+VAMActivate sessionman                      " Session manager
+"VAMActivate minibufexplorer                " Vim buffer sidebar
+"VAMActivate The_NERD_tree nerdtree-execute " Filesystem sidebar
+
+let g:ctrlp_custom_ignore = {
+  \ 'dir':  '\v[\/](\.(git|hg|svn)|node_modules|bower_components|_build)$',
+  \ 'file': '\v\.(exe|so|dll)$',
+  \ 'link': 'some_bad_symbolic_links',
+  \ }
+let g:ctrlp_map = '<Leader>p'
+VAMActivate ctrlp                           " Replacement for MBE and NERDTree
 
 " Supplemental IDE Functionality
 VAMActivate rename%4840              " Rename command for the file being edited
@@ -592,7 +602,7 @@ VAMActivate Conque_Shell conque-repl " Embedded shell and REPL
 
 " Autodetection
 VAMActivate DetectIndent            " File's indent settings
-VAMActivate NERD_tree_Project       " Root project folder for current file
+"VAMActivate NERD_tree_Project       " Root project folder for current file
 
 " Make sure I can't lose anything by accident while using undo
 VAMActivate Gundo
@@ -789,11 +799,11 @@ noremap <c-l> :nohls<CR><c-l>
 
 " Provide a convenient, concise way to work beyond single files
 map <unique> <Leader>C :exe "silent ConqueTermSplit " . &shell<CR>
-map <unique> <Leader>p :SessionList<CR>
+"map <unique> <Leader>p :SessionList<CR>
 map <unique> <Leader>s :SessionSave<CR>
-map <unique> <Leader>nt :NERDTreeToggle<CR>
-map <unique> <Leader>[ :NERDTreeToggle<CR>
 map <unique> <Leader>] :MBEToggle<CR>:MBEFocus<CR>
+"map <unique> <Leader>[ :NERDTreeToggle<CR>
+"map <unique> <Leader>nt :NERDTreeToggle<CR>
 
 " Source: http://bairuidahu.deviantart.com/art/Flying-vs-Cycling-261641977
 nnoremap <leader>l :ls<CR>:b<space>
