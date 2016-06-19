@@ -58,6 +58,7 @@ def play(paths, log_fobj=None, end_time=None):
                 # playback ended naturally and should be noted
                 log_fobj.write('%f\t%s\n' % (time.time(), path))
                 log_fobj.flush()
+                log.info("Playback logged.")
 
 def walk_args(args):
     """Adapter to recursively resolve directory paths to file paths."""
@@ -124,9 +125,9 @@ def main():
     parser.add_argument('--version', action='version',
             version="%%(prog)s v%s" % __version__)
     parser.add_argument('-v', '--verbose', action="count",
-        default=2, help="Increase the verbosity. Use twice for extra effect")
+        default=3, help="Increase the verbosity.")
     parser.add_argument('-q', '--quiet', action="count",
-        default=0, help="Decrease the verbosity. Use twice for extra effect")
+        default=0, help="Decrease the verbosity. Repeat for extra effect")
     parser.add_argument('--recency', action='store_true',
         default=False, help="Sort by least recently played before playing.")
     parser.add_argument('--randomize', action='store',
@@ -199,6 +200,10 @@ def main():
         master = alsaaudio.Mixer()  # pylint: disable=no-member
 
         grace_period = GRACE_PERIOD
+        try:
+            subprocess.Popen(['festival', '--tts'], stdin=subprocess.PIPE).communicate('Alarm will sound in %d seconds' % grace_period)
+        except Exception:
+            pass
         while grace_period > 0:
             sys.stdout.write("\rPress Ctrl+C to abort alarm... %s  " %
                              grace_period)
