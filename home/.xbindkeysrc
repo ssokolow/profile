@@ -71,6 +71,12 @@
 
 # --== Bindings for Regular Keyboards ==--
 
+"gmrun"
+  Mod4 + space
+
+"keepass2 --auto-type"
+  Mod4 + p
+
 "(sleep 0.5; br --port=/dev/ttyS0 -F)& sleep 1; xset dpms force off"
   Mod4 + F7
 
@@ -82,6 +88,11 @@
 
 "audtool playback-stopped || audtool playback-paused && audtool playback-play; [ `audtool playlist-stop-after-status` = 'off' ] && audtool playlist-stop-after-toggle"
   Mod4 + o
+
+# Force the flash plugin to release keyboard focus
+# http://awesome.naquadah.org/wiki/Workaround_plugins_that_steal_the_keyboard_focus
+"xdotool getactivewindow mousemove --window %1 0 0 click --clearmodifiers 2"
+  Mod4 + f
 
 # --== Bindings for ATi Remote Wonder II ==--
 
