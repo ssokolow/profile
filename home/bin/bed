@@ -22,7 +22,7 @@ import itertools, logging, os, random, subprocess, sys, time
 from datetime import datetime, timedelta
 
 PLAY_CMD = ['mpv', '-name', 'bedtime_player', '--osd-level=3']
-ALARM_ARGS = ['-loop', 'inf',
+ALARM_ARGS = ['-loop=inf',
               os.path.join(os.path.dirname(__file__), 'alarm.mp4')]
 UNREADY_TIME_LIMIT = '15m'
 GRACE_PERIOD = 30  # seconds
