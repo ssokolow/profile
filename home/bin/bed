@@ -142,6 +142,10 @@ def main():
                         "the nearest complete file")
     parser.add_argument('--no-log', action="store_true", default=False,
                         help="Don't log the playback of the given files.")
+    parser.add_argument('--ready-for-bed', choices=['y', 'n'], default=None,
+                        help="Pre-specify whether to sound an alarm to prevent"
+                             " premature sleeping when jet-lagged so as not to"
+                             " interactively prompt.")
     parser.add_argument('files', nargs='+')
 
     args = parser.parse_args()
@@ -173,8 +177,8 @@ def main():
             else:
                 files = sorted(files, key=lambda x: data.get(x, 0))
 
-    ready_for_bed = True
-    if not args.print:
+    ready_for_bed = {'y': True, 'n': False}.get(args.ready_for_bed)
+    if not args.print and ready_for_bed is None:
         ready_for_bed = (prompt("\nAre you ready to sleep?") == 'y')
     if not ready_for_bed:
         # FIXME: Take the lesser of the two time limits
