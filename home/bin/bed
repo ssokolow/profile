@@ -140,6 +140,8 @@ def main():
     parser.add_argument('-t', '--time-limit', default=None,
                         help="Limit play time to this duration, rounded up to"
                         "the nearest complete file")
+    parser.add_argument('--no-log', action="store_true", default=False,
+                        help="Don't log the playback of the given files.")
     parser.add_argument('files', nargs='+')
 
     args = parser.parse_args()
@@ -192,7 +194,7 @@ def main():
         if args.print:
             print('\n'.join(files))
         else:
-            play(files, fobj, end_time=end_time)
+            play(files, None if args.no_log else fobj, end_time=end_time)
 
     # TODO: Factor in idleness calculations when deciding to alarm
     if not ready_for_bed:
