@@ -30,9 +30,7 @@ fi
 
 # Streamline my TYT-watching workflow
 #cond_alias_2 tytp "mplayer -ss 3" "*"
-cond_alias_2 tytp "mplayer -name tytp" "*"
-# shellcheck disable=SC2088
-cond_alias_2 tytc "mv" "*" "~/incoming/Videos/Young\ Turks"
+cond_alias_2 tytp "bed --no-log --ready-for-bed=y" "*"
 
 # Given an egrep path filter, use git filter-branch to throw out all files
 # which don't match.
