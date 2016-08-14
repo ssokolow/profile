@@ -236,6 +236,7 @@ qt4-dev-tools
 redshift
 redshift-gtk
 samba
+stunnel
 texlive-xetex
 timelimit
 uptimed
