@@ -21,7 +21,7 @@ __license__ = "MIT"
 import itertools, logging, os, random, subprocess, sys, time
 from datetime import datetime, timedelta
 
-PLAY_CMD = ['mpv', '-name', 'bedtime_player', '--osd-level=3']
+PLAY_CMD = ['mpv', '--x11-name', 'bedtime_player', '--osd-level=3']
 ALARM_ARGS = ['-loop=inf',
               os.path.join(os.path.dirname(__file__), 'alarm.mp4')]
 UNREADY_TIME_LIMIT = '15m'
