@@ -42,6 +42,7 @@ add-apt-repository -y ppa:pypy/ppa # ...and PyPy for tox
 add-apt-repository -y ppa:gottcode/gcppa # FocusWriter
 add-apt-repository -y ppa:ryochan7/antimicro
 add-apt-repository ppa:zeal-developers/ppa
+echo 'deb http://download.opensuse.org/repositories/home:/kozec/xUbuntu_14.04/ /' >> /etc/apt/sources.list.d/sc-controller.list
 
 if [ "$(hostname)" = "monolith" -a "$(lsb_release -sr)" = "14.04" ]; then
     echo " * Adding updated nvidia-331 source to bypass *buntu 14.04 bug"
@@ -167,6 +168,7 @@ python-imaging
 python-lxml
 rdiff-backup
 rss-glx
+sc-controller
 timidity
 unrar
 veromix
@@ -580,7 +582,8 @@ if [ -e /bin/zsh ]; then
 fi
 
 echo " * Adding '$ME' to requisite groups"
-for GRP in tty dialout video lpadmin vboxusers family; do
+groupadd steamcontroller
+for GRP in tty dialout video lpadmin vboxusers family steamcontroller; do
     gpasswd -a "$ME" "$GRP"
 done
 
