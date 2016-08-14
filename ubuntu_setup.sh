@@ -241,6 +241,7 @@ samba
 stunnel
 texlive-xetex
 timelimit
+trang
 uptimed
 wxhexeditor
 xsane
