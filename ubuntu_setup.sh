@@ -250,8 +250,10 @@ aosd-cat
 checkinstall
 chm2pdf
 cifs-utils
+cryptkeeper
 deluge-gtk
 elementary-icon-theme
+encfs
 expect
 fuseiso
 graphviz
