@@ -5,9 +5,25 @@
 from __future__ import (absolute_import, division, print_function,
                         with_statement, unicode_literals)
 
-import glob, os, shutil
+import glob, hashlib, os, shutil
 
 TARGET_DIR = os.path.expanduser("~/incoming/Videos/Young Turks")
+
+def hash_file(handle):
+    """Generate an SHA1 hash of a file in a memory-efficient manner.
+
+    (Used to decide how to handle "target path already exists")
+    """
+    if isinstance(handle, basestring):
+        with open(handle, 'rb') as fobj:
+            return hash_file(fobj)
+
+    # Chunked digest generation (conserve memory)
+    fhash, chunk_size = hashlib.sha1(), 65535
+    for block in iter(lambda: handle.read(chunk_size), b''):
+        fhash.update(block)
+
+    return fhash.hexdigest()
 
 def main():
     # If we're running on Python 2, take responsibility for preventing
@@ -29,6 +45,10 @@ def main():
     paths = args.path or glob.glob("*.webm") + glob.glob("*.mp4")
 
     for path in paths:
+        if not os.path.exists(path):
+            print("Skipping nonexistant path: %s" % path)
+            continue
+
         todo.append(path)
 
         name = os.path.splitext(path)[0]
@@ -38,7 +58,14 @@ def main():
                 todo.append(secondary)
 
     for src in todo:
-        shutil.move(src, TARGET_DIR)
+        tgt_path = os.path.join(TARGET_DIR, os.path.basename(src))
+        if os.path.exists(tgt_path):
+            if hash_file(src) == hash_file(tgt_path):
+                os.remove(src)
+            else:
+                print("ERROR: Already exists: %s" % tgt_path)
+        else:
+            shutil.move(src, TARGET_DIR)
 
 if __name__ == '__main__':
     main()
