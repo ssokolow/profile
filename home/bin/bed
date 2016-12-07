@@ -8,6 +8,15 @@ Dependencies:
 NOTE: Requires that mpv's input.conf be amended so `quit` is replaced with
       `quit 20` so premature exits can be detected and the queue aborted.
       (Also, use Ctrl+C to skip the current video without logging)
+
+TODO: Switch MPV handling to use its JSON-RPC API so there's no need to exit
+      and re-launch MPV between files. (That'll fix a lot of warts)
+      - https://github.com/jaseg/python-mpv
+      - https://mpv.io/manual/master/#json-ipc
+      - https://pypi.python.org/pypi/mpv
+      - https://pypi.python.org/pypi/python-mpv-zws
+
+TODO: Switch to a Qt+Phonon-based alarm solution and disallow pausing it
 """
 
 from __future__ import (absolute_import, division, print_function,
