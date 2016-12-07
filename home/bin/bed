@@ -178,6 +178,17 @@ def playback_main(args, files, data_path):
         args.time_limit = min(
             parse_duration(args.time_limit or '156w'),
             parse_duration(UNREADY_TIME_LIMIT))
+
+        # If I try to re-play the same file three times in four hours, my
+        # judgement is compromised and I need to brush my teeth first.
+        files = list(files)
+        history = load_history(data_path)
+        if history[-1][1] == history[-2][1] == files[0]:
+            if time.time() - float(history[-2][0]) < 3600 * 4:
+                try_speak("Your judgement is compromised. "
+                          "Go brush your teeth.")
+                return
+
     # Play the files
     with open(data_path, 'a') as fobj:
         for path in files:
