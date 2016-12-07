@@ -460,6 +460,7 @@ if exists(":let")
     let g:ConqueTerm_CWInsert = 1
     let g:ConqueTerm_InsertOnEnter = 1
 
+    let g:vim_json_syntax_conceal = 0
 
     " I prefer 4-char space indentation as my default for DetectIndent too
     let g:detectindent_preferred_expandtab = 1
@@ -621,6 +622,9 @@ VAMActivate LargeFile
 " TODO: Make this conditional on Python files
 VAMActivate indentpython%974
 VAMActivate github:jmcantrell/vim-virtualenv
+
+" TODO: Make this conditional on JavaScript or HTML files
+VAMActivate vim-javascript
 
 " TODO: Make this conditional on CoffeeScript files
 VAMActivate vim-coffee-script
