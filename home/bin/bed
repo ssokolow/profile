@@ -22,6 +22,8 @@ import itertools, logging, os, random, subprocess, sys, time
 from contextlib import contextmanager
 from datetime import timedelta
 
+from pytimeparse import parse as parse_duration
+
 PLAY_CMD = ['mpv', '--x11-name', 'bedtime_player', '--osd-level=3']
 ALARM_ARGS = ['-loop=inf',
               os.path.join(os.path.dirname(__file__), 'alarm.mp4')]
@@ -61,32 +63,6 @@ def walk_args(args):
                 dirs.sort()
                 for fname in sorted(files):
                     yield os.path.join(path, fname)
-
-def parse_duration(duration_str, default_increment='m'):
-    increments = {
-        's': 'seconds',
-        'm': 'minutes',
-        'h': 'hours',
-        'd': 'days',
-        'w': 'weeks'
-    }
-    duration_str = duration_str.lower()
-
-    if duration_str[-1] in '0123456789':
-        duration_str += default_increment
-
-    if duration_str[-1] in increments:
-        duration_str, unit = duration_str[:-1], duration_str[-1]
-        return timedelta(**{increments[unit]: int(duration_str)})
-    else:
-        raise ValueError("Not a valid duration string: %s" % duration_str)
-
-def test_duration_str():
-    assert parse_duration('15s') == timedelta(seconds=15)
-    assert parse_duration('15m') == timedelta(minutes=15)
-    assert parse_duration('15h') == timedelta(hours=15)
-    assert parse_duration('15d') == timedelta(days=15)
-    assert parse_duration('15w') == timedelta(weeks=15)
 
 def prompt(msg, valid='yn'):
     """Display a prompt with fixed choices and validate input"""
