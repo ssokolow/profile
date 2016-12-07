@@ -306,8 +306,9 @@ libgee-dev
 
 EOF
 
-# Install PyUSB for Python 3.x
+# Install PyUSB, PyLint, and Flake8 for Python 3.x
 pip3 install pyusb --pre
+pip3 install pylint flake8
 
 # Set up lirc
 mkdir -p /etc/lirc
