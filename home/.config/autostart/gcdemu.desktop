@@ -1,13 +1,16 @@
 [Desktop Entry]
 Categories=GTK;System;
-Comment=CDEmu GUI
+Comment=gCDEmu GUI
+Comment[no]=gCDEmu GUI
 Comment[sl]=CDEmu grafični vmesnik
+Comment[sv]=gCDEmu-GUI
 Exec=gcdemu
 Hidden=true
 Icon=gcdemu
 Name=gCDEmu
+Name[no]=gCDEmu
 Name[sl]=gCDEmu
-NotShowIn=LXDE;
+Name[sv]=gCDEmu
 StartupNotify=false
 Terminal=false
 TryExec=gcdemu
