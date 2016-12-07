@@ -45,6 +45,13 @@ def play(path, log_fobj=None):
     """Play a sequence of files and log them unless the user exits"""
     path = os.path.abspath(path)
 
+    # Transparently support EDLs for cutting out ads
+    if PLAY_CMD[0] == 'mpv':
+        # https://github.com/mpv-player/mpv/blob/master/DOCS/edl-mpv.rst
+        edl_path = os.path.splitext(path)[0] + '.mpv.edl'
+        if os.path.exists(edl_path):
+            path = edl_path
+
     try:
         subprocess.check_call(PLAY_CMD + [path])
     except subprocess.CalledProcessError, err:
