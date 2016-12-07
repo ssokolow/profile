@@ -110,6 +110,27 @@ def prompt(msg, valid='yn'):
         result = raw_input(prompt_str).lower()
     return result
 
+def recency_sort(files, records, randomize=None):
+    """Sort `files` by recency according to `records`.
+
+    If `randomize` is given, treat it as time window (in days) within which to
+    shuffle entries.
+    """
+    # Load as a filename->newest_timestamp dict
+    data = {pair[1]: pair[0] for pair in records}
+
+    if randomize is not None:
+        # TODO: Make sure this actually keys filenames based on the timestamp,
+        #       truncated to the nearest args.randomize number of days, and a
+        #       random value.
+        files = sorted(files, key=lambda x: (
+            int(float(data.get(x, 0)) / (randomize * 3600 * 24)),
+            random.random()
+        ))
+    else:
+        files = sorted(files, key=lambda x: data.get(x, 0))
+    return files
+
 def main():
     """The main entry point, compatible with setuptools entry points."""
     # If we're running on Python 2, take responsibility for preventing
@@ -163,19 +184,7 @@ def main():
     # Prepare the files list
     files = walk_args(args.files)
     if args.recency:
-        with open(data_path, 'rU') as fobj:
-            # Parse the data store
-            data = fobj.read().strip().split('\n')
-            data = [x.strip().split(None, 1) for x in data]
-            data = {x[1]: x[0] for x in data}
-
-            if args.randomize is not None:
-                files = sorted(files, key=lambda x: (
-                    int(float(data.get(x, 0)) / (args.randomize * 3600 * 24)),
-                    random.random()
-                ))
-            else:
-                files = sorted(files, key=lambda x: data.get(x, 0))
+        files = recency_sort(files, load_history(data_path), args.randomize)
 
     ready_for_bed = {'y': True, 'n': False}.get(args.ready_for_bed)
     if not args.print and ready_for_bed is None:
