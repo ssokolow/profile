@@ -24,15 +24,22 @@ from datetime import timedelta
 
 from pytimeparse import parse as parse_duration
 
-PLAY_CMD = ['mpv', '--x11-name', 'bedtime_player', '--osd-level=3']
+import xcb, xcb.xproto, xcb.screensaver
+
+PLAY_CMD = ['mpv', '--x11-name', 'bedtime_player', '--osd-level=3',
+           '--no-stop-screensaver']
 ALARM_ARGS = ['-loop=inf',
               os.path.join(os.path.dirname(__file__), 'alarm.mp4')]
-UNREADY_TIME_LIMIT = '15m'
+UNREADY_TIME_LIMIT = '10m'
 GRACE_PERIOD = 30  # seconds
 
 log = logging.getLogger(__name__)
 
 this_dir = os.path.abspath(os.path.dirname(__file__))
+
+conn = xcb.connect()  # pylint: disable=no-member
+setup = conn.get_setup()
+ss_conn = conn(xcb.screensaver.key)
 
 def play(path, log_fobj=None):
     """Play a sequence of files and log them unless the user exits"""
@@ -141,6 +148,21 @@ def recency_sort(files, records, randomize=None):
         files = sorted(files, key=lambda x: data.get(x, 0))
     return files
 
+def get_idle_secs():
+    """Query the number of seconds the system has been idle"""
+    try:
+        # (Don't use "while True" in case the xcb "NULL when no more"
+        #  behaviour occasionally happens)
+        while conn.poll_for_event():
+            pass
+    except IOError:
+        # In testing, IOError is raised when no events are available.
+        pass
+
+    idle_query = ss_conn.QueryInfo(setup.roots[0].root)
+    idle_secs = idle_query.reply().ms_since_user_input / 1000.0
+    return idle_secs
+
 def playback_main(args, files, data_path):
     ready_for_bed = {'y': True, 'n': False}.get(args.ready_for_bed)
     if not args.print and ready_for_bed is None:
@@ -192,8 +214,8 @@ def main():
     parser.add_argument('-n', '--limit', type=int,
                         help="Limit how many files are played")
     parser.add_argument('-t', '--time-limit', default=None,
-                        help="Limit play time to this duration, rounded up to"
-                        "the nearest complete file")
+                        help="Limit play time without user input to this "
+                        "duration, rounded up to the nearest complete file")
     parser.add_argument('--no-log', action="store_true", default=False,
                         help="Don't log the playback of the given files.")
     parser.add_argument('--ready-for-bed', choices=['y', 'n'], default=None,
