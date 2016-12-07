@@ -19,7 +19,8 @@ __version__ = "0.0pre0"
 __license__ = "MIT"
 
 import itertools, logging, os, random, subprocess, sys, time
-from datetime import datetime, timedelta
+from contextlib import contextmanager
+from datetime import timedelta
 
 PLAY_CMD = ['mpv', '--x11-name', 'bedtime_player', '--osd-level=3']
 ALARM_ARGS = ['-loop=inf',
@@ -31,34 +32,23 @@ log = logging.getLogger(__name__)
 
 this_dir = os.path.abspath(os.path.dirname(__file__))
 
-def play(paths, log_fobj=None, end_time=None):
+def play(path, log_fobj=None):
     """Play a sequence of files and log them unless the user exits"""
-    for path in paths:
-        if end_time and datetime.utcnow() > end_time:
-            break
+    path = os.path.abspath(path)
 
-        path = os.path.abspath(path)
-
-        # Transparently support EDLs for cutting out ads
-        if PLAY_CMD[0] == 'mpv':
-            # https://github.com/mpv-player/mpv/blob/master/DOCS/edl-mpv.rst
-            edl_path = os.path.splitext(path)[0] + '.mpv.edl'
-            if os.path.exists(edl_path):
-                path = edl_path
-
-        try:
-            subprocess.check_call(PLAY_CMD + [path])
-        except subprocess.CalledProcessError, err:
-            if err.returncode == 20:
-                sys.exit(0)  # raise Exception instead
-            else:
-                continue
+    try:
+        subprocess.check_call(PLAY_CMD + [path])
+    except subprocess.CalledProcessError, err:
+        if err.returncode == 20:
+            sys.exit(0)  # raise Exception instead
         else:
-            if log_fobj:
-                # playback ended naturally and should be noted
-                log_fobj.write('%f\t%s\n' % (time.time(), path))
-                log_fobj.flush()
-                log.info("Playback logged.")
+            return
+    else:
+        if log_fobj:
+            # playback ended naturally and should be noted
+            log_fobj.write('%f\t%s\n' % (time.time(), path))
+            log_fobj.flush()
+            log.info("Playback logged.")
 
 def walk_args(args):
     """Adapter to recursively resolve directory paths to file paths."""
@@ -99,6 +89,7 @@ def test_duration_str():
     assert parse_duration('15w') == timedelta(weeks=15)
 
 def prompt(msg, valid='yn'):
+    """Display a prompt with fixed choices and validate input"""
     result = ''
     while not result or result not in valid:
         msg = msg.rstrip()
@@ -109,6 +100,49 @@ def prompt(msg, valid='yn'):
 
         result = raw_input(prompt_str).lower()
     return result
+
+def try_speak(text):
+    """A simple abstraction for attempting to speak a string of text."""
+    sys.stdout.write("%s\n" % text)
+    try:
+        subprocess.Popen(['festival', '--tts'],
+                         stdin=subprocess.PIPE).communicate(text)
+    except OSError:
+        pass
+    except (AttributeError, ValueError), err:
+        sys.stdout.write("Received odd error: %s, %s" % (err.__class__, err))
+
+def ctrlc_countdown(message, duration):
+    """Block with a countdown clock for a given number of seconds"""
+    while duration > 0:
+        sys.stdout.write("\r%s... %s  " % (message, duration))
+        sys.stdout.flush()
+        time.sleep(1)
+        duration -= 1
+    print("")
+
+@contextmanager
+def maximize_volume():
+    """Context manager to temporarily set ALSA volume to maximum"""
+    import alsaaudio
+    master = alsaaudio.Mixer()  # pylint: disable=no-member
+
+    # TODO: Consider also setting PCM and channel volumes
+    orig_vol = master.getvolume()[0]
+    master.setvolume(100)
+    yield
+    master.setvolume(orig_vol)
+
+def load_history(data_path):
+    """Load the contents of the playback history"""
+    with open(data_path, 'rU') as fobj:
+        data = fobj.read()
+
+    # Parse the data store
+    data = data.strip().split('\n')
+    data = [line.strip().split(None, 1) for line in data]
+
+    return data
 
 def recency_sort(files, records, randomize=None):
     """Sort `files` by recency according to `records`.
@@ -130,6 +164,29 @@ def recency_sort(files, records, randomize=None):
     else:
         files = sorted(files, key=lambda x: data.get(x, 0))
     return files
+
+def playback_main(args, files, data_path):
+    ready_for_bed = {'y': True, 'n': False}.get(args.ready_for_bed)
+    if not args.print and ready_for_bed is None:
+        ready_for_bed = (prompt("\nAre you ready to sleep?") == 'y')
+    if not ready_for_bed:
+        args.time_limit = min(
+            parse_duration(args.time_limit or '156w'),
+            parse_duration(UNREADY_TIME_LIMIT))
+    # Play the files
+    with open(data_path, 'a') as fobj:
+        for path in files:
+            if not ready_for_bed and (args.time_limit and
+                                      get_idle_secs() > args.time_limit):
+                break
+
+            play(path, None if args.no_log else fobj)
+
+    if not ready_for_bed and get_idle_secs() > args.time_limit:
+        try_speak('Alarm will sound in %d seconds' % GRACE_PERIOD)
+        ctrlc_countdown("Press Ctrl+C to abort alarm", GRACE_PERIOD)
+        with maximize_volume():
+            subprocess.call(PLAY_CMD + ALARM_ARGS)
 
 def main():
     """The main entry point, compatible with setuptools entry points."""
@@ -185,52 +242,18 @@ def main():
     files = walk_args(args.files)
     if args.recency:
         files = recency_sort(files, load_history(data_path), args.randomize)
-
-    ready_for_bed = {'y': True, 'n': False}.get(args.ready_for_bed)
-    if not args.print and ready_for_bed is None:
-        ready_for_bed = (prompt("\nAre you ready to sleep?") == 'y')
-    if not ready_for_bed:
-        # FIXME: Take the lesser of the two time limits
-        args.time_limit = UNREADY_TIME_LIMIT
-
-    start_time = datetime.utcnow()
-    end_time = None
     if args.limit:
         files = itertools.islice(files, args.limit)
-    if args.time_limit:
-        end_time = start_time + parse_duration(args.time_limit)
 
     # TODO: I need some kind of UI that lets me effectively un-mark the ones
     # that played after I fell asleep.
 
-    with open(data_path, 'a') as fobj:
-        if args.print:
-            print('\n'.join(files))
-        else:
-            play(files, None if args.no_log else fobj, end_time=end_time)
+    # If --print, output and exit, else, go to playback_main()
+    if args.print:
+        print('\n'.join(files))
+    else:
+        playback_main(args, files, data_path)
 
-    # TODO: Factor in idleness calculations when deciding to alarm
-    if not ready_for_bed:
-        import alsaaudio
-        master = alsaaudio.Mixer()  # pylint: disable=no-member
-
-        grace_period = GRACE_PERIOD
-        try:
-            subprocess.Popen(['festival', '--tts'], stdin=subprocess.PIPE).communicate('Alarm will sound in %d seconds' % grace_period)
-        except Exception:
-            pass
-        while grace_period > 0:
-            sys.stdout.write("\rPress Ctrl+C to abort alarm... %s  " %
-                             grace_period)
-            sys.stdout.flush()
-            time.sleep(1)
-            grace_period -= 1
-        print("")
-
-        orig_vol = master.getvolume()[0]
-        master.setvolume(100)
-        subprocess.call(PLAY_CMD + ALARM_ARGS)
-        master.setvolume(orig_vol)
 
 if __name__ == '__main__':
     main()
