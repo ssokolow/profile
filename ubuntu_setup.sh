@@ -528,6 +528,7 @@ echo " * Installing npm and node packages"
 curl http://npmjs.org/install.sh | sh
 xargs npm install -g << EOF
 coffee-script
+typescript
 docco
 jshint
 jsonlint
