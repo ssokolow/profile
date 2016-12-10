@@ -218,7 +218,7 @@ def playback_main(args, files, data_path):
             play(path, None if args.no_log else fobj,
                  max_idle=None if ready_for_bed else idle_limit_hard)
 
-    if not ready_for_bed and get_idle_secs() > idle_limit_soft:
+    if not ready_for_bed:
         try_speak('Alarm will sound in %d seconds' % GRACE_PERIOD)
         ctrlc_countdown("Press Ctrl+C to abort alarm", GRACE_PERIOD)
         with maximize_volume():
