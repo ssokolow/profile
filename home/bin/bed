@@ -38,7 +38,8 @@ PLAY_CMD = ['mpv', '--x11-name', 'bedtime_player', '--osd-level=3',
            '--no-stop-screensaver']
 ALARM_ARGS = ['-loop=inf', '--no-video',
               os.path.join(os.path.dirname(__file__), 'alarm.mp4')]
-UNREADY_TIME_LIMIT = '10m'
+UNREADY_IDLE_LIMIT_SOFT = '10m'
+UNREADY_IDLE_LIMIT_HARD = '17m'
 GRACE_PERIOD = 30  # seconds
 
 log = logging.getLogger(__name__)
@@ -49,7 +50,7 @@ conn = xcb.connect()  # pylint: disable=no-member
 setup = conn.get_setup()
 ss_conn = conn(xcb.screensaver.key)
 
-def play(path, log_fobj=None):
+def play(path, log_fobj=None, max_idle=None):
     """Play a sequence of files and log them unless the user exits"""
     path = os.path.abspath(path)
 
@@ -60,19 +61,26 @@ def play(path, log_fobj=None):
         if os.path.exists(edl_path):
             path = edl_path
 
-    try:
-        subprocess.check_call(PLAY_CMD + [path])
-    except subprocess.CalledProcessError, err:
-        if err.returncode == 20:
-            sys.exit(0)  # raise Exception instead
-        else:
-            return
-    else:
-        if log_fobj:
-            # playback ended naturally and should be noted
-            log_fobj.write('%f\t%s\n' % (time.time(), path))
-            log_fobj.flush()
-            log.info("Playback logged.")
+    proc, retcode = subprocess.Popen(PLAY_CMD + [path]), None
+    while retcode is None:
+        time.sleep(1)
+        retcode = proc.poll()
+
+        if max_idle and get_idle_secs() > max_idle:
+            proc.terminate()
+            retcode = 0
+            break
+
+    if retcode == 20:   # Quit using Q key (see module docstring)
+        sys.exit(0)     # TODO: raise Exception instead
+    elif retcode != 0:  # Playback error
+        return
+
+    if log_fobj:
+        # playback ended naturally and should be noted
+        log_fobj.write('%f\t%s\n' % (time.time(), path))
+        log_fobj.flush()
+        log.info("Playback logged.")
 
 def walk_args(args):
     """Adapter to recursively resolve directory paths to file paths."""
@@ -180,7 +188,9 @@ def get_idle_secs():
 
 def playback_main(args, files, data_path):
     time_limit = parse_duration(args.time_limit or '156w')
-    idle_limit = parse_duration(UNREADY_TIME_LIMIT)
+    idle_limit_hard = parse_duration(UNREADY_IDLE_LIMIT_HARD)
+    idle_limit_soft = min(idle_limit_hard,
+                          parse_duration(UNREADY_IDLE_LIMIT_SOFT))
 
     ready_for_bed = {'y': True, 'n': False}.get(args.ready_for_bed)
     if ready_for_bed is None:
@@ -202,12 +212,13 @@ def playback_main(args, files, data_path):
         for path in files:
             if time.time() > playback_started + time_limit:
                 break
-            if not ready_for_bed and get_idle_secs() > idle_limit:
+            if not ready_for_bed and get_idle_secs() > idle_limit_soft:
                 break
 
-            play(path, None if args.no_log else fobj)
+            play(path, None if args.no_log else fobj,
+                 max_idle=None if ready_for_bed else idle_limit_hard)
 
-    if not ready_for_bed and get_idle_secs() > idle_limit:
+    if not ready_for_bed and get_idle_secs() > idle_limit_soft:
         try_speak('Alarm will sound in %d seconds' % GRACE_PERIOD)
         ctrlc_countdown("Press Ctrl+C to abort alarm", GRACE_PERIOD)
         with maximize_volume():
