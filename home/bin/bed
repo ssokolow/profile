@@ -37,7 +37,7 @@ import xcb, xcb.xproto, xcb.screensaver
 
 PLAY_CMD = ['mpv', '--x11-name', 'bedtime_player', '--osd-level=3',
            '--no-stop-screensaver']
-ALARM_ARGS = ['-loop=inf',
+ALARM_ARGS = ['-loop=inf', '--no-video',
               os.path.join(os.path.dirname(__file__), 'alarm.mp4')]
 UNREADY_TIME_LIMIT = '10m'
 GRACE_PERIOD = 30  # seconds
