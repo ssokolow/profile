@@ -29,7 +29,6 @@ __license__ = "MIT"
 
 import itertools, logging, os, random, subprocess, sys, time
 from contextlib import contextmanager
-from datetime import timedelta
 
 from pytimeparse import parse as parse_duration
 
@@ -184,7 +183,7 @@ def playback_main(args, files, data_path):
     idle_limit = parse_duration(UNREADY_TIME_LIMIT)
 
     ready_for_bed = {'y': True, 'n': False}.get(args.ready_for_bed)
-    if not args.print and ready_for_bed is None:
+    if ready_for_bed is None:
         ready_for_bed = (prompt("\nAre you ready to sleep?") == 'y')
     if not ready_for_bed:
         # If I try to re-play the same file three times in four hours, my
