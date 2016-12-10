@@ -180,14 +180,13 @@ def get_idle_secs():
     return idle_secs
 
 def playback_main(args, files, data_path):
+    time_limit = parse_duration(args.time_limit or '156w')
+    idle_limit = parse_duration(UNREADY_TIME_LIMIT)
+
     ready_for_bed = {'y': True, 'n': False}.get(args.ready_for_bed)
     if not args.print and ready_for_bed is None:
         ready_for_bed = (prompt("\nAre you ready to sleep?") == 'y')
     if not ready_for_bed:
-        args.time_limit = min(
-            parse_duration(args.time_limit or '156w'),
-            parse_duration(UNREADY_TIME_LIMIT))
-
         # If I try to re-play the same file three times in four hours, my
         # judgement is compromised and I need to brush my teeth first.
         files = list(files)
@@ -199,15 +198,17 @@ def playback_main(args, files, data_path):
                 return
 
     # Play the files
+    playback_started = time.time()
     with open(data_path, 'a') as fobj:
         for path in files:
-            if not ready_for_bed and (args.time_limit and
-                                      get_idle_secs() > args.time_limit):
+            if time.time() > playback_started + time_limit:
+                break
+            if not ready_for_bed and get_idle_secs() > idle_limit:
                 break
 
             play(path, None if args.no_log else fobj)
 
-    if not ready_for_bed and get_idle_secs() > args.time_limit:
+    if not ready_for_bed and get_idle_secs() > idle_limit:
         try_speak('Alarm will sound in %d seconds' % GRACE_PERIOD)
         ctrlc_countdown("Press Ctrl+C to abort alarm", GRACE_PERIOD)
         with maximize_volume():
@@ -241,8 +242,8 @@ def main():
     parser.add_argument('-n', '--limit', type=int,
                         help="Limit how many files are played")
     parser.add_argument('-t', '--time-limit', default=None,
-                        help="Limit play time without user input to this "
-                        "duration, rounded up to the nearest complete file")
+                        help="Limit play time to this duration, rounded up to "
+                        "the nearest complete file")
     parser.add_argument('--no-log', action="store_true", default=False,
                         help="Don't log the playback of the given files.")
     parser.add_argument('--ready-for-bed', choices=['y', 'n'], default=None,
