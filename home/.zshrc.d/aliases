@@ -12,4 +12,6 @@ function audmv() {
      audacious &>/dev/null &
 }
 
+source ~/.zshrc.d/help-gnu.zsh
+
 # vim: set ft=zsh :
