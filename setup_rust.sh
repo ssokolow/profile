@@ -1,6 +1,8 @@
-# TODO: Don't hard-code the x86_64 part
-TOOLCHAINS="stable-x86_64-unknown-linux-gnu nightly-x86_64-unknown-linux-gnu"
+#!/bin/sh
+
 STABLE_TOOLS="rustfmt license cargo-deadlinks cargo-check cargo-modules cargo-outdated cargo-watch cargo-update cargo-edit cargo-tree cargo-graph"
+ARCH="$(uname -p)"
+TOOLCHAINS="stable-${ARCH}-unknown-linux-gnu nightly-${ARCH}-unknown-linux-gnu"
 EXTRA_TARGETS="i686-unknown-linux-musl arm-unknown-linux-gnueabi"
 UNSTABLE_TOOLS="clippy cargo-check"
 
