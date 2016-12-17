@@ -4,8 +4,11 @@ TARGETS="i686-unknown-linux-musl arm-unknown-linux-gnueabi"
 STABLE_TOOLS="rustfmt license cargo-deadlinks cargo-check cargo-modules cargo-outdated cargo-watch cargo-update cargo-edit cargo-tree cargo-graph"
 UNSTABLE_TOOLS="clippy cargo-check"
 
-# TODO: Make this conditional on rustup not being installed
-curl https://sh.rustup.rs -sSf | sh
+is_installed() { type "$1" 1>/dev/null 2>&1; return $?; }
+
+if ! is_installed rustup; then
+	curl https://sh.rustup.rs -sSf | sh
+fi
 
 for TOOLCHAIN in $TOOLCHAINS; do
 	rustup toolchain install "$TOOLCHAIN";
