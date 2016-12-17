@@ -15,7 +15,7 @@ if ! is_installed rustup; then
 fi
 
 for TOOLCHAIN in $TOOLCHAINS; do
-	rustup toolchain install "$TOOLCHAIN";
+	rustup toolchain install "$TOOLCHAIN"
 
 	# Add cross-compiling support
 	for TARGET in $EXTRA_TARGETS; do
