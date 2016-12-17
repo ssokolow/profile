@@ -24,9 +24,4 @@ for CRATE in $UNSTABLE_TOOLS; do
 	rustup run nightly cargo install "$CRATE"
 done
 
-# Set up clippy
-# TODO: Make this conditional on clippy not being installed
-rustup toolchain install nightly-2016-11-25
-rustup run nightly-2016-11-25 cargo install clippy
-
 # See also: https://pyra-handheld.com/boards/threads/how-to-cross-compile-rust-programs.78650/#post-1398907
