@@ -1,7 +1,7 @@
 # TODO: Don't hard-code the x86_64 part
 TOOLCHAINS="stable-x86_64-unknown-linux-gnu nightly-x86_64-unknown-linux-gnu"
-TARGETS="i686-unknown-linux-musl arm-unknown-linux-gnueabi"
 STABLE_TOOLS="rustfmt license cargo-deadlinks cargo-check cargo-modules cargo-outdated cargo-watch cargo-update cargo-edit cargo-tree cargo-graph"
+EXTRA_TARGETS="i686-unknown-linux-musl arm-unknown-linux-gnueabi"
 UNSTABLE_TOOLS="clippy cargo-check"
 
 is_installed() { type "$1" 1>/dev/null 2>&1; return $?; }
@@ -14,7 +14,7 @@ for TOOLCHAIN in $TOOLCHAINS; do
 	rustup toolchain install "$TOOLCHAIN";
 
 	# Add cross-compiling support
-	for TARGET in $TARGETS; do
+	for TARGET in $EXTRA_TARGETS; do
 		rustup target add --toolchain "$TOOLCHAIN" "$TARGET"
 	done
 done
