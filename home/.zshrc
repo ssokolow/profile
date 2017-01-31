@@ -372,3 +372,8 @@ if [ -n "$VENV_TO_ACTIVATE" ]; then
 fi
 unset "$RUN_IN_VENV"
 # vim:fdm=marker
+
+# added by travis gem
+[ -f /home/ssokolow/.travis/travis.sh ] && source /home/ssokolow/.travis/travis.sh
+
+export PATH="$PATH:$HOME/.rvm/bin" # Add RVM to PATH for scripting

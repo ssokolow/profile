@@ -96,3 +96,5 @@ source ~/.common_sh_init/misc
 if command -v fortune >/dev/null; then
     fortune
 fi
+
+export PATH="$PATH:$HOME/.rvm/bin" # Add RVM to PATH for scripting
