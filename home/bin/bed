@@ -147,6 +147,7 @@ def load_history(data_path):
     # Parse the data store
     data = data.strip().split('\n')
     data = [line.strip().split(None, 1) for line in data]
+    data = [line for line in data if line]
 
     return data
 
@@ -209,6 +210,7 @@ def playback_main(args, files, data_path):
     # Play the files
     playback_started = time.time()
     with open(data_path, 'a') as fobj:
+        # FIXME: Don't fail silently here if no paths are valid
         for path in files:
             if time.time() > playback_started + time_limit:
                 break
