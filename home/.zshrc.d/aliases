@@ -13,5 +13,6 @@ function audmv() {
 }
 
 source ~/.zshrc.d/help-gnu.zsh
+source ~/.zshrc.d/rg
 
 # vim: set ft=zsh :

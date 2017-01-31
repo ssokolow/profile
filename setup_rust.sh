@@ -31,4 +31,8 @@ for CRATE in $UNSTABLE_TOOLS; do
 	rustup run nightly cargo install "$CRATE"
 done
 
+# Install ripgrep with all optimizations my current development machine suppors
+# TODO: Figure out how to make it conditional on an update being present
+RUSTFLAGS="-C target-cpu=native" rustup run nightly cargo install -f ripgrep --features 'simd-accel'
+
 # See also: https://pyra-handheld.com/boards/threads/how-to-cross-compile-rust-programs.78650/#post-1398907
