@@ -73,11 +73,18 @@ def symlink_path(source, target, dry_run=False, overwrite=False,
         else:
             log.warning("Skipping already existing target: %s", target)
             if diff:
-                with open(source) as src, open(target) as dst:
-                    log.warning('Diff follows:\n' + ''.join(list(
-                        difflib.unified_diff(
-                            src.readlines(), dst.readlines(),
-                            fromfile=source, tofile=target))))
+                isdir = [os.path.isdir(x) for x in (source, target)]
+                if all(isdir):
+                    log.error("TODO: Implement recursive diff")
+                elif any(isdir):
+                    log.warning("Cannot diff file and non-file: %s != %s",
+                                source, target)
+                else:
+                    with open(source) as src, open(target) as dst:
+                        log.warning('Diff follows:\n' + ''.join(list(
+                            difflib.unified_diff(
+                                src.readlines(), dst.readlines(),
+                                fromfile=source, tofile=target))))
             return False
     elif os.path.exists(tgt_dir) and not os.path.isdir(tgt_dir):
         log.error("Target 'parent directory' not a directory: %s", tgt_dir)
