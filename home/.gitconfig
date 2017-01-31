@@ -57,7 +57,6 @@
 
 # Seamless r/w checkouts for me.
 # Source: http://rentzsch.tumblr.com/post/564806957/public-but-hackable-git-submodules
-# TODO: Also set this up for HTTPS checkouts?
 [url "git@github.com:ssokolow/"]
 	insteadOf = "git://github.com/ssokolow/"
 
@@ -65,5 +64,10 @@
 # Source: http://www.jwir3.com/blog/2014/10/01/git-transfusion/
 [url "git@github.com:ssokolow/"]
 	insteadOf = "github:"
+
+# ...and for HTTPS checkouts too
+# Source: https://golang.org/doc/faq
+[url "git@github.com:"]
+	pushInsteadOf = https://github.com/
 
 # vim: noexpandtab
