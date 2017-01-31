@@ -8,7 +8,6 @@ hwdec=no
 
 ao=pulse,alsa,openal,oss
 af=drc
-softvol=auto
 
 sid=1
 slang=en,eng,fr
@@ -18,11 +17,13 @@ stop-screensaver=yes
 
 osc=no
 
-#tv=driver=v4l2:width=640:height=480:fps=30:device=/dev/video1
-tv=norm=NTSC
-
 # Required to pan-and-scan in enough for The Cinema Snob - Gums
 #video-zoom=3
 
 # Try to match MPlayer default appearance
 osd-font-size=60
+
+[builtin-pseudo-gui]
+idle=no
+[pseudo-gui]
+idle=no
