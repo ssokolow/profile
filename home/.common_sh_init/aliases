@@ -8,6 +8,7 @@ alias ls="ls --color=auto"
 alias dirs="dirs -v"
 alias less="less -R"
 alias vids="egrep '\.(flv|mp4|webm|avi|ogv|ogm|mkv|mov|rm|wmv)'"
+alias clippy="cargo +nightly clippy"
 
 # A helper that makes an alias which is conditional on the lack of arguments.
 cond_alias() { eval "function ${1}() { [ -z \"\$*\" ] && $2 || command $1 \"\$@\"; }"; }

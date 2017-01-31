@@ -72,6 +72,8 @@ export TCLLIBPATH=${HOME}/.local/share/tkthemes
 #   https://bugs.kde.org/show_bug.cgi?id=348270
 export GDK_CORE_DEVICE_EVENTS=1
 
+# For multirust-installed binaries
+export PATH="$HOME/.cargo/bin:$PATH"
 # Prevent Chrome from using KDialog for open dialogs. The startup time for the
 # KDialog subprocess cuts the speed at which I can flip between Ctrl+W and
 # RightClick-SaveImage to 1/3rd of before and, when using Ctrl+W, Ctrl+S,
