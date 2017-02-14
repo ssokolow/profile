@@ -3,9 +3,9 @@
 ARCH="$(uname -p)"
 TOOLCHAINS="stable-${ARCH}-unknown-linux-gnu nightly-${ARCH}-unknown-linux-gnu"
 EXTRA_TARGETS="i686-unknown-linux-musl arm-unknown-linux-gnueabi"
-STABLE_TOOLS="rustfmt license cargo-deadlinks cargo-outdated cargo-watch"
-STABLE_TOOLS="$STABLE_TOOLS cargo-modules cargo-edit cargo-tree"
-STABLE_TOOLS="$STABLE_TOOLS cargo-check cargo-update cargo-graph"
+STABLE_TOOLS="just rustfmt license cargo-deadlinks cargo-outdated cargo-watch"
+STABLE_TOOLS="$STABLE_TOOLS cargo-expand cargo-modules cargo-tree cargo-check"
+STABLE_TOOLS="$STABLE_TOOLS cargo-update cargo-edit cargo-graph"
 UNSTABLE_TOOLS="clippy cargo-check"
 
 is_installed() { type "$1" 1>/dev/null 2>&1; return $?; }

@@ -276,6 +276,7 @@ python-dbus
 python-dev
 python-epydoc
 python-libtorrent
+python-pygments
 python-setuptools
 python-wnck
 python-xlib
