@@ -1,0 +1,2 @@
+# Use `udevadm -a -n /dev/input/whatever` to look up ATTRS{name}
+SUBSYSTEM=="input", ATTRS{name}=="Microsoft X-Box 360 pad", MODE="0666"
