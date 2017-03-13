@@ -1,5 +1,6 @@
 function rg() {
     declare -a OUTPUT
+    local USE_PAGER
 
     # -- Support an .ackrc-like .rgrc file --
     # Blank lines and lines beginning with # are ignored
@@ -16,6 +17,9 @@ function rg() {
             # Source: http://stackoverflow.com/a/31485948/435253
             while IFS= read -r -d ''; do
                 OUTPUT+=( "$REPLY" )
+                if [[ "$REPLY" = "-p"* ]]; then
+                    USE_PAGER=1
+                fi
             done < <(xargs printf '%s\0' <<<"$line")
         done < "$CFG_PATH"
     fi
@@ -23,6 +27,9 @@ function rg() {
     # -- Implement `-G ...` as an alternative to `-g !...` --
     # Work around a footgun in zsh's handling of ! characters
     for ARG in "$@"; do
+        if [[ "$ARG" = "-p" ]]; then
+            USE_PAGER=1
+        fi
 
         if [[ "$ARG" = "-G"* ]]; then
             OUTPUT+=( "-g" )
@@ -39,5 +46,9 @@ function rg() {
         fi
     done
 
-    command rg "${OUTPUT[@]}"
+    if [ "$USE_PAGER" = 1 ]; then
+        command rg "${OUTPUT[@]}" | less -RFX
+    else
+        command rg "${OUTPUT[@]}"
+    fi
 }

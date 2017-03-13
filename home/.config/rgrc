@@ -1,3 +1,6 @@
+# Always prettify and cue the wrapper to use a pager
+-p
+
 # VFFA templater
 --type-add 'jinja:*.incl'
 
