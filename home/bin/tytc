@@ -58,6 +58,11 @@ def main():
                 todo.append(secondary)
 
     for src in todo:
+        # Guard against the effects of listing a file twice
+        if not os.path.exists(src):
+            print("Skipping nonexistant path: %s" % path)
+            continue
+
         tgt_path = os.path.join(TARGET_DIR, os.path.basename(src))
         if os.path.exists(tgt_path):
             if hash_file(src) == hash_file(tgt_path):
