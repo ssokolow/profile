@@ -6,7 +6,7 @@ EXTRA_TARGETS="i686-unknown-linux-musl arm-unknown-linux-gnueabi"
 STABLE_TOOLS="just rustfmt license cargo-deadlinks cargo-outdated cargo-watch"
 STABLE_TOOLS="$STABLE_TOOLS cargo-expand cargo-modules cargo-tree cargo-check"
 STABLE_TOOLS="$STABLE_TOOLS cargo-update cargo-edit cargo-graph"
-UNSTABLE_TOOLS="clippy cargo-check"
+UNSTABLE_TOOLS="clippy"
 
 is_installed() { type "$1" 1>/dev/null 2>&1; return $?; }
 
