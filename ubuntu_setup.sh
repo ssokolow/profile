@@ -31,7 +31,6 @@ add-apt-repository -y ppa:ubuntu-mozilla-daily/firefox-aurora # (for up-to-date 
 add-apt-repository -y ppa:ubuntu-wine/ppa # (for up-to-date Wine)
 add-apt-repository -y ppa:chris-lea/node.js # (for up-to-date Node.js)
 add-apt-repository -y ppa:anay/ppa # (http://docs.travis-ci.com/user/cc-menu/ )
-add-apt-repository -y ppa:makson96/desurium-stable
 add-apt-repository -y ppa:cdemu/ppa
 add-apt-repository -y ppa:jd-team/jdownloader
 add-apt-repository -y ppa:nilarimogard/webupd8 # LGOGDownloader
