@@ -2,7 +2,14 @@
 -p
 
 # VFFA templater
+--type-add 'dtd:*.ent'
+--type-add 'dtd:*.dtd'
+--type-add 'dtd:*.dcl'
+--type-add 'dtd:*.mod'
 --type-add 'jinja:*.incl'
+--type-add 'mincss:*.min.css'
+--type-add 'minjs:*.min.js'
+--type-add 'svg:*.svg'
 
 # Pylons
 --type-add 'config:*.conf'
