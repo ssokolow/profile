@@ -535,6 +535,8 @@ jshint
 jsonlint
 nodemon
 svgo
+typedoc
+typescript
 uglify-js
 coffeelint
 EOF
