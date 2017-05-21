@@ -7,9 +7,9 @@ snippet boiler
 
 	${3}
 
-snippet elevate
-	if [ "$EUID" != 0 ]; then
-		exec sudo "$0" "$@"
+snippet sudo
+	if [ "$(id -u)" != 0 ]; then
+		exec sudo "${1:0}" "$@"
 	fi
 
 snippet cd
