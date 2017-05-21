@@ -85,7 +85,7 @@ def unhold(names, cache):
         log.info("Re-holding nVidia drivers...")
         logged_call(['/usr/bin/apt-mark', 'hold'] + logopts + names)
 
-def do_update():
+def do_update(mark_only):
     _, progress = query_verbosity()
 
     log.info("Getting list of eligible packages...")
@@ -95,6 +95,11 @@ def do_update():
     names = f_cache.keys()
 
     with unhold(names, cache):
+        # mark_only means we just want the side-effects of exiting the
+        # unhold() context manager.
+        if mark_only:
+            return False
+
         log.info("Updating package list...")
         try:
             cache.update()
@@ -131,6 +136,10 @@ def main():
         default=2, help="Increase the verbosity. Use twice for extra effect")
     parser.add_argument('-q', '--quiet', action="count", dest="quiet",
         default=0, help="Decrease the verbosity. Use twice for extra effect")
+    parser.add_argument('--mark-only', action="store_true", dest="mark_only",
+        default=False, help="Don't update packages, just set up the pins. "
+        "(Useful for being called by ansible playbooks which shouldn't "
+        "break OpenGL support pending a reboot.)")
     # Reminder: %(default)s can be used in help strings.
 
     args = parser.parse_args()
@@ -143,7 +152,7 @@ def main():
     logging.basicConfig(level=log_levels[args.verbose],
               format='%(levelname)s: %(message)s')
 
-    if do_update():
+    if do_update(args.mark_only):
         log.info("Attempting live kernel module update...")
 
         # `modprobe -r` returns 0 even on failure so we use rmmod
