@@ -13,4 +13,4 @@ snippet sudo
 	fi
 
 snippet cd
-	cd "$(dirname "$${1:0}")"${2}
+	cd "$(dirname "$(readlink -f "$${1:0}")")"${2}
