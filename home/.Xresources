@@ -27,6 +27,9 @@
 *TkTheme: clearlooks
 *background: #efebe7
 
+! Fix font-size idiocy related to my having multiple monitors with mixed DPI
+Xft.dpi: 96
+
 ! ---=== Experiment with making Motif less ugly for DDD ===---
 ! (DDD ignores generically-set Motif properties so we must do this)
 ! TODO (if possible):
