@@ -33,7 +33,7 @@ load-plugins=
 # can either give multiple identifier separated by comma (,) or put this option
 # multiple time (only on the command line, not in the configuration file where
 # it should appear only once).
-disable=I0011,W0142,W0621,bad-continuation
+disable=I0011,W0142,W0621,bad-continuation,multiple-imports,wrong-import-position
 # I0011 Warning locally suppressed using disable-msg
 # I0012 Warning locally suppressed using disable-msg
 # W0142 Used * or * magic* Used when a function or method is called using *args or **kwargs to dispatch arguments.
