@@ -1,9 +1,13 @@
-#!/usr/bin/env python2
+#!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """Record-keeping helper for smarter bedtime playback practices.
 
 Dependencies:
 - pyalsaaudio (For changing volume for alarms)
+- pytimeparse
+- XPyB (Python 2.x) or xcffib (Python 3.x)  (for querying AFK durations)
+- A version of jaseg/python-mpv new enough to have register_key_binding or
+  patched to support it.
 
 NOTE: Requires that mpv's input.conf be amended so `quit` is replaced with
       `quit 20` so premature exits can be detected and the queue aborted.
@@ -16,7 +20,14 @@ TODO: Switch MPV handling to use its JSON-RPC API so there's no need to exit
       - https://pypi.python.org/pypi/mpv
       - https://pypi.python.org/pypi/python-mpv-zws
 
+TODO: Consider switching to a Rust-based implementation for the
+      compile-time strictness:
+      - https://rtbo.github.io/rust-xcb/xcb/
+      - https://docs.rs/mpv/0.2.3/mpv/
+
 TODO: Switch to a Qt+Phonon-based alarm solution and disallow pausing it
+
+TODO: Display an error message if none of the given paths were valid.
 """
 
 from __future__ import (absolute_import, division, print_function,
@@ -31,13 +42,34 @@ import itertools, logging, os, random, subprocess, sys, time
 from contextlib import contextmanager
 
 from pytimeparse import parse as parse_duration
+import mpv
 
-import xcb, xcb.xproto, xcb.screensaver
+if sys.version_info.major > 2:
+    # pylint: disable=unused-import,import-error
+    import xcffib as xcb
+    import xcffib.xproto
+    import xcffib.screensaver  # NOQA
 
-PLAY_CMD = ['mpv', '--x11-name', 'bedtime_player', '--osd-level=3',
-           '--no-stop-screensaver']
-ALARM_ARGS = ['-loop=inf', '--no-video',
-              os.path.join(os.path.dirname(__file__), 'alarm.mp4')]
+    raw_input = input
+else:
+    import xcb, xcb.xproto, xcb.screensaver  # pylint: disable=import-error
+
+MPV_CONFIG = {
+    'x11-name': 'bedtime-player',
+    'screen': 1,
+    'fs-screen': 1,
+    'ontop': True,
+    'border': False,
+    'autofit': '100%',
+    #'fullscreen': True,  # Currently relying on kwin's force-maximize
+    'osd_level': 3,
+    'stop_screensaver': False,
+    'input-default-bindings': True,
+    'input-vo-keyboard': True,
+    'input-conf': os.path.expanduser('~/.mpv/input.conf'),
+}
+
+ALARM_PATH = os.path.join(os.path.dirname(__file__), 'alarm.mp4')
 UNREADY_IDLE_LIMIT_SOFT = '10m'
 UNREADY_IDLE_LIMIT_HARD = '17m'
 GRACE_PERIOD = 30  # seconds
@@ -50,37 +82,108 @@ conn = xcb.connect()  # pylint: disable=no-member
 setup = conn.get_setup()
 ss_conn = conn(xcb.screensaver.key)
 
-def play(path, log_fobj=None, max_idle=None):
-    """Play a sequence of files and log them unless the user exits"""
-    path = os.path.abspath(path)
+class Quitting(Exception):
+    """Raised by Player when `quit` is requested"""
 
-    # Transparently support EDLs for cutting out ads
-    if PLAY_CMD[0] == 'mpv':
+class Player(object):
+    skip = False
+
+    def __init__(self):
+        config = parse_mpv_config()
+        config.update(MPV_CONFIG)
+
+        # TODO: Find a way to normalize the volume which doesn't cause
+        # python-mpv to freeze.
+        if config.get('af').startswith('lavfi='):
+            del config['af']
+
+        self.mpv = mpv.MPV(**config)
+
+        # pylint: disable=unnecessary-lambda
+        # (The lambdas are required because python-mpv can't hang a custom
+        #  attribute off a bound method and dies as a result)
+        self.mpv.register_key_binding('q',
+                                      lambda x, y: self.cb_quit(x, y))
+        self.mpv.register_key_binding('Ctrl+c',
+                                      lambda x, y: self.cb_skip(x, y))
+
+    def play(self, path, log_fobj=None, max_idle=None,
+             video='auto', loop=False):
+        """Play a sequence of files and log them unless the user exits"""
+        path = os.path.abspath(path)
+        self.skip = False
+        self.quit = False
+
+        # Transparently support EDLs for cutting out ads
         # https://github.com/mpv-player/mpv/blob/master/DOCS/edl-mpv.rst
         edl_path = os.path.splitext(path)[0] + '.mpv.edl'
         if os.path.exists(edl_path):
             path = edl_path
 
-    proc, retcode = subprocess.Popen(PLAY_CMD + [path]), None
-    while retcode is None:
-        time.sleep(1)
-        retcode = proc.poll()
+        self.mpv.play(path)
+        self.mpv.loop_file = loop
+        self.mpv.video = video
+        self.mpv.pause = False
 
-        if max_idle and get_idle_secs() > max_idle:
-            proc.terminate()
-            retcode = 0
-            break
+        # TODO: Is there a way to inject a timeout into the event system
+        #       instead of doing it this way?
+        # FIXME: Sometimes, "skip" skips two files instead of one.
+        started = False
+        while (not started) or (
+                self.mpv.time_pos is not None and
+                not (self.skip or self.quit)):
+            time.sleep(1)
 
-    if retcode == 20:   # Quit using Q key (see module docstring)
-        sys.exit(0)     # TODO: raise Exception instead
-    elif retcode != 0:  # Playback error
-        return
+            if max_idle and get_idle_secs() > max_idle:
+                self.mpv.video = False
+                self.mpv.pause = True
 
-    if log_fobj:
-        # playback ended naturally and should be noted
-        log_fobj.write('%f\t%s\n' % (time.time(), path))
-        log_fobj.flush()
-        log.info("Playback logged.")
+                break
+
+            if not started and self.mpv.time_pos:
+                started = True
+
+        # TODO: Figure out how to detect playback errors with libmpv
+        if log_fobj and not (self.skip or self.quit):
+            # playback ended naturally and should be noted
+            log_fobj.write('%f\t%s\n' % (time.time(), path))
+            log_fobj.flush()
+            log.info("Playback logged.")
+
+        if self.quit:
+            raise Quitting()
+
+    def cb_quit(self, state, key):
+        if not self.quit:
+            log.info("Quitting without logging playback...")
+        self.mpv.terminate()
+        self.skip = True
+        self.quit = True
+
+    def cb_skip(self, state, key):
+        if not self.skip:
+            log.info("Skipping to next file without logging...")
+        self.skip = True
+
+def basic_file_parse(path):
+    """Parse relevant lines from a line-based config file with # comments.
+
+    NOTE: Does NOT handle quoting to allow # for other purposes.
+    """
+    with open(path) as fobj:
+        for line in fobj:
+            line = line.split('#')[0].strip()
+            if not line:
+                continue
+            if line.startswith('[') and line.endswith(']'):
+                break
+            yield line
+
+def parse_mpv_config(path=os.path.expanduser(b"~/.mpv/config")):
+    return dict(line.split('=', 1) for line in basic_file_parse(path))
+
+def parse_mpv_input_config(path=os.path.expanduser(b"~/.mpv/input.conf")):
+    return dict(line.split(' ', 1) for line in basic_file_parse(path))
 
 def walk_args(args):
     """Adapter to recursively resolve directory paths to file paths."""
@@ -112,10 +215,10 @@ def try_speak(text):
     sys.stdout.write("%s\n" % text)
     try:
         subprocess.Popen(['festival', '--tts'],
-                         stdin=subprocess.PIPE).communicate(text)
+            stdin=subprocess.PIPE).communicate(text.encode('utf-8'))
     except OSError:
         pass
-    except (AttributeError, ValueError), err:
+    except (AttributeError, ValueError) as err:
         sys.stdout.write("Received odd error: %s, %s" % (err.__class__, err))
 
 def ctrlc_countdown(message, duration):
@@ -136,12 +239,14 @@ def maximize_volume():
     # TODO: Consider also setting PCM and channel volumes
     orig_vol = master.getvolume()[0]
     master.setvolume(100)
-    yield
-    master.setvolume(orig_vol)
+    try:
+        yield
+    finally:
+        master.setvolume(orig_vol)
 
 def load_history(data_path):
     """Load the contents of the playback history"""
-    with open(data_path, 'rU') as fobj:
+    with open(data_path, 'r') as fobj:
         data = fobj.read()
 
     # Parse the data store
@@ -188,6 +293,8 @@ def get_idle_secs():
     return idle_secs
 
 def playback_main(args, files, data_path):
+    player = Player()
+
     time_limit = parse_duration(args.time_limit or '156w')
     idle_limit_hard = parse_duration(UNREADY_IDLE_LIMIT_HARD)
     idle_limit_soft = min(idle_limit_hard,
@@ -217,14 +324,14 @@ def playback_main(args, files, data_path):
             if not ready_for_bed and get_idle_secs() > idle_limit_soft:
                 break
 
-            play(path, None if args.no_log else fobj,
-                 max_idle=None if ready_for_bed else idle_limit_hard)
+            player.play(path=path, log_fobj=(None if args.no_log else fobj),
+                 max_idle=(None if ready_for_bed else idle_limit_hard))
 
     if not ready_for_bed:
         try_speak('Alarm will sound in %d seconds' % GRACE_PERIOD)
         ctrlc_countdown("Press Ctrl+C to abort alarm", GRACE_PERIOD)
         with maximize_volume():
-            subprocess.call(PLAY_CMD + ALARM_ARGS)
+            player.play(ALARM_PATH, video=False, loop='inf')
 
 def main():
     """The main entry point, compatible with setuptools entry points."""
@@ -232,7 +339,7 @@ def main():
     # output from causing UnicodeEncodeErrors. (Done here so it should only
     # happen when not being imported by some other program.)
     if sys.version_info.major < 3:
-        reload(sys)
+        reload(sys)  # pylint: disable=undefined-variable
         sys.setdefaultencoding('utf-8')  # pylint: disable=no-member
 
     from argparse import ArgumentParser
@@ -290,7 +397,10 @@ def main():
     if args.print:
         print('\n'.join(files))
     else:
-        playback_main(args, files, data_path)
+        try:
+            playback_main(args, files, data_path)
+        except Quitting:
+            pass
 
 
 if __name__ == '__main__':
