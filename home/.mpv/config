@@ -7,7 +7,6 @@ hwdec=no
 #hwdec=auto
 
 ao=pulse,alsa,openal,oss
-af=drc
 
 sid=1
 slang=en,eng,fr
@@ -16,6 +15,9 @@ alang=en,eng,jp,jpn,fr
 stop-screensaver=yes
 
 osc=no
+
+# https://github.com/mpv-player/mpv/pull/4249
+af=lavfi=[acompressor=threshold=-25dB:ratio=3:makeup=8dB]
 
 # Required to pan-and-scan in enough for The Cinema Snob - Gums
 #video-zoom=3
