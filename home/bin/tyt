@@ -322,6 +322,7 @@ def main():
 
     # Random wait to disguise from possible bot catching algorithms
     if opts.cron_mode:
+        os.nice(19)
         wait = random.randrange(0, 60 * 15)
         log.info("Waiting a randomly-chosen %s seconds in case of bot "
                  "catchers", wait)
