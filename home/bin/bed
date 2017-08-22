@@ -92,12 +92,12 @@ class Player(object):
         config = parse_mpv_config()
         config.update(MPV_CONFIG)
 
-        # TODO: Find a way to normalize the volume which doesn't cause
-        # python-mpv to freeze.
+        # TODO: Find a way to recover from asking for a lavfi config that works
+        #       on mpv but not libmpv due to build differences.
         if config.get('af').startswith('lavfi='):
             del config['af']
 
-        self.mpv = mpv.MPV(**config)
+        self.mpv = mpv.MPV(log_handler=self.cb_log, **config)
 
         # pylint: disable=unnecessary-lambda
         # (The lambdas are required because python-mpv can't hang a custom
@@ -164,6 +164,9 @@ class Player(object):
         if not self.skip:
             log.info("Skipping to next file without logging...")
         self.skip = True
+
+    def cb_log(self, loglevel, component, message):
+        print('[{}] {}: {}'.format(loglevel, component, message))
 
 def basic_file_parse(path):
     """Parse relevant lines from a line-based config file with # comments.
