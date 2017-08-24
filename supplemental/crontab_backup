@@ -20,7 +20,7 @@
 0       0       *       *       *       ~/bin/task_skip_daily >/dev/null
 1       0       *       *       *       rm -f ~/.xsession-errors{,.old}
 2       0       *       *       *       rm -rf ~/incoming/gtk-gnutella-downloads/corrupt/*
-0       5       *       *       *       DISPLAY=:0 timelimit -q -t 86000 ~/bin/update_check.sh
+0       4       *       *       *       DISPLAY=:0 ~/bin/update_check.py
 0       5       *       *       *       DISPLAY=:0 timelimit -q -t 86000 ~/src/3_DOES_WHAT_I_WANT/tw-daily/tw-daily.py
 #0       5       *       *       *       DISPLAY=:0 timelimit -t 86000 urxvt -e bash --rcfile ~/bin/task_bashrc
 
