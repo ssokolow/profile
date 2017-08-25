@@ -30,8 +30,7 @@ if which sqliteman >/dev/null 2>&1; then
 fi
 
 # Streamline my TYT-watching workflow
-#cond_alias_2 tytp "mplayer -ss 3" "*"
-cond_alias_2 tytp "bed --no-log --ready-for-bed=y" "*"
+cond_alias_2 tytp "bed --no-log" "*"
 
 # Given an egrep path filter, use git filter-branch to throw out all files
 # which don't match.
