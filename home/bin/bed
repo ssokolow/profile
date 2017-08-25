@@ -125,12 +125,14 @@ class Player(object):
 
     def cb_skip(self, state, key):
         """Called when Ctrl+C is pressed to skip to the next file"""
-        self.mpv.playlist_next('force')
+        if state == 'd-':
+            self.mpv.playlist_next('force')
 
     def cb_quit(self, state, key):
         """Called when the Q key is pressed to exit w/o logging current file"""
-        self.stop()
-        self.mpv.terminate()
+        if state == 'd-':
+            self.stop()
+            self.mpv.terminate()
 
     @staticmethod
     def parse_config(path=os.path.expanduser(b"~/.mpv/config")):
