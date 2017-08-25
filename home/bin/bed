@@ -168,14 +168,15 @@ def walk_args(args):
                 for fname in sorted(files):
                     yield os.path.join(path, fname)
 
-def load_history(data_path):
+def load_history(data_path, has_dates=True):
     """Load the contents of the playback history"""
     with open(data_path, 'r') as fobj:
         data = fobj.read()
 
     # Parse the data store
     data = data.strip().split('\n')
-    data = [line.strip().split(None, 1) for line in data]
+    if has_dates:
+        data = [line.strip().split(None, 1) for line in data]
     data = [line for line in data if line]
 
     return data
@@ -251,7 +252,9 @@ def main():
                         "the nearest complete file")
     parser.add_argument('--no-log', action="store_true", default=False,
                         help="Don't log the playback of the given files.")
-    parser.add_argument('files', nargs='+')
+    parser.add_argument('--from-file', action="append",
+                        help="Load a list of arguments from the given file.")
+    parser.add_argument('files', nargs='*')
 
     args = parser.parse_args()
 
@@ -265,6 +268,11 @@ def main():
 
     this_dir = os.path.abspath(os.path.dirname(__file__))
     data_path = os.path.join(this_dir, 'bed.records')
+
+    files = args.files
+    if args.from_file:
+        for path in args.from_file:
+            files.extend(load_history(path, has_dates=False))
 
     # Prepare the files list
     files = walk_args(args.files)
