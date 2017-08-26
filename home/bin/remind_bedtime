@@ -38,6 +38,7 @@ NOTIFICATIONS = [
 NOTIFICATIONS.sort()  # Guard against human error
 
 import logging, subprocess, time
+import dbus.exceptions
 import schedule
 import notify2 as notify
 
@@ -66,15 +67,25 @@ class NotificationWrapper(object):
             'remind_bedtime bug!', icon='appointment')
         self.notification.set_timeout(notify.EXPIRES_NEVER)
         self.notification.set_urgency(notify.URGENCY_CRITICAL)
+        self.notification.set_hint('transient', False)
 
     def notify(self, msg, silent):
         """Display all requested notifications"""
-        self.notification.update(msg)
-        self.notification.show()
-
+        self.notification(msg)
         self.osd(msg)
         if not silent:
             self.say(msg)
+
+    def notification(msg):
+        """Display the message using a system notification"""
+        self.notification.update(msg)
+        try:
+            self.notification.show()
+        except dbus.exceptions.DBusException as err:
+            log.critical("D-Bus Error: %s", err)
+            if not silent:
+                self.say("D-Bus Error")
+
 
     @staticmethod
     def osd(msg):
