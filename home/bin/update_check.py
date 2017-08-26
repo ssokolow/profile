@@ -54,7 +54,7 @@ class AptWrapper(object):
         (?P<name>\S+)[ ]
         \[(?P<oldver>[^\]]*)\][ ]
         \((?P<newver>\S+)[ ]
-        (?P<source>\S+)[ ]
+        (?P<source>.+)[ ]
         \[(?P<arch>[^\]]+)\].*\)
     """, re.VERBOSE | re.MULTILINE)
 
@@ -98,6 +98,7 @@ class NotificationPrompt(object):
     def prompt(self, title, msg, cb_ok, cb_ok_title='OK'):
         notification = notify.Notification(title, msg, ICON_PATH)
         notification.set_timeout(self.timeout)
+        notification.set_hint('resident', False)
         notification.connect('closed', self.cb_cancel)
         notification.add_action('ok', cb_ok_title, cb_ok, self.userdata)
         notification.show()
@@ -109,6 +110,7 @@ def cb_update_requested(notification=None, action_key=None):
         enwindow()
 
     AptWrapper().apply_updates()
+    sys.exit()
 
 
 def main():
@@ -144,6 +146,8 @@ def main():
                 cb_update_requested, 'Update')
         else:
             raise NotImplementedError("TODO: Fall back to Zenity")
+    else:
+        sys.exit()
 
     gobject.timeout_add(TIMEOUT, loop.quit)
     loop.run()
