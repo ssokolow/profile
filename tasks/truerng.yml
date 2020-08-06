@@ -1,0 +1,38 @@
+---
+# TODO: Verify that it stays running on 20.04
+
+- name: Install rng-tools for TrueRNG
+  apt:
+    state: present
+    name: rng-tools
+  register: truerng_i
+
+- name: Install udev rule for TrueRNG
+  copy:
+    src: "etc/udev/rules.d/99-TrueRNG.rules"
+    dest: "/etc/udev/rules.d/"
+    owner: root
+    group: root
+    mode: 0644
+  register: truerng_u
+
+- name: Install rng-tools config for TrueRNG
+  copy:
+    src: "etc/default/rng-tools"
+    dest: "/etc/default/rng-tools"
+    owner: root
+    group: root
+    mode: 0644
+  register: truerng_c
+
+- name: Set rng-tools to run at startup
+  service:
+    name: rng-tools
+    enabled: true
+
+- name: Restart rng-tools to apply config changes
+  service:
+    name: rng-tools
+    state: restarted
+  when: truerng_i.changed or truerng_u.changed or truerng_c.changed
+# vim: set sw=2 sts=2 noexpandtab :

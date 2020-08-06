@@ -1,0 +1,6 @@
+[localhost]
+127.0.0.1 connection=local
+
+[localhost:vars]
+my_username=ssokolow
+my_hostname=monolith

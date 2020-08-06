@@ -1,0 +1,12 @@
+# Set up a nice little function to encourage use of sudoedit
+case "${1##*/}" in
+        (${EDITOR##*/}|vi|vim|emacs|nano|pico)
+                shift
+                print -z sudoedit "$@"
+                ;;
+        (*)
+                command sudo "$@"
+        ;;
+esac
+
+# vim: ft=zsh :

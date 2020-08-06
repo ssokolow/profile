@@ -1,0 +1,4 @@
+[Terraria]
+title=Terraria
+description=Sandbox game
+ports=7777/tcp

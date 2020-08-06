@@ -98,3 +98,27 @@ if command -v fortune >/dev/null; then
 fi
 
 export PATH="$PATH:$HOME/.rvm/bin" # Add RVM to PATH for scripting
+
+bash_virtualenv_prompt() {
+    # If not in a virtualenv, print nothing
+    [[ "$VIRTUAL_ENV" == "" ]] && return
+
+    # Support both ~/.virtualenvs/<name> and <name>/venv
+    local venv_name="${VIRTUAL_ENV##*/}"
+    if [[ "$venv_name" == "venv" ]]; then
+        venv_name=${VIRTUAL_ENV%/*}
+        venv_name=${venv_name##*/}
+    fi
+
+    # Distinguish between the shell where the virtualenv was activated and its
+    # children
+    if typeset -f deactivate >/dev/null; then
+        echo "[${venv_name}] "
+    else
+        echo "<${venv_name}> "
+    fi
+}
+
+# Display a "we are in a virtualenv" indicator that works in child shells too
+export VIRTUAL_ENV_DISABLE_PROMPT=1
+PS1='$(bash_virtualenv_prompt)'"$PS1"

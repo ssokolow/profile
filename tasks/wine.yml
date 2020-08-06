@@ -1,0 +1,12 @@
+---
+- name: Install Wine (stable) and PlayOnLinux
+  apt:
+    state: present
+    name: wine,playonlinux
+  when: ansible_distribution_release != 'xenial'
+
+- name: Install Wine (1.7) and PlayOnLinux
+  apt:
+    state: present
+    name: wine1.7,playonlinux
+  when: ansible_distribution_release == 'xenial'

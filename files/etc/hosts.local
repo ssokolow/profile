@@ -1,0 +1,38 @@
+127.0.0.1	localhost
+127.0.1.1	monolith monolith.Home
+
+# The following lines are desirable for IPv6 capable hosts
+::1     ip6-localhost ip6-loopback monolith.Home
+fe00::0 ip6-localnet
+ff00::0 ip6-mcastprefix
+ff02::1 ip6-allnodes
+ff02::2 ip6-allrouters
+
+# https://torrentfreak.com/dmca-used-to-remove-ad-server-url-from-easylist-ad-blocklist-170811/
+127.0.0.1 functionalclam.com
+
+# As a default-installed service which both handles data and is not subject to
+# Firefox Sync's security guarantees, Pocket is against policy.
+127.0.0.1 getpocket.com
+127.0.0.1 api.getpocket.com
+
+# https://gitlab.freedesktop.org/geoclue/geoclue/issues/111
+127.0.0.1  location.services.mozilla.com
+
+# Block suspicious domains related to Self Destroying Cookies extension
+127.0.0.1 yaunel.com
+127.0.0.1 www.yaunel.com
+127.0.0.1 dirtylittlehelpers.com
+127.0.0.1 www.dirtylittlehelpers.com
+127.0.0.1 addons.dirtylittlehelpers.com
+
+# Block GameAnalytics API
+# https://steamcommunity.com/sharedfiles/filedetails/?id=1729321221
+0.0.0.0 redshell.io www.redshell.io
+0.0.0.0 api.redshell.io
+0.0.0.0 treasuredata.com www.treasuredata.com
+0.0.0.0 in.treasuredata.com
+0.0.0.0 files.facepunch.com
+0.0.0.0 gameanalytics.com
+0.0.0.0 api.gameanalytics.com
+0.0.0.0 rubick.gameanalytics.com

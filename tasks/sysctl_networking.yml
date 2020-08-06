@@ -1,0 +1,16 @@
+---
+# Set better sysctl settings for network security and bufferbloat
+
+- name: Copy sysctl.d/99-networking.conf into place
+  copy:
+    src: etc/sysctl.d/99-networking.conf
+    dest: /etc/sysctl.d/99-networking.conf
+    owner: root
+    group: root
+    mode: 0644
+    backup: yes
+  register: sysctl_net_l
+
+- name: Apply changed sysctls
+  command: sysctl -p /etc/sysctl.d/99-networking.conf
+  when: sysctl_net_l.changed

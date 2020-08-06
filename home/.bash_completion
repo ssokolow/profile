@@ -4,3 +4,9 @@
 shopt -s extglob progcomp
 
 complete -d pushd cd
+
+for script in ~/.bash_completion.d/*; do
+    if [ -e "$script" ]; then
+        . "$script"
+    fi
+done

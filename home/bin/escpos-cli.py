@@ -56,7 +56,10 @@ def _print_text_file(path):
 
 def _print_image_file(path):
     """Print the given image file."""
-    epson.fullimage(path, histeq=False, width=384)
+    try:
+        epson.fullimage(path, histeq=False, width=384)
+    except AttributeError:
+        epson.image(path)
 
 def print_files(args):
     """The 'print' subcommand"""

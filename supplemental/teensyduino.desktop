@@ -1,9 +1,0 @@
-[Desktop Entry]
-Type=Application
-Name=Teensyduino IDE
-GenericName=Create physical computing projects with Teensy
-Exec=/home/ssokolow/opt/teensyduino/arduino
-Icon=arduino
-Terminal=false
-Categories=Development;Engineering;Electronics;
-MimeType=text/x-arduino

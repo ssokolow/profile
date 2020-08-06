@@ -1,0 +1,48 @@
+---
+# TODO: https://www.kevin-custer.com/blog/disabling-snaps-in-ubuntu-20-04/
+
+# TODO: Harvest a list of installed snaps
+#- name: Remove all snaps except "core"
+#  snap:
+#    name: "{{ unwanted_snaps }}"
+#    state: absent
+
+- name: Find all directories under /snap/core
+  find:
+    paths: /snap/core
+    recurse: no
+    file_type: directory
+  register: snap_mounts
+
+- name: Unmount all directories under /snap/core
+  mount:
+    path: "{{ item.path }}"
+    state: unmounted
+  with_items: "{{ snap_mounts.files|default([]) }}"
+
+- name: Purge snapd from the system
+  apt:
+    name: snapd
+    state: absent
+    purge: true
+    autoremove: true
+
+- name: Block reinstallation of snapd
+  copy:
+    src: etc/apt/preferences.d/nosnap.pref
+    dest: /etc/apt/preferences.d/nosnap.pref
+    owner: root
+    group: root
+    mode: 0644
+
+- name: Remove snap-related folders on the filesystem
+  file:
+    state: absent
+    path: "{{ item }}"
+  with_items:
+    - /snap
+    - /var/snap
+    - /var/lib/snapd
+  # TODO: Set up an alternative source for Chromium
+  # (https://askubuntu.com/a/1206153/23552)
+

@@ -1,0 +1,53 @@
+---
+- name: Install custom ufw application definitions
+  copy:
+    src: etc/ufw/applications.d/
+    dest: /etc/ufw/applications.d/
+
+- name: Add cron.daily script to ensure firewall can't be left disabled
+  copy:
+    src: etc/cron.daily/ensure_ufw
+    dest: /etc/cron.daily/ensure_ufw
+    owner: root
+    group: root
+    mode: 0755
+
+- name: Add sudo rule so {{ my_username }} can enable ufw without a password
+  template:
+    src: etc/sudoers.d/enable_ufw
+    dest: /etc/sudoers.d/enable_ufw
+    backup: true
+    owner: root
+    group: root
+    mode: 0440
+
+- name: Allow rate-limited inbound SSH connections
+  ufw:
+    rule: limit
+    name: OpenSSH
+
+- name: Set up other firewall exceptions
+  ufw:
+    rule: allow
+    name: "{{ item }}"
+  with_items:
+    - samba
+    # Custom definitions below this point
+    - audman
+    - avahi-daemon
+    - Deluge
+    - dhclient
+    - fan_remote
+    - gtk-gnutella
+    - ntpd
+    - pidgin
+    - pulseaudio-dlna
+    - rsyslogd
+
+# TODO: Set up sync (ie. Remove rules not on the list)
+#       (Perhaps I should just use ferm instead?)
+
+- name: "Enable firewall and set 'deny' as the default policy"
+  ufw:
+    state: enabled
+    policy: deny

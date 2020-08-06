@@ -1,0 +1,175 @@
+---
+# NOTE: Requires 'curl' to be installed
+
+- hosts: localhost
+  connection: local
+
+  vars:
+    rust_commands:
+      - cargo-deadlinks
+      - cargo-watch
+      # Bloat analysis
+      - cargo-bloat
+      - cargo-llvm-lines
+      # Build automation
+      - cargo-make
+      - just
+      # Dependency inspection
+      - cargo-outdated
+      - cargo-geiger
+      - cargo-graph
+      - cargo-tree
+      # Dependency license analysis
+      - cargo-about
+      - cargo-deny
+      - cargo-license
+      - cargo-lichking
+      # Dependency management
+      - cargo-cache
+      - cargo-edit
+      - cargo-update
+      # Generated code inspection
+      - cargo-asm
+      - cargo-expand
+      # Utilities for the system at large
+      - fd-find
+      - jsonfmt
+      - loc
+    rust_commands_nightly:
+      - cargo-modules
+      - miniserve
+    rust_targets:
+      # Default non-cross-compilation arch
+      - "{{ ansible_userspace_architecture }}-unknown-linux-gnu"
+      # musl-libc cross-compilation for static Linux builds
+      - i686-unknown-linux-musl
+      - x86_64-unknown-linux-musl
+      # OpenPandora cross-compilation
+      - arm-unknown-linux-gnueabi
+    rust_toolchains:
+      - "stable-{{ ansible_userspace_architecture }}-unknown-linux-gnu"
+      - "nightly-{{ ansible_userspace_architecture }}-unknown-linux-gnu"
+
+  tasks:
+    # ============================= Safety Checks =============================
+    - name: Verify that ansible_user_id isn't set to root
+      fail:
+        msg: "This playbook must be run as {{ my_username }}"
+      when: ansible_user_uid == my_username
+
+    # ========================= Set Up User Profile ==========================
+
+    - name: Remove snap-related folders in user profile
+      file:
+        state: absent
+        path: ~/snap
+
+    - name: Change login shell to zsh for {{ my_username }} and add groups
+      become: true
+      user:
+        name: "{{ my_username }}"
+        append: true
+        groups: tty,dialout,video,lpadmin,vboxusers,family
+        shell: /bin/zsh
+
+    - name: Add {{ my_username }} to incron allowed users
+      become: true
+      lineinfile:
+        path: /etc/incron.allow
+        line: "{{ my_username }}"
+        create: true
+
+    - name: Check whether installed crontab differs
+      command: ./supplemental/helper_scripts/diff_crontab.py
+      register: diff_crontab
+      changed_when: "diff_crontab.stdout != ''"
+
+    - name: Install crontab for {{ my_username }}
+      command: crontab supplemental/crontab_backup
+      when: diff_crontab.changed
+      changed_when: true
+
+    # NOTE: See also `export WINEDLLOVERRIDES="winemenubuilder.exe=d"`
+    #       in ~/.common_sh_init/env
+    - name: Set PlayOnLinux to use private user dirs and not make desktop icons
+      lineinfile:
+        path: ~/.PlayOnLinux/configurations/post_prefixcreate
+        line: "{{ item }}"
+        create: true
+      with_items:
+        - "POL_Call POL_Install_PrivateUserDirs"
+        - 'POL_Config_Write NO_DESKTOP_ICON "TRUE"'
+
+    # ===================== Install Preferred Packages ========================
+    # TODO: Re-identify all the packages installed on my system that I want to
+    #       reinstall.
+
+    - name: Install rustup
+      command: curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
+      args:
+        creates: ~/.cargo/bin/rustup
+
+    - name: Ensure existing rustup-managed components are up to date
+      command: rustup update
+      register: rustupupdate
+      changed_when: "'updated' in rustupupdate.stdout"
+
+    # Use "creates" to save time since `rustup update` will handle updates
+    - name: Install rust toolchains
+      command: rustup toolchain install "{{ item }}"
+      args:
+        creates: "~/.rustup/toolchains/{{ item }}"
+      with_items: "{{ rust_toolchains }}"
+
+    # Use "creates" to save time since `rustup update` will handle updates
+    - name: Install rust targets
+      command: rustup target add --toolchain "{{ item[0] }}" "{{ item[1] }}"
+      args:
+        creates: "~/.rustup/toolchains/{{ item[0] }}/lib/rustlib/{{ item[1] }}"
+      with_nested:
+        - "{{ rust_toolchains }}"
+        - "{{ rust_targets }}"
+
+    # NOTE: Doesn't use "creates" because `rustup update` doesn't update
+    #       installed commands.
+    - name: Install developer commands
+      command: cargo install {{ item }}
+      register: cargoinstall
+      changed_when: "'is already installed' not in cargoinstall.stderr"
+      with_items: "{{ rust_commands }}"
+      environment:
+        RUSTFLAGS: "-C target-cpu=native"
+
+    # NOTE: Doesn't use "creates" because `rustup update` doesn't update
+    #       installed commands.
+    - name: Install nightly-requiring developer commands
+      command: cargo +nightly install {{ item }}
+      register: cargoinstallnightly
+      changed_when: "'is already installed' not in cargoinstallnightly.stderr"
+      with_items: "{{ rust_commands_nightly }}"
+      environment:
+        RUSTFLAGS: "-C target-cpu=native"
+
+    # NOTE: Doesn't use "creates" because `rustup update` doesn't update
+    #       installed commands.
+    - name: Install ripgrep
+      command: cargo +nightly install ripgrep --features 'simd-accel'
+      register: cargoripgrep
+      changed_when: "'is already installed' not in cargoripgrep.stderr"
+      environment:
+        RUSTFLAGS: "-C target-cpu=native"
+
+    # TODO: Is there a way to make this conditional on a repo update?
+    - name: Install rustig
+      command: cargo install --git https://github.com/Technolution/rustig rustig
+      args:
+        creates: "~/.cargo/bin/rustig"
+
+    - name: Install rust-analyzer
+      get_url:
+        # yamllint disable-line rule:line-length
+        url: "https://github.com/rust-analyzer/rust-analyzer/releases/latest/download/rust-analyzer-linux"
+        dest: "~/.cargo/bin/rust-analyzer"
+        mode: 0755
+    # yamllint disable-line rule:line-length rule:comments-indentation
+    # TODO: https://pyra-handheld.com/boards/threads/how-to-cross-compile-rust-programs.78650/#post-1398907

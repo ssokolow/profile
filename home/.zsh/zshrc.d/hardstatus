@@ -1,0 +1,61 @@
+# Set up a hardstatus line like I had in bash
+
+# (As a micro-optimization, only do the "what terminal?" check once on init)
+if [[ $TERM == "screen" ]]; then
+    function title {
+        local cmd
+        if [[ "$1" == "zsh" ]]; then
+            [[ "$PWD" == "$HOME" ]] && cmd="~/" || cmd="${PWD##*/}/"
+        else
+            cmd="$1"
+        fi
+
+        # Tab contents and status line contents
+        printf '\ek%s\e\\\e]0;%s: %s\a' "$cmd" "$1" "$2"
+    }
+elif [[ $TERM == "xterm" || $TERM == "rxvt"* ]]; then
+    function title { printf '\e]0;%s\a' "$*" }  # Titlebar contents
+else
+    function title {}
+fi
+
+function zsh_hardstatus_precmd { title zsh "$PWD"; }
+precmd_functions+='zsh_hardstatus_precmd'
+
+function zsh_hardstatus_preexec {
+    emulate -L zsh
+    local -a cmd; cmd=(${(z)1})
+
+    # Construct a command that will output the desired job number.
+    case $cmd[1] in
+        fg)
+            if (( $#cmd == 1 )); then
+                # No arguments, must find the current job
+                cmd=(builtin jobs -l %+)
+            else
+                # Replace the command name, ignore extra args.
+                cmd=(builtin jobs -l ${(Q)cmd[2]})
+                fi;;
+        %*) cmd=(builtin jobs -l ${(Q)cmd[1]});; # Same as "else" above
+        exec) shift cmd;&
+        # If the command is 'exec', drop that, because
+        # we'd rather just see the command that is being
+        # exec'd. Note the ;& to fall through.
+        *)  title $cmd[1]:t "$cmd[2,-1]:Q"    # Not resuming a job,
+        return;;                        # so we're all done
+        # Modified from
+        # http://zshwiki.org/home/examples/hardstatus so it
+        # displays more naturally for humans. (strips escaping)
+    esac
+
+    local -A jt; jt=(${(kv)jobtexts})       # Copy jobtexts for subshell
+
+    # Run the command, read its output, and look up the jobtext.
+    # Could parse $rest here, but $jobtexts (via $jt) is easier.
+    $cmd >>(read num rest
+    cmd=(${(z)${(e):-\$jt$num}})
+    title $cmd[1]:t "$cmd[2,-1]") 2>/dev/null
+}
+preexec_functions+='zsh_hardstatus_preexec'
+
+# vim: set ft=zsh :

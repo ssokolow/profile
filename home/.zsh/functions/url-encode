@@ -1,0 +1,8 @@
+# Source:
+# http://stackoverflow.com/questions/171563/whats-in-your-zshrc/187853#187853
+
+# URL encode something and print it.
+setopt extendedglob
+echo "${${(j: :)@}//(#b)(?)/%$[[##16]##${match[1]}]}"
+
+# vim: ft=zsh :

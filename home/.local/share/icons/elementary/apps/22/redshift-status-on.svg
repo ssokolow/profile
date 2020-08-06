@@ -14,8 +14,8 @@
    height="22"
    id="svg2837"
    version="1.1"
-   inkscape:version="0.47 r22583"
-   sodipodi:docname="rd9-15.svg"
+   inkscape:version="0.48.4 r9939"
+   sodipodi:docname="redshift-status-on.svg"
    inkscape:export-filename="/home/joern/Desktop/redshiftIconlight.png"
    inkscape:export-xdpi="90"
    inkscape:export-ydpi="90">
@@ -352,19 +352,19 @@
      borderopacity="1.0"
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
-     inkscape:zoom="11.313708"
-     inkscape:cx="-2.6248555"
-     inkscape:cy="11.54906"
+     inkscape:zoom="22.627416"
+     inkscape:cx="14.488295"
+     inkscape:cy="12.72233"
      inkscape:document-units="px"
      inkscape:current-layer="layer5"
      showgrid="true"
      showguides="false"
      inkscape:guide-bbox="true"
-     inkscape:window-width="955"
-     inkscape:window-height="801"
-     inkscape:window-x="297"
-     inkscape:window-y="25"
-     inkscape:window-maximized="0"
+     inkscape:window-width="1280"
+     inkscape:window-height="980"
+     inkscape:window-x="-2"
+     inkscape:window-y="48"
+     inkscape:window-maximized="1"
      inkscape:snap-global="false">
     <sodipodi:guide
        position="0,0"
@@ -430,35 +430,35 @@
      inkscape:label="Ebene#1"
      style="display:inline"
      transform="translate(0,-2)">
-    <g
-       id="g4255"
-       transform="matrix(0.98314262,0,0,0.98314262,0.05987544,0.20244021)">
-      <g
-         id="g4252" />
-    </g>
     <path
        id="path4672-2-2"
-       style="opacity:0.59999999999999998;fill:none;stroke:#eae3d0;stroke-width:3.53497337999999983;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;display:inline"
-       d="m 11.000001,5.8335253 c -3.0445665,0 -5.5126739,2.4681078 -5.5126739,5.5126727 0,1.947699 0.8534597,3.576685 2.5496113,4.651318 0.7759954,0.491649 1.9432055,0.799621 2.9146526,0.80294 1.053949,0.0035 2.142219,-0.198322 3.011472,-0.837395 1.376577,-1.012057 2.54961,-2.674923 2.54961,-4.616863 0,-3.0445649 -2.468108,-5.5126727 -5.512673,-5.5126727 z m 0,-10e-8 c -3.0445665,0 -5.5126739,2.4681075 -5.5126739,5.5126718 0,1.9477 1.0247013,3.670712 2.5496113,4.651319 l 0.7579925,3.066423 c 0,0 0,1.102536 2.2050701,1.102536 2.205068,0 2.205068,-1.102536 2.205068,-1.102536 l 0.757994,-3.100878 c 1.517359,-0.982013 2.54961,-2.674924 2.54961,-4.616864 0,-3.0445643 -2.468107,-5.5126718 -5.512672,-5.5126718 z" />
+       style="opacity:0.6;fill:none;stroke:#eae3d0;stroke-width:3.53500009;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;display:inline"
+       d="m 8.036938,15.997516 0.757993,3.066423 c 0,0 0,1.102536 2.20507,1.102536 2.205068,0 2.205068,-1.102536 2.205068,-1.102536 l 0.478162,-2.564443 c -1.067264,0.266342 -3.543939,0.282884 -5.646293,-0.50198 z"
+       inkscape:connector-curvature="0"
+       sodipodi:nodetypes="ccsccc" />
     <path
-       style="fill:none;stroke:#3a3935;stroke-width:1.51498854000000005;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;display:inline"
-       id="path4672"
-       d="m 11,5.8335251 c -3.0445655,0 -5.5126729,2.4681075 -5.5126729,5.5126729 0,1.947699 1.0247013,3.670712 2.5496112,4.651318 l 0.7579926,3.066423 c 0,0 0,1.102535 2.2050691,1.102535 2.205069,0 2.205069,-1.102535 2.205069,-1.102535 l 0.757993,-3.100878 c 1.51736,-0.982013 2.549612,-2.674924 2.549612,-4.616863 0,-3.0445654 -2.468108,-5.5126729 -5.512674,-5.5126729 z" />
-    <path
-       style="fill:none;stroke:#3a3935;stroke-width:1.51498854000000005;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;display:inline"
-       id="path4672-2"
-       d="m 11.000001,5.8335253 c -3.0445665,0 -5.5126739,2.4681078 -5.5126739,5.5126727 0,1.947699 0.8534597,3.576685 2.5496113,4.651318 0.7759954,0.491649 1.9432055,0.799621 2.9146526,0.80294 1.053949,0.0035 2.142219,-0.198322 3.011472,-0.837395 1.376577,-1.012057 2.54961,-2.674923 2.54961,-4.616863 0,-3.0445649 -2.468108,-5.5126727 -5.512673,-5.5126727 z"
-       sodipodi:nodetypes="csssssc" />
+       sodipodi:type="arc"
+       style="opacity:0.6;color:#000000;fill:none;stroke:#eae3d0;stroke-width:3.58187556;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;stroke-dashoffset:0;marker:none;visibility:visible;display:inline;overflow:visible;enable-background:accumulate"
+       id="path3076"
+       sodipodi:cx="14.584078"
+       sodipodi:cy="5.8028345"
+       sodipodi:rx="6.2313786"
+       sodipodi:ry="4.9276505"
+       d="m 20.815456,5.8028345 a 6.2313786,4.9276505 0 1 1 -12.4627567,0 6.2313786,4.9276505 0 1 1 12.4627567,0 z"
+       transform="matrix(0.88674405,0,0,1.0983975,-1.9279947,4.9645495)" />
+    <g
+       id="g3048">
+      <path
+         d="m 11,5.8335251 c -3.0445655,0 -5.5126729,2.4681075 -5.5126729,5.5126729 0,1.947699 1.0247013,3.670712 2.5496112,4.651318 l 0.7579926,3.066423 c 0,0 0,1.102535 2.2050691,1.102535 2.205069,0 2.205069,-1.102535 2.205069,-1.102535 l 0.757993,-3.100878 c 1.51736,-0.982013 2.549612,-2.674924 2.549612,-4.616863 0,-3.0445654 -2.468108,-5.5126729 -5.512674,-5.5126729 z"
+         id="path4672"
+         style="fill:none;stroke:#3a3935;stroke-width:1.51498854;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;display:inline"
+         inkscape:connector-curvature="0" />
+      <path
+         inkscape:connector-curvature="0"
+         sodipodi:nodetypes="csssssc"
+         d="m 11.000001,5.8335253 c -3.044567,0 -5.512674,2.4681078 -5.512674,5.5126727 0,1.947699 0.85346,3.576685 2.549611,4.651318 0.775996,0.491649 1.943206,0.799621 2.914653,0.80294 1.053949,0.0035 2.142219,-0.198322 3.011472,-0.837395 1.376577,-1.012057 2.54961,-2.674923 2.54961,-4.616863 0,-3.0445649 -2.468108,-5.5126727 -5.512673,-5.5126727 z"
+         id="path4672-2"
+         style="fill:none;stroke:#3a3935;stroke-width:1.51498854;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;display:inline" />
+    </g>
   </g>
-  <g
-     inkscape:label="Ebene 1"
-     inkscape:groupmode="layer"
-     id="layer1"
-     transform="translate(0,-1030.3622)" />
-  <g
-     inkscape:groupmode="layer"
-     id="layer4"
-     inkscape:label="Ebene"
-     style="display:inline"
-     transform="translate(0,-2)" />
 </svg>

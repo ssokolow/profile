@@ -1,0 +1,7 @@
+---
+- name: Add tsched=0 to PulseAudio configuration
+  lineinfile:
+    path: /etc/pulse/default.pa
+    regexp: '^load-module module-udev-detect\s*$'
+    line: "load-module module-udev-detect tsched=0"
+    backup: true

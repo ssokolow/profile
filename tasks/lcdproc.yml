@@ -1,0 +1,27 @@
+---
+- name: Install lcdproc
+  apt:
+    state: present
+    name: lcdproc
+
+- name: Install lcdproc configuration files
+  copy:
+    backup: true
+    src: etc/{{ item }}
+    dest: /etc/{{ item }}
+    owner: root
+    group: root
+    mode: 0644
+  register: lcdproc_conf
+  with_items:
+    - LCDd.conf
+    - lcdproc.conf
+
+- name: Restart LCDd to apply config changes
+  service:
+    name: LCDd
+    state: restarted
+  when: lcdproc_conf.changed
+# TODO: Figure out how lcdproc is getting launched and restart it here
+
+# vim: set sw=2 sts=2 noexpandtab :

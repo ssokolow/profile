@@ -1,0 +1,2 @@
+# Patch for the USB HID descriptor on the INNEX USB-NES controller adapter so it appears as a joystick to SDL 2
+SUBSYSTEM=="input", ATTRS{name}=="INNEX NES Controller USB", MODE="0666", ENV{ID_INPUT_JOYSTICK}="1"

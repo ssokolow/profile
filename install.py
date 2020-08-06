@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """Simple unattended script for linking my roaming profile into a new $HOME.
 
@@ -11,8 +11,8 @@
     xrdb -merge ~/.Xresources
 """
 
+__author__ = "Stephan Sokolow (deitarion/SSokolow)"
 __appname__ = "ssokolow/profile symlink setup script"
-__author__  = "Stephan Sokolow (deitarion/SSokolow)"
 __version__ = "0.1"
 __license__ = "GNU GPL 2.0 or later"
 
@@ -39,6 +39,8 @@ RECURSE = [
 ]
 
 # TODO: Hook this in
+
+
 def relpath(path, start=os.curdir):
     """Return a relative version of a path
     Borrowed from Python 2.7's posixpath.py for compatibility with Slax.
@@ -57,6 +59,7 @@ def relpath(path, start=os.curdir):
     if not rel_list:
         return os.curdir
     return os.path.join(*rel_list)
+
 
 def symlink_path(source, target, dry_run=False, overwrite=False,
                  diff=False):
@@ -146,7 +149,7 @@ if __name__ == '__main__':
         default=os.environ['HOME'],
         help="Specify a location other than %default to install to.")
 
-    opts, args  = parser.parse_args()
+    opts, args = parser.parse_args()
 
     # Set up clean logging to stderr
     log_levels = [logging.CRITICAL, logging.ERROR, logging.WARNING,

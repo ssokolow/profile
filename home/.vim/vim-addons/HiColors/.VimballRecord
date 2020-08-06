@@ -1,1 +1,0 @@
-hicolors.vba: call delete('/home/ssokolow/.vim/vim-addons/HiColors/syntax/hicolors.vim')|call delete('/home/ssokolow/.vim/vim-addons/HiColors/doc/hicolors.txt')|call delete('/home/ssokolow/.vim/vim-addons/HiColors/ftplugin/hicolors.vim')|call delete('/home/ssokolow/.vim/vim-addons/HiColors/doc/hicolorshelp.txt')

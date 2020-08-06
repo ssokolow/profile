@@ -1,0 +1,2 @@
+# Grant all-user access to my USB receipt printer
+SUBSYSTEMS=="usb", ATTRS{idVendor}=="0416", ATTRS{idProduct}=="5011", MODE:="0666"

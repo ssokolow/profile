@@ -1,0 +1,29 @@
+---
+- name: Install EarlyOOM
+  apt:
+    state: present
+    name: earlyoom
+  when: ansible_distribution_release != 'xenial'
+
+- name: Check for presence of earlyoom
+  command: which earlyoom
+  register: earlyoomcheck
+  ignore_errors: true
+  check_mode: false
+  changed_when: false
+  when: ansible_distribution_release == 'xenial'
+
+# TODO: Add to some kind of log that gets displayed at the end instead
+- debug:
+    name: "Request Manual EarlyOOM Install"
+    msg: "TODO: Install EarlyOOM Manually"
+  when: ansible_distribution_release == 'xenial' and earlyoomcheck.rc != 0
+  changed_when: true
+
+- name: "Copy EarlyOOM configuration into /etc"
+  copy:
+    src: "etc/default/earlyoom"
+    dest: "/etc/default/earlyoom"
+    owner: root
+    group: root
+    mode: 0644

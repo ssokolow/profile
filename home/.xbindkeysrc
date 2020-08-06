@@ -108,6 +108,9 @@
 "~/bin/saytime"
   F13
 
+"~/bin/start_noise"
+  XF86Launch1
+
 # Shim away mplayer's inability to bind SunFront to fullscreen toggle.
 "xdotool getactivewindow key f"
   SunFront

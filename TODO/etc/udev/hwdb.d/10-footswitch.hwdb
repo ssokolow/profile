@@ -1,0 +1,10 @@
+# Sources used:
+# - https://askubuntu.com/questions/685235/how-should-i-configure-kinesis-savant-elite-usb-pedals-in-14-04/689081
+# - https://wiki.archlinux.org/index.php/Map_scancodes_to_keycodes
+# - https://wiki.archlinux.org/index.php/Extra_keyboard_keys#Scancodes
+# - https://unix.stackexchange.com/questions/156985/keyboard-hard-remap-keys
+# - http://www.pixelbeat.org/docs/xkb_remap/
+# ...though I can't test it yet, because my udev is 204, which takes this:
+# - http://www.vinc17.net/unix/xkb.en.html#udev
+keyboard:input:b0003v0C45p7403*
+ KEYBOARD_KEY_70005=playpause

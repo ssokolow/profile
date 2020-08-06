@@ -105,7 +105,7 @@ Ddd*FlatButtons: on
 *VT100.utf8:	1
 
 ! Plenty of room for things like Vim :vsplit
-*VT100*geometry: 160x50
+*VT100*geometry: 160x55
 
 ! Set the Urgent hint on bell for console apps without notify-send
 XTerm*bellIsUrgent:  true
@@ -161,11 +161,12 @@ URxvt.perl-ext-common: default,matcher,clipboard
 URxvt.urlLauncher: xdg-open
 
 urxvt_kuake.perl-ext-common: default,matcher,clipboard,kuake_plus<F12>
-urxvt_kuake.geometry: 212x60+1280+0
+urxvt_kuake.geometry: 212x60+1400+0
 urxvt_kuake.borderLess: true
 urxvt_kuake.internalBorder: 0
 urxvt_kuake.externalBorder: 0
-urxvt_kuake.toggleFocusesIfVisible: true
+
+kuake.toggleFocusesIfVisible: true
 
 urxvt_desktop.geometry: 160x50+2760+150
 urxvt_desktop.transparent: true
@@ -226,10 +227,10 @@ URxvt.selection.pattern-1: .+?@.+? .+? %%?[ ]+(.+)
 ! http://awesome.naquadah.org/wiki/Urxvt
 ! https://wiki.archlinux.org/index.php/Rxvt-unicode
 !URxvt.mapAlert: true
-URxvt.geometry: 160x50
+URxvt.geometry: 120x41
 URxvt.pastableTabs: true
 
-!URxvt*font:		xft:Bitstream Vera Sans Mono:style=Regular:pixelsize=13
+URxvt*font:		xft:Bitstream Vera Sans Mono:style=Regular:pixelsize=13
 
 !TODO: Links:
 ! - http://en.gentoo-wiki.com/wiki/Rxvt-Unicode

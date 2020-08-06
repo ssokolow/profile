@@ -1,0 +1,32 @@
+---
+# Workaround for Pidgin not offering a "remember that this is *supposed* to be
+# a self-signed cert" option.
+
+- name: Install stunnel
+  apt:
+    state: present
+    name: stunnel
+
+- name: Copy stunnel configuration to /etc/defaults
+  copy:
+    src: etc/default/stunnel4
+    dest: /etc/default/stunnel4
+    owner: root
+    group: root
+    mode: 0644
+  register: stunnel_d
+
+- name: Copy ldg-irc tunnel configuration to /etc/stunnel
+  copy:
+    src: etc/stunnel/
+    dest: /etc/stunnel/
+    owner: root
+    group: root
+    mode: 0644
+  register: stunnel_c
+
+- name: Restart stunnel to apply config changes
+  service:
+    name: stunnel4
+    state: restarted
+  when: stunnel_d.changed or stunnel_c.changed

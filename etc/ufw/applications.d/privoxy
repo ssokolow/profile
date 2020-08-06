@@ -1,4 +1,0 @@
-[Privoxy]
-title=Privoxy
-description=Security-boosting HTTP Proxy
-ports=8118/tcp

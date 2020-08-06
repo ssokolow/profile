@@ -1,23 +1,47 @@
-# Set up virtualenvwrapper if available
+# {{{ Handler for deferred virtualenvwrapper setup (if it's available)
+function init_virtualenvwrapper {
+    local _cmdname="$1"
+    shift
+    unset -f "$_cmdname"
 
-export WORKON_HOME=$HOME/.virtualenvs
-export PROJECT_HOME=$HOME/src
+    # Don't do anything if it's already loaded
+    if ! type virtualenvwrapper_workon_help &>/dev/null; then
 
-# Make PIP automatically use the active virtualenv without -E
-export PIP_RESPECT_VIRTUALENV=true
+        export WORKON_HOME=$HOME/.virtualenvs
+        export PROJECT_HOME=$HOME/src
 
-# TODO: Use this to make things easier for .profile_repo/install.py to handle.
-#export VIRTUALENVWRAPPER_HOOK_DIR=$HOME/.virtualenvwrapper
+        # Make PIP automatically use the active virtualenv without -E
+        export PIP_RESPECT_VIRTUALENV=true
 
-# I almost exclusively user virtualenv for web apps where site-packages is
-# more trouble than its worth.
-export VIRTUALENVWRAPPER_VIRTUALENV_ARGS='--no-site-packages'
+        # TODO: Use this to make things easier for .profile_repo/install.py
+        #export VIRTUALENVWRAPPER_HOOK_DIR=$HOME/.virtualenvwrapper
 
-if VENV_WRAP=`which virtualenvwrapper.sh`; then
-    source "$VENV_WRAP"
-elif [ -f /etc/bash_completion.d/virtualenvwrapper ]; then
-    # Work around Debian/Ubuntu help that's not helpful unless you use bash only
-    source /etc/bash_completion.d/virtualenvwrapper
-fi
+        # I almost exclusively user virtualenv for web apps where site-packages is
+        # more trouble than its worth.
+        export VIRTUALENVWRAPPER_VIRTUALENV_ARGS='--no-site-packages'
+
+        if VENV_WRAP=`which virtualenvwrapper.sh`; then
+            source "$VENV_WRAP"
+        elif [ -f /etc/bash_completion.d/virtualenvwrapper ]; then
+            # Avoid Deb/buntu help that's unhelpful unless you use bash only
+            source /etc/bash_completion.d/virtualenvwrapper
+        fi
+    fi
+
+    "$_cmdname" "$@"
+}
+# }}}
+
+# {{{ Shims to trigger virtualenvwrapper loading on demand
+function workon {
+    init_virtualenvwrapper "${FUNCNAME[0]:-$0}" "$@"
+}
+function mkproject {
+    init_virtualenvwrapper "${FUNCNAME[0]:-$0}" "$@"
+}
+function mkvirtualenv {
+    init_virtualenvwrapper "${FUNCNAME[0]:-$0}" "$@"
+}
+# }}}
 
 # vim: ft=zsh

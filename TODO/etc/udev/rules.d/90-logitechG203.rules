@@ -1,0 +1,1 @@
+ACTION=="add", SUBSYSTEMS=="usb", ATTRS{idVendor}=="046d", ATTRS{idProduct}=="c084", MODE="660", GROUP="plugdev", RUN+="/usr/bin/g213colors-gui -t"

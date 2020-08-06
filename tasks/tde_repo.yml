@@ -1,0 +1,17 @@
+---
+- name: Add TDE repo
+  apt_repository:
+    repo: >-
+      {{ item[0] }}
+      http://mirror.ppa.trinitydesktop.org/trinity/deb/trinity-{{ item[1] }}
+      {{ ansible_distribution_release }}
+      main
+  register: tde_r
+  with_nested:
+    - ["deb", "deb-src"]
+    - ["r14.0.x", "builddeps-r14.0.x"]
+
+- name: "Add TDE repo signing key"
+  apt_key:
+    keyserver: keyserver.quickbuild.pearsoncomputing.net
+    id: F5CFC95C

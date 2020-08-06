@@ -1,0 +1,7 @@
+# Deny access to everything in $HOME except what it needs
+# (Exempt it from anything generic.profile may do and whitelist it)
+private ~/.local/share/Tumblestone
+
+# Enable the base set of protections I use for games where I don't want
+# network multiplayer
+include ${HOME}/.config/firejail/game-single.inc

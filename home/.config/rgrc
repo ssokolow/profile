@@ -1,44 +1,80 @@
 # Always prettify and cue the wrapper to use a pager
 -p
 
+--type-add
+map:*.map
+
 # VFFA templater
---type-add 'dtd:*.ent'
---type-add 'dtd:*.dtd'
---type-add 'dtd:*.dcl'
---type-add 'dtd:*.mod'
---type-add 'jinja:*.incl'
---type-add 'mincss:*.min.css'
---type-add 'minjs:*.min.js'
---type-add 'svg:*.svg'
+--type-add
+ dtd:*.ent
+--type-add
+ dtd:*.dtd
+--type-add
+ dtd:*.dcl
+--type-add
+ dtd:*.mod
+--type-add
+ jinja:*.incl
+--type-add
+ mincss:*.min.css
+--type-add
+ minjs:*.min.js
+--type-add
+ svg:*.svg
+
 
 # Pylons
---type-add 'config:*.conf'
---type-add 'config:*.cfg'
---type-add 'config:*.ini'
+#
+--type-add
+ config:*.conf
+--type-add
+ config:*.cfg
+--type-add
+ config:*.ini
 
---type-add 'mako:*.mako'
---type-add 'mako:*.html'
---type-add 'mako:*.incl'
+
+--type-add
+ mako:*.mako
+--type-add
+ mako:*.html
+--type-add
+ mako:*.incl
+
 
 # CakePHP
---type-add 'cakephp:*.ctp'
---type-add 'cakephp:*.tpl'
+#
+--type-add
+ cakephp:*.ctp
+--type-add
+ cakephp:*.tpl
 
 # TiddlyWiki 5
---type-add 'tw:*.tid'
---type-add 'tw5:*.tid'
---type-add 'tiddler:*.tid'
---type-add 'tiddlywiki:*.tid'
+--type-add
+tw:*.tid
+--type-add
+tw5:*.tid
+--type-add
+tiddler:*.tid
+--type-add
+tiddlywiki:*.tid
 
 # -- Shorthands --
 
---type-add 'adoc:*.adoc'
---type-add 'adoc:*.asc'
---type-add 'adoc:*.asciidoc'
+--type-add
+adoc:*.adoc
+--type-add
+adoc:*.asc
+--type-add
+adoc:*.asciidoc
 
---type-add 'cfg:*.config'
---type-add 'cfg:*.conf'
---type-add 'cfg:*.cfg'
---type-add 'cfg:*.ini'
+--type-add
+cfg:*.config
+--type-add
+cfg:*.conf
+--type-add
+cfg:*.cfg
+--type-add
+cfg:*.ini
 
---type-add 'rs:*.rs'
+--type-add
+rs:*.rs

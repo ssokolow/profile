@@ -94,7 +94,7 @@ alignment top_left
 # Gap between borders of screen and text
 # same thing as passing -x at command line
 gap_x 1000
-gap_y 30
+gap_y 86
 #gap_y 440
 
 # Subtract file system buffers from used memory?
@@ -148,11 +148,12 @@ ${template3 2 lightgrey}
 ${template3 3 lightgrey}
 ${template3 4 lightgrey}
 $color$stippled_hr
-${template4 root /dev/sda /}
-${template4 home /dev/sda /home}
-${template4 srv /dev/sdb /srv}
+${template4 root /dev/sdd /}
+${template4 home /dev/sdd /home}
 ${template4 incoming /dev/sdc /mnt/incoming}
-${template5 external /dev/sdh /mnt/buffalo_ext}
+${template4 srv /dev/sda /srv}
+${template5 external /dev/sdi /mnt/buffalo_ext}
+${template4 red6 /dev/sdb /mnt/red6}
  ${hwmon 0 temp 1}°C ${alignr 5}| GPU ${nvidia temp}°C
 # CPU ${goto 65}${hwmon 1 temp 1}°C | ${alignc}Sys ${hwmon 0 temp 1}°C ${hwmon 0 temp 3}°C ${alignr 5}| GPU ${nvidia temp}°C
 # vim: fenc=latin1

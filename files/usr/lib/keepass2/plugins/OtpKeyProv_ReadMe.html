@@ -1,0 +1,382 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+	"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+	<meta name="author" content="Dominik Reichl" />
+
+	<meta name="description" content="Key provider based on one-time passwords." />
+	<meta name="keywords" content="OtpKeyProv, Plugin, KeePass" />
+
+	<meta name="robots" content="index" />
+
+	<meta name="DC.Title" content="OtpKeyProv Plugin" />
+	<meta name="DC.Creator" content="Dominik Reichl" />
+	<meta name="DC.Subject" content="KeePass Plugin" />
+	<meta name="DC.Description" content="Key provider based on one-time passwords." />
+	<meta name="DC.Publisher" content="Dominik Reichl" />
+	<meta name="DC.Contributor" content="Dominik Reichl" />
+	<meta name="DC.Type" content="text" />
+	<meta name="DC.Format" content="text/html" />
+	<meta name="DC.Identifier" content="http://keepass.info/plugins.html#otpkeyprov" />
+	<meta name="DC.Language" content="en" />
+	<meta name="DC.Rights" content="Copyright (c) 2011-2014 Dominik Reichl" />
+
+	<title>OtpKeyProv ReadMe</title>
+	<style type="text/css"><!--
+		BODY, P, DIV, H1, H2, H3, H4, H5, H6, LI, TD, TH, DD, DT {
+			font-family: Verdana, Helvetica, Arial, sans-serif;
+			font-size: 10pt;
+			color: #000000;
+		}
+
+		h1 {
+			font-weight: bold;
+			font-size: 16pt;
+		}
+
+		h2 {
+			font-weight: bold;
+			font-size: 13pt;
+			color: Navy;
+		}
+
+		h3 {
+			font-weight: bold;
+			font-size: 11pt;
+			color: Navy;
+		}
+
+		table {
+			background-color: #AFB5CF;
+			margin: 0px 0px 0px 0px;
+			padding: 0px 0px 0px 0px;
+			border-left: 1px solid #AFB5CF;
+			border-right: 0px none;
+			border-top-width: 0px;
+			border-bottom-width: 0px;
+			border-collapse: collapse;
+		}
+		
+		table tr th {
+			background-color: #DDDDDD;
+			font-weight: bold;
+			border-bottom: 1px solid #AFB5CF;
+			border-left: 0px none;
+			border-right: 1px solid #AFB5CF;
+			border-top: 1px solid #AFB5CF;
+			empty-cells: show;
+			padding: 2px 2px 2px 5px;
+			white-space: nowrap;
+			/* text-align: left; */
+		}
+		
+		table tr td {
+			background-color: #F0F0F0;
+			font-weight: normal;
+			border-bottom: 1px solid #AFB5CF;
+			border-left: 0px none;
+			border-right: 1px solid #AFB5CF;
+			border-top: 0px none;
+			padding: 5px 5px 5px 5px;
+			empty-cells: show;
+			/* text-align: left; */
+		}
+	--></style>
+</head>
+<body>
+
+<center>
+<h2>OtpKeyProv Plugin</h2>
+</center>
+
+<p>Copyright &copy; 2011-2014 Dominik Reichl.
+Distributed under the terms of the
+<a href="http://www.gnu.org/licenses/gpl-2.0.html">GNU
+General Public License v2</a>.</p>
+
+<p>OtpKeyProv is a key provider based on one-time passwords.
+After protecting your database using this plugin, you need
+to generate and enter one-time passwords in order to open your
+database.</p>
+
+<br />
+
+<h3>Supported Generator Tokens</h3>
+
+<p>All generator tokens that follow the OATH HOTP standard
+(RFC 4226) are supported.</p>
+
+<p>Especially, the plugin has been tested successfully with the following
+generator tokens:</p>
+
+<ul>
+<li><a href="http://www.yubico.com/o.php?refid=84&amp;rno=1354153230"
+target="_blank" title="Get a YubiKey">YubiKey</a></li>
+<li><a href="http://www.my-scrib.com/" target="_blank">sCrib</a></li>
+</ul>
+
+<br />
+
+<h3>Installing the Plugin</h3>
+
+<p>In order to install OtpKeyProv, copy the files
+<code>OtpKeyProv.plgx</code> and <code>OtpKeyProv_ReadMe.html</code>
+into the KeePass application directory (where <code>KeePass.exe</code> is),
+and restart KeePass.</p>
+
+<p>If you wish to uninstall the plugin in the future, simply delete these
+two files.</p>
+
+<br />
+
+<h3>Protecting a Database</h3>
+
+<p>After installing OtpKeyProv, you can set up your database to require
+one-time passwords for opening. To do this, open your database and
+go <i>'File'</i> -&gt; <i>'Change Master Key'</i>. Check <i>'Key file/provider'</i>,
+select <i>'One-Time Passwords (OATH HOTP)'</i> in the combo box,
+and click the <i>[OK]</i> button
+(do not click the <i>[Create]</i> or <i>[Browse]</i> buttons; these are for key files only).
+An OTP configuration dialog is now displayed, in which need to provide the
+generator token's secret key, the current counter, and specify various options;
+for details see below. When you've filled in everything, click <i>[OK]</i>.
+After saving the database file, your database now requires entering one-time
+passwords for opening.</p>
+
+<p><b>Length of generated OTPs.</b>
+Here you need to specify of how many characters the OTPs consist
+that the token generates. According to the OATH HOTP standard,
+the length must be 6, 7 or 8.
+If the token allows you to configure the length, it is recommended
+to choose the maximum length for highest security.</p>
+
+<p><b>Generator token secret key and counter.</b>
+Here you need to provide the current secret key and the counter
+(which is also called 'moving factor')
+of the generator token.
+These values can be entered in different formats: Hex,
+Base64, Base32, UTF-8 and Dec. If you don't know in which format the token
+displays the values, here are some rules of thumb:</p>
+
+<ul>
+<li>If the value consists only of digits (0-9), the format likely is
+Dec.</li>
+<li>If the value consists of digits (0-9) and the letters A-F, the format
+most likely is Hex.</li>
+<li>If the value consists of 0-9, A-Z, a-z, '+', '/' and '=', the format
+might be Base64.</li>
+<li>If the value consists of 2-7, A-Z and '=', the format
+might be Base32.</li>
+<li>If none of the above matches, try the UTF-8 format.</li>
+</ul>
+
+<p><b>Number of required OTPs.</b>
+Here you can specify the number of OTPs that need to be entered in order
+to open the database. The more OTPs, the more secure the database is.
+See the section 'Security' below for details.</p>
+
+<p><b>Look-ahead count.</b>
+OtpKeyProv supports look-ahead windows. When a number <em>n</em> is specified
+as look-ahead count, <em>n</em> OTPs may be skipped and opening will still work.
+For example, if the OTP sequence is <em>A B C D E F G H</em>
+(where each letter represents a multi-digit OTP),
+4 OTPs are required and the look-ahead count is 2, then all of
+the following OTP sequences will open the database:
+<em>A B C D</em>, <em>B C D E</em> and <em>C D E F</em>.</p>
+
+<p>The default look-ahead count is 0, i.e. only exactly one OTP sequence
+will work. The higher the look-ahead count is, the less secure the
+protection of the database is.</p>
+
+<p><b>Generator token configuration.</b></p>
+
+<ul>
+<li>If your generator token has an option to send an Enter keypress at the end,
+you should disable this behavior (otherwise the OtpKeyProv dialog closes
+prematurely with <i>[OK]</i>).</li>
+<li>If your generator token has an option to send an OATH Token Identifier
+before the actual OTP, this should be disabled
+(i.e. only the OTP should be sent).</li>
+</ul>
+
+<br />
+
+<h3>Opening a Database</h3>
+
+<p>In the master key prompt dialog, select <i>'One-Time Passwords (OATH HOTP)'</i>
+in the combo box and click <i>[OK]</i>. You're then prompted for
+the OTP information. There are two modes:</p>
+
+<ul>
+<li><b>Standard mode.</b>
+Generate and enter as many OTPs as the dialog requests.
+</li>
+
+<li><b>Recovery mode.</b>
+If you can't open the database using OTPs anymore (e.g. because the generator
+token and the database are out of sync), you can alternatively enter the
+generator token's secret key to open the file.
+After opening the database, go <i>'File'</i> -&gt; <i>'Change Master Key'</i>
+to synchronize the generator token and the database again.
+</li>
+</ul>
+
+<p><b>Automation.</b>
+By default, the KeePass option <i>'Remember key sources
+(key file paths, provider names, ...)'</i> is enabled, so the next time
+you want to open the database the OTP key provider in the combo box
+will be preselected and you just need to click <i>[OK]</i> (in case you're
+not combining the OTP lock with a master password or the Windows user account).</p>
+
+<p>If you don't even want to click the <i>[OK]</i> button (i.e. you want to see the
+OTP prompt immediately), you can tell KeePass that you're just using the
+OTP lock by passing an appropriate command line option.
+Create a shortcut to <code>KeePass.exe</code> or a batch file running
+KeePass with the following arguments:</p>
+
+<pre>&quot;C:\Path\To\Database.kdbx&quot; -keyfile:&quot;One-Time Passwords (OATH HOTP)&quot;</pre>
+
+<p>More information can be found in the KeePass
+<a href="http://keepass.info/help/base/cmdline.html">Command Line Options</a>
+documentation.</p>
+
+<p><b>Options.</b>
+On the <i>'Options'</i> tab of the dialog, the following options are available:</p>
+
+<ul>
+<li><b>Auto-Accept.</b> If this option is enabled, the dialog is closed
+automatically with <i>[OK]</i> when all required OTPs have been entered.</li>
+<li><b>Auto-Tab.</b> If this option is enabled, the focus is automatically
+switched to the next OTP input box when an OTP with the required length
+has been entered into the current box.
+If your OTP generator token inputs the OTPs for you and simulates a tab
+keypress at the end (like e.g. sCribs do by default), you should <i>not</i>
+enable this option (otherwise the focus is moved twice, skipping one OTP input box).</li>
+</ul>
+
+<br />
+
+<h3>Security</h3>
+
+<p>The more OTPs are required to open the database, the more
+secure it is. The minimum number is 3 (everything below 3 is completely
+insecure; the database would be crackable within seconds), the
+maximum number is 6.</p>
+
+<p>The following table summarizes how secure databases are that
+are protected using OTPs. We assume no other user keys (master password,
+Windows user account, ...) are used.</p>
+
+<p>The column <i>#OTPs</i> lists the number of one-time passwords
+required to open a database.
+The key size can be computed as
+log<sub>2</sub>(10<sup>OTP Length &#8901; #OTPs</sup>)
+=
+OTP Length &#8901; #OTPs &#8901; log<sub>2</sub>(10)
+&#8776;
+OTP Length &#8901; #OTPs &#8901; 3.322.</p>
+
+<center>
+<table>
+<tr><th>OTP Length</th><th>#OTPs</th><th>Key Size</th><th>Rating</th></tr>
+<tr><td rowspan="4">6</td><td>3</td><td align="right">60 bits</td><td>Very weak</td></tr>
+<tr><td>4</td><td align="right">80 bits</td><td>Moderate</td></tr>
+<tr><td>5</td><td align="right">100 bits</td><td>Strong</td></tr>
+<tr><td>6</td><td align="right">120 bits</td><td>Strong</td></tr>
+<tr><td rowspan="4">7</td><td>3</td><td align="right">70 bits</td><td>Weak</td></tr>
+<tr><td>4</td><td align="right">93 bits</td><td>Moderate</td></tr>
+<tr><td>5</td><td align="right">116 bits</td><td>Strong</td></tr>
+<tr><td>6</td><td align="right">140 bits</td><td>Very strong</td></tr>
+<tr><td rowspan="4">8</td><td>3</td><td align="right">80 bits</td><td>Moderate</td></tr>
+<tr><td>4</td><td align="right">106 bits</td><td>Strong</td></tr>
+<tr><td>5</td><td align="right">133 bits</td><td>Very strong</td></tr>
+<tr><td>6</td><td align="right">159 bits</td><td>Very strong</td></tr>
+</table>
+</center>
+
+<p>The table assumes a look-ahead count of 0. If a look-ahead count
+<em>n</em> &ge; 1 is specified, the chance that a brute-force attack enumerating
+OTPs succeeds is at least <em>n+1</em> times higher.
+Thus, it is recommended to keep the look-ahead count as low as possible,
+optimally 0 (which is the default).</p>
+
+<br />
+
+<h3>Acknowledgements</h3>
+
+<ul>
+<li>Thanks to <i>pgbrandolin</i> for creating and publishing the nice
+<a href="http://www.openclipart.org/detail/101407/crypto-chip-by-pgbrandolin">crypto chip</a>
+icon as public domain on the Open Clipart Library.</li>
+<li>Thanks to <i>Dan Cvrcek</i> for providing an sCrib generator token
+for testing the plugin.</li>
+<li>Thanks to <i>Karl Lohnauer</i> for providing a YubiKey generator token
+for testing the plugin.</li>
+</ul>
+
+<br />
+
+<h3>Version History</h3>
+
+<ul>
+<li><strong>2.3</strong><!-- 2014-03-17 -->
+<ul>
+<li>Converted the crypto chip PNG image as a workaround for a problem in
+Cairo/LibPNG on Unix-like systems.</li>
+</ul></li>
+<li><strong>2.2</strong><!-- 2013-12-02 -->
+<ul>
+<li>If the OTP info file cannot be loaded, OtpKeyProv now shows
+the OTP prompt dialog with the recovery tab page being selected by default.</li>
+</ul></li>
+<li><strong>2.1</strong><!-- 2012-09-08 -->
+<ul>
+<li>Updated plugin for KeePass 2.20 and higher.</li>
+</ul></li>
+<li><strong>2.0</strong><!-- 2012-04-12 -->
+<ul>
+<li>Added look-ahead window support.</li>
+</ul></li>
+<li><strong>1.3</strong><!-- 2011-12-08 -->
+<ul>
+<li>Added support for hex strings containing spaces.</li>
+<li>Added YubiKey to the list of tested and supported generator tokens.</li>
+<li>Added generator token configuration hints to the documentation.</li>
+</ul></li>
+<li><strong>1.2</strong><!-- 2011-11-12 -->
+<ul>
+<li>Added support for Base32-encoded keys and counters.</li>
+</ul></li>
+<li><strong>1.1</strong><!-- 2011-10-19 -->
+<ul>
+<li>Added support for entering OTPs on the secure desktop.</li>
+<li>Improved state updating when changing the secret/counter format in
+the OTP key creation dialog.</li>
+</ul></li>
+<li><strong>1.0</strong><!-- 2011-09-24 -->
+<ul>
+<li>Initial release.</li>
+</ul></li>
+</ul>
+
+<br />
+
+<h3>Links</h3>
+
+<p>Latest version of OtpKeyProv:<br />
+<a href="http://keepass.info/plugins.html#otpkeyprov">http://keepass.info/plugins.html#otpkeyprov</a></p>
+
+<p>Support:<br />
+<a href="https://sourceforge.net/projects/keepass/forums/forum/329221">https://sourceforge.net/projects/keepass/forums/forum/329221</a></p>
+
+<p>Feature Requests &amp; Bug Reports:<br />
+<a href="https://sourceforge.net/projects/keepass/forums/forum/329220">https://sourceforge.net/projects/keepass/forums/forum/329220</a></p>
+
+<p>Donations:<br />
+<a href="http://keepass.info/donate.html">http://keepass.info/donate.html</a></p>
+
+<br />
+
+</body>
+</html>

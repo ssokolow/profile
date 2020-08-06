@@ -1,0 +1,4 @@
+[gmediaserver]
+title=gmediaserver
+description=Expose a user-chosen folder to a UPnP/DLNA client like the Kodi box
+ports=49153/tcp

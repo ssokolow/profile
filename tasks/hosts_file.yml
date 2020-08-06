@@ -1,0 +1,28 @@
+---
+# Set up an ad-blocking hosts file with some custom local entries
+
+- name: Copy local /etc/hosts components into place
+  copy:
+    src: etc/hosts.local
+    dest: /etc/hosts.local
+    owner: root
+    group: root
+    mode: 0644
+    backup: true
+  register: hosts_l
+
+# My home-grown HOSTS file updater which sanitizes input
+- name: Download HOSTS file updater
+  get_url:
+    url: "http://ssokolow.com/scripts/upd_hosts.py"
+    dest: "/etc/cron.monthly/upd_hosts.py"
+    owner: root
+    group: root
+    mode: 0755
+    timeout: 5
+    checksum: "sha256:74be4cbb0d08dea20f206d4ead61e7c376bc60580003e4583f62ecd894318a58"
+  register: hosts_u
+
+- name: Download updated MVPS HOSTS file and merge in local amendments
+  command: /etc/cron.monthly/upd_hosts.py
+  when: hosts_l.changed or hosts_u.changed

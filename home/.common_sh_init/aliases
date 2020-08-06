@@ -4,61 +4,99 @@
 
 # Set up some defaults I like
 alias colordiff="colordiff -u"
-alias ls="ls --color=auto"
+alias ls="ls --color=auto -h"
 alias dirs="dirs -v"
 alias less="less -R"
 alias vids="egrep '\.(flv|mp4|webm|avi|ogv|ogm|mkv|mov|rm|wmv)'"
-alias clippy="cargo +nightly clippy"
+
+# An accompaniment to dos2unix and unix2dos
+alias mac2unix="tr '\r' '\n' "
+alias unix2mac="tr '\n' '\r' "
+
+# If I typed `gvim`, it can damn jolly well say what it wants in a new window
+alias gvim="gvim &>/dev/null"
+
+# Quick shortcut to open a file browser in the current directory without
+# cluttering up the terminal with messages from it.
+alias here="pcmanfm . &>/dev/null &"
+
+# Make documentation browsing easier
+alias info="pinfo"
+kinfo() { konqueror info:/"$@" & }
+kman()  { konqueror man:"$@" & }
+
+# {{{ Make Midnight Commander exit into the current directory if installed.
+
+if [ -e "/usr/share/mc/bin/mc-wrapper.sh" ]; then
+    alias mc=". /usr/share/mc/bin/mc-wrapper.sh -x"
+elif [ -e "/usr/libexec/mc/mc-wrapper.sh" ]; then
+    alias mc=". /usr/libexec/mc/mc-wrapper.sh -x"
+else
+    alias mc="mc -x"
+fi
+# }}}
+# {{{ cond_alias* stuff
 
 # A helper that makes an alias which is conditional on the lack of arguments.
-cond_alias() { eval "function ${1}() { [ -z \"\$*\" ] && $2 || command $1 \"\$@\"; }"; }
+cond_alias() {
+    eval "function ${1}() { [ -z \"\$*\" ] && $2 || command $1 \"\$@\"; }";
+}
 
 # TODO: Rework things to remove this duplication
-cond_alias_2() { eval "function ${1}() { [ -z \"\$*\" ] && $2 $3 $4 || command $2 \"\$@\" $4; }"; }
-
-# If github's "hub" wrapper is installed, hook it up
-if which hub >/dev/null 2>&1; then
-    alias git=hub
-fi
-
-# Wrap sqliteman to prevent it from leaving crud lying around
-if which sqliteman >/dev/null 2>&1; then
-    sqliteman() {
-        command sqliteman "$@"
-        rm -- -version
-    }
-fi
+cond_alias_2() {
+    eval "function ${1}() { [ -z \"\$*\" ] && $2 $3 $4 || command $2 \"\$@\" $4; }";
+}
 
 # Streamline my TYT-watching workflow
 cond_alias_2 tytp "bed --no-log" "*"
 
-# Given an egrep path filter, use git filter-branch to throw out all files
-# which don't match.
-git-filter-whitelist() {
-    # Filter out content and newly emptied non-merge, non-root commits
-    # Source: http://stackoverflow.com/a/6006679
-    #shellcheck disable=SC1004,SC2016
-    command git filter-branch --prune-empty --index-filter '
-	    git ls-tree -zr --name-only --full-tree $GIT_COMMIT \
-	    | egrep -vz "'"$1"'" \
-	    | xargs -0 git rm --cached -r
-	' -- --all
+# Workaround for GOG using the PayPal checkout flow that doesn't like my
+# popup-whacking tweaks
+cond_alias_2 gog_firefox "firefox --new-instance -P gog_purchases" "https://www.gog.com/"
 
-    # Collapse away vestigial merge and root commits ignored by --prune-empty
-    # Source: My own accidental discovery
-    command git rebase --root HEAD
+cond_alias df pydf
+cond_alias date "date --rfc-3339=seconds"
+cond_alias top htop
+cond_alias units "units -v"
+
+# }}}
+# {{{ Lazy-init `which`-dependent functions
+
+# If github's "hub" wrapper is installed, hook it up, but don't let the `which`
+# potentially bog down shell startup
+git() {
+    unset -f git
+    if which hub >/dev/null 2>&1; then
+        alias git=hub
+        hub "$@"
+    else
+        git "$@"
+    fi
 }
 
-# For when I mistype popd
-oiod() { echo "ERROR: Your right hand is misaligned"; }
 
-# Nicer alternative to piping a gunzipped file into lynx
-wo() {
-    TMPFILE=$(mktemp --suffix=.html)
-    gunzip < "$@" > "$TMPFILE"
-    "$BROWSER" "$TMPFILE"
-    (sleep 5; rm "$TMPFILE") &
+# Set up an OSD alias which will just work to the best of its ability.
+osd() {
+    unset -f osd
+    if which aosd_cat >/dev/null 2>&1; then
+        echo "BAR"
+        osd() {
+            echo "BOO"
+            aosd_cat --font='Bitstream Vera Sans Bold 36' \
+                     --fade-in=300 --fade-out=300 "$@"
+        }
+    else
+        osd() {
+            echo "FOO"
+            osd_cat --font '-*-*-*-r-*-*-*-390-*-*-*-*-*-*' \
+                    -p bottom -A left -o -75 -i 50 -c green "$@"
+        }
+    fi
+
+    osd "$@"
 }
+# }}}
+# {{{ lgogdownloader wrappers
 
 # Alias for more comfortable gog downloader argv syntax
 gogd() {
@@ -67,27 +105,22 @@ gogd() {
 }
 gogu() {
     local IFS=\|
-    lgogdownloader --download --no-cover --no-extras --game "^($*)\$"
+    lgogdownloader --download --exclude=extras --game "^($*)\$"
 }
 
 lgogd() {
     local IFS=\|
-    lgogdownloader --download --platform=4 --game "^($*)\$"
+    lgogdownloader --download --platform=linux --game "^($*)\$"
 }
 lgogu() {
     local IFS=\|
-    lgogdownloader --download --no-cover --no-extras --platform=4 --game "^($*)\$"
+    lgogdownloader --download ----exclude=extras --platform=linux --game "^($*)\$"
 }
-
-# Alias for my preferred approach to using youtube-dl
-ytdl() {
-    youtube-dl --prefer-free-formats "$@"
-}
+# }}}
+# {{{ youtube-dl wrappers
 
 # Alias for my preferred settings for saving Young Turks vids
-yt() {
-    youtube-dl -f 44/35/43/18/34 "$@"
-}
+yt() { youtube-dl -f 44/35/43/18/34 -r300k "$@"; }
 
 # Alias for grabbing The Cinema Snob and Brad Tries episodes
 getsnob() {
@@ -107,72 +140,9 @@ getsnob() {
 }
 tcs() { getsnob ~"/incoming/Videos/The Cinema Snob" "$@"; }
 bradtries() { getsnob ~"/incoming/Videos/Brad Tries" "$@"; }
+# }}}
+# {{{ pngcomp wrappers
 
-# Smart wrapper for multiple site-specific download tools
-dl() {
-    for url in "$@"; do
-        case $url in
-            http://youtube.com/watch\?* | http://www.youtube.com/watch\?* | https://youtube.com/watch\?* | https://www.youtube.com/watch\?* | https://youtu.be/* ) ytdl "$url" ;;
-            http://vimeo.com/* | https://vimeo.com/* | http://blip.tv/* ) ytdl "$url" ;;
-            http://soundcloud.com/ | https://soundcloud.com/* ) ytdl "$url" ;;
-            http://*.tumblr.com/* | https://*.tumblr.com/* ) youtube-dl "$url" ;;
-            http://fanfiction.net/s/* | http://www.fanfiction.net/s/* | https://fanfiction.net/s/* | https://www.fanfiction.net/s/* ) download_ffn_fic "$url" ;;
-            http://www.tthfanfic.org/Story-* | http://ficwad.com/story/* | http://www.ficwad.com/story/* ) download_ffn_fic "$url" ;;
-            * ) echo "Unrecognized URL type: $url" ;;
-        esac
-    done
-}
-
-# Shorthand aliases for TaskWarrior
-t() {
-    if [ -z "$*" ]; then
-        clear; task
-    else
-        task "$@"
-    fi
-}
-alias tpending='task add +pending due:30d'
-
-# Colorized wdiff
-cwdiff() {
-    if which dwdiff >/dev/null 2>&1; then
-        dwdiff -R "$@" | command colordiff
-    else
-        wdiff -n "$@" | command colordiff
-    fi
-}
-
-# Stuff for KIO LAN transfers
-andre() { kioclient copy "$@" "smb://Slick.multiverse/inbound/"; }
-mom()   { kioclient copy "$@" "smb://mom/inbound/"; }
-nicky() { kioclient copy "$@" "smb://darkspark/inbound/"; }
-
-#Command remaps for extra convenience
-alias bd="cd -"	# Cycle between the two most recent directories
-cond_alias df pydf
-cond_alias date "date --rfc-3339=seconds"
-cond_alias top htop
-cond_alias units "units -v"
-
-# Quick shortcut to open a file browser in the current directory without
-# cluttering up the terminal with messages from it.
-alias here="pcmanfm . &>/dev/null &"
-
-# I want my damn Vim to open things in tabs
-alias vim="vim -p"
-alias gvim="gvim -p &>/dev/null"
-
-# Make documentation browsing easier
-alias info="pinfo"
-kinfo() { konqueror info:/"$@" & }
-kman()  { konqueror man:"$@" & }
-
-# Get rid of the annoying "nohup.out" files.
-# (Why couldn't they have a --logoutput option and no-logging default instead?)
-nohup() { command nohup "$@" > /dev/null & }
-
-# Miscellaneous quick features
-mp3ck()   { mpck -B "$@"; mp3check -e3STBEG "$@"; }
 pngcomp() {
     optipng "$@";
     advpng -z4 "$@";
@@ -194,49 +164,72 @@ pngcomp_brute() {
         rm "$X".bak
     done
 }
+# }}}
 
-# An accompaniment to dos2unix and unix2dos
-alias mac2unix="tr '\r' '\n' "
-alias unix2mac="tr '\n' '\r' "
+# Launch man with modified `less` termcap in subshell to colourize it
+man() { (
+    export LESS_TERMCAP_mb=$(tput bold; tput setaf 2)
+    export LESS_TERMCAP_md=$(tput setaf 6)
+    export LESS_TERMCAP_me=$(tput sgr0)
+    export LESS_TERMCAP_so=$(tput setaf 7; tput setab 4)
+    export LESS_TERMCAP_se=$(tput rmso; tput sgr0)
+    export LESS_TERMCAP_us=$(tput smul; tput setaf 7)
+    export LESS_TERMCAP_ue=$(tput rmul; tput sgr0)
+    export LESS_TERMCAP_mr=$(tput rev)
+    export LESS_TERMCAP_mh=$(tput dim)
+    export LESS_TERMCAP_ZN=$(tput ssubm)
+    export LESS_TERMCAP_ZV=$(tput rsubm)
+    export LESS_TERMCAP_ZO=$(tput ssupm)
+    export LESS_TERMCAP_ZW=$(tput rsupm)
+    export GROFF_NO_SGR=1         # For Konsole and Gnome-terminal
+    command man "$@"
+) }
 
-# Since I habitually use "ls" to drill down until I hit a file, let's make an
-# alias that uses ls if given a directory and vim's less.sh macro for files.
-l() {
-	if [ -f "$1" -a "$*" = "$1" ]; then
-		/usr/share/vim/vim72/macros/less.sh "$1"
-	else
-		ls "$@"
-	fi
+# Get rid of the annoying "nohup.out" files.
+# (Why couldn't they have a --logoutput option and no-logging default instead?)
+nohup() { command nohup "$@" > /dev/null & }
+
+# Wrap sqliteman to prevent it from leaving crud lying around
+sqliteman() { command sqliteman "$@" && rm -- -version; }
+
+# Given an egrep path filter, use git filter-branch to throw out all files
+# which don't match.
+git_filter_whitelist() {
+    # Filter out content and newly emptied non-merge, non-root commits
+    # Source: http://stackoverflow.com/a/6006679
+    #shellcheck disable=SC1004,SC2016
+    command git filter-branch --prune-empty --index-filter '
+	    git ls-tree -zr --name-only --full-tree $GIT_COMMIT \
+	    | egrep -vz "'"$1"'" \
+	    | xargs -0 git rm --cached -r
+	' -- --all
+
+    # Collapse away vestigial merge and root commits ignored by --prune-empty
+    # Source: My own accidental discovery
+    command git rebase --root HEAD
 }
 
-# Make Midnight Commander exit into the current directory if installed.
-if [ -e "/usr/libexec/mc/mc-wrapper.sh" ]; then
-    alias mc=". /usr/libexec/mc/mc-wrapper.sh -x"
-elif [ -e "/usr/share/mc/bin/mc-wrapper.sh" ]; then
-    alias mc=". /usr/share/mc/bin/mc-wrapper.sh -x"
-else
-    alias mc="mc -x"
-fi
+# Nicer alternative to piping a gunzipped file into lynx
+wo() {
+    TMPFILE="$(mktemp --suffix=.html)"
+    command gunzip < "$@" > "$TMPFILE"
+    "$BROWSER" "$TMPFILE"
+    (sleep 5; rm "$TMPFILE") &
+}
 
-# Set up an OSD alias which will just work to the best of its ability.
-if which aosd_cat >/dev/null 2>&1; then
-	alias osd="aosd_cat --font='Bitstream Vera Sans Bold 36' --fade-in=300 --fade-out=300"
-else
-	alias osd="osd_cat --font '-*-*-*-r-*-*-*-390-*-*-*-*-*-*' -p bottom -A left -o -75 -i 50 -c green"
-fi
+# Colorized wdiff
+cwdiff() {
+    if which dwdiff >/dev/null 2>&1; then
+        dwdiff -R "$@" | command colordiff
+    else
+        wdiff -n "$@" | command colordiff
+    fi
+}
 
-# Work around smartypants Debian packagers
-if which ack-grep > /dev/null 2>&1; then
-    alias ack=ack-grep
-fi
-
+# Miscellaneous quick features
+mp3ck()   { mpck -B "$@"; mp3check -e3STBEG "$@"; }
 if ! which download_ffn_fic >/dev/null 2>&1 && [ -e ~/src/fanfic2ebook ]; then
     download_ffn_fic() { PYTHONPATH=~/src/fanfic2ebook/src/ python -m fanfic2ebook -P fanfic2html "$@"; }
 fi
 
-# Set up rTorrent to interact more nicely with screen's window list
-if [[ "$TERM" == screen* ]]; then
-	#shellcheck disable=SC2032,SC2033
-	title() { screen -X title "$@" && echo -ne "\033_$@\033\\"; }
-	alias rtorrent="title rTorrent && exec rtorrent"
-fi
+# vim: set foldmethod=marker :

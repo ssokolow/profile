@@ -1,0 +1,1223 @@
+" Stephan Sokolow's .vimrc (WIP)
+" If you are unfamiliar with vim's folding commands, type zR.
+
+" {{{ Quick Reference
+"
+"  TODO: Decide what to do with *this* quick reference:
+"        https://cdn.shopify.com/s/files/1/0165/4168/files/preview.png
+"
+"  NOTE: See ":help \%V" for forcing a regex to match what was actually
+"        selected in visual mode.
+"
+"  :e {file}    Edit {file} in new buffer
+"  :ene         Edit new (empty) file in new buffer
+"
+"  :w           Save
+"  :w {file}    Save a copy (save as {file} but keep editing the current name)
+"  :sav {file}  Save as     (save as {file} and start editing that instead)
+
+"  gt           Go to next buffer
+"  gT           Go to previous buffer
+"  :b <Tab>     Use Tab-completion to switch buffers by filename
+"
+"  ZZ           Write changes and quit (alias for :wq)
+"  ZQ           Quit, discarding changes (alias for :q!)
+"
+" External Commands:
+"   :!{command}    Run {command}
+"   :!{command} %  Run {command} with current document as argument
+"  :%!{command}    Filter document by passing it to stdin of {command}
+"    !{command}    Filter specified lines using {command}
+"
+"   <F7>           Run the current file via its shebang
+"
+"   TODO:
+"   - Figure out the command for "open current path in {command}"
+"
+" File Navigation And Management:
+"  \[              Toggle NetRW tree listing in sidebar
+"  i (in NetRW)    Cycle listing view mode
+"  x (in NetRW)    Open selected file with xdg-open
+"
+"  :Rename         Rename file attached to the current buffer
+"                  (This can also be done through NetRW by typing `:E .`
+"                   and then selecting the file and hitting `R`)
+"
+"  <C-6> or <C-^>  Cycle between most recent two buffers
+"
+"  :find {X}       Find file {X} and edit it.
+"  :sf {X}         Find file {X} and edit it in a new :split.
+"  gf              Find file named under cursor and edit it.
+"  gx              Open file named under cursor with xdg-open
+"
+"  <C-]>           Jump to tag under cursor.
+"  <C-T>           Undo the most recent jump to tag.
+"
+"  [o              Open previous file in the directory. (alphabetically)
+"  ]o              Open next file in the directory. (alphabetically)
+"
+"  :G              'git grep' on the provided string
+"  <C-X> G         'git grep' on the word under the cursor
+"
+"  :e ++enc=<encoding>
+"               Reload the file, interpreting it as a different encoding
+"
+" Navigation:
+"  gv           Re-select contents of previous visual-mode selection.
+"
+"  */#          Jump to next/prev instance of exact word under cursor
+"  g*/g#        Jump to next/prev instance of word under cursor as substring
+"
+"  %            Jump to next if/then clause or matching paren
+"  g%           Jump to previous if/then clause or matching paren
+"
+"  [%/]%        Jump to previous/next opening/closing scope marker
+"
+"  [m/]m        Jump to start of previous/next method/class/fold
+"  [M/]M        Jump to end of previous/next method/class/fold
+"
+"  [s/]s        Jump to previous/next misspelled word
+"
+"  /{regex}     Search forward
+"  ?{regex}     Search backward
+"  n/N          Go to next/previous match
+"
+"  <C-o>        Pop cursor position stack (great alternative to marks)
+"
+" Folds:
+"  zo/zc       Open/Close fold
+"  zO/zC       Open/Close fold and all child folds
+"  zr/zm       Reduced/More folding (open/close one level of folds)
+"  zR/zM       Open/Close all folds
+"
+" Marks: (Tip: Marks are global. You can use them to switch buffers.)
+"  m{a-zA-Z}   Set mark
+"  `{mark}     Jump to mark
+"  '{mark}     Jump to first non-blank character on marked line
+"  `.          Jump to position of last edit
+"              (Good for recovering from 'peek-scrolling')
+"
+"  :marks      List currently-set marks
+"
+"  Mark Types:
+"   a - z    Local marks (unique to each file)
+"   A - Z    Global marks (let you jump between files)
+"   0 - 9    Last position of the cursor {#} sessions ago
+"   [   ]    First/Last character of previously yanked text
+"   <   >    First/Last character of most recent Visual-mode selection
+"
+" Paste Registers:
+"   ".       Last inserted text
+"   "%       Name of file in current buffer
+"   "#       Name of file in previous buffer
+"   "*       X11 SELECTION buffer
+"   "+       X11 CLIPBOARD buffer
+"   "~       Contents of last drag-and-drop (Keybind <Drop> to catch the event)
+"   "/       Last search pattern
+"
+" Noteworthy Motions:
+"  i {char}     Everything in paired {char} centered on cursor (operator req'd)
+"
+"  w/W/b/B      [count] words fwd/back, land on start (by non-word/space chars)
+"  e/E/ge/gE    [count] words fwd/back, land on end (by non-word/space chars)
+"
+"  (/)          [count] sentences back/forward.
+"  {/}          [count] paragraphs back/forward.
+"
+"  G            Go to line [count]
+"  %            Go to [count] percent of the way through the file
+"  go           Go to byte [count] of the file
+"  gi           Go to last place text was inserted
+"
+"  Within Line Only:
+"   f/F {char}   Move fwd/back onto [count]'th occurrence of {char}
+"   t/T {char}   Move fwd/back 'til before/after [count]'th occurrence of {char}
+"   ;/,          Repeat previous same/opposite f/t/F/T motion [count] times.
+"
+"  For CUA Arrow Key Junkies:
+"   h/j/k/l      Left/Down/Up/Right (Character/Linewise)
+"   gj/gk        Down/Up (Visually)
+"   g<Home/End>  Home/End (Visually)
+"
+" Editing:
+"  <C-V>        Visual Block mode (A.K.A. column mode)
+"
+"  <C-A>/<C-X>  Increment/decrement number/date/time/numeral under cursor.
+"               (Also supports letters of the alphabet in visual mode)
+"
+"  \c           Trigger snippet expansion
+"  \u           Toggle undo history browser
+"
+"  \c<Space>    Toggle comment state for selected lines
+"  \cy          Yank then comment selected lines
+"  \cc          Comment selected lines
+"  \cl          Comment selected lines (aligned)
+"  \cu          Uncomment selected lines
+"  \cA          Begin end-of-line comment
+"
+"  ~            Toggle case of character under cursor or selected text
+"
+"  >>           Indent selected lines
+"  <<           Unindent selected lines
+"
+"  zf           Create fold (Adds markers around selection if foldmethod=marker)
+"  zg/zG        Add word to spellcheck's permanent/session whitelist
+"  z=           Get suggested spelling corrections for word under cursor
+"
+"  gg=G         Reindent the entire file according to the current indent setup
+"               (Assuming 'equalprg' hasn't redefined the meaning of =)
+"  :retab       Convert tabs according to `expandtab` and friends
+"
+"  :g/{re}/p    Print (list) all lines matching {re} (or any regex)
+"  :g/{re}/d    Delete all lines matching {re}
+"  :v/{re}/d    Delete all lines NOT matching {re}
+"
+"  :sort        Sort lines
+"  :sort!       Sort lines in reverse
+"  :sort u      Sort lines, discarding duplicates
+"  :sort n      Sort lines numerically rather than lexicographically
+"               (http://vim.wikia.com/wiki/Sort_lines)
+"
+"  Insert Mode:
+"   <C-Space>     Omni-Completion
+"   <C-V>         Type the following character literally
+"
+"   :VCoolor      Insert RGB or modify existing color
+"   :VCoolIns r   Insert RGB color
+"   :VCoolIns ra  Insert RGBA color
+"   :VCoolIns h   Insert HSL color
+"   (See VCoolor manual for conversion commands)
+"
+"  Visual Mode:
+"   ,x           Reindent using HTML Tidy
+"
+"  Build An Incremented Sequence From A Selected Column In Visual Block Mode:
+"  :I  [#]      Left-Justified  (Supply # for non-default increment)
+"  :II [#] [F]  Right-Justified (Supply F for non-default padding character)
+"
+"  Note: Variants also allow incrementing of dates, day names, and hexadecimal,
+"  octal, and roman numerals.
+"
+"  Motions Requiring Operator Or Visual Mode:
+"   at          HTML/XML element (tags) at cursor plus contents (eg. dat)
+"   it          Just contents of HTML/XML element (tags) at cursor (eg. dit)
+"
+"  Vis:
+"   Use visual mode to select and then...
+"    :B {cmd}   Apply an editor command to selected region
+"    :S {pat}   Search only selected region
+"
+" Display Control:
+"  [count] <C-W> +/-/</> Resize the current pane
+"  <C-W> _    Maximize current pane
+"  <C-W> =    Make all panes equal size
+"  <C-W> r/R  Rotate pane positions to the right/left.
+"
+"  <C-W><C-W> Cycle pane focus (Backwards to allow easy flipping between two)
+"  <C-W><dir> Move focus to adjoining pane
+"
+"  <C-W> s/v  Split Horizontally/Vertically
+"  <C-W> c    Close current pane if it wouldn't discard unsaved contents (:clo)
+"  <C-w> ]    Split window and jump to tag under cursor
+"  <C-w> i    Split window and jump to declaration of identifier under cursor
+"
+"  <C-N><C-N> Toggle line numbers
+"  <C-L>      Hide search result highlights
+"
+" }}}
+" {{{ Non-QuickRef Notes on This Configuration:
+"
+" - A plugin provides "Smart Home/End" (like in Visual C++, apparently)
+" - Saving non-M4/Make/diff/mail files automatically removes trailing whitespace
+" - In supported file formats, saving automatically runs a syntax check
+" - TODO: Complete this list
+"
+" }}}
+" {{{ Notes on my rationale:
+" - I keep Select mode off because Visual mode is more useful and I can get
+"   Select-mode behaviour by just typing an extra c after selecting.
+" - I've rebound the up/down arrows and home/end to take soft-wrap into account
+"   because it's what I'm already used to and, in the case of home/end,
+"   it'll always be a simpler motion than g0 and g$.
+" - Whenever it can be done suitably reliably, I let Vim do things for me.
+"   (eg. stripping trailing whitespace)
+" - Whenever it can be done quickly and without being overly nitpicky, I let
+"   vim run static analysis on files on save and display the results in the
+"   quickfix window.
+" - My quick reference is half for me and half for anyone reading this, so it's
+"   thorough but well-organized and I omit obvious stuff like :w unless it's
+"   for comparison or I use it infrequently.
+" }}}
+
+" {{{ TODO: Performance optimizations:
+" * Use the "autoload" folder for on-demand loading of `function`s
+"   (https://stackoverflow.com/a/21197543/435253)
+" * https://stackoverflow.com/a/12216578/435253 (Using Vim's profiling support`)
+" * https://www.reddit.com/r/vim/comments/1br9v7/tips_and_tricks_for_improving_syntax_highlighting/
+"   * Turn off what I don't need in `:help php.vim` to un-bloat PHP syntax
+" * https://github.com/simnalamburt/vim-mundo/issues/69
+"   * https://github.com/mbbill/undotree
+" * https://www.reddit.com/r/vim/comments/78idji/how_could_i_debug_vim_being_laggy/
+"   * :help profiling
+"   * https://coderwall.com/p/sdva9q/how-to-detect-plugins-slowing-vim-down
+"   * Keep an eye out for when I can `:gui` from nvim to nvim-qt, since nvim-qt
+"     is supposed to be more performant than gVim
+"   * Add an option to toggle nowrap and customize the truncation indicator
+"   * See if tmux performs better than GNU screen
+"   * Look for performance optimizations for urxvt
+"   * NeoVim is working on alternative syntax highlighting approaches
+"     * https://github.com/neovim/neovim/pull/11113
+"     * https://github.com/arakashic/chromatica.nvim
+" * https://stackoverflow.com/q/19030290/435253
+" * https://www.reddit.com/r/vim/comments/8ggdqn/undocumented_tips_make_your_vim_1020x_times_faster/
+"   * Comment on the kinds of things syntax definitions tend to get slow on
+" * https://www.systutorials.com/136414/profiling-vim-to-find-out-which-plugin-makes-vim-slow/
+" * https://github.com/bennyyip/plugpac.vim
+" * Try foldmethod=manual if fastfold isn't enough
+" }}}
+" {{{ TODO:
+" * Figure out why ALE causes mouse motion to be misinterpreted until a button
+"   has been clicked.
+" * Bind Ctrl+Delete to "delete next word"
+" * Figure out what autocmd causes :q to abort if ~/.bashrc contains a warning
+"   that causes ALE to pop open shellcheck in the quickfix window
+" * Add snippets for generating modelines (eg. `# vim: ft=zsh` for `none`)
+" * Document Shift+v vi}
+" * Document Shift+v:Tab /:\zs for Tabularize
+" * Improve my autocmd to also let `q` close the scratch buffers opened by ALE
+"   completions in Rust.
+" * Consider `nnoremap \d :bp<cr>:bd #<cr>` as a :bd that doesn't leave the old
+"   buffer accessible through Ctrl+^
+"   (http://vimcasts.org/episodes/aligning-text-with-tabular-vim/)
+" * Patch gundo.vim/autoload/mundo/graphlog.py to use box-drawing
+"   characters (https://en.wikipedia.org/wiki/Box-drawing_character)
+"   or switch to undotree and https://github.com/mbbill/undotree/issues/103
+" * Find/write a plugin to display a big popup window in the style of vim-clap
+"   containing a quick {motion} reference and maybe some common actions.
+" * Explore :help ins-completion
+" * Audit vim-snippets to see if they're worthwhile or whether I should just
+"   make my own as needed using :UltiSnipsEdit
+" * Experiment with 'complete'
+"   * complete-=i is a performance optimization
+"   * complete+=kspell and/or complete+=s could be useful for Markdown and rST
+" * Experiment with 'completeopt'
+"   https://vim.fandom.com/wiki/Make_Vim_completion_popup_menu_work_just_like_in_an_IDE
+" * Improve https://github.com/jmcomets/vim-pony to work with autochdir-like
+"   hack and then use it.
+" * Try https://github.com/jarun/nnn
+" * Compare https://github.com/liuchengxu/vim-clap to fzf.vim
+"   (I'll need to fix the color scheme first)
+" * Compare https://github.com/jhawthorn/fzy to fzf for perf. and comfort
+" * Compare https://github.com/lotabout/skim to fzf for perf. and comfort
+" * Try out https://github.com/tpope/vim-jdaddy
+" * Look into whether fugitive's got anything worthwhile as an alternative to
+"   my use of `git gui`.
+"   (https://www.reddit.com/r/vim/comments/dndnpq/what_git_for_windows_developers_think_of_our/f5cb0bu/)
+" * Get familiar with the keybinds and configuration options surrounding
+"   marker-based folding support.
+" * Make better use of UltiSnips's advanced syntax
+" * Look into the plugins listed under |UltiSnips-extending| to see if any
+"   provide the "Tab means 'do what I mean'" experience I'd want in order to
+"   accept IDE-style Tab behaviour.
+" * Explore options for only auto-closing folds sometimes
+" * Find a use for K and 'keywordprg'
+" * Experiment with the 'linebreak' option
+" * Experiment with 'relativenumber' as an aid to habituating more motions
+" * Explore 'foldnestmax=3' as a perf. optimization or convenience feature
+" * Consider using the 'dictionary' option
+" * Consider using the 'html' flag for 'clipboard' on HTML buffers.
+" * https://vimhelp.org/terminal.txt.html
+" * https://www.reddit.com/r/vim/comments/djixyw/how_do_people_actually_use_numbers_practically/
+" * Incorporate https://hub.github.com/ into my workflow
+" * Read up on how this syntax works:
+"   https://www.reddit.com/r/vim/comments/dnvx6m/how_can_i_remove_linebreakes_for_lines_that_have/
+" * https://stackoverflow.com/questions/1218390/what-is-your-most-productive-shortcut-with-vim/1220118#1220118
+" * http://constantcoding.blogspot.ca/2013/07/quick-vim-trick-for-fixing-indentation.html
+" * https://sanctum.geek.nz/arabesque/vim-anti-patterns/
+" * https://news.ycombinator.com/item?id=12648485
+" * Django:
+"   * https://github.com/chronossc/my-vim-confs/blob/master/.vimrc
+"     (http://chronosbox.org/blog/read-to-work-vim-confs-for-python-and-django)
+"   * http://stackoverflow.com/questions/5078592/configuring-django-snipmate-snippets-only-for-django-projects
+"   * Set up the Python side of https://github.com/robhudson/snipmate_for_django
+"   * https://code.djangoproject.com/wiki/UsingVimWithDjango
+"   * http://blog.fluther.com/django-vim/ (Omni-completion)
+"   * http://rope.sourceforge.net/ropevim.html (Refactoring)
+" * Folding:
+"   * A newly created fold shouldn't start collapsed. (PitA with fdm=indent)
+"   * Figure out how to use find and folding together so find doesn't open all
+"     my folds and then leave them opened.
+" * Consider using https://github.com/jeffkreeftmeijer/vim-numbertoggle as an
+"   aid to learning to use Vim's motion operations.
+" * Fix the DetectIndent problem with tripping over /*\n*\n*\n*/
+" * Decide whether to use PyChecker or PyLint for Python :make
+" * Find or write a script which strips the former next line's indenting when
+"   I remove a newline character with the Delete key.
+" * Set up some concise prev/next tab keybindings
+" * Choose a different color scheme for the ncurses omni-completion popup
+" * Set up and memorize a suitable set of snipMate snippets.
+" * Consider using signs for inline handling of things like diff, quickfix, etc.
+" * Figure out how to properly handle spaces in filepaths for makeprg. (eg. tidy)
+" * Set up filetype-specific equalprg strings for HTMLTidy, CSSTidy, etc.
+"   and/or figure out the keybinding to reformat based on the vim indent defs.
+" * Figure out how to solve my disagreement with gVim over what constitutes
+"   an acceptable response to existing swap files.
+" * Figure out why, with comment formatting enabled, formatoptions wants to
+"   word-wrap after every word in this file.
+" * Explore alternate Vim color schemes.
+" * also :h function-list   if you ever want to see what else is available
+" * Find/write a plugin to easily register a new snippet for just the current
+"   document for just the current editing session so it can be an alternative
+"   to things like multi-cursor plugins.
+" * Consider https://github.com/qpkorr/vim-bufkill
+"   and/or https://vi.stackexchange.com/a/9879/20566
+" * Explore the set of path modifiers as demonstrated by this command:
+"       :w %:p:h/new_filename
+" ----
+" * Set aside some time to internalize Vim motions in a structured fashion
+"   (https://medium.com/@mkozlows/why-atom-cant-replace-vim-433852f4b4d1)
+"   * https://www.hillelwayne.com/post/intermediate-vim/
+"   * https://news.ycombinator.com/item?id=12645200
+" * http://vim.wikia.com/wiki/Integration_with_PyUnit_testing_framework
+" * http://www.vim.org/scripts/script.php?script_id=974
+" * http://vim.wikia.com/wiki/GNU_Screen_integration
+" * http://www.vim.org/scripts/script.php?script_id=3010
+" * http://vim.wikia.com/wiki/Switch_between_Vim_window_splits_easily
+" * http://vim.runpaint.org/navigation/bookmarking-lines-with-visible-markers/
+" * http://www.vim.org/scripts/script_search_results.php?keywords=php+indent&script_type=&order_by=rating&direction=descending&search=search
+" * http://stackoverflow.com/questions/313359/annoying-vim-unindent-rules
+" * Look into merging tag_signature.vim with
+"   http://vim.wikia.com/wiki/Use_balloonexpr_effectively
+" * https://www.reddit.com/r/vim/comments/dp3uf7/til_vim_has_internal_plugin_for_justifying_text/
+" ----
+" * http://vimdoc.sourceforge.net/htmldoc/quickfix.html#quickfix
+" * http://vimdoc.sourceforge.net/htmldoc/motion.html#operator
+" * http://vimdoc.sourceforge.net/htmldoc/quickfix.html#errorformat
+" * https://devhints.io/vimscript
+" * See if I can get Markdown-style bullet auto-insertion working here
+
+" }}}
+" {{{ Stuff to build habits for:
+" * http://www.catonmat.net/series/vim-plugins-you-should-know-about
+" * Splitting and unsplitting:
+"  - http://blogs.sourceallies.com/2009/11/vim-splits-an-introduction/
+"  - http://jmcpherson.org/windows.html
+" }}}
+" {{{ HOWTO Reminders for Things I May Eventually Want
+" Originally from:
+" http://the-shaolin.blogspot.com/2004/12/my-own-2-cent-vim-tip.html
+" ab TODO: ssokolow :r!date +\%Y-\%m-\%dkJA TODO:
+" ab FIXME: ssokolow :r!date +\%Y-\%m-\%dkJA FIXME:
+" }}}
+
+" {{{ Configuration
+" vint: -ProhibitSetNoCompatible
+
+set nocompatible | filetype plugin indent on | syn on
+set modeline
+set hidden
+
+" It seems Ubuntu's defaults are less agreeable than Gentoo's.
+set nobackup
+set nowritebackup
+
+" Let the loaded copy serve as the backup in the one case where I need one
+" (Accidentally modifying the same file without mutexing)
+set noautoread
+
+set encoding=utf-8
+scriptencoding utf-8
+lang en_US.utf8 " ...because apparently en_CA.utf8 falls back to French
+if has('gui_running')
+    " Use gui_running as a proxy for checking wavy underline support
+    set spell spelllang=en_ca
+endif
+
+" See CSApprox (https://vimawesome.com/plugin/csapprox)
+" for adapting gVim color schemes for terminal Vim.
+colorscheme default_256_fixed
+
+" I don't like my apps bugging me about donations or flooding me with recover
+" alerts when I restore a session. If I need to recover, I'll do it manually.
+" TODO: Figure out how to reimplement "still running" warnings manually.
+set shortmess+=IA
+
+" Don't treat word-wrapped lines as an 'all or nothing' thing when displaying.
+set display+=lastline
+set scrolloff=2 " I like to have a two-line 'preview' when scrolling
+
+" I want a decent status line
+set showcmd     " Show in-progress commands so I can figure out what the heck I accidentally hit.
+
+" Make tabs and trailing whitespace visible and pretty up non-wordwrap mode
+set list
+set listchars=tab:»·,trail:·,extends:→,precedes:←
+
+" Only word-wrap comments and word-wrap them at 79 characters.
+set formatoptions-=t     " No word-wrap inside code.
+set formatoptions+=croql " Make the behaviour I'm used to explicit
+set textwidth=79
+
+" I prefer 4-space indentation by default but use expected 8-space tabs
+set expandtab
+set tabstop=8
+set softtabstop=4
+set shiftwidth=4
+
+" If ftplugin or modeline sets sts != sw, initial <Tab> should match >>
+set smarttab
+
+" Snap misaligned indents on << and >> and copy previous line's indent
+set shiftround
+set copyindent
+
+" Cursor improvements
+set virtualedit=block     " Make visual block selection more convenient
+set guicursor=a:blinkon0  " The blink is annoying when I'm tired
+                          " (and unnecessary for a cursor locked in view)
+
+" Halve the line length limit for what Vim's willing to syntax-colorize. This
+" should make it more responsive for large files.
+" TODO: Decide what to do about word-wrap's effect on large files.
+set synmaxcol=1500
+
+" Assuming it doesn't cause any bugs, lazyredraw should speed things up
+" (See https://github.com/tpope/vim-sensible/issues/78)
+set lazyredraw
+
+" Put swapfiles all together in one of the system temporary directories so it's
+" easy for me to flush them if need be.
+" (And don't let them clutter up my ~/tmp)
+set directory-=.,~/tmp
+
+set fileformats=unix,dos     " Be explicit about my line-ending detect prefs.
+
+" Allow C-A and C-X to increment and decrement everything except octal, which
+" would collide with zero-padded decimal numbers
+" FIXME: Why isn't 'alpha' working?
+set nrformats="alpha,bin,hex"
+
+set formatoptions+=1      " Don't end lines with one-letter words when wrapping
+" TODO: Get these cooperating. (n seems to require t)
+"set formatoptions+=n
+"set formatlistpat="^\s*\(\d\+[\]:.)}\t ]\|[-*]\)\s*"
+
+" Make my saved views portable and rely on modeline for saving options
+set viewoptions=cursor,folds,slash,unix
+
+" Make my sessions a bit more like projects and less like vimrc overrides.
+set sessionoptions=blank,curdir,folds,help,resize,slash,tabpages,unix,winpos,winsize
+
+" }}}
+" {{{ Configuration (Optional Vim Built-in Features)
+
+" Make searching more efficient
+if has('extra_search')
+    set incsearch
+    set hlsearch
+    set ignorecase
+    set smartcase
+endif
+
+" Let's default to syntax-based folding since it's the most automatic
+if has('folding')
+    " TODO: Decide whether to just ditch folding as not my thing
+    set foldlevel=99
+    "set foldlevel=0
+    set foldmethod=syntax
+    set foldopen+=jump  " Add far jumps to the list of things which open folds
+endif
+
+" I want full mouse support when using a Yakuake-->screen-->vim stack.
+if exists('+mouse')
+    set ttymouse=xterm2
+    set mouse=a
+endif
+
+" While I'll try to use it as little as possible, I prefer a mouse interaction
+" model that's consistent with my GUI apps, rather than my terminals.
+" (I'll probably rework it later to at *least* show the corresponding keybinds
+" for its default contents as a quick reference)
+if exists('+mousemodel')
+    set mousemodel=popup
+endif
+
+" Preserve my preferred selection behaviour on Windows
+" TODO: Is there a way to get keymodel=startsel with Visual mode?
+if exists('+selectmode')
+    set selectmode=
+endif
+if exists('+selection')
+    set selection=inclusive
+endif
+
+" Set up more comfortable filesystem navigation
+if exists('+wildmenu')
+    set wildmenu
+endif
+if exists('+wildignore')
+    set wildignore+=*.pyc,*.pyo,*.class
+else
+    set suffixes+=.pyc,.pyo,.class
+endif
+
+" Use 'ripgrep' as my grep program since it's more comfortable for me
+if executable('rg')
+    set grepprg=rg\ --vimgrep
+endif
+
+" }}}
+" {{{ Configuration (Built-in `let`)
+
+let python_highlight_all = 1
+
+" Configure NetRW to act as a built-in equivalent to NERDTree
+let g:netrw_browsex_viewer='xdg-open'
+let g:netrw_liststyle=3
+let g:netrw_sizestyle='H'
+let g:netrw_usetab=1
+let g:netrw_winsize=-32
+" TODO: Flesh out g:netrw_decompress
+
+" }}}
+" {{{ Configuration (Plugins)
+
+" Don't crunch Codi off in the right-hand side of my Quake-style terminal
+let g:codi#width = 50.0
+let g:codi#rightalign = 0
+" TODO: Consider setting g:codi#use_buffer_dir for nicer relative paths
+
+" Set CtrlSF to automatically focus its sidebar if the search took less than 1s
+let g:ctrlsf_auto_focus = {
+    \ 'at' : 'done',
+    \ 'duration_less_than': 1000
+    \ }
+
+" Reorder the preference of tools that Grepper supports and don't get mixed
+" in with ALE's output to the quickfix window
+let g:grepper = {
+\   'tools': ['rg', 'ag', 'ack-grep', 'ack', 'pt', 'grep', 'git'],
+\   'dir': 'repo,filecwd',
+\   'quickfix': 0,
+\   'highlight': 1,
+\   'prompt_quote': 3,
+\}
+
+" Add *.css, *.incl, *.jinja2, and *.xhtm to the heuristic for finding the
+" project root when using CTRL-X CTRL-F completion in CSS/HTML/template files
+let g:html_FileCompletion_WithinDocRootGlob = '*.{asp,css,gsp,htm,html,incl,jinja2,jsp,xhtm,xhtml}'
+
+" Set up indentLine to not be eye-catching when I don't want to look at it
+let g:indentLine_color_term = 232
+let g:indentLine_color_gui = '#dddddd'
+if has('gui_running')
+    let g:indentLine_char = '⸽'
+else
+    let g:indentLine_char = '┊'
+endif
+
+" Don't trip me up when I'm trying to edit Markdown hyperlinks
+let g:indentLine_concealcursor = 'nc'
+
+" So far, I haven't seen any sign that smart pairing is causing problems, so
+" let's use it for more comfort
+"let g:pear_tree_smart_openers = 1
+"let g:pear_tree_smart_closers = 1
+"let g:pear_tree_smart_backspace = 1
+let g:pear_tree_timeout=10
+
+" It'd be nice if pear-tree worked with dot-repeating, but the necessary
+" temporary hiding of closers on newline is too big a sacrifice
+let g:pear_tree_repeatable_expand = 0
+
+" Add Vim foldmarkers to pear-tree's global defaults
+let g:pear_tree_pairs = {
+            \ '(': {'closer': ')'},
+            \ '[': {'closer': ']'},
+            \ '{': {'closer': '}'},
+            \ "'": {'closer': "'"},
+            \ '"': {'closer': '"'},
+            \ '{{{': {'closer': '}}}'},
+            \ }
+
+" Use a more intuitive symbol to denote changed lines
+let g:signify_sign_change = '~'
+
+" Use \c for to trigger snippet expansion so it doesn't collide/conflict
+let g:UltiSnipsExpandTrigger='<Leader>c'
+let g:UltiSnipsJumpForwardTrigger='<tab>'
+let g:UltiSnipsJumpBackwardTrigger='<s-tab>'
+
+" Don't map VCoolor keybinds. Use :Commands and on-demand loading instead
+let g:vcoolor_disable_mappings = 1
+
+" }}}
+" {{{ Configuration (ALE)
+
+let g:ale_open_list = 1
+let g:ale_set_loclist = 0
+let g:ale_set_quickfix = 1
+let g:ale_completion_tsserver_autoimport = 1
+if has('gui_running')
+    let g:ale_set_balloons = 1
+endif
+
+let g:ale_fixers = {
+\   '*': ['remove_trailing_lines', 'trim_whitespace'],
+\   'css': ['prettier', 'stylelint'],
+\   'javascript': ['eslint'],
+\   'make': ['remove_trailing_lines'],
+\   'xml': ['xmllint'],
+\}
+
+let g:ale_sign_column_always = 1
+let g:ale_fix_on_save = 1
+let g:ale_sign_error = '✗'
+let g:ale_sign_warning = '‼'
+
+" To avoid bogging down Vim with mass changes to the document model,
+" only re-lint on save, even if it *is* async now.
+let g:ale_lint_on_text_changed = 'never'
+let g:ale_lint_on_insert_leave = 0
+
+" Enable completion where available.
+set omnifunc=ale#completion#OmniFunc
+
+" TODO: Install more ALE linters and fixers for AsciiDoc, Elm, gitlint,
+"       Handlebars, HTML, JavaScript, JSON, languagetool, Lua, PHP,
+"       remark-lint, Text, and TypeScript
+" TODO: Decide on a fixer for XHTML
+" TODO: Experiment with https://vim.fandom.com/wiki/Automatic_word_wrapping
+"       in the context of code comments and docstrings.
+"       https://lglinux.blogspot.com/2008/01/rewrapping-paragraphs-in-vim.html
+" TODO: Can I configure Vim so these TODO: comments indent properly when it
+"       rewraps them or I press Enter?
+" TODO: How would I go about automatically uncommenting an empty leading or
+"       trailing commented line on leaving insert mode, so I can easily insert
+"       a blank space between a comment and a non-comment?
+"       (Ideally, also do so for foldmarker comments.)
+" TODO: Adjust the terminal-mode color scheme to improve the contrast on
+"       text highlighted by clippy via ALE warnings.
+"
+" https://github.com/dense-analysis/ale/blob/master/supported-tools.md
+"
+" TODO: Set up a linter config for Watcom C/C++ projects
+" TODO: Contribute a PR for splint
+"
+" }}}
+" {{{ Load plugins via vim-plug
+
+" If this doesn't work, then you need to download
+" https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
+" to ~/.vim/autoload/ if it's not already there, then run :PlugInstall
+
+" TODO: Explore https://github.com/bennyyip/plugpac.vim as an even faster alternative
+
+call plug#begin('~/.vim/plugged')
+
+" Support more formats
+Plug 'sheerun/vim-polyglot'
+Plug 'vim-scripts/python_match.vim', { 'for': 'python' }
+Plug 'vim-scripts/tiddlywiki', { 'for':  'tiddlywiki' }
+
+" Stuff which doesn't require being triggered by commands
+Plug 'editorconfig/editorconfig-vim'  " Obey .editorconfig files
+Plug 'dense-analysis/ale'             " Linting and LSP support
+Plug 'mhinz/vim-signify'              " Show git diff in the gutter
+Plug 'vim-scripts/LargeFile'          " Turn off some functions in big files
+Plug 'Yggdroot/indentLine'            " Visualize indent levels
+Plug 'konfekt/fastfold'               " Update folds lazily for performance
+" TODO: See if https://github.com/airblade/vim-gitgutter is faster than signify
+" TODO: Set up rust-analyzer downloading as an ALE post-install hook
+
+" Disabled until tmsvg/pear-tree#38 (A.K.A roxma/vim-paste-easy#11) is fixed
+"Plug 'roxma/vim-paste-easy'           " Auto-:paste for inhumanly fast typing
+
+" Colourize red and #00f but only load it in file formats where I'd want it
+Plug 'ap/vim-css-color', { 'for': ['css', 'vim'] }
+
+" FIXME: Why doesn't indentLine trigger on a Markdown or Vim buffer until after
+"        I've switched away from and back to it?
+
+" Automatically balance inserted delimiters to keep ALE from wasting a ton of
+" LSP effort on transient errors and on asking Vim to re-style huge spans
+Plug 'tmsvg/pear-tree'
+
+" -- Enhancements for built-in commands --
+Plug 'vim-scripts/bwHomeEndAdv.vim'                 " Smart Home/End
+Plug 'andymass/vim-matchup'                         " Enhance the % command
+Plug 'vim-scripts/vis', { 'on': ['B', 'S'] }        " visual-scoped :B/S
+
+" -- New commands --
+Plug 'scrooloose/nerdcommenter'                     " Un/comment: \cc, \cb, \cu
+Plug 'terryma/vim-multiple-cursors'                 " Ctrl+N to multi-cursor
+Plug 'AndrewRadev/splitjoin.vim'                    " gS and gJ rewrap things
+Plug 'artnez/vim-rename', { 'on': 'Rename' }        " File renaming via :Rename
+Plug 'dsummersl/gundo.vim', { 'on': 'MundoToggle' } " Tree-structured Undo: \u
+Plug 'dyng/ctrlsf.vim', { 'on': 'CtrlSF' }          " Grep with context: \S
+Plug 'metakirby5/codi.vim', { 'on': 'Codi' }        " Jupyter-esque REPL
+Plug 'jmcantrell/vim-virtualenv', { 'for': 'python' }
+Plug 'mhinz/vim-grepper', { 'on': ['Grepper', '<plug>(GrepperOperator)'] }
+Plug 'junegunn/fzf', { 'on': ['Files', 'GFiles', 'Buffers', 'Colors', 'Ag', 'Rg', 'Lines', 'BLines', 'Tags', 'BTags', 'Marks', 'Windows', 'Locate', 'History', 'Snippets', 'Commits', 'BCommits', 'Commands', 'Maps', 'Helptags', 'Filetypes'] }
+Plug 'junegunn/fzf.vim', { 'on': ['Files', 'GFiles', 'Buffers', 'Colors', 'Ag', 'Rg', 'Lines', 'BLines', 'Tags', 'BTags', 'Marks', 'Windows', 'Locate', 'History', 'Snippets', 'Commits', 'BCommits', 'Commands', 'Maps', 'Helptags', 'Filetypes'] }
+Plug 'KabbAmine/vCoolor.vim', { 'on': ['VCoolor', 'VCoolIns'] }
+" Code Snippets
+if has('python3')
+  Plug 'SirVer/ultisnips'
+  Plug 'honza/vim-snippets'
+  " TODO: Fix `au` snippet to use better internal content
+endif
+
+" Make CTRL-X CTRL-F completion of absolute paths work sanely in HTML projects
+Plug 'inkarkat/vim-ingo-library', { 'for':
+            \   ['css', 'html', 'htmldjango', 'php', 'xhtml'] }
+Plug 'vim-scripts/html_FileCompletion', { 'for':
+            \   ['css', 'html', 'htmldjango', 'php', 'xhtml'] }
+
+" -- Commands I still need to memorize more --
+Plug 'roxma/vim-encode'                             " \e to encode selection
+Plug 'godlygeek/tabular', { 'on': 'Tab' }           " `:Tab /re` for alignment
+Plug 'olical/vim-expand', { 'on': 'Expand' }        " :Expand selected extglobs
+Plug 'drmikehenry/vim-extline', { 'for': 'rst' }    " Underline helpers for rst
+
+" Easily generate incrementing numeric sequences with Ctrl+V and then :I/etc.
+Plug 'vim-scripts/VisIncr', { 'on': ['I', 'II',
+\    'IB', 'IIB', 'IO', 'IIO', 'IX', 'IIX', 'IYMD',
+\    'IMDY', 'IDMY', 'IA', 'ID', 'IM', 'IPOW', 'IIPOW'
+\    ] }
+
+" Shorthand markup insert with <C-y> in multiple modes
+" <C-y>, either wraps the selected text in a prompted-for pattern or renders
+"        the pattern under the cursor.
+"        Patterns are of the form div#page>div.logo+ul#navigation>li*5>a where:
+"        - div#page creates <div id="page">...</div>
+"        - div.l+ul#nav creates <div class="l"></div><ul id="nav">...</ul>
+"        - li*5>a repeats <li><a>...</a></li> five times
+"        - Adding $ to an attribute would insert a monotonic count
+"        (See `:h emmet` for other constructs like parent traversal and groups)
+" <C-y>, wraps selected text in tags according to a ul>li*>span pattern where
+"        the * represents what should get repeated once per line
+"        ($8
+" <C-y>m combines the selected lines into one
+" <C-y>k deletes the element the cursor is inside
+" <C-y>/ toggles the block being commented out
+" <C-y>a turns a URL into an <a> tag
+" <C-y>A retrieves a snippet and turns the URL into a <blockquote> tag.
+Plug 'mattn/emmet-vim', { 'for': ['css', 'html', 'htmldjango', 'mako'] }
+
+"NOTE: tpope/vim-surround and tpope/vim-ragtag make a powerful pair for editing
+"      SGML-family languages, but I don't do it often enough to remember I have
+"      them, let alone remember the commands.
+
+call plug#end()
+
+" }}}
+
+" TODO: Tweak color scheme so that...
+"       - :Buffers doesn't have such an extreme selection highlight contrast
+"       - :Snippets has proper contrast in gVim
+"       - The statuslines aren't so stark
+"   ... or use a new one from:
+"       * https://vimcolors.com/
+"       * https://github.com/rafi/awesome-vim-colorschemes
+
+" TODO: Find a way to merge file paths and UltiSnips#SnippetsInCurrentScope(1))
+"       into my completion options
+
+" {{{ Define Autocommands
+
+if has('autocmd')
+    " Remove previous sourcings of this augroup
+    augroup vimrc
+    au!
+
+    " Set the current directory in a way which hopefully won't break things
+    " like ALE's Elm support like autochdir does (race condition)
+    " https://vim.fandom.com/wiki/Set_working_directory_to_the_current_file
+    autocmd BufEnter * silent! lcd %:p:h
+
+    " Workarounds for known lazyredraw issues
+    " (See https://github.com/tpope/vim-sensible/issues/78)
+    if maparg('<C-L>', 'n') ==# ''
+        nnoremap <silent> <C-L> :set lz!<CR>:nohlsearch<C-R>=has('diff')?'<Bar>diffupdate':''<CR><CR><C-L>:set lz!<CR>
+    endif
+    autocmd VimEnter * redraw!
+
+    " Update the Quick Fix window's visibility state on save
+    autocmd BufWritePost * cwindow
+
+    " Keep Quick Fix from interfering with :bd or :q
+    " TODO: Rework so it stays open but just doesn't become the only buffer
+    autocmd BufHidden,QuitPre * cclose
+
+    " Keep NetRW from interfering with bd
+    " Source: https://www.reddit.com/r/vim/comments/b00bcq/how_to_automatically_close_netrw_when_exiting_a/eibd46z/
+    autocmd WinEnter * if winnr('$') < 2 && getbufvar(winbufnr(winnr()), "&filetype") == "netrw" | bd | bn | endif
+
+    " Prevent a collapsed NetRW from turning :q :q into :q :q :q on E173
+    " Source: https://stackoverflow.com/a/58110818/435253
+    function! s:close_explorer_buffers()
+        for i in range(1, bufnr('$'))
+            if getbufvar(i, '&filetype') ==# 'netrw'
+                silent exe 'bdelete! ' . i
+            endif
+        endfor
+    endfunction
+    autocmd QuitPre *  call s:close_explorer_buffers()
+
+    " Alias `q` to `:bd<CR>` on help buffers for quicker closing
+    autocmd FileType help map <buffer> q :bd<CR>
+
+    " Save folding status automatically
+    " autocmd BufWinLeave ?* silent mkview
+    " autocmd BufWinEnter ?* silent loadview
+endif
+
+" Filetype-specific autocommands
+if has('autocmd') && exists('+filetype')
+    " Hide Quick Fix and NetRW from tweaks which count or navigate buffers
+    autocmd FileType qf,netrw setlocal nobuflisted
+
+    " Make sure Quick Fix spans across both sides of a vsplit when it opens
+    autocmd FileType qf wincmd J
+
+    " Autocomplete </ for closing tags in HTML/XML files
+    " TODO: Why isn't this working as I expect?
+    autocmd FileType html,xml,xsl iabbrev <buffer> </ </
+
+    " Hook up :make to preview GraphViz dot rendering
+    autocmd FileType dot setlocal makeprg=dot\ %\ -Tpng\ -o\ %.png;\ display\ %
+
+    " Set :make to work according to how I usually edit TW5
+    autocmd FileType tiddlywiki set makeprg=./my_qbld.sh
+endif
+
+if has('autocmd')
+    augroup END
+endif
+
+" }}}
+" {{{ Key Bindings
+
+" Make Up and Down move in a more visually-intuitive fashion when
+" dealing with soft-wrapped text.
+map <up> gk
+map <down> gj
+imap <up> <C-o>gk
+imap <down> <C-o>gj
+
+" Make Ctrl+Up/Down do non-visual (ie. linewise) up/down
+map <Esc>Oa k
+map <Esc>Ob j
+imap <Esc>Oc <C-o>k
+imap <Esc>Od <C-o>j
+
+" Make basic Ctrl+Arrow wordwise motions in the terminal
+map <Esc>[1;5C e
+map <Esc>[1;5D ge
+map <Esc>Oc e
+map <Esc>Od ge
+imap <Esc>[1;5C <C-o>e
+imap <Esc>[1;5D <C-o>ge
+imap <Esc>Oc <C-o>e
+imap <Esc>Od <C-o>ge
+
+" Implement Ctrl+Backspace wordwise erase on any plaform where it's possible
+inoremap <C-BS> <C-W>
+" TODO: Figure out why Vim refuses to bind my urxvt Ctrl+Backspace mapping or
+"       change to a different one in .Xresources and update .zshrc and .inputrc
+
+" Add more "standard GUI"-style bindings for completion popups
+inoremap <C-Space> <C-x><C-o>
+inoremap <expr> <Tab>   pumvisible() ? "\<C-n>" : "\<Tab>"
+inoremap <expr> <S-Tab> pumvisible() ? "\<C-p>" : "\<S-Tab>"
+inoremap <expr> <Up>    pumvisible() ? "\<C-p>" : "\<Up>"
+inoremap <expr> <Down>  pumvisible() ? "\<C-n>" : "\<Down>"
+inoremap <expr> <cr>    pumvisible() ? "\<C-y>\<C-o>:pclose\<cr>" : "\<cr>"
+
+" Map Ctrl+End to pear-tree's "Jump over inserted closer" (Useful for HTML)
+" NOTE: Ctrl+End currently only fires in gVim
+imap <C-End> <Plug>(PearTreeJump)
+
+" Redirect my tab-oriented muscle memory to buffer cycling
+" TODO: Figure out how best to add keybind hints to the Buffers menu
+nmap gt :bnext<CR>
+nmap gT :bprevious<CR>
+
+" Quick, built-in buffer switcher
+" Source: http://bairuidahu.deviantart.com/art/Flying-vs-Cycling-261641977
+nnoremap <leader>' :ls<CR>:b<space>
+
+" TODO: Build this proof-of-concept for the Context Menu key into a useful
+"       terminal context menu
+"noremap <Esc>[29~ :popup TerminalPopup<CR>
+"inoremap <Esc>[29~ <C-o>:popup TerminalPopup<CR>
+
+" Save time over `:w<CR>` by mapping it to Ctrl+S
+" and also add "Save a Copy..." to the File menu
+noremap <C-s> :w<CR>
+noremap <C-S-S> <C-o>:browse confirm saveas<CR>
+inoremap <C-S> <C-o>:w<CR>
+inoremap <C-S-S> <C-o>:browse confirm saveas<CR>
+silent! aunmenu File.Save
+silent! aunmenu File.Save\ As\.\.\.
+anoremenu <silent> 10.340 &File.&Save<Tab>^s :if expand("%") == ""<Bar>browse confirm w<Bar>else<Bar>confirm w<Bar>endif<CR>
+anoremenu 10.350 &File.Save\ &As\.\.\.<Tab>^S :browse confirm saveas<CR>
+anoremenu 10.355 &File.Save\ a\ Copy\.\.\. :browse confirm w<CR>
+
+" Add a menu to serve as a quick reference for vim-multiple-cursors
+anoremenu 20.403.10 Edit.Multiple\ Cursors.Start/Next\ Match<Tab><C-n> <C-n>
+anoremenu 20.403.20 Edit.Multiple\ Cursors.Start\ (Non-Wordwise)<Tab>g<C-n> g<C-n>
+anoremenu 20.403.30 Edit.Multiple\ Cursors.Skip\ Next\ Match<Tab><C-x> <C-n>
+anoremenu 20.403.40 Edit.Multiple\ Cursors.Previous\ Match<Tab><C-p> <C-n>
+anoremenu 20.403.50 Edit.Multiple\ Cursors.Select\ All\ Matches<Tab><A-n> <A-n>
+anoremenu 20.403.60 Edit.Multiple\ Cursors.-Sep- :
+anoremenu 20.403.70 Edit.Multiple\ Cursors.Start\ by\ RegEx\.\.\.<Tab>:MultipleCursorsFind :MultipleCursorsFind<Space>
+
+" Set up Ctrl-N Ctrl-N to toggle the line numbers column.
+nmap <C-N><C-N> :set invnumber<CR>
+silent! aunmenu &Edit.File\ Settings.Toggle\ Line\ Numbering
+amenu 20.440.100 &Edit.F&ile\ Settings.Toggle\ Line\ &Numbering<Tab>^n^n	:set nu! nu?<CR>
+
+" Set up Ctrl-L to turn off search result highlights.
+noremap <c-l> :nohls<CR><c-l>
+amenu 20.423 Edit.Un-&highlight\ Matches<Tab>^l <c-l>
+
+" Make sure I can't lose anything by accident while using undo
+nnoremap <Leader>u :MundoToggle<CR>
+amenu 20.333 Edit.Toggle\ Undo\ Tree\.\.\.<Tab>\\u <Leader>u
+
+" Add w!! and a menu entry for "save changes via sudo"
+" Source: https://nvie.com/posts/how-i-boosted-my-vim/
+cmap w!! w !sudo tee % >/dev/null
+amenu 10.355 &File.Save\ via\ Sudo\.\.\. :w!!<CR>
+
+" -- LSP Functions --
+noremap <silent> H :ALEHover<CR>
+noremap <silent> F :ALEFindReferences<CR>
+noremap <silent> Z :ALEGoToDefinition -split<CR>
+noremap <silent> R :ALERename<CR>
+nmap <silent> <C-k> <Plug>(ale_previous_wrap)
+nmap <silent> <C-j> <Plug>(ale_next_wrap)
+
+" If we can distinguish <CR> from <CTRL-M>, use Ctrl-M for :ALEDetail
+if has('gui_running')
+    noremap <silent> <C-m> :ALEDetail<CR>
+endif
+
+amenu 500.140.100 &Plugin.&ALE.&Previous\ Issue<Tab>^k              :ALEPreviousWrap<CR>
+amenu 500.140.110 &Plugin.&ALE.&Next\ Issue<Tab>^j                  :ALENextWrap<CR>
+amenu 500.140.120 &Plugin.&ALE.Show\ Full\ &Message<Tab>^m          :ALEDetail<CR>
+amenu 500.140.130 &Plugin.&ALE.Show\ &Hover\ Info<Tab>H             :ALEHover<CR>
+amenu 500.140.200 &Plugin.&ALE.-SepForModifying-                    :
+" TODO: amenu 500.140.210 &Plugin.&ALE.&Complete\.\.\.<Tab>^Space           <C-Space>
+amenu 500.140.220 &Plugin.&ALE.&Rename<Tab>R                        :ALERename<CR>
+amenu 500.140.230 &Plugin.&ALE.Run\ Fi&xers<Tab>:ALEFix             :ALEFix<CR>
+amenu 500.140.300 &Plugin.&ALE.-SepForSearch-                       :
+amenu 500.140.310 &Plugin.&ALE.&Find\ References<Tab>F              :ALEFindReferences<CR>
+amenu 500.140.320 &Plugin.&ALE.Go\ To\ &Definition                  :ALEGoToDefinition<CR>
+amenu 500.140.330 &Plugin.&ALE.Go\ To\ &Definition\ In\ Split<Tab>Z :ALEGoToDefinition -split<CR>
+amenu 500.140.340 &Plugin.&ALE.Go\ To\ T&ype\ Definition            :ALEGoToTypeDefinition<CR>
+amenu 500.140.350 &Plugin.&ALE.Go\ To\ T&ype\ Definition\ In\ Split :ALEGoToTypeDefinition -split<CR>
+amenu 500.140.370 &Plugin.&ALE.Symbol\ &Search\.\.\.                :ALESymbolSearch<Space>
+amenu 500.140.400 &Plugin.&ALE.-SepForTroubleshooting-              :
+amenu 500.140.410 &Plugin.&ALE.&Troubleshooting.&Enable/Disable\ ALE<Tab>:ALEToggle      :ALEToggle<CR>
+amenu 500.140.410.10 &Plugin.&ALE.&Troubleshooting.View\ &Configuration<Tab>:ALEInfo     :ALEInfo<CR>
+amenu 500.140.410.20 &Plugin.&ALE.&Troubleshooting.&Reset\ Issue\ List<Tab>:ALEReset     :ALEReset<CR>
+amenu 500.140.410.30 &Plugin.&ALE.&Troubleshooting.Reset\ All\ &LSPs<Tab>:ALEStopAllLSPs :ALEStopAllLSPs<CR>
+
+" Provide a convenient, concise way to work beyond single files
+map <Leader>[ <C-Tab>
+map <Leader>] :Buffers<CR>
+amenu 500.10 Plugin.Browse\ Files\ with\ NetRW<Tab>\\[ <C-Tab>
+amenu 500.10 Plugin.Browse\ Buffers\ with\ FZF<Tab>\\] <C-Tab>
+
+" CtrlSF and Codi aliases
+nmap <Leader>S :CtrlSF<Space>
+amenu 500.10 Plugin.Search\ with\ CtrlSF<Tab>\\S    <Leader>S
+amenu 500.20 Plugin.Toggle\ REPL\ Split<Tab>:Codi!! :Codi!!<CR>
+
+" FZF quick aliases
+nmap <Leader>; :Buffers<CR>
+nmap <Leader>f :Files<Space>
+nmap <Leader>l :Locate<Space>
+nmap <Leader>r :Rg<Space>
+nmap <Leader>s :Snippets<CR>
+amenu 500.100     Plugin.-Submenus-                                :
+amenu 500.150.10 Plugin.&FZF.Lines\ in\ This\ Buffer<Tab>:BLines  :BLines
+amenu 500.150.20 Plugin.&FZF.Lines\ in\ Open\ Buffers<Tab>:Lines  :Lines
+amenu 500.150.30 Plugin.&FZF.RipGrep\ Matches<Tab>\\r             <Leader>r
+amenu 500.150.40 Plugin.&FZF.Snippets<Tab>\\s                     <Leader>s
+amenu 500.150.100 Plugin.&FZF.-Buffers-                           :
+amenu 500.150.110 Plugin.&FZF.Open\ Buffers<Tab>\\;               <Leader>;
+amenu 500.150.120 Plugin.&FZF.Windows<Tab>:Windows                :Windows<CR>
+amenu 500.150.120 Plugin.&FZF.Marks<Tab>:Marks                    :Marks<CR>
+amenu 500.150.200 Plugin.&FZF.-Files-                             :
+amenu 500.150.210 Plugin.&FZF.Files<Tab>\\f                       <Leader>f
+amenu 500.150.220 Plugin.&FZF.Git\ Files<Tab>:GFiles              :GFiles<CR>
+amenu 500.150.230 Plugin.&FZF.Git\ Files\ (Unstaged)<Tab>:GFiles? :GFiles?<CR>
+amenu 500.150.240 Plugin.&FZF.Locate<Tab>\\l                      <Leader>l
+amenu 500.150.300 Plugin.&FZF.-Help-                              :
+amenu 500.150.310 Plugin.&FZF.Mapped\ Keys<Tab>:Maps              :Maps<CR>
+amenu 500.150.320 Plugin.&FZF.Commands<Tab>:Commands              :Commands<CR>
+amenu 500.150.340 Plugin.&FZF.Helptags<Tab>:Helptags              :Helptags<CR>
+amenu 500.150.330 Plugin.&FZF.Filetypes<Tab>:Filetypes            :Filetypes<CR>
+" TODO: Consider: :History, :History:, :History/, :Commits, :BCommits
+" NOTE: Not listed: Colors, Ag, Tags, BTags
+
+" splitjoin.vim aliases
+nmenu 500.170.10 Plugin.&splitjoin.Split\ One-Liner\ Under\ Cursor<Tab>gS    gS
+nmenu 500.170.10 Plugin.&splitjoin.Join\ Block\ Under\ Cursor<Tab>gJ         gJ
+
+" Move Edit menu entries dealing with the error window into a submenu
+silent! aunmenu &Tools.&List\ Errors
+silent! aunmenu &Tools.L&ist\ Messages
+silent! aunmenu &Tools.&Next\ Error
+silent! aunmenu &Tools.&Previous\ Error
+silent! aunmenu &Tools.&Older\ List
+silent! aunmenu &Tools.N&ewer\ List
+
+anoremenu 40.370 &Tools.Error\ List.&List\ Errors<Tab>:cl	:cl<CR>
+anoremenu 40.380 &Tools.Error\ List.L&ist\ Messages<Tab>:cl!	:cl!<CR>
+anoremenu 40.390 &Tools.Error\ List.&Next\ Error<Tab>:cn	:cn<CR>
+anoremenu 40.400 &Tools.Error\ List.&Previous\ Error<Tab>:cp	:cp<CR>
+anoremenu 40.410 &Tools.Error\ List.&Older\ List<Tab>:cold	:colder<CR>
+anoremenu 40.420 &Tools.Error\ List.N&ewer\ List<Tab>:cnew	:cnewer<CR>
+
+" }}}
+" {{{ Custom command aliases
+
+" Alias <Leader>qcl as a way to quickly prepare Pidgin chat logs to be quoted
+" in TiddlyWiki
+nnoremap <Leader>qcl :%s/\((\(\d\{2}:\)\{2}\d\{2})\) \(\S\{1,}\)/''\1 \3''/<CR>
+vnoremap <Leader>qcl :s/\((\(\d\{2}:\)\{2}\d\{2})\) \(\S\{1,}\)/''\1 \3''/<CR>
+amenu 40.550 Tools.Quote\ Pidgin\ Chatlog\ (TW)<Tab>\\qcl <Leader>qcl
+
+" Reminder/references for built-in commands
+amenu 20.440.650 &Edit.F&ile\ Settings.&Reload\ With\ Different\ Encoding\.\.\.  :e ++enc=
+vmenu 40.560 Tools.Wrap\ Selected\ Text<Tab>gq gq
+
+" Allow :E to be like :e but accepting any number of wildcard-bearing arguments
+command! -complete=file -nargs=+ E arge <args>
+amenu 10.315 &File.Open\ &Globs\.\.\.<Tab>:E    :E<Space>
+
+" }}}
+" {{{ Aliases to work around "physical race conditions" on some keyboards
+
+" On keyboards which take more prssure for keys to register, when I type :
+" quickly, I sometimes don't release Shift fast enough.
+com! Q q    " :q
+com! W w    " :w
+com! Wq wq  " :wq
+
+" }}}
+" {{{ Command: Diff Unsaved Changes (:DiffSaved)
+" http://vim.wikia.com/wiki/Diff_current_buffer_and_the_original_file
+" (Use :diffoff to leave diff mode)
+"
+" Plain alternative:
+"   :w !diff % -
+"
+function! s:DiffWithSaved()
+  let filetype=&filetype
+  diffthis
+  vnew | r # | normal! 1Gdd
+  diffthis
+  exe 'setlocal bt=nofile bh=wipe nobl noswf ro ft=' . filetype
+endfunction
+com! DiffSaved call s:DiffWithSaved()
+amenu 40.570 Tools.Diff\ Unsaved\ Changes<Tab>:DiffSaved :DiffSaved<CR>
+
+" }}}
+" {{{ Shortcut: F6 = Run tests if possible, Shift+F6 for arguments
+" Adapted from http://superuser.com/a/21503/48014
+fun! RunProjectTests(...)
+    if exists('b:f6_test_cmd')
+        let l:test_str = '!'.b:f6_test_cmd
+    else
+        let l:test_str = 'make test'
+    endif
+
+    if a:0 == 1 && a:1 == 1
+        exec(l:test_str)
+    else
+        call feedkeys(':' . l:test_str . ' ')
+    endif
+endfun
+
+map <F6> :call RunProjectTests(1)<CR>
+map <S-F6> :call RunProjectTests()<CR>
+anoremenu 40.359 &Tools.Run\ Tests<Tab><F6>  :call RunProjectTests()<CR>
+" }}}
+" {{{ Shortcut: F7 = Run anything with a shebang, Shift+F7 for arguments
+" Adapted from http://superuser.com/a/21503/48014
+if has('autocmd')
+    au vimrc BufEnter * if match( getline(1) , '^\#!') == 0 |
+    \ execute("let b:interpreter = getline(1)[2:]") |
+    \endif
+
+    fun! RunFile(...)
+        if exists('b:interpreter')
+            let l:run_str = '!'.b:interpreter.' %'
+        elseif exists('b:f7_run_cmd')
+            let l:run_str = '!'.b:f7_run_cmd
+        endif
+
+        if a:0 == 1 && a:1 == 1
+            exec(l:run_str)
+        else
+            call feedkeys(':' . l:run_str . ' ')
+        endif
+    endfun
+
+    map <F7> :call RunFile(1)<CR>
+    map <S-F7> :call RunFile()<CR>
+    anoremenu 40.359 &Tools.Run<Tab><F7>  :call RunFile()<CR>
+endif
+" }}}
+" {{{ Make fold markers look as nice as possible
+function PrettyFoldText()
+    " Switch to a seamless indent indicator character
+    let dashes = substitute(v:folddashes,'-','─','g')
+
+    " Strip comments, fold markers, and whitespace from the fold title
+    let text = getline(v:foldstart)
+    let text = substitute(text, '/\*\|\*/\|\(["#]\s*\){' . '{{\d\=', '', 'g') . ' '
+    let text = substitute(text, '^\s*', '', '')
+
+    " Put it all together with some more visual tweaks
+    return printf('─%s %3d │ %s ', dashes, v:foldend - v:foldstart, text)
+endfunction
+
+set foldtext=PrettyFoldText()
+set fillchars=vert:│,fold:\  " Pretty up fold headers
+
+" }}}
+" {{{ Bind <Leader>` to toggle the quickfix window
+
+" From: https://vim.fandom.com/wiki/Toggle_to_open_or_close_the_quickfix_window
+command -bang -nargs=? QFix call QFixToggle(<bang>0)
+function! QFixToggle(forced)
+  if exists('t:qfix_win') && a:forced == 0
+    cclose
+    unlet! t:qfix_win
+  else
+    copen 10
+    let t:qfix_win = bufnr('$')
+  endif
+endfunction
+
+" used to track the quickfix window
+" TODO: Fix this to instead just detect whether a quickfix is visible directly
+" TODO: Fix this to open the quickfix window if it's non-empty
+augroup QFixToggle
+ autocmd!
+ autocmd BufWinEnter quickfix let t:qfix_win = bufnr('$')
+ autocmd BufWinLeave * if exists('t:qfix_win') && expand('<abuf>') == t:qfix_win | unlet! t:qfix_win | endif
+augroup END
+
+" TODO: Figure out *why* my quickfix window sometimes doesn't auto-open on save
+nmap <Leader>` :call QFixToggle(0)<CR>
+anoremenu 40.430.40 &Tools.Error\ &Window.&Toggle<Tab>\\`  :call QFixToggle(0)<CR>
+" }}}
+" vim:ft=vim:fdm=marker:ff=unix

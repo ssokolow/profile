@@ -1,0 +1,5 @@
+# Use `udevadm info -a -n /dev/input/whatever` to look up ATTRS{name}
+SUBSYSTEM=="input", ATTRS{name}=="HID 04d9:1400", MODE="0666"
+
+# Also allow the locker to exclusively grab the remote for media control
+SUBSYSTEM=="usb", ATTRS{idVendor}=="0471", ATTR{idProduct}=="0602", MODE="0660", GROUP="plugdev"

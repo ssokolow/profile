@@ -1,0 +1,9 @@
+[Desktop Entry]
+Type=Action
+Name=Open git-gui Here
+Profiles=profile-git-gui;
+
+[X-Action-Profile profile-git-gui]
+Name=Default profile
+MimeTypes=inode/directory;
+Exec=/usr/bin/git gui

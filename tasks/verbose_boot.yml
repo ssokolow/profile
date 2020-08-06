@@ -1,0 +1,21 @@
+---
+
+- name: "Replace 'quiet' with 'verbose' in GRUB kernel commandline"
+  replace:
+    dest: /etc/default/grub
+    backup: yes
+    regexp: '(?m)^\s*GRUB_CMDLINE_LINUX_DEFAULT=\"((?:.*\s+)?)quiet((?:\s+.*)?)\"$'
+    replace: 'GRUB_CMDLINE_LINUX_DEFAULT="\1verbose\2"'
+  register: grub_cfg_q
+
+- name: "Remove 'splash' from GRUB kernel commandline"
+  replace:
+    dest: /etc/default/grub
+    backup: yes
+    regexp: '(?m)^\s*GRUB_CMDLINE_LINUX_DEFAULT=\"(.*\s+)?splash(\s+.*)?\"$'
+    replace: 'GRUB_CMDLINE_LINUX_DEFAULT="\1\2"'
+  register: grub_cfg_s
+
+- name: Regenerate GRUB configuration after changes
+  command: echo update-grub
+  when: grub_cfg_q.changed or grub_cfg_s.changed

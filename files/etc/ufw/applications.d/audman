@@ -1,0 +1,4 @@
+[audman]
+title=audman
+description=Remote-control Audacious Media Player using a browser
+ports=8001/tcp

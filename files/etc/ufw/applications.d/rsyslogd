@@ -1,0 +1,4 @@
+[rsyslogd]
+title=rsyslogd
+description=Allow router to log to this rsyslogd instance remotely
+ports=514/udp

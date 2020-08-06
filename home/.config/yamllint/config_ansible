@@ -1,0 +1,10 @@
+---
+extends: default
+
+rules:
+  comments:
+    min-spaces-from-content: 1
+
+  # For things like apt-get package lists
+  line-length: disable
+# vim: ft=yaml sw=2 sts=2 :

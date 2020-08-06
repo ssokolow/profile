@@ -1,0 +1,1 @@
+ACTION!="remove", SUBSYSTEMS=="usb", ENV{ID_VENDOR_ID}=="0c45", ENV{ID_MODEL_ID}=="7403", RUN+="keymap $name /etc/udev/keymaps/microdia-foot-switch"

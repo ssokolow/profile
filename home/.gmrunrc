@@ -23,7 +23,7 @@ ShowLast = 1
 # Show files starting with '.'
 # Default is 0 (off), set it to 1 if you want "hidden" files to show up
 # in the completion window
-ShowDotFiles = 0
+ShowDotFiles = 1
 
 # Timeout (in milliseconds) after which gmrun will simulate a TAB press
 # Set this to NULL if don't like this feature.

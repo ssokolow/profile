@@ -1,0 +1,7 @@
+# This file was created to give user permissions to V-USB devices
+
+# USB devices (usbfs replacement)
+#SUBSYSTEM=="usb", ENV{DEVTYPE}=="usb_device",SYSFS{idVendor}=="16c0" , SYSFS{idProduct}=="05dc", MODE="0666"
+
+SUBSYSTEM=="usb", ATTRS{idVendor}=="16c0", ATTRS{idProduct}=="05dc", MODE="0666"
+SUBSYSTEM=="usb", ATTRS{idVendor}=="16c0", ATTRS{idProduct}=="05df", MODE="0666"

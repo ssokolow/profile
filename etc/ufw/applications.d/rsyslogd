@@ -1,3 +1,0 @@
-[rsyslogd]
-title=rsyslogd
-ports=514/udp

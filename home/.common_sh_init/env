@@ -13,8 +13,6 @@ fi
 export BROWSER=firefox
 export EDITOR=vim
 export VISUAL="$EDITOR"
-# Don't even have mutt installed at the moment
-#export MAILER=mutt
 
 # Make these available to subshells
 export COLUMNS
@@ -35,23 +33,38 @@ export MAILPATH=${HOME}/.maildir:${HOME}/mbox:${HOME}/Mail:/var/spool/mail/$USER
 export MAILCHECK=60
 
 # Python-related settings
-#export PYTHONDOCS="/usr/share/htmldoc_links/dev-python/python-docs-2.6/"
-#export PYTHONPATH=~/src":$PYTHONPATH"
-export PYTHONWARNINGS="default,ignore:Not importing directory:ImportWarning:pkgutil:186,ignore::DeprecationWarning:pyflakes.scripts.pyflakes,ignore::DeprecationWarning:nose.util:14,ignore::PendingDeprecationWarning:paste.request:131,ignore::PendingDeprecationWarning:django.views.generic.date_based:13,ignore::DeprecationWarning:rpdb2,ignore::DeprecationWarning:werkzeug.templates,ignore::ImportWarning:mercurial.demandimport,ignore::ImportWarning:aptsources.sourceslist,ignore::ImportWarning:gettext,ignore::ImportWarning:httplib,ignore::ImportWarning:optparse,ignore::ImportWarning:xmlrpclib,ignore::DeprecationWarning:flake8.mccabe,ignore::PendingDeprecationWarning:djcelery.models:217,ignore::PendingDeprecationWarning:djcelery.models:221,ignore::PendingDeprecationWarning:djcelery.models:354,ignore::PendingDeprecationWarning:kombu.transport.django.models:29,ignore::PendingDeprecationWarning:debug_toolbar.settings:220,ignore::PendingDeprecationWarning:kombu.transport.django.migrations.0001_initial:49,ignore::DeprecationWarning:django_extensions.management.email_notifications:63,ignore::Warning:PyQt5.uic.objcreator:91,ignore::DeprecationWarning:PyQt5.uic.objcreator:91,ignore::PendingDeprecationWarning:django.forms.widgets:153,ignore::PendingDeprecationWarning:imp:32,ignore::PendingDeprecationWarning:easy_thumbnails.models:,ignore::DeprecationWarning:pysqlite2.dbapi2:,ignore:'U' mode is deprecated:DeprecationWarning:site:165"
-export VIRTUALENV_USE_DISTRIBUTE=1
+export PYTHONWARNINGS="default,ignore:Not importing directory:ImportWarning:pkgutil:186,ignore::DeprecationWarning:pyflakes.scripts.pyflakes,ignore::DeprecationWarning:nose.util:14,ignore::PendingDeprecationWarning:paste.request:131,ignore::PendingDeprecationWarning:django.views.generic.date_based:13,ignore::DeprecationWarning:rpdb2,ignore::DeprecationWarning:werkzeug.templates,ignore::ImportWarning:mercurial.demandimport,ignore::ImportWarning:aptsources.sourceslist,ignore::ImportWarning:gettext,ignore::ImportWarning:httplib,ignore::ImportWarning:optparse,ignore::ImportWarning:xmlrpclib,ignore::DeprecationWarning:flake8.mccabe,ignore::PendingDeprecationWarning:djcelery.models:217,ignore::PendingDeprecationWarning:djcelery.models:221,ignore::PendingDeprecationWarning:djcelery.models:354,ignore::PendingDeprecationWarning:kombu.transport.django.models:29,ignore::PendingDeprecationWarning:debug_toolbar.settings:220,ignore::PendingDeprecationWarning:kombu.transport.django.migrations.0001_initial:49,ignore::DeprecationWarning:django_extensions.management.email_notifications:63,ignore::Warning:PyQt5.uic.objcreator:91,ignore::DeprecationWarning:PyQt5.uic.objcreator:91,ignore::PendingDeprecationWarning:django.forms.widgets:153,ignore::PendingDeprecationWarning:imp:32,ignore::PendingDeprecationWarning:easy_thumbnails.models:,ignore::DeprecationWarning:pysqlite2.dbapi2:,ignore:'U' mode is deprecated:DeprecationWarning:site:165,ignore::PendingDeprecationWarning:nose.importer:12,ignore::DeprecationWarning:coverage:46,ignore::ResourceWarning:Xlib.xauth:42,ignore::ResourceWarning:Xlib.xauth:42,ignore::ResourceWarning:sys:1,ignore::DeprecationWarning:dbus.decorators:158"
+
+# Set virtualenvwrapper to use Python 3 regardless of the system default
+VIRTUALENVWRAPPER_PYTHON=/usr/bin/python3
 
 # Disable start menu icon creation in Wine
 export WINEDLLOVERRIDES="winemenubuilder.exe=d"
 
 # Fix desktop-spanning games with my new head layout
-export SDL_VIDEO_FULLSCREEN_HEAD=2
+export SDL_VIDEO_FULLSCREEN_HEAD=0
+
+# Try to fix tearing
+# - May require running `nvidia-settings -l`
+# - May require turning off PowerMizer
+# - If those don't work, another option is to set
+#   ForceFullCompositionPipeline=On via nvidia-settings.)
+# See: https://github.com/chjj/compton/wiki/vsync-guide
+# See: https://askubuntu.com/a/192647/23552
+export __GL_SYNC_TO_VBLANK=1
+export __GL_SYNC_DISPLAY_DEVICE=DFP-0
+export __VDPAU_NVIDIA_SYNC_DISPLAY_DEVICE=DFP-0
 
 export SDL_JOYSTICK_DEVICE=/dev/input/js0
 
 # Set a few app-specific settings
 export ENCAOPT="-L none"
 export PYTHONSTARTUP=${HOME}/.interactive_rc.py
+export RIPGREP_CONFIG_PATH=~/.config/rgrc
 export SCIPY_PIL_IMAGE_VIEWER=display
+
+# Put FZF on top of ripgrep for faster operation
+export FZF_DEFAULT_COMMAND='rg --files --no-ignore --hidden --follow --glob "!.git/*" 2>&1'
 
 # Provide this for later scripts
 if [ -n "$DISPLAY" ]; then
@@ -72,8 +85,6 @@ export TCLLIBPATH=${HOME}/.local/share/tkthemes
 #   https://bugs.kde.org/show_bug.cgi?id=348270
 export GDK_CORE_DEVICE_EVENTS=1
 
-# For multirust-installed binaries
-export PATH="$HOME/.cargo/bin:$PATH"
 # Prevent Chrome from using KDialog for open dialogs. The startup time for the
 # KDialog subprocess cuts the speed at which I can flip between Ctrl+W and
 # RightClick-SaveImage to 1/3rd of before and, when using Ctrl+W, Ctrl+S,

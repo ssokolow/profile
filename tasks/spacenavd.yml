@@ -1,0 +1,22 @@
+---
+- name: Install SpaceNavD for my 3D mouse
+  apt:
+    state: present
+    name: spacenavd
+  register: spacenavd_i
+
+- name: Install config for SpaceNavD to disable LED illumination
+  copy:
+    src: etc/spnavrc
+    dest: /etc/spnavrc
+    owner: root
+    group: root
+    mode: 0644
+  register: spacenavd_c
+
+- name: Restart SpaceNavD to apply config changes
+  service:
+    name: spacenavd
+    state: restarted
+  when: spacenavd_i.changed or spacenavd_c.changed
+# vim: set sw=2 sts=2 noexpandtab :

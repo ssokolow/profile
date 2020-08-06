@@ -1,0 +1,7 @@
+# ubld.it TrueRNG
+#
+# This rule creates a symlink to newly attached CDC-ACM device
+# Also includes fix for wrong termios settings on some linux kernels
+# (Thanks neoaeon)
+SUBSYSTEM=="tty", ATTRS{product}=="TrueRNG", SYMLINK+="TrueRNG", RUN+="/bin/stty raw -echo -ixoff -F /dev/%k speed 3000000"
+

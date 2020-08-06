@@ -1,0 +1,68 @@
+---
+- name: Install Samba
+  apt:
+    state: present
+    name: samba
+
+- name: "Add 'family' group for samba shares"
+  group:
+    name: family
+    state: present
+
+- name: "Adding system accounts to back family members' samba accounts"
+  user:
+    name: "{{ item }}"
+    groups: family
+    append: true
+  with_items: "{{ samba_family_users }}"
+
+- name: "Installing Samba configuration"
+  template:
+    src: etc/samba/smb.conf
+    dest: /etc/samba/smb.conf
+    backup: true
+    owner: root
+    group: root
+    mode: 0644
+  register: samba_c
+
+- name: "Restart samba to apply config changes"
+  service:
+    name: samba
+    state: restarted
+  when: samba_c.changed
+
+- name: "Ensure read-only existence of /srv/inbound"
+  file:
+    state: directory
+    path: "/srv/inbound"
+    mode: 0755
+    owner: root
+    group: root
+
+- name: "Ensure writable subdirectories in /srv/inbound"
+  file:
+    state: directory
+    path: "/srv/inbound/FOR_{{ item }}"
+    mode: 02775
+    owner: "{{ my_username }}"
+    group: family
+  with_items:
+    - "ANDRE"
+    - "MOM"
+    - "NICK"
+    - "STEPHAN"
+
+- name: "Setting ownership and permissions for /srv/inbound contents"
+  file:
+    state: directory
+    recurse: true
+    path: "/srv/inbound/FOR_{{ item }}"
+    owner: "{{ my_username }}"
+    group: family
+    mode: "u=rwX,g=rwXs,o=rX"
+  with_items:
+    - "ANDRE"
+    - "MOM"
+    - "NICK"
+    - "STEPHAN"

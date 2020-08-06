@@ -1,0 +1,8 @@
+# This rule is needed for ddrescue to dump floppies without running as root or
+# granting my user raw privileges on all disks.
+
+# All USB floppy drives
+SUBSYSTEM=="block", ATTRS{bInterfaceClass}=="08", ATTRS{bInterfaceSubClass}=="04", MODE:="0664"
+
+# Just my specific model
+#SUBSYSTEM=="block", ATTRS{idVendor}=="057b", ATTRS{idProduct}=="0000", MODE:="0664"

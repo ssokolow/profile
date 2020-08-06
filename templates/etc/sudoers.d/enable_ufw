@@ -1,0 +1,4 @@
+# Add this to /etc/sudoers.d to allow updating without entering a password
+Cmnd_Alias ENABLEUFW = /usr/sbin/ufw enable
+{{ my_username }} ALL = NOPASSWD: ENABLEUFW
+Defaults!ENABLEUFW !requiretty

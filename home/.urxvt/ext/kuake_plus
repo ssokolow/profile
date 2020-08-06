@@ -5,9 +5,10 @@ my $has_which = eval "use File::Which; 1";
 sub on_start {
    my ($self) = @_;
 
+   # TODO: Why is it failing to read the X resource?
    $self->{key} = $self->{argv}[0] || "F10";
-   $self->{hide_on_lose_focus} = $self->x_resource('kuake.hideOnLoseFocus') || 0;
-   $self->{toggle_focuses_if_visible} = $self->x_resource('kuake.toggleFocusesIfVisible') || 0;
+   $self->{hide_on_lose_focus} = $self->x_resource('kuake.hideOnLoseFocus') || 1;
+   $self->{toggle_focuses_if_visible} = $self->x_resource('kuake.toggleFocusesIfVisible') || 1;
 
    $self->{keysym} = $self->XStringToKeysym ($self->{key})
       or urxvt::fatal "cannot convert requested kuake wake-up key '$self->{key}' to keysym, unable to continue.\n";
@@ -25,6 +26,7 @@ sub on_start {
 
    $self->{unmap_me} = 1;
 
+   print("T" . $self->x_resource('kuake.toggleFocusesIfVisible') . "," . $self->{toggle_focuses_if_visible} . "\n");
    ()
 }
 
@@ -42,6 +44,13 @@ sub on_map_notify {
    $self->XUnmapWindow ($self->parent)
       if delete $self->{unmap_me};
 
+   if ($self->{wmctrl_path} and $self->mapped) {
+      my $cmd = $self->{wmctrl_path} . " -i -b add,above,sticky -r " .
+         int($self->parent);
+      print($cmd . "\n");
+      `$cmd`;
+   }
+
    ()
 }
 
@@ -52,10 +61,10 @@ sub on_root_event {
 
    # XXX: Is there any way to instruct URxvt to focus itself via Perl?
    # urxvtperl(3) doesn't even mention things like $term->XMapWindow.
-   if (not $self->focus and $self->mapped and $self->{toggle_focuses_if_visible}) {
+   if ((not $self->focus) and $self->mapped and $self->{toggle_focuses_if_visible}) {
       if ($self->{wmctrl_path}) {
           my $cmd = $self->{wmctrl_path} . " -i -R " . int($self->parent);
-          print($cmd);
+          print($cmd . "\n");
          `$cmd`;
       } else {
          $self->XUnmapWindow ($self->parent);
@@ -66,6 +75,7 @@ sub on_root_event {
         ? $self->XUnmapWindow ($self->parent)
         : $self->XMapWindow ($self->parent);
    }
+
 
    1
 }

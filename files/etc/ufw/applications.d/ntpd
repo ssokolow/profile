@@ -1,0 +1,4 @@
+[ntpd]
+title=Network Time Protocol daemon
+description=NTP daemon for nostalgia subnet to connect to
+ports=123/udp

@@ -1,0 +1,25 @@
+---
+# Enable reception of router syslog entries
+
+- name: Configure rsyslog to load UDP protocol support
+  lineinfile:
+    path: /etc/rsyslog.conf
+    backup: true
+    regexp: 'module\(load="imudp"\)'
+    line: 'module(load="imudp")'
+  register: rsyslog_m
+
+- name: Set UDP rsyslog port to 514
+  lineinfile:
+    path: /etc/rsyslog.conf
+    backup: true
+    regexp: 'input\(type="imudp" '
+    line: 'input(type="imudp" port="514")'
+    insertafter: '(?m)^module\(load="imtcp"\)$'
+  register: rsyslog_p
+
+- name: "Restart rsyslog to apply config changes"
+  service:
+    name: rsyslog
+    state: restarted
+  when: rsyslog_m.changed or rsyslog_p.changed

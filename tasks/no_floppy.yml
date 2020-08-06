@@ -1,0 +1,31 @@
+---
+# Remove 'Floppy Drive' from Places menu
+
+- name: Gather list of floppy mountpoints, if any
+  find:
+    paths: /media
+    patterns: 'floppy*'
+    file_type: directory
+  register: floppy_mountpoints
+
+- name: Removing mountpoint for floppy drive, if present
+  file:
+    path: '{{ item.path }}'
+    state: absent
+  with_items: "{{ floppy_mountpoints.files|default([]) }}"
+
+- name: "Blacklist the 'floppy' kernel module"
+  kernel_blacklist:
+    blacklist_file: /etc/modprobe.d/blacklist-floppy.conf
+    name: floppy
+    state: present
+  register: floppy_b
+
+- name: "Remove the floppy kernel module, if installed"
+  modprobe:
+    name: floppy
+    state: absent
+
+- name: Update the initramfs to apply the changes
+  command: update-initramfs -u
+  when: floppy_b.changed

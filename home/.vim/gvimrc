@@ -1,0 +1,49 @@
+" TODO:
+" - Consider reworking my menus and toolbars
+scriptencoding utf-8
+
+" TODO: Use in-window prompts instead of dialogs for "...has changed. Reload?"?
+"       (Needs more testing to see which I dislike less in real use and how
+"        amenable to remedy the flaws of each choice are.)
+" set guioptions+=c
+
+" Set a comfortable default window size
+" TODO: Find a way to set this dynamically based on screen height
+set lines=58 columns=82
+
+" I don't need a toolbar
+set guioptions-=T
+
+" ---- Rework the menus a bit ----
+
+" Give myself a new and a close button on the toolbar.
+amenu 1.05 ToolBar.New   :ene<CR>
+amenu 1.35 ToolBar.Close :confirm bd<CR>
+
+" I don't like 'give us money' entries in my menus
+:aunmenu Help.Orphans
+:aunmenu Help.Sponsor/Register
+
+" ---- Provide a more visible wrap indicator if in gVim ----
+
+augroup gvimrc
+    au!
+
+    if exists('+colorcolumn')
+        set colorcolumn=+1
+        highlight ColorColumn guibg=#eaffea
+    else
+      autocmd BufWinEnter * let w:m2=matchadd('ErrorMsg', '\%>80v.\+', -1)
+    endif
+augroup END
+
+" ---- Set up Ctrl+F11 as a key to toggle the menubar --
+
+function s:ToggleGUIMenu()
+    if &guioptions =~# 'm'
+        set guioptions-=m
+    else
+        set guioptions+=m
+    endif
+endfunction
+map <silent> <C-F11> @=<SID>ToggleGUIMenu()<cr>

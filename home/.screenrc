@@ -75,6 +75,11 @@ shell /bin/zsh
 # set a big scrolling buffer
 defscrollback 5000
 
+# Keep Vim from misinterpreting exits from Insert mode
+# (Shouldn't be a problem in this modern world of high-speed Internet...
+# especially since I never use Screen remotely on this system)
+maptimeout 5
+
 # Handle the input from my zsh hardstatus line properly
 caption always "%{wk}%?%-Lw%?%{bw}%n*%f %t%?(%u)%?%{wk}%?%+Lw%? %= %{= kw}%110`%109`%111`"
 #hardstatus alwayslastline "%3n $USER@%H %t%? (%u)%?%?: %h%?"
@@ -99,12 +104,14 @@ termcapinfo xterm* ti@:te@
 
 # }}}
 # {{{ Windows to launch on startup
+#
 
 # Launch a mouse-enabled Midnight Commander in window 0 and zsh in window 1.
 #screen 0 mc -x
 
 chdir /home/ssokolow/
 screen -t Fanfiction dash -c 'cd ~/Documents/Fanfiction; exec zsh'
+screen -t 'Videos' dash -c 'cd /srv/fservroot/Videos; exec zsh'
 screen -t 'tyt' dash -c 'cd ~/Desktop/pandora; exec zsh'
 # Open the usual bare terminal in window 1 and start with it visible
 screen

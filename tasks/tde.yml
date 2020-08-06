@@ -1,0 +1,8 @@
+---
+# NOTES:
+# - You must include tde_repo.yml first and before the `apt-get update` line
+
+- name: Install BasKet Note Pads
+  apt:
+    state: present
+    name: basket-trinity

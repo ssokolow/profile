@@ -1,0 +1,47 @@
+---
+- name: Install planetfilter
+  apt:
+    state: present
+    name: planetfilter
+  register: planetfilter_i
+
+# http://feeding.cloud.geek.nz/posts/keeping-up-with-noisy-blog-aggregators-using-planetfilter/
+- name: Copy planetfilter feed configs into place
+  copy:
+    src: "{{ item }}"
+    dest: /etc/planetfilter.d/
+    owner: root
+    group: root
+    mode: 0644
+  with_fileglob:
+    - etc/planetfilter.d/*
+  register: planetfilter_c
+
+- name: Apply planetfilter configuration changes
+  command: /usr/share/planetfilter/update-feeds
+  when: planetfilter_i.changed or planetfilter_c.changed
+
+- name: Ensure Apache is installed for planetfilter serving
+  apt:
+    state: present
+    name: apache2
+
+# ...via apache so Thunderbird won't shun it for being file://
+- name: Add Apache site config for planetfilter
+  copy:
+    src: etc/apache2/sites-available/100-planetfilter.conf
+    dest: /etc/apache2/sites-available/
+    owner: root
+    group: root
+    mode: 0644
+  register: planetfilter_a
+
+- name: Enable planetfilter in Apache config
+  command: a2ensite 100-planetfilter
+  when: planetfilter_a.changed
+
+- name: Reload Apache config to apply changes
+  service:
+    name: apache2
+    state: reloaded
+  when: planetfilter_a.changed

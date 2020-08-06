@@ -1,0 +1,7 @@
+# Deny access to everything in $HOME except what it needs
+# (Exempt it from anything generic.profile may do and whitelist it)
+noblacklist ~/.local/share/Paradox Interactive/
+whitelist ~/.local/share/Paradox Interactive/
+
+# Turn on the standard set of protections I use for all games
+include ${HOME}/.config/firejail/game-single.inc

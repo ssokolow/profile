@@ -1,0 +1,4 @@
+[pidgin]
+title=Pidgin File Transfer
+description=File transfer support for instant messaging
+ports=5190:5290/tcp|5298

@@ -1,0 +1,4 @@
+[fan_remote]
+title=fan_remote
+description=A simple HTTP UI to allow remotely turning off the X10 fan
+ports=23734/tcp

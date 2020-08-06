@@ -1,0 +1,4 @@
+[dhclient]
+title=DHCP Client
+description=The dhclient DHCP client
+ports=68/udp

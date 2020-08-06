@@ -1,0 +1,531 @@
+---
+# TODO for 'setup ansible' shell script:
+# - Install aptitude and python-apt or python3-apt for the `apt` module
+
+- hosts: localhost
+  connection: local
+
+  vars:
+    apt_install:
+      # Dependencies for other parts of this playbook
+      - aptitude
+      - apt-file
+      - build-essential
+      - curl
+      - git # shell alias
+      - git-gui # file manager action
+      - haskell-platform
+      - nodejs
+      - python-apt
+      - python3-apt
+      # Regular packages
+      - advancecomp # shell alias
+      - antimicro
+      - aosd-cat # shell alias
+      - apache2
+      - arduino
+      - arduino-mk
+      - ark
+      - audacious
+      - bottlerocket
+      - buildnotify
+      - calibre
+      - checkinstall
+      - chm2pdf
+      - chromium-browser
+      - cifs-utils
+      - colordiff # shell alias
+      - colortest
+      - comix
+      - conky-all
+      - cryptkeeper
+      - ddrescue
+      - ddrescueview
+      - deluge-gtk
+      - dhex
+      - dosbox
+      - easytag
+      - elementary-icon-theme
+      - encfs
+      - evince
+      - exfalso
+      - expect
+      - festival
+      - filelight
+      - firefox # shell alias
+      - firejail
+      # - firejail-profiles  # TODO: post-xenial
+      - focuswriter
+      - fortune-mod
+      - fuseiso
+      - gaffitter
+      - gdb
+      - geeqie
+      - gextractwinicons
+      - gimp
+      - glabels
+      - gmrun
+      - gpm
+      - graphviz
+      - guvcview
+      - handbrake
+      - hddtemp
+      - htop # shell alias
+      # - hub # shell alias, post-xenial
+      - imagemagick
+      - incron
+      - inkscape
+      - iotop
+      - irssi
+      - jpegoptim
+      - k3b
+      - kcachegrind
+      - kcachegrind-converters
+      - kcolorchooser
+      - kdiff3
+      - konq-plugins
+      - konqueror # shell alias
+      - kruler
+      - krename
+      - latencytop
+      - less # shell alias
+      - lgogdownloader # shell alias
+      - libnotify-bin
+      - libpurple-bin
+      - libreoffice
+      - libreoffice-nlpsolver
+      - libreoffice-ogltrans
+      - libreoffice-pdfimport
+      - libreoffice-presentation-minimizer
+      - libreoffice-presenter-console
+      - libreoffice-wiki-publisher
+      - libreoffice-writer2latex
+      - libreoffice-writer2xhtml
+      - links
+      - links2
+      - lm-sensors
+      - lynx
+      - lyx
+      - mc # shell alias
+      - mencoder
+      - mercurial
+      - molly-guard
+      - mousepad
+      - mp3check # shell alias
+      - mpv
+      - mutt
+      - ncdu
+      - normalize-audio
+      - numlockx
+      - okular
+      - openssh-server
+      - optipng # shell alias
+      - p7zip-full
+      - p7zip-rar
+      - pandoc
+      - pandoc-citeproc
+      - pavucontrol
+      - pcmanfm # default file manager and shell alias
+      - phatch
+      - pidgin
+      - pidgin-bot-sentry
+      - pidgin-libnotify
+      - pidgin-otr
+      - pidgin-plugin-pack
+      - pinfo # shell alias
+      - pngcrush # shell alias
+      - postgresql
+      - pv
+      - pydf # shell alias
+      - pypy
+      # TODO: Replace as many of these as possible with use of pipx
+      #       (The APT versions should be pulled in only as dependencies)
+      - python-dbus # active_corners, lap, lgogd_uri, timeclock
+      - python-dev
+      - python-gtk2 # lgogd_uri, pdf2..., timeclock
+      - python-lxml # addventure_tools, fanfic2ebook, ffcms, ficfan
+      - python-nose
+      - python-notify # lgogd_uri, timeclock
+      - python-pip
+      - python-psutil # rdbackup_wrapper
+      - python-setuptools
+      - python-tz # ffcms
+      - python-unidecode # todo_list
+      - python-virtualenv
+      - python-xpyb # timeclock
+      - python-yaml # addventure_tools, ffcms, ficfan, todo_list
+      - python3
+      - python3-coverage
+      - python3-dbus
+      - python3-doc
+      - python3-examples
+      - python3-lxml
+      - python3-nose
+      - python3-pil
+      - python3-pip
+      - python3-setuptools
+      - python3-sphinx
+      - python3-tidylib # Required to pull in .so dependencies for virtualenvs
+      - python3-usb # ???
+      - python3-yaml # dos_installer
+      - python3.8
+      - python3.8-venv
+      - rdiff-backup
+      - redshift
+      - redshift-gtk
+      - retext
+      - ruby
+      - rxvt-unicode
+      - safecopy
+      - screen
+      - scrot
+      - sigil
+      - smem
+      - sox
+      - sqlite3
+      - sqliteman # shell alias
+      - ssh-askpass-gnome
+      - sshfs
+      - task # TODO: Remove the need for this
+      - tellico
+      - texlive-xetex
+      - thunderbird
+      - tig
+      - timelimit
+      - timidity
+      - ttf-mscorefonts-installer
+      - tox
+      - ufw
+      - units # shell alias
+      - unrar
+      - uptimed
+      - virtualbox
+      - virtualbox-guest-additions-iso
+      - virtualenvwrapper
+      - wdiff # shell alias
+      - winpdb
+      - workrave
+      - wmctrl
+      - wxhexeditor
+      - xautomation
+      - xbindkeys
+      - xchm
+      - xclip
+      - xdotool
+      - xkeycaps
+      - xpad
+      - xpra
+      - xsane
+      - xscreensaver
+      - xserver-xephyr
+      - xvfb
+      - zeal
+      - zram-config
+      - zsh
+      - zsh-doc
+      # quicktile
+      - gir1.2-glib-2.0
+      - gir1.2-gtk-3.0
+      - gir1.2-wnck-3.0
+      - python3-gi
+      - python3-xlib
+      # Vim with ALE
+      # - fzf  # TODO: post-xenial
+      - jsonlint
+      - php-codesniffer
+      - pydocstyle
+      - pylint
+      - python3-bandit
+      - python3-flake8
+      - python3-isort
+      - sqlformat
+      - uglifyjs
+      - valgrind
+      - vim-doc
+      - vim-gtk # shell alias
+      - vulture
+      - yamllint
+    apt_remove:
+      - ace-of-penguins
+      - appmenu-*
+      - gpicview
+      - gnome-exe-thumbnailer
+      - gnumeric
+      - gnumeric-common
+      - indicator-applet-appmenu
+      - indicator-appmenu
+      - liboverlay-scrollbar
+      - light-locker
+      - mtpaint
+      - modemmanager
+      - sylpheed
+      - transmission*
+      - unity-gtk2-module
+      - unity-gtk3-module
+    npm_global_cmds: # TODO: Rework to use npx
+      # Dependencies for ALE save/format-on-check
+      csslint: /usr/bin/csslint
+      jshint: /usr/bin/jshint
+      prettier: /usr/bin/prettier
+      stylelint-config-recommended: /usr/bin/stylelint
+      stylelint: /usr/bin/stylelint
+      swaglint: /usr/bin/swaglint
+    py2_requirements:
+      # TODO: Try to get all these switched to Python 3.x
+      - tzlocal # tw-daily
+      - youtube_dl # shell alias, Deps for youtube-dl -U, which uses `python`
+    py3_requirements: # TODO: Use pipx
+      - restview
+      # Dependencies for ALE save/format-on-check
+      - python-language-server
+      - pyls-mypy
+      - rstcheck
+      - vim-vint
+      # Dependencies for ALE save/format-on-check to move to APT post-xenial
+      - ansible-lint
+      - autopep8
+      - proselint
+    ruby_gems:
+      - travis-lint
+      # TODO: Need newer Ruby than Xenial's system version
+      # - jekyll
+      # - mdl
+    samba_family_users:
+      - andre
+      - beverly
+      - nicky
+      - "{{ my_username }}"
+
+  tasks:
+    # ============================== Safety Checks ============================
+    - name: Abort if we are running as root
+      fail:
+        msg: "This playbook must be run as root"
+      when: ansible_user_uid != 0
+
+    # =================== Remove Unwanted Preloaded Applications ==============
+    # (before potentially wasting bandwidth on them with dist-upgrade)
+    - name: Purge undesired Lubuntu and Ubuntu package preloads
+      apt:
+        state: absent
+        purge: true
+        autoremove: true
+        name: "{{ apt_remove }}"
+
+    # Remove snaps and block Canonical from slipping them back in
+    # TODO: Finish implementing this
+    - include: tasks/no_snaps.yml
+
+    # ============================= Configure APT =============================
+    - name: "Ensure universe and multiverse are enabled"
+      apt_repository:
+        repo: >-
+          {{ item[0] }}
+          http://ca.archive.ubuntu.com/ubuntu/
+          {{ansible_distribution_release}}{{ item[1] }}
+          {{ item[2] }}
+        update_cache: false # I'll do it just once later
+      when: ansible_distribution == 'Ubuntu'
+      with_nested:
+        - ["deb", "deb-src"]
+        - ["", "-updates"]
+        - ["universe", "multiverse"]
+
+    - name: "Ensure universe and multiverse security updates are enabled"
+      apt_repository:
+        repo: >-
+          {{ item[0] }}
+          http://security.ubuntu.com/ubuntu
+          {{ansible_distribution_release}}-security
+          {{ item[1] }}
+        update_cache: false # I'll do it just once later
+      when: ansible_distribution == 'Ubuntu'
+      with_nested:
+        - ["deb", "deb-src"]
+        - ["universe", "multiverse"]
+
+    - name: Check for i386 support
+      command: dpkg --print-foreign-architectures
+      check_mode: false
+      changed_when: false
+      register: dpkgforeign
+
+    - name: Enable multiarch (i386)
+      command: dpkg --add-architecture i386
+      changed_when: "'i386' not in dpkgforeign.stdout"
+
+    - name: Add PPAs
+      apt_repository:
+        repo: "{{ item }}"
+        update_cache: false # I'll do it just once later
+      with_items:
+        - "ppa:jd-team/jdownloader"
+        - "ppa:deadsnakes/ppa" # Various Python version for tox
+
+    # TDE repository for a version of BasKet Note Pads that likes my data
+    # (http://www.trinitydesktop.org/installation.php#ubuntu)
+    - include: tasks/tde_repo.yml
+    - include: tasks/gcdemu_repo.yml
+
+    # =========================== Update & Upgrade ============================
+    - name: Update the package repository cache
+      apt:
+        update_cache: true
+        cache_valid_time: 86400 # 24 hours
+    - name: Update all packages to the latest version
+      apt:
+        upgrade: dist
+
+    # ====================== Install Preferred Packages =======================
+    # TODO: Re-identify all the packages installed on my system that I want to
+    #       reinstall.
+
+    - name: "Accept mscorefonts license"
+      debconf:
+        name: ttf-mscorefonts-installer
+        question: msttcorefonts/accepted-mscorefonts-eula
+        value: "true"
+        vtype: select
+
+    - name: Install packages available through APT
+      apt:
+        state: present
+        name: "{{ apt_install }}"
+
+    # TODO: Install youtube-dl and JDownloader from the upstream source, with
+    #       signature verification. (The PPA-provided versions have fatally
+    #       flawed support for updating in one way or another.)
+
+    # TODO: Decide which of these should get their own taskfiles
+    - name: Install packages from 3rd-party repos
+      apt:
+        state: present
+        name:
+          # TODO: Move these to a tasks/deadsnakes.yml
+          - python3.1-complete
+          - python3.2-complete
+          - python3.3-complete
+          - python3.4-complete
+          - python3.6
+          - python3.7
+          - python3.9
+          - python3.9-venv
+
+    # REMINDER: Use of the `pip` module must come after `apt` installing pip.
+    - name: Install desired Python 2 packages
+      pip:
+        executable: pip2
+        name: "{{ py2_requirements | join(' ') }}"
+    - name: Install desired Python 3 packages
+      pip:
+        executable: pip3
+        name: "{{ py3_requirements | join(' ') }}"
+    - name: Install desired ruby gems
+      gem:
+        name: "{{ item }}"
+        user_install: false
+      with_items: "{{ ruby_gems }}"
+
+      # TODO: Add these to what get npm installed:
+      # @typescript-eslint/parser
+      # @typescript-eslint/eslint-plugin
+    - name: Install desired global npm packages
+      command: npm install -g -- {{ item.key | quote }} # 'npm' is too slow
+      args:
+        creates: "{{ item.value }}" # ...and 'command' would be too
+      with_dict: "{{ npm_global_cmds }}"
+
+    - include: tasks/earlyoom.yml
+    - include: tasks/smartd.yml
+    - include: tasks/stunnel.yml
+    - include: tasks/tde.yml
+    - include: tasks/no_floppy.yml # Keep 'Floppy Drive' out of 'Places' menu
+    - include: tasks/hddtemp.yml # Unprivileged querying of HDD temper.
+    - include: tasks/planetfilter.yml # RSS/Atom feed filtering
+    - include: tasks/keepass2.yml # Password wallet with TrayTOTP
+    - include: tasks/gcdemu.yml # Non-ISO CD/DVD image mounting
+    - include: tasks/ufw.yml # Basic firewall setup with exceptions
+    - include: tasks/hosts_file.yml # Basic system-wide ad-blocking
+
+    # ====================== Apply General Config Fixes =======================
+
+    - include: tasks/verbose_boot.yml # Boot splashes hinder diagnostics
+    - include: tasks/sysctl_networking.yml # Improve security and bufferbloat
+
+    - name: "Disable ads in Ubuntu login MOTD"
+      copy:
+        src: "etc/default/motd-news"
+        dest: "/etc/default/motd-news"
+        owner: root
+        group: root
+        mode: 0644
+
+    - name: "Apply udev policy fixes for various pieces of hardware"
+      copy:
+        src: "etc/udev/rules.d/"
+        dest: "/etc/udev/rules.d/"
+        owner: root
+        group: root
+        mode: 0644
+
+    - name: "Enable magic SysRq key"
+      copy:
+        src: "etc/sysctl.d/10-magic-sysrq.conf"
+        dest: "/etc/sysctl.d/10-magic-sysrq.conf"
+        owner: root
+        group: root
+        mode: 0644
+
+    - name: "Make custom update_check.sh passwordless"
+      copy:
+        src: "etc/sudoers.d/update_checker"
+        dest: "/etc/sudoers.d/update_checker"
+        owner: root
+        group: root
+        mode: 0440
+
+    - name: "Set up lm_sensors" # noqa 306
+      shell: "yes | sensors-detect"
+      args:
+        creates: /etc/sensors3.conf
+
+    - name: "Linking virtualbox to virtualbox-ose for old VM snapshot CD paths"
+      file:
+        src: virtualbox
+        dest: /usr/share/virtualbox-ose
+        state: link
+
+    # ================== Install monolith-specific Packages ===================
+
+    - include: tasks/wine.yml # Wine and PlayOnLinux, with 16-bit support
+      when: ansible_hostname == my_hostname
+
+    # ---- Network Services
+
+    - include: tasks/samba.yml # media server and file drop box
+      when: ansible_hostname == my_hostname
+
+    - include: tasks/nostalgia_exchange.yml # Munin master and monitoring node
+      when: ansible_hostname == my_hostname
+
+    - include: tasks/router_syslog.yml # Enable reception of router syslog
+      when: ansible_hostname == my_hostname
+
+    # ---- Hardware Drivers
+
+    - include: tasks/lcdproc.yml # front-panel diagnostic LCD
+      when: ansible_hostname == my_hostname
+
+    - include: tasks/spacenavd.yml # 3D Connexion Space Navigator driver
+      when: ansible_hostname == my_hostname
+
+    - include: tasks/truerng.yml # TrueRNG hardware RNG driver
+      when: ansible_hostname == my_hostname
+
+    # TODO: Is this still necessary for *buntu 20.04 LTS?
+    # - include: tasks/pa_tsched_fix.yml
+    #   when: ansible_hostname == my_hostname
+
+    - include: tasks/nvidia_drivers.yml # Driver and config for my TwinView
+      when: ansible_hostname == my_hostname
+# ==================== Apply monolith-specific Config =====================

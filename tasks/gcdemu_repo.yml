@@ -1,0 +1,4 @@
+---
+  - name: Add cdemu PPA
+    apt_repository:
+      repo: 'ppa:cdemu/ppa'

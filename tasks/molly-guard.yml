@@ -1,0 +1,13 @@
+---
+- name: Install molly-guard
+  apt:
+    state: present
+    name: molly-guard
+
+- name: Copy molly-guard configuration to /etc
+  copy:
+    src: etc/molly-guard/rc
+    dest: /etc/molly-guard/rc
+    owner: root
+    group: root
+    mode: 0644

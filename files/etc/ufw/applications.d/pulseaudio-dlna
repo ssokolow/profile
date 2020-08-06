@@ -1,0 +1,4 @@
+[pulseaudio-dlna]
+title=pulseaudio-dlna
+description=Stream arbitrary audio to the Kodi box
+ports=1900/udp|8080/tcp|49153/udp

@@ -1,0 +1,4 @@
+[avahi-daemon]
+title=Avahi Zeroconf Daemon
+description=Local network service discovery support
+ports=5353/udp

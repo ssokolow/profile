@@ -1,0 +1,48 @@
+---
+# NOTE: This requires python-apt and python-psutil to be installed
+#       for update_nvidia.py
+
+- name: Install nVidia binary video drivers
+  apt:
+    state: present
+    name: nvidia-current,nvidia-settings
+
+# TODO: Fix immutable-setting so it doesn't always report unchanged
+# See https://github.com/ansible/ansible/issues/48886
+- name: Temporarily unset immutable filesystem attribute on xorg.conf
+  command: chattr -i /etc/X11/xorg.conf
+  changed_when: false
+
+- name: Set preferred X.org configuration
+  copy:
+    src: etc/X11/xorg.conf
+    dest: /etc/X11/xorg.conf
+    owner: root
+    group: root
+    mode: 0644
+
+- name: Reset immutable filesystem attribute on xorg.conf
+  command: chattr +i /etc/X11/xorg.conf
+  changed_when: false
+
+- name: Copy deferred nVidia driver update helper into place
+  copy:
+    src: usr/local/sbin/update_nvidia.py
+    dest: /usr/local/sbin/update_nvidia.py
+    owner: root
+    group: root
+    mode: 0755
+
+# TODO: Redo this for systemd (possibly with WantedBy=)
+- name: Set deferred nVidia driver update helper to run on startup (Upstart)
+  copy:
+    src: update_nvidia.conf
+    dest: /etc/init/update_nvidia.conf
+    owner: root
+    group: root
+    mode: 0644
+  when: ansible_distribution_release == 'trusty'
+
+- name: Run update_nvidia.py once to set up initial package pins
+  command: /usr/local/sbin/update_nvidia.py --mark-only
+  changed_when: false

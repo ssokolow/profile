@@ -1,0 +1,78 @@
+# xorg.conf for HDTVs with bad EDID attached to nVidia video cards over HDMI
+
+Section "ServerLayout"
+    Identifier     "Layout0"
+    Screen      0  "Screen0"
+    InputDevice    "Keyboard0" "CoreKeyboard"
+    InputDevice    "Mouse0" "CorePointer"
+EndSection
+
+Section "Files"
+EndSection
+
+Section "InputDevice"
+    # generated from default
+    Identifier     "Mouse0"
+    Driver         "mouse"
+    Option         "Protocol" "auto"
+    Option         "Device" "/dev/psaux"
+    Option         "Emulate3Buttons" "no"
+    Option         "ZAxisMapping" "4 5"
+EndSection
+
+Section "InputDevice"
+    # generated from default
+    Identifier     "Keyboard0"
+    Driver         "kbd"
+EndSection
+
+Section "Monitor"
+    Identifier     "Monitor0"
+    VendorName     "Unknown"
+    ModelName      "Unknown"
+
+    #HorizSync       28.0 - 63.7
+
+    # Old 1080i modelines
+    #ModeLine       "1920x1080_kev" 74.2 1920 2008 2052 2200 540 542 547 562 +hsync +vsync interlace    
+    # 1920x1080 @ 60.00 Hz (GTF) hsync: 67.08 kHz; pclk: 172.80 MHz
+    #Modeline "1920x1080_60.00"  172.80  1920 2040 2248 2576  1080 1081 1084 1118  -HSync +Vsync
+
+    # Current 1080p modeline
+    # Source: http://www.mythtv.org/wiki/Modeline_Database#ATSC_Standard_Modes
+    ModeLine "1920x1080_60.00" 148.5 1920 1960 2016 2200 1080 1082 1088 1125 
+    # 1280x720 @ 60.00 Hz (GTF) hsync: 44.76 kHz; pclk: 74.48 MHz
+    Modeline "1280x720_60.00"  74.48  1280 1336 1472 1664  720 721 724 746  -HSync +Vsync
+    Option         "DPMS"
+EndSection
+
+Section "Device"
+    Identifier     "Device0"
+    Driver         "nvidia"
+    VendorName     "NVIDIA Corporation"
+    Option         "ModeDebug" "true"
+EndSection
+
+Section "Screen"
+    Option      "FlatPanelProperties" "Scaling = Native"
+    Option      "HWCursor" "Off"
+    Identifier     "Screen0"
+    Device         "Device0"
+    Monitor        "Monitor0"
+    DefaultDepth    24
+    Option         "NoLogo" "True"
+    Option         "DynamicTwinView" "False"
+    Option "ExactModeTimingsDVI" "true"
+    #Option         "MetaModes" "1280x720; 1024x768; 800x600"
+    Option         "ModeValidation" "NoEdidModes, AllowNon60HzDFPModes, NoDFPNativeResolutionCheck"
+    #Option         "ModeValidation" "AllowInterlacedModes, NoVertRefreshCheck"
+    SubSection     "Display"
+        Depth       24
+        Modes       "1920x1080_60"
+    EndSubSection
+EndSection
+
+Section "Extensions"
+    Option         "Composite" "Disable"
+EndSection
+

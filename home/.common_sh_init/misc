@@ -2,53 +2,14 @@
 #is connected to the shell.
 
 # Clear out some bindings that only cause me trouble.
-stty stop undef
-stty start undef
-
-# colors for ls, etc.
-if [[ -f ~/.dir_colors ]]; then
-	eval `dircolors -b ~/.dir_colors`
-else
-	if [[ -f /etc/DIR_COLORS ]]; then
-		eval `dircolors -b /etc/DIR_COLORS`
-	fi
-fi
+stty stop undef start undef
 
 # make less more friendly for non-text input files, see lesspipe(1)
-[ -x /usr/bin/lesspipe ] && eval "$(lesspipe)"
-
-# Use pygmentize as the code colorizer for less if it and lesspipe.sh are installed.
-# http://pyside.blogspot.com/2008/03/using-pygments-with-less.html
-if which pygmentize &> /dev/null && which lesspipe.sh &> /dev/null; then
-	export LESSOPEN="|lesspipe.sh %s"
-	export LESSCOLOR=yes
-	export LESSCOLORIZER=pygmentize
+if which lesspipe &>/dev/null; then
+    eval "$(lesspipe)"
 fi
-
-# CDArgs integration
-# (Patched to work with both bash and zsh)
-[ -f ~/bin/cdargs-zsh.sh ] && source ~/bin/cdargs-zsh.sh
 
 # Virtualenvwrapper integration
 source ~/.common_sh_init/virtualenvwrapper
-
-if [[ -s "$HOME/.rvm/scripts/rvm" ]]; then
-    # Load RVM into a shell session *as a function*
-    source "$HOME/.rvm/scripts/rvm"
-
-    # Add RVM to PATH for scripting
-    export PATH=$PATH:$HOME/.rvm/bin
-fi
-
-# Load my SSH key into my global ssh-agent if it's an interactive session
-if [[ $- == *i* ]]; then
-	GA_PID=${GPG_AGENT_INFO#*:}
-	GA_PID=${GA_PID%:*}
-
-	(`kill -0 "$SSH_AGENT_PID"` && kill -0 "$GA_PID") &> /dev/null ||
-		eval `/usr/bin/keychain --eval --quick ~/.ssh/id_dsa 2> /dev/null`
-
-	unset GA_PID
-fi
 
 # vim: ft=zsh

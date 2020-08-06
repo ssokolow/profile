@@ -8,12 +8,6 @@
 # for ssh logins, install and configure the libpam-umask package.
 #umask 022
 
-# If this isn't an interactive shell, connect to any existing global ssh-agent and gpg-agent sessions now
-case $- in
-    *i*) ;;
-    *) eval $(/usr/bin/keychain --eval --quick --noask 2> /dev/null) ;;
-esac
-
 # Source my common environment here for zsh-like behaviour.
 . ~/.common_sh_init/env
 

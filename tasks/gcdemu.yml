@@ -1,0 +1,17 @@
+---
+- name: Install gcdemu
+  apt:
+    state: present
+    name: cdemu-daemon,cdemu-client,gcdemu
+
+- name: Override gcdemu tray icon with something that stands out less
+  copy:
+    src: gcdemu-icon.svg
+    dest: "{{ item[0] }}/{{ item[1] }}"
+    owner: root
+    group: root
+    mode: 0644
+    backup: true
+  with_nested:
+    - ["/usr/share/pixmaps", "/usr/share/icons/hicolor/scalable/apps"]
+    - ["gcdemu.svg", "gcdemu-icon.svg", "gcdemu-icon-gray.svg"]

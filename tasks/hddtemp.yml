@@ -1,0 +1,16 @@
+---
+# Enable hddtemp daemon to allow unprivileged temperature queries
+
+- name: Enable hddtemp daemon
+  lineinfile:
+    path: /etc/default/hddtemp
+    backup: yes
+    regexp: '(?m)^\s*RUN_DAEMON=.*$'
+    line: 'RUN_DAEMON="true"'
+  register: hddtemp_d
+
+- name: "Restart hddtemp to apply config changes"
+  service:
+    name: hddtemp
+    state: restarted
+  when: hddtemp_d.changed

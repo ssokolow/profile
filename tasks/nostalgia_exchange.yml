@@ -1,0 +1,75 @@
+---
+- name: Install rssh as a fallback constraint mechanism for nostalgia-exchange
+  apt:
+    state: present
+    name: rssh
+  register: nexch_i
+
+- name: "Add 'nostalgia-exchange' user for chrooted SFTP drop box"
+  user:
+    name: "nostalgia-exchange"
+    shell: "/usr/bin/rssh"
+    group: "nostalgia-exchange"
+    groups: "{{ my_username }}"
+    # TODO: Figure out the proper way for nostalgia-exchange to be able to
+    # manipulate all files I copy into its homedir
+    home: "/home/nostalgia-exchange"
+    append: false
+    createhome: false
+  register: nexch_u
+
+- name: "Make nostalgia-exchange home only root-writable to please SSH chroot"
+  file:
+    state: directory
+    path: "{{ item }}"
+    mode: 0755
+    owner: root
+    group: root
+  with_items:
+    - "{{ nexch_u.home }}"
+    - "{{ nexch_u.home }}/backups"
+
+- name: "Creating writable directory in nostalgia-exchange homedir"
+  file:
+    state: directory
+    path: "{{ item }}"
+    mode: 06775
+    owner: nostalgia-exchange
+    group: nostalgia-exchange
+  with_items:
+    - "{{ nexch_u.home }}/writable"
+
+- name: "Creating backup directories in nostalgia-exchange homedir"
+  file:
+    state: directory
+    path: "{{ item }}"
+    mode: 06755
+    owner: nostalgia-exchange
+    group: nostalgia-exchange
+  with_items:
+    - "{{ nexch_u.home }}/backups/dos"
+    - "{{ nexch_u.home }}/backups/xp"
+
+- name: "Creating .ssh in nostalgia-exchange homedir"
+  file:
+    state: directory
+    path: "{{ nexch_u.home }}/.ssh"
+    mode: 0700
+    owner: nostalgia-exchange
+    group: nostalgia-exchange
+
+- name: "Ensuring that /etc/ssh/authorized_keys exists"
+  file:
+    state: directory
+    path: "/etc/ssh/authorized_keys"
+
+- name: "Adding myself to nostalgia-exchange group"
+  user:
+    name: "{{ my_username }}"
+    groups: "nostalgia-exchange"
+    append: true
+# TODO: Once I'm only handling Ubuntu versions with SSH 7.3p1 or higher, use
+#       the `Include` directive to locate the resposibility for
+#       nostalgia-exchange's part of sshd_config here.
+
+# vim: set sw=2 sts=2 noexpandtab :

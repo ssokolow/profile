@@ -34,6 +34,8 @@
 	numbered = auto
 [gui]
 	recentrepo = /home/ssokolow/.profile_repo
+	fontui = -family \"DejaVu Sans\" -size 11 -weight normal -slant roman -underline 0 -overstrike 0
+	fontdiff = -family \"DejaVu Sans Mono\" -size 11 -weight normal -slant roman -underline 0 -overstrike 0
 [guitool "gitk"]
 	cmd = gitk
 [merge]

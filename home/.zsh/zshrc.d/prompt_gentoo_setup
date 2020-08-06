@@ -1,0 +1,60 @@
+#!/bin/zsh
+# Modified gentoo prompt theme
+# customized by Stephan Sokolow for git branch and virtualenv display based on:
+# http://www.jukie.net/~bart/blog/20071219221358
+# http://www.simplisticcomplexity.com/2008/03/13/show-your-git-branch-name-in-your-prompt/#comment-4166
+# https://virtualenvwrapper.readthedocs.io/en/latest/tips.html
+#
+# See also:
+# https://www.topbug.net/blog/2016/10/11/speed-test-check-the-existence-of-a-command-in-bash-and-zsh/
+
+# Assign these only once, then use them in PS1, PS2, and PS3
+base_prompt="%k%B%(!.%F{red}.%F{green}%n@)%m %B%F{blue}%1~"
+mid_prompt="%(0?..%F{yellow})%(1j.%%.)"
+post_prompt="%b%f%k"
+
+parse_git_branch() {
+    # Speed up opening up a new terminal tab by not
+    # checking `$HOME` ...which can't be a repo anyway
+    #
+    # For the heck of it, micro-optimize this too:
+    #  time (repeat 1000000 { [ "$PWD" = "$HOME" ] } )    == ~4.2s
+    #  time (repeat 1000000 { [[ "$PWD" == "$HOME" ]] } ) == ~1.4s
+    [[ "$PWD" == "$HOME" ]] && return
+
+    # Fastest known way to check the current branch name
+    # (Uses `command` to bypass wrappers like https://hub.github.com/)
+    ref="$(command git symbolic-ref --short HEAD 2> /dev/null)" || return
+    echo " [$ref]"
+}
+
+zsh_virtualenv_prompt() {
+    # Check whether we're in a virtualenv without subshells or disk I/O
+    [[ "$VIRTUAL_ENV" == "" ]] && return
+
+    # Support both ~/.virtualenvs/<name> and <name>/venv
+    local venv_name="${VIRTUAL_ENV##*/}"
+    if [[ "$venv_name" == "venv" ]]; then
+        venv_name=${VIRTUAL_ENV%/*}
+        venv_name=${venv_name##*/}
+    fi
+
+    # Distinguish between the shell where the virtualenv was activated and its
+    # children
+    if typeset -f deactivate >/dev/null; then
+        echo "[%F{green}${venv_name}%f] "
+    else
+        echo "<%F{green}${venv_name}%f> "
+    fi
+}
+
+# Use PROMPT_SUBST rather than a precmd because profiling says it's faster
+# (Less overhead from function calling and string concat, I suspect)
+setopt PROMPT_SUBST PROMPT_PERCENT
+PS1='$base_prompt$(parse_git_branch) $mid_prompt%# $post_prompt'
+PS2='$base_prompt$(parse_git_branch) $mid_prompt%_> $post_prompt'
+PS3='$base_prompt$(parse_git_branch) $mid_prompt?# $post_prompt'
+
+# Display a "we are in a virtualenv" indicator that works in child shells too
+VIRTUAL_ENV_DISABLE_PROMPT=1
+RPS1='$(zsh_virtualenv_prompt)'
