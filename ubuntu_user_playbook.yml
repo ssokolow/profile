@@ -6,8 +6,10 @@
 
   vars:
     rust_commands:
+      - cargo-afl
       - cargo-deadlinks
       - cargo-watch
+      - flamegraph
       # Bloat analysis
       - cargo-bloat
       - cargo-llvm-lines
@@ -33,8 +35,13 @@
       - cargo-expand
       # Utilities for the system at large
       - fd-find
+      - hyperfine
       - jsonfmt
       - loc
+      - procs
+      - skim
+      - tokei
+      - xd
     rust_commands_nightly:
       - cargo-modules
       - miniserve
@@ -161,7 +168,7 @@
 
     # TODO: Is there a way to make this conditional on a repo update?
     - name: Install rustig
-      command: cargo install --git https://github.com/Technolution/rustig rustig
+      command: cargo install --git https://github.com/MichaelMauderer/rustig rustig
       args:
         creates: "~/.cargo/bin/rustig"
 

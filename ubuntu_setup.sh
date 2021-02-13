@@ -86,13 +86,14 @@ fi
 # ========================= TODO: CONVERT LINES BELOW ========================
 
 # TODO: Something added group writability to my ~/.zsh. Audit my profile.
+# TODO: Write an npm/npx wrapper which runs it in a Firejail scoped to the
+#       project directory and denies it access to `.git`.
 
 echo "IMPORTANT: Don't forget to..."
 echo " - edit /etc/ssh/sshd_config to allow only non-root, pubkey authentication."
 echo " - Add "/mnt/incoming/.backups /srv/backups /mnt/buffalo_ext/backups" to /etc/updatedb.conf and uncomment PRUNENAMES."
-echo " - Run 'sudo update-binfmts --disable cli' after installing Mono so 'cargo test' and 'cargo run' can cross-test"
+echo " - Run 'sudo update-binfmts --disable cli' after installing Mono if 'update-binfmts --display | grep 'cli (enabled):'' so 'cargo test' and 'cargo run' can cross-test"
 echo " - reinstall lap."
-echo " - reinstall the fonts from https://github.com/Lokaltog/powerline-fonts"
 echo " - verify that all automated backup mechanisms got set up correctly."
 echo " - reinstall checkmake"
 echo " - reinstall munt"

@@ -7,89 +7,38 @@
 
   vars:
     apt_install:
-      # Dependencies for other parts of this playbook
+      # --== Dependencies for other parts of this playbook ==--
       - aptitude
       - apt-file
       - build-essential
       - curl
       - git # shell alias
       - git-gui # file manager action
-      - haskell-platform
       - nodejs
       - python-apt
       - python3-apt
-      # Regular packages
-      - advancecomp # shell alias
-      - antimicro
-      - aosd-cat # shell alias
-      - apache2
-      - arduino
-      - arduino-mk
-      - ark
+      # --== Regular packages ==--
+      - arduino # TODO: Firejail or Flatpak to sandbox downloaded toolchains
       - audacious
-      - bottlerocket
-      - buildnotify
-      - calibre
-      - checkinstall
-      - chm2pdf
-      - chromium-browser
-      - cifs-utils
-      - colordiff # shell alias
-      - colortest
       - comix
-      - conky-all
-      - cryptkeeper
-      - ddrescue
       - ddrescueview
       - deluge-gtk
-      - dhex
-      - dosbox
       - easytag
-      - elementary-icon-theme
-      - encfs
       - evince
       - exfalso
-      - expect
-      - festival
       - filelight
       - firefox # shell alias
-      - firejail
-      # - firejail-profiles  # TODO: post-xenial
-      - focuswriter
-      - fortune-mod
-      - fuseiso
-      - gaffitter
-      - gdb
       - geeqie
       - gextractwinicons
       - gimp
-      - glabels
-      - gmrun
-      - gpm
-      - graphviz
       - guvcview
-      - handbrake
-      - hddtemp
-      - htop # shell alias
-      # - hub # shell alias, post-xenial
-      - imagemagick
-      - incron
-      - inkscape
-      - iotop
-      - irssi
-      - jpegoptim
       - k3b
       - kcachegrind
       - kcachegrind-converters
       - kcolorchooser
       - kdiff3
-      - konq-plugins
-      - konqueror # shell alias
       - kruler
       - krename
-      - latencytop
-      - less # shell alias
-      - lgogdownloader # shell alias
       - libnotify-bin
       - libpurple-bin
       - libreoffice
@@ -101,45 +50,161 @@
       - libreoffice-wiki-publisher
       - libreoffice-writer2latex
       - libreoffice-writer2xhtml
+      - lyx
+      - okular
+      - phatch
+      - pidgin # NOTE: flatpak doesn't have needed plugins
+      - pidgin-bot-sentry
+      - pidgin-libnotify
+      - pidgin-otr
+      - pidgin-plugin-pack
+      - retext
+      - sigil
+      - sqliteman # shell alias
+      - tellico
+      - thunderbird
+      - virtualbox
+      - virtualbox-guest-additions-iso
+      - winpdb
+      - workrave
+      - wxhexeditor
+      - xchm
+      - xkeycaps
+      - xpad
+      - xsane
+      # --== QuickTile ==--
+      - gir1.2-glib-2.0
+      - gir1.2-gtk-3.0
+      - gir1.2-wnck-3.0
+      - python3-gi
+      - python3-xlib
+      # --== Vim with ALE ==--
+      - cppcheck
+      - flawfinder
+      # - fzf  # TODO: post-xenial
+      - jsonlint
+      - php-codesniffer
+      - pydocstyle
+      - pylint
+      - python3-bandit
+      - python3-flake8
+      - python3-isort
+      - shellcheck
+      - sqlformat
+      - valgrind
+      - vim-doc
+      - vim-gtk # shell alias
+      - vulture
+      - yamllint
+      # --== Stuff I use in scripts/terminal (not suitable for flatpak) ==--
+      - advancecomp # shell alias
+      - aosd-cat # shell alias
+      - arduino-mk
+      - bottlerocket # xbindkeys, fan_remote
+      - calibre # Not flatpak because I always script it
+      - checkinstall
+      - chm2pdf
+      - cifs-utils
+      - clang # for cargo-afl
+      - colordiff # shell alias
+      - colortest
+      - dhex
+      - dosbox # Needs scriptable with arbitrary paths for dev so no flatpak
+      - encfs
+      - expect
+      - fbi # ~/bin/gqfbi
+      - festival
+      - firejail
+      # - firejail-profiles  # TODO: post-xenial
+      - fortune-mod
+      - fuseiso
+      - gaffitter
+      - gdb
+      - gddrescue
+      - graphviz
+      - hddtemp
+      - htop # shell alias
+      # - hub # shell alias, post-xenial
+      - imagemagick
+      - incron
+      - iotop
+      - irssi
+      - jpegoptim
+      - latencytop
+      - less # pager, manpager, shell alias
+      - lgogdownloader # shell alias
       - links
       - links2
+      - linux-tools-common
+      - linux-tools-generic
+      - llvm # for cargo-afl
       - lm-sensors
       - lynx
-      - lyx
       - mc # shell alias
       - mencoder
+      - mplayer # MUSIC_PLAYER when DISPLAY is unset
       - mercurial
       - molly-guard
-      - mousepad
       - mp3check # shell alias
       - mpv
       - mutt
       - ncdu
+      - node-typescript
       - normalize-audio
       - numlockx
-      - okular
       - openssh-server
       - optipng # shell alias
       - p7zip-full
       - p7zip-rar
       - pandoc
       - pandoc-citeproc
-      - pavucontrol
-      - pcmanfm # default file manager and shell alias
-      - phatch
-      - pidgin
-      - pidgin-bot-sentry
-      - pidgin-libnotify
-      - pidgin-otr
-      - pidgin-plugin-pack
       - pinfo # shell alias
       - pngcrush # shell alias
       - postgresql
       - pv
       - pydf # shell alias
+      - rdiff-backup
+      - safecopy
+      - screen
+      - scrot
+      - smem
+      - sox
+      - sqlite3
+      - sshfs
+      - tig
+      - timelimit
+      - timidity
+      - tox
+      - ufw
+      - units # shell alias
+      - unrar
+      - uptimed
+      - virtualenvwrapper
+      - wdiff # shell alias
+      - wmctrl
+      - xautomation
+      - xbindkeys
+      - xclip
+      - xdotool
+      - xpra
+      - xserver-xephyr
+      - xvfb
+      - zram-config
+      - zsh
+      - zsh-doc
+      # --== Infrastructural Packages (not suitable for flatpak) ==--
+      - apache2
+      - ark
+      - conky-all
+      - elementary-icon-theme
+      - gmrun
+      - gpm
+      - konq-plugins
+      - konqueror # shell alias
+      - mousepad
+      - pavucontrol
+      - pcmanfm # default file manager and shell alias
       - pypy
-      # TODO: Replace as many of these as possible with use of pipx
-      #       (The APT versions should be pulled in only as dependencies)
       - python-dbus # active_corners, lap, lgogd_uri, timeclock
       - python-dev
       - python-gtk2 # lgogd_uri, pdf2..., timeclock
@@ -166,85 +231,18 @@
       - python3-setuptools
       - python3-sphinx
       - python3-tidylib # Required to pull in .so dependencies for virtualenvs
-      - python3-usb # ???
+      - python3-usb # escpos-cli?
       - python3-yaml # dos_installer
       - python3.8
       - python3.8-venv
-      - rdiff-backup
       - redshift
       - redshift-gtk
-      - retext
       - ruby
       - rxvt-unicode
-      - safecopy
-      - screen
-      - scrot
-      - sigil
-      - smem
-      - sox
-      - sqlite3
-      - sqliteman # shell alias
       - ssh-askpass-gnome
-      - sshfs
-      - task # TODO: Remove the need for this
-      - tellico
       - texlive-xetex
-      - thunderbird
-      - tig
-      - timelimit
-      - timidity
       - ttf-mscorefonts-installer
-      - tox
-      - ufw
-      - units # shell alias
-      - unrar
-      - uptimed
-      - virtualbox
-      - virtualbox-guest-additions-iso
-      - virtualenvwrapper
-      - wdiff # shell alias
-      - winpdb
-      - workrave
-      - wmctrl
-      - wxhexeditor
-      - xautomation
-      - xbindkeys
-      - xchm
-      - xclip
-      - xdotool
-      - xkeycaps
-      - xpad
-      - xpra
-      - xsane
       - xscreensaver
-      - xserver-xephyr
-      - xvfb
-      - zeal
-      - zram-config
-      - zsh
-      - zsh-doc
-      # quicktile
-      - gir1.2-glib-2.0
-      - gir1.2-gtk-3.0
-      - gir1.2-wnck-3.0
-      - python3-gi
-      - python3-xlib
-      # Vim with ALE
-      # - fzf  # TODO: post-xenial
-      - jsonlint
-      - php-codesniffer
-      - pydocstyle
-      - pylint
-      - python3-bandit
-      - python3-flake8
-      - python3-isort
-      - sqlformat
-      - uglifyjs
-      - valgrind
-      - vim-doc
-      - vim-gtk # shell alias
-      - vulture
-      - yamllint
     apt_remove:
       - ace-of-penguins
       - appmenu-*
@@ -262,29 +260,17 @@
       - transmission*
       - unity-gtk2-module
       - unity-gtk3-module
-    npm_global_cmds: # TODO: Rework to use npx
+    npm_global_cmds: # TODO: Rework to use npx and then write npj and use that
       # Dependencies for ALE save/format-on-check
-      csslint: /usr/bin/csslint
-      jshint: /usr/bin/jshint
       prettier: /usr/bin/prettier
       stylelint-config-recommended: /usr/bin/stylelint
       stylelint: /usr/bin/stylelint
       swaglint: /usr/bin/swaglint
-    py2_requirements:
-      # TODO: Try to get all these switched to Python 3.x
-      - tzlocal # tw-daily
-      - youtube_dl # shell alias, Deps for youtube-dl -U, which uses `python`
     py3_requirements: # TODO: Use pipx
       - restview
       # Dependencies for ALE save/format-on-check
-      - python-language-server
-      - pyls-mypy
       - rstcheck
       - vim-vint
-      # Dependencies for ALE save/format-on-check to move to APT post-xenial
-      - ansible-lint
-      - autopep8
-      - proselint
     ruby_gems:
       - travis-lint
       # TODO: Need newer Ruby than Xenial's system version
@@ -293,7 +279,7 @@
     samba_family_users:
       - andre
       - beverly
-      - nicky
+      - nick
       - "{{ my_username }}"
 
   tasks:
@@ -411,11 +397,7 @@
           - python3.9
           - python3.9-venv
 
-    # REMINDER: Use of the `pip` module must come after `apt` installing pip.
-    - name: Install desired Python 2 packages
-      pip:
-        executable: pip2
-        name: "{{ py2_requirements | join(' ') }}"
+      # REMINDER: Use of the `pip` module must come after `apt` installing pip.
     - name: Install desired Python 3 packages
       pip:
         executable: pip3
@@ -426,9 +408,6 @@
         user_install: false
       with_items: "{{ ruby_gems }}"
 
-      # TODO: Add these to what get npm installed:
-      # @typescript-eslint/parser
-      # @typescript-eslint/eslint-plugin
     - name: Install desired global npm packages
       command: npm install -g -- {{ item.key | quote }} # 'npm' is too slow
       args:
