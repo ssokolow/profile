@@ -96,6 +96,7 @@ echo " - Run 'sudo update-binfmts --disable cli' after installing Mono if 'updat
 echo " - reinstall lap."
 echo " - verify that all automated backup mechanisms got set up correctly."
 echo " - reinstall checkmake"
+echo " - reinstall shfmt"
 echo " - reinstall munt"
 echo " - reinstall whipper (https://github.com/JoeLametta/whipper/)"
 echo " - Re-extract the EasyCap somagic firmware from the driver disk."
