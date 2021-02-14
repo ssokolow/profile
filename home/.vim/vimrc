@@ -15,13 +15,21 @@
 "  :w           Save
 "  :w {file}    Save a copy (save as {file} but keep editing the current name)
 "  :sav {file}  Save as     (save as {file} and start editing that instead)
-
+"
 "  gt           Go to next buffer
 "  gT           Go to previous buffer
 "  :b <Tab>     Use Tab-completion to switch buffers by filename
 "
 "  ZZ           Write changes and quit (alias for :wq)
 "  ZQ           Quit, discarding changes (alias for :q!)
+"
+" Entering Insert Mode:
+"  i/a          Enter Insert mode and put cursor before/after current char
+"  I/A          Like i/a but move to beginning of line first.
+"               (The difference becomes relevant when using [count])
+"  o/O          "Open" a blank line below/above the current one and edit
+"  ea           Edit at end of current word
+"  Ea           Edit at next piece of whitespace
 "
 " External Commands:
 "   :!{command}    Run {command}
@@ -128,6 +136,8 @@
 "  %            Go to [count] percent of the way through the file
 "  go           Go to byte [count] of the file
 "  gi           Go to last place text was inserted
+"  gn           Select the / or ? matched text the cursor is within
+"               (Useful to then hit s, type a replacement, and then . repeat)
 "
 "  Within Line Only:
 "   f/F {char}   Move fwd/back onto [count]'th occurrence of {char}
@@ -172,6 +182,10 @@
 "  :g/{re}/d    Delete all lines matching {re}
 "  :v/{re}/d    Delete all lines NOT matching {re}
 "
+"  :%s//repl/g  Use the active / or ? search for replacement (empty RE on %s)
+"  :%s/x/y/gc   Find/Replace with per-match prompting (the "c" flag)
+"  :set nows    Disable 'wrapscan' to keep find/replace from wrapping around
+"
 "  :sort        Sort lines
 "  :sort!       Sort lines in reverse
 "  :sort u      Sort lines, discarding duplicates
@@ -180,6 +194,8 @@
 "
 "  Insert Mode:
 "   <C-Space>     Omni-Completion
+"   <C-D>/<C-T>   Reduce/Increase indent of current line
+"   <C-U>         Revert an auto-inserted comment leader
 "   <C-V>         Type the following character literally
 "
 "   :VCoolor      Insert RGB or modify existing color
@@ -190,6 +206,10 @@
 "
 "  Visual Mode:
 "   ,x           Reindent using HTML Tidy
+"
+"  Visual Block Mode:
+"
+"  I             Insert text before all selected lines
 "
 "  Build An Incremented Sequence From A Selected Column In Visual Block Mode:
 "  :I  [#]      Left-Justified  (Supply # for non-default increment)
