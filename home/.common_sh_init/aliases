@@ -4,6 +4,7 @@
 
 # Set up some defaults I like
 alias colordiff="colordiff -u"
+alias dmesg="dmesg -H"
 alias ls="ls --color=auto -h"
 alias dirs="dirs -v"
 alias less="less -R"
