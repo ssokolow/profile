@@ -13,6 +13,7 @@ fi
 export BROWSER=firefox
 export EDITOR=vim
 export VISUAL="$EDITOR"
+export PAGER='/usr/bin/less -iR'
 
 # Make these available to subshells
 export COLUMNS
