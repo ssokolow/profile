@@ -1,5 +1,8 @@
 # Always prettify and cue the wrapper to use a pager
--p
+--pretty
+
+# Use Vim-style smart case sensitivity
+--smart-case
 
 --type-add
 map:*.map
