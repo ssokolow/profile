@@ -15,7 +15,7 @@
 # - https://superuser.com/questions/507267/how-to-grep-for-special-character-nul
 
 filtered_symfind() {
-    find "$PWD" -type l -printf '%-80P ->\0' -exec readlink -m {} \; | grep -aP$1 "\x00$2" | sed 's@\x0@ @'
+    find "$PWD" -type l -printf '%-80P ->\0' -exec readlink -m {} \; | grep "-aP$1" "\x00$2" | sed 's@\x0@ @'
 }
 
 case "$1" in
