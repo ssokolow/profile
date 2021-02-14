@@ -719,6 +719,7 @@ call plug#begin('~/.vim/plugged')
 Plug 'sheerun/vim-polyglot'
 Plug 'vim-scripts/python_match.vim', { 'for': 'python' }
 Plug 'vim-scripts/tiddlywiki', { 'for':  'tiddlywiki' }
+Plug 'DNSGeek/vim-cbmbasic', { 'for': 'cbmbasic' } " I'll do my own ftdetecting
 
 " Stuff which doesn't require being triggered by commands
 Plug 'editorconfig/editorconfig-vim'  " Obey .editorconfig files
@@ -756,6 +757,7 @@ Plug 'artnez/vim-rename', { 'on': 'Rename' }        " File renaming via :Rename
 Plug 'dsummersl/gundo.vim', { 'on': 'MundoToggle' } " Tree-structured Undo: \u
 Plug 'dyng/ctrlsf.vim', { 'on': 'CtrlSF' }          " Grep with context: \S
 Plug 'metakirby5/codi.vim', { 'on': 'Codi' }        " Jupyter-esque REPL
+Plug 'tpope/vim-capslock', { 'for': [ 'cbmbasic', 'basic' ] }  " <C-G>c and gC
 Plug 'jmcantrell/vim-virtualenv', { 'for': 'python' }
 Plug 'mhinz/vim-grepper', { 'on': ['Grepper', '<plug>(GrepperOperator)'] }
 Plug 'junegunn/fzf', { 'on': ['Files', 'GFiles', 'Buffers', 'Colors', 'Ag', 'Rg', 'Lines', 'BLines', 'Tags', 'BTags', 'Marks', 'Windows', 'Locate', 'History', 'Snippets', 'Commits', 'BCommits', 'Commands', 'Maps', 'Helptags', 'Filetypes'] }

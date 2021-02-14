@@ -15,4 +15,8 @@ augroup ftdetect_ssokolow
 
     " Support TiddlyWiki5 .tid files
     autocmd BufNewFile,BufRead *.tid set filetype=tiddlywiki
+
+    " Use only the non-conflicting extensions from vim-cbmbasic
+    autocmd BufNewFile,BufRead *.c64 set filetype=cbmbasic
+    autocmd BufNewFile,BufRead *.cbm set filetype=cbmbasic
 augroup END
