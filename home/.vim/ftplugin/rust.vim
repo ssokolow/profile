@@ -1,10 +1,14 @@
-let b:ale_linters = ['analyzer', 'cargo']
+let b:ale_linters = ['analyzer']
 let b:ale_fixers = ['remove_trailing_lines', 'trim_whitespace']
 let g:ale_rust_cargo_use_clippy = executable('cargo-clippy')
 let g:ale_rust_rls_config = {
       \   'rust': {
       \     'clippy_preference': executable('cargo-clippy') ? 'on' : 'off'
       \   }
+      \ }
+let g:ale_rust_analyzer_config = {
+      \ 'procMacro': { 'enable': v:true },
+      \ 'diagnostics': { 'disabled': ['inactive-code', 'macro-error', 'unresolved-import', 'unresolved-proc-macro'] },
       \ }
 
 " ---- Set up information for F7 and :make ----
