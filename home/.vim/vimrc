@@ -625,9 +625,9 @@ let g:indentLine_concealcursor = 'nc'
 
 " So far, I haven't seen any sign that smart pairing is causing problems, so
 " let's use it for more comfort
-"let g:pear_tree_smart_openers = 1
-"let g:pear_tree_smart_closers = 1
-"let g:pear_tree_smart_backspace = 1
+let g:pear_tree_smart_openers = 1
+let g:pear_tree_smart_closers = 1
+let g:pear_tree_smart_backspace = 1
 let g:pear_tree_timeout=10
 
 " It'd be nice if pear-tree worked with dot-repeating, but the necessary

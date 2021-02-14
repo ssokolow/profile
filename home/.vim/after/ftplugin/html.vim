@@ -3,3 +3,6 @@
 "  the initial <> and the overall <!-- --> or <...></...>)
 let b:pear_tree_pairs['<'] = {'closer': '>'}
 let b:pear_tree_pairs['<!--'] = {'closer': '--'}
+
+" Sailfish template placeholders
+let b:pear_tree_pairs['<%'] = {'closer': '%>'}
