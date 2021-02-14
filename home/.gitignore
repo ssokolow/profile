@@ -1,8 +1,8 @@
-# Compiled objects
-*.py[co]
-*.class
-*.[oa]
-*.l[oa]
+# Compiled objects (Commented out to remind me to copy them into each project)
+# *.py[co]
+# *.class
+# *.[oa]
+# *.l[oa]
 
 # Vim swap files
 .*.sw[mnop]
