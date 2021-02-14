@@ -1,0 +1,9 @@
+# Convenience wrapper for moving music without breaking my playlists
+
+audtool shutdown
+sleep 2 # Wait for it to write any pending playlist changes
+#mergemove.py ~/.config/audacious/playlists/*.audpl(P:--rewrite:) "$@"
+k3b-rm.py mv ~/.config/audacious/playlists/*.audpl(P:--rewrite:) --overwrite "$@" /srv/Burned_todo/Music
+audacious &>/dev/null &
+
+# vim: set ft=zsh :

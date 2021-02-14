@@ -1,0 +1,72 @@
+# Convenience helper to set up an "incognito mode" for a shell session.
+#
+# Installation:
+# 1. Create a folder like ~/.zsh/functions
+# 2. Add it to your ZSH function path with fpath=(~/.zsh/functions(:A) $fpath) in ~/.zshenv
+# 3. Save this script as ~/.zsh/functions/anonsh
+# 4. Add `autoload -Uz anonsh` to your ~/.zshrc
+#
+# Now you can type `anonsh` in any zsh session
+#
+# - Use `clear` to clear both the screen and scrollback buffer
+# - Use `fc -p` to clear command history without affecting your usual HISTFILE
+
+# Only store new command history entries in RAM
+unset HISTFILE
+
+# Redefine the hardstatus text to "anonsh" so it doesn't show $PWD
+# where people can see it when the shell doesn't have focus
+#
+# (The zsh_hardstatus_pre* and title functions are part of my .zshrc setup)
+if typeset -f zsh_hardstatus_precmd > /dev/null && typeset -f title > /dev/null; then
+    autoload -Uz add-zsh-hook
+    add-zsh-hook -d precmd zsh_hardstatus_precmd
+    add-zsh-hook -d preexec zsh_hardstatus_preexec
+
+    function zsh_hardstatus_precmd { title "anonsh" "anonsh"; }
+    add-zsh-hook precmd zsh_hardstatus_precmd
+    add-zsh-hook preexec zsh_hardstatus_precmd
+fi
+
+# Show ... in the prompt instead of $PWD so it can't give away
+# something after running `clear`
+#
+# ($base_prompt is a custom part of my .zshrc setup)
+if (( ${+base_prompt} )); then
+    export base_prompt="${base_prompt//%%1~/...}"
+fi
+export PS1="${PS1//%%1~/...}"
+export PS2="${PS2//%%1~/...}"
+export PS3="${PS3//%%1~/...}"
+export PS4="${PS4//%%1~/...}"
+
+# Redefine "clear" to also clear the GNU screen scrollback buffer and to ask
+# for the terminal scrollback buffer to be cleared in as many ways as possible
+clear() {
+    # Call the regular clear command
+    command clear
+
+    # Manually emit all the escapes I know for requesting the terminal be
+    # cleared and ask GNU Screen to pass it through as a literal
+    #
+    # Source: https://apple.stackexchange.com/a/318217/388700
+    printf '\eP\e[2J\e[3J\e[;H\ec\e\\'
+
+    # Flush GNU Screen's internal scrollback for this shell
+    if [ "$TERM" = "screen" ]; then
+        screen -X scrollback 0
+        screen -X scrollback 5000
+    fi
+}
+
+# TODO: Try to find a workaround to call the terminal scrollback-clearing part
+#       of `clear` on switching GNU screen focus and then refresh the visible
+#       part from screen's stored copy so nothing anonsh can show accidentally.
+#
+#       (Without removing the `termcapinfo` line to from ~/.screenrc which
+#       would disable it when `anonsh` isn't in use.)
+
+# Call `clear` on exit to clear terminal scrollback
+zshexit() { clear; }
+
+# vim: set ft=zsh :

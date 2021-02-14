@@ -180,7 +180,7 @@ autoload -Uz run-help   # Enable Meta-H (Alt/Esc-h/H) to read the manpage for
                         # the current partially typed command
 
 # My own functions
-autoload -Uz 457mv audmv setprj sudo url-encode
+autoload -Uz anonsh audmv sudo url-encode
 source ~/.zsh/zshrc.d/help-gnu.zsh
 source ~/.zsh/zshrc.d/rg
 
