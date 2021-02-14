@@ -593,6 +593,10 @@ let g:ctrlsf_auto_focus = {
     \ 'duration_less_than': 1000
     \ }
 
+" The default popup is too slow to draw. Go back to the old split design
+let g:fzf_layout = { 'window': 'below 10split' }
+let g:fzf_preview_window = ''
+
 " Reorder the preference of tools that Grepper supports and don't get mixed
 " in with ALE's output to the quickfix window
 let g:grepper = {
