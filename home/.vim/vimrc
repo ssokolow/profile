@@ -922,6 +922,12 @@ imap <Esc>[1;5D <C-o>ge
 imap <Esc>Oc <C-o>e
 imap <Esc>Od <C-o>ge
 
+" Set GUI Ctrl+Arrow motions to obey 'iskeyword'
+noremap <unique> <C-Left> ge
+noremap <unique> <C-Right> e
+inoremap <unique> <Esc><C-Left> ge
+inoremap <unique> <Esc><C-Right> e
+
 " Implement Ctrl+Backspace wordwise erase on any plaform where it's possible
 inoremap <C-BS> <C-W>
 " TODO: Figure out why Vim refuses to bind my urxvt Ctrl+Backspace mapping or
