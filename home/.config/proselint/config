@@ -4,5 +4,6 @@
         "needless_variants.misc": false,
         "typography.exclamation": false,
         "typography.symbols": false
+        "weasel_words.very": false
     }
 }
