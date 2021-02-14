@@ -3,14 +3,17 @@
 # We can't cd until just before handing off to ansible because "$0" may
 # be relative to "$PWD" and this script re-calls itself as a subprocess
 ansible_prep() {
-    shift  # Remove --system from "$@"
+    shift # Remove --system from "$@"
     cd "$(dirname "$(readlink -f "$0")")"
 }
 
-is_installed() { type "$1" 1>/dev/null 2>&1; return $?; }
+is_installed() {
+    type "$1" 1>/dev/null 2>&1
+    return $?
+}
 
 # ========================= System-level Installation ========================
-if [ "$1" == "--system" ]; then  # System-installation Subprocess Mode
+if [ "$1" == "--system" ]; then # System-installation Subprocess Mode
     # Only prompt for a password once so this can be left unattended
     if [ "$(id -u)" -ne 0 ]; then
         # Replace self (the subprocess) with a privileged copy
@@ -46,7 +49,7 @@ if [ "$1" == "--system" ]; then  # System-installation Subprocess Mode
     dpkg --configure --pending
 
 # ========================== User-level Installation =========================
-elif [ "$1" == "--user" ]; then  # User-setup Subprocess Mode
+elif [ "$1" == "--user" ]; then # User-setup Subprocess Mode
     ansible_prep
     ansible-playbook ubuntu_user_playbook.yml "$@"
 
@@ -54,7 +57,7 @@ elif [ "$1" == "--user" ]; then  # User-setup Subprocess Mode
     # find . -maxdepth 1 -type d -exec virtualenv -p "$(which python)" {} \;
 
 # =========================== Default Run Behaviour ==========================
-else  # Primary Mode
+else # Primary Mode
     # Run a subprocess of self to set up everything system-level
     "$0" --system "$@"
     "$0" --user "$@"
@@ -64,7 +67,7 @@ else  # Primary Mode
     check_mode=0
     for arg in "$@"; do
         if [ "$arg" = "--check" -o "$arg" = "-C" ]; then
-          check_mode=1
+            check_mode=1
         fi
     done
     if [ "$check_mode" = "1" ]; then
@@ -72,7 +75,6 @@ else  # Primary Mode
     else
         ./install.py
     fi
-
 
     if pgrep lxpanel >/dev/null; then
         echo " * Restarting lxpanel to acknowledge new launchers"
