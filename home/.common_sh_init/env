@@ -63,8 +63,10 @@ export PYTHONSTARTUP=${HOME}/.interactive_rc.py
 export RIPGREP_CONFIG_PATH=~/.config/rgrc
 export SCIPY_PIL_IMAGE_VIEWER=display
 
-# Put FZF on top of ripgrep for faster operation
+# Put FZF on top of ripgrep for faster operation and fix the color interaction
+# with ripgrep (--ansi) and gVim (--color=bw)
 export FZF_DEFAULT_COMMAND='rg --files --no-ignore --hidden --follow --glob "!.git/*" 2>&1'
+export FZF_DEFAULT_OPTS='--ansi --color=bw'
 
 # Provide this for later scripts
 if [ -n "$DISPLAY" ]; then
