@@ -23,7 +23,7 @@ alias here="pcmanfm . &>/dev/null &"
 # Make documentation browsing easier
 alias info="pinfo"
 kinfo() { konqueror info:/"$@" & }
-kman()  { konqueror man:"$@" & }
+kman() { konqueror man:"$@" & }
 
 # {{{ Make Midnight Commander exit into the current directory if installed.
 
@@ -39,12 +39,12 @@ fi
 
 # A helper that makes an alias which is conditional on the lack of arguments.
 cond_alias() {
-    eval "function ${1}() { [ -z \"\$*\" ] && $2 || command $1 \"\$@\"; }";
+    eval "function ${1}() { [ -z \"\$*\" ] && $2 || command $1 \"\$@\"; }"
 }
 
 # TODO: Rework things to remove this duplication
 cond_alias_2() {
-    eval "function ${1}() { [ -z \"\$*\" ] && $2 $3 $4 || command $2 \"\$@\" $4; }";
+    eval "function ${1}() { [ -z \"\$*\" ] && $2 $3 $4 || command $2 \"\$@\" $4; }"
 }
 
 # Streamline my TYT-watching workflow
@@ -74,6 +74,16 @@ git() {
     fi
 }
 
+download_ffn_fic() {
+    if which download_ffn_fic >/dev/null 2>&1; then
+        unset -f download_ffn_fic
+        download_ffn_fic "$@"
+    else
+        if [ -e ~/src/fanfic2ebook ]; then
+            PYTHONPATH=~/src/fanfic2ebook/src/ python -m fanfic2ebook -P fanfic2html "$@"
+        fi
+    fi
+}
 
 # Set up an OSD alias which will just work to the best of its ability.
 osd() {
@@ -83,13 +93,13 @@ osd() {
         osd() {
             echo "BOO"
             aosd_cat --font='Bitstream Vera Sans Bold 36' \
-                     --fade-in=300 --fade-out=300 "$@"
+                --fade-in=300 --fade-out=300 "$@"
         }
     else
         osd() {
             echo "FOO"
             osd_cat --font '-*-*-*-r-*-*-*-390-*-*-*-*-*-*' \
-                    -p bottom -A left -o -75 -i 50 -c green "$@"
+                -p bottom -A left -o -75 -i 50 -c green "$@"
         }
     fi
 
@@ -168,26 +178,41 @@ pngcomp_brute() {
 
 # Launch man with modified `less` termcap in subshell to colourize it
 man() { (
-    export LESS_TERMCAP_mb=$(tput bold; tput setaf 2)
+    export LESS_TERMCAP_mb=$(
+        tput bold
+        tput setaf 2
+    )
     export LESS_TERMCAP_md=$(tput setaf 6)
     export LESS_TERMCAP_me=$(tput sgr0)
-    export LESS_TERMCAP_so=$(tput setaf 7; tput setab 4)
-    export LESS_TERMCAP_se=$(tput rmso; tput sgr0)
-    export LESS_TERMCAP_us=$(tput smul; tput setaf 7)
-    export LESS_TERMCAP_ue=$(tput rmul; tput sgr0)
+    export LESS_TERMCAP_so=$(
+        tput setaf 7
+        tput setab 4
+    )
+    export LESS_TERMCAP_se=$(
+        tput rmso
+        tput sgr0
+    )
+    export LESS_TERMCAP_us=$(
+        tput smul
+        tput setaf 7
+    )
+    export LESS_TERMCAP_ue=$(
+        tput rmul
+        tput sgr0
+    )
     export LESS_TERMCAP_mr=$(tput rev)
     export LESS_TERMCAP_mh=$(tput dim)
     export LESS_TERMCAP_ZN=$(tput ssubm)
     export LESS_TERMCAP_ZV=$(tput rsubm)
     export LESS_TERMCAP_ZO=$(tput ssupm)
     export LESS_TERMCAP_ZW=$(tput rsupm)
-    export GROFF_NO_SGR=1         # For Konsole and Gnome-terminal
+    export GROFF_NO_SGR=1 # For Konsole and Gnome-terminal
     command man "$@"
-) }
+); }
 
 # Get rid of the annoying "nohup.out" files.
 # (Why couldn't they have a --logoutput option and no-logging default instead?)
-nohup() { command nohup "$@" > /dev/null & }
+nohup() { command nohup "$@" >/dev/null & }
 
 # Wrap sqliteman to prevent it from leaving crud lying around
 sqliteman() { command sqliteman "$@" && rm -- -version; }
@@ -212,9 +237,12 @@ git_filter_whitelist() {
 # Nicer alternative to piping a gunzipped file into lynx
 wo() {
     TMPFILE="$(mktemp --suffix=.html)"
-    command gunzip < "$@" > "$TMPFILE"
+    command gunzip <"$@" >"$TMPFILE"
     "$BROWSER" "$TMPFILE"
-    (sleep 5; rm "$TMPFILE") &
+    (
+        sleep 5
+        rm "$TMPFILE"
+    ) &
 }
 
 # Colorized wdiff
@@ -227,9 +255,9 @@ cwdiff() {
 }
 
 # Miscellaneous quick features
-mp3ck()   { mpck -B "$@"; mp3check -e3STBEG "$@"; }
-if ! which download_ffn_fic >/dev/null 2>&1 && [ -e ~/src/fanfic2ebook ]; then
-    download_ffn_fic() { PYTHONPATH=~/src/fanfic2ebook/src/ python -m fanfic2ebook -P fanfic2html "$@"; }
-fi
+mp3ck() {
+    mpck -B "$@"
+    mp3check -e3STBEG "$@"
+}
 
 # vim: set foldmethod=marker :

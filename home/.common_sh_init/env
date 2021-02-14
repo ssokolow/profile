@@ -36,7 +36,7 @@ export MAILCHECK=60
 export PYTHONWARNINGS="default,ignore:Not importing directory:ImportWarning:pkgutil:186,ignore::DeprecationWarning:pyflakes.scripts.pyflakes,ignore::DeprecationWarning:nose.util:14,ignore::PendingDeprecationWarning:paste.request:131,ignore::PendingDeprecationWarning:django.views.generic.date_based:13,ignore::DeprecationWarning:rpdb2,ignore::DeprecationWarning:werkzeug.templates,ignore::ImportWarning:mercurial.demandimport,ignore::ImportWarning:aptsources.sourceslist,ignore::ImportWarning:gettext,ignore::ImportWarning:httplib,ignore::ImportWarning:optparse,ignore::ImportWarning:xmlrpclib,ignore::DeprecationWarning:flake8.mccabe,ignore::PendingDeprecationWarning:djcelery.models:217,ignore::PendingDeprecationWarning:djcelery.models:221,ignore::PendingDeprecationWarning:djcelery.models:354,ignore::PendingDeprecationWarning:kombu.transport.django.models:29,ignore::PendingDeprecationWarning:debug_toolbar.settings:220,ignore::PendingDeprecationWarning:kombu.transport.django.migrations.0001_initial:49,ignore::DeprecationWarning:django_extensions.management.email_notifications:63,ignore::Warning:PyQt5.uic.objcreator:91,ignore::DeprecationWarning:PyQt5.uic.objcreator:91,ignore::PendingDeprecationWarning:django.forms.widgets:153,ignore::PendingDeprecationWarning:imp:32,ignore::PendingDeprecationWarning:easy_thumbnails.models:,ignore::DeprecationWarning:pysqlite2.dbapi2:,ignore:'U' mode is deprecated:DeprecationWarning:site:165,ignore::PendingDeprecationWarning:nose.importer:12,ignore::DeprecationWarning:coverage:46,ignore::ResourceWarning:Xlib.xauth:42,ignore::ResourceWarning:Xlib.xauth:42,ignore::ResourceWarning:sys:1,ignore::DeprecationWarning:dbus.decorators:158"
 
 # Set virtualenvwrapper to use Python 3 regardless of the system default
-VIRTUALENVWRAPPER_PYTHON=/usr/bin/python3
+export VIRTUALENVWRAPPER_PYTHON=/usr/bin/python3
 
 # Disable start menu icon creation in Wine
 export WINEDLLOVERRIDES="winemenubuilder.exe=d"
@@ -79,7 +79,7 @@ fi
 # Make sure I can bring my Clearlooks Ttk theme everywhere I go.
 export TCLLIBPATH=${HOME}/.local/share/tkthemes
 
-# Workaround for GTK+ 3.x bug on *buntu 14.04 LTS
+# Workaround for GTK+ 3.x bug
 # Source:
 #   https://bugs.launchpad.net/ubuntu/+source/gtk+3.0/+bug/1240957
 #   https://bugs.kde.org/show_bug.cgi?id=348270
