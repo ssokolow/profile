@@ -9,7 +9,8 @@ if which lesspipe &>/dev/null; then
     eval "$(lesspipe)"
 fi
 
-# Virtualenvwrapper integration
+# lazy-loading integration for Virtualenvwrapper and RVM
 source ~/.common_sh_init/virtualenvwrapper
+source ~/.common_sh_init/rvm
 
 # vim: ft=zsh

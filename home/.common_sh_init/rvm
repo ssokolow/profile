@@ -1,0 +1,21 @@
+function lazyload_rvm {
+    local _cmdname="$1"
+    shift
+    unset -f "$_cmdname"
+
+    # Don't do anything if it's already loaded
+    if ! type rvm_help &>/dev/null; then
+        # Load RVM into a shell session *as a function*
+        source "$HOME/.rvm/scripts/rvm"
+
+        # Add RVM to PATH for scripting
+        export PATH=$PATH:$HOME/.rvm/bin
+    fi
+
+    "$_cmdname" "$@"
+}
+
+function ruby { lazyload_rvm "${FUNCNAME[0]:-$0}" "$@"; }
+function rvm  { lazyload_rvm "${FUNCNAME[0]:-$0}" "$@"; }
+
+# vim: ft=zsh
