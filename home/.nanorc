@@ -18,7 +18,7 @@ set mouse
 set tabsize 4
 #set tabstospaces
 
-
+# Set up some custom color schemes I like more
 include "~/.nanorc.d/php.nanorc"
 include "~/.nanorc.d/prolog.nanorc"
 include "~/.nanorc.d/xorg.nanorc"
