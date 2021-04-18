@@ -1,42 +1,35 @@
-#!/usr/bin/env python2
+#!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """Simple script to streamline my typical use of youtube-dl with
 The Young Turks.
-
-Requirements:
-- requests (http://docs.python-requests.org/en/latest/)
-- CacheControl (http://cachecontrol.readthedocs.org/en/latest/)
-    - lockfile
 """
 
+# Prevent Python 2.x PyLint from complaining if run on this
 from __future__ import (absolute_import, division, print_function,
-                        with_statement)
+                        with_statement, unicode_literals)
 
 __author__ = "Stephan Sokolow (deitarion/SSokolow)"
 __appname__ = "TYT youtube-dl streamliner"
-__version__ = "0.1pre0"
+__version__ = "0.2pre0"
 __license__ = "MIT"
 
 import logging, random, time
 log = logging.getLogger(__name__)
 
-import os, shutil, subprocess, urlparse, urllib
+import os, shutil, subprocess, tempfile  # nosec
 
-import requests
-from cachecontrol import CacheControl
-from cachecontrol.caches.file_cache import FileCache
-import lxml.html
-from lxml.cssselect import CSSSelector
+STATE_FILE = os.path.expanduser('~/.cache/tyt_seen.log')
 
-ENTRY_SELECTOR = CSSSelector('#channels-browse-content-grid a.spf-link')
+YT_CHANNEL = 'https://www.youtube.com/user/TheYoungTurks/videos'
 
-STATE_FILE = os.path.expanduser('~/.cache/tyt_state.sqlite3')
-
-YT_CHANNEL = ('https://www.youtube.com/user/TheYoungTurks/videos'
-              '?sort=dd&view=0&shelf_index=1')
-
-DOWNLOADER_CMD = ['youtube-dl', '-f', '44/35/43/18/34']
 TARGET_DIR = os.path.expanduser('~/Desktop/pandora')
+DOWNLOADER_CMD = ['youtube-dl',
+    '-f', '44/35/43/18/34/(bestvideo+bestaudio/best)[height<=480]',
+    '--ignore-errors',
+    '--download-archive', STATE_FILE,
+    '--playlist-end', '28',
+    YT_CHANNEL]
+OTHER_DEST = time.strftime("/srv/inbound/TYT - %A %Y-%m-%d")
 
 THUMBDRIVE_PATHS = (
     '/media/ssokolow/16GB_Flash',
@@ -48,74 +41,17 @@ NOTIFY_ICON = os.path.join(SELF_DIR, 'tyt_logo.png')
 NOTIFY_MSG = 'Young Turks videos downloaded'
 NOTIFY_CMD = ['notify-send', '--expire-time=0', '-i', NOTIFY_ICON]
 
-sess = requests.session()
-cached_sess = CacheControl(sess, cache=FileCache(
-    os.path.expanduser('~/.cache/tyt.httpcache')))
 
-class BadUrlError(Exception):
-    """Raised when the sanitizer received a URL it didn't understand."""
 class BadTargetError(Exception):
     """Raised when the target directory is unsuitable."""
+
+
 class BadDeviceError(Exception):
     """Raised when a failure occurs in resolving or ejecting a device."""
 
-# {{{ SQLite3-backed shelve-like persistent storage
-
-import UserDict, cPickle
-from sqlite3 import dbapi2 as sqlite
-
-class DBDict(UserDict.DictMixin):
-    """dbdict, a dictionary-like object for large datasets (several TiB)
-
-    Modified from source at
-    http://sebsauvage.net/python/snyppets/index.html#dbdict
-    to take a full path to the database and use cPickle to store arbitrary
-    values like the shelve module.
-    """
-
-    def __init__(self, path):
-        self.db_filename = path
-        if not os.path.isfile(self.db_filename):
-            self.con = sqlite.connect(self.db_filename)
-            self.con.execute("create table data (key PRIMARY KEY,value BLOB)")
-        else:
-            self.con = sqlite.connect(self.db_filename)
-        self.con.text_factory = str
-
-    def __getitem__(self, key):
-        row = self.con.execute("select value from data where key=?",
-                               (key,)).fetchone()
-        if not row:
-            raise KeyError
-
-        return cPickle.loads(row[0])
-
-    def __setitem__(self, key, item):
-        item = cPickle.dumps(item)
-        if self.con.execute("select key from data where key=?",
-                            (key,)).fetchone():
-            self.con.execute("update data set value=? where key=?",
-                             (item, key))
-        else:
-            self.con.execute("insert into data (key,value) values (?,?)",
-                             (key, item))
-        self.con.commit()
-
-    def __delitem__(self, key):
-        if self.con.execute("select key from data where key=?",
-                            (key,)).fetchone():
-            self.con.execute("delete from data where key=?", (key,))
-            self.con.commit()
-        else:
-            raise KeyError
-
-    def keys(self):
-        """D.keys() -> list of D's keys"""
-        return [row[0] for row in
-                self.con.execute("select key from data").fetchall()]
-
 # }}}
 # {{{ Removable Media Control
+
 
 def mountpoint_to_devnode(path):
     """Given a path, walk up to the mountpoint, then resolve to a dev node.
@@ -138,12 +74,13 @@ def mountpoint_to_devnode(path):
                 return devnode
     return BadDeviceError("Couldn't find device node for given path")
 
+
 def unmount_and_eject(devnode):
     """Given a device node for a mounted partition, unmount it and
        eject the associated device."""
     try:
         log.info("Unmounting %s", devnode)
-        subprocess.check_call(['udisks', '--unmount', devnode])
+        subprocess.check_call(['udisks', '--unmount', devnode])  # nosec
     except subprocess.CalledProcessError:
         raise BadDeviceError("udisks failed while unmounting %s" % devnode)
 
@@ -151,128 +88,64 @@ def unmount_and_eject(devnode):
         # FIXME: How do I properly find the non-partition device node?
         devnode = devnode.strip('1234567890')
         log.info("Ejecting %s", devnode)
-        subprocess.check_call(['udisks', '--eject', devnode])
+        subprocess.check_call(['udisks', '--eject', devnode])  # nosec
     except subprocess.CalledProcessError:
         raise BadDeviceError("udisks failed while ejecting %s" % devnode)
 
-# }}}
-# {{{ Downloading Individual YouTube Vids
+# {{{ Getting the Young Turks Feed
 
-def sanitize_youtube_url(url):
-    """Pare down a YouTube URL's query string to just ?v=<id>"""
-    url = urlparse.urlparse(url)
-    query = urlparse.parse_qs(url.query)
 
-    if not url.hostname.lower() in ['youtube.com', 'www.youtube.com']:
-        raise BadUrlError(
-            "URL does not point to YouTube: %s".format(url))
+def get_videos(quiet=False, target_dir='.', cron_mode=False):
+    """Download up to 28 newest Young Turks videos"""
+    # Set the target directory for youtube-dl and the source for copying
+    temp_dir = tempfile.mkdtemp(prefix='tyt-', dir=target_dir)
+    old_cwd = os.getcwd()
+    os.chdir(temp_dir)
 
-    if not url.path == '/watch':
-        raise BadUrlError(
-            "Only /watch URLs currently supported: {}".format(url))
+    # Ensure youtube-dl is up to date
+    with open(os.devnull, 'w') as devnull:
+        subprocess.call(['youtube-dl', '-U'],  # nosec
+                    stdout=devnull, stderr=devnull)
 
-    if 'v' not in query or len(query['v']) != 1:
-        raise BadUrlError(
-            "Fewer/more than one 'v' query parameter: %s".format(url))
-
-    # url.query, but Python doesn't let you assign to that
-    url = list(url)
-    url[4] = urllib.urlencode({'v': query['v'][0]})
-    url[5] = ''  # Strip fragments
-    return urlparse.urlunparse(url)
-
-def download_vids(urls, cache, quiet=False):
-    """Download only YouTube videos I haven't seen before."""
-    failed_urls = {}
-
-    for url in urls:
-        try:
-            url = sanitize_youtube_url(url)
-        except BadUrlError, err:
-            failed_urls[url] = str(err)
-            continue
-
-        if url in cache.setdefault('downloaded_urls', []):
-            log.info("Already downloaded %s. Skipping.", url)
-            continue
-
+    try:
+        # Retrieve any of those videos we haven't seen before
         dld_cmd = DOWNLOADER_CMD
         if quiet:
             dld_cmd.append('-q')
+        subprocess.check_call(dld_cmd)  # nosec
 
-        try:
-            subprocess.check_call(dld_cmd + [url])
-        except subprocess.CalledProcessError:
-            failed_urls[url] = "Downloader returned failure"
-            continue
-        else:
-            # Maintain a sliding window of the 50 most recent downloads
-            downloaded_urls = cache.setdefault('downloaded_urls', [])
-            downloaded_urls.append(url)
-            downloaded_urls = downloaded_urls[-50:]
-            cache['downloaded_urls'] = downloaded_urls
+        # Send the files to other dest and merge them into my target directory
+        if not os.path.exists(OTHER_DEST):
+            os.makedirs(OTHER_DEST)
+            os.chmod(OTHER_DEST, 0o777)  # nosec
+        for fname in os.listdir(temp_dir):
+            src_fpath = os.path.join(temp_dir, fname)
+            for dest_fpath in (os.path.join(x, fname) for x
+                            in (target_dir, OTHER_DEST)):
+                shutil.copy(src_fpath, dest_fpath)
+                os.chmod(dest_fpath, 0o666)  # nosec
+            os.remove(src_fpath)
+        assert len(os.listdir(temp_dir)) == 0
+        os.rmdir(temp_dir)
 
-    if failed_urls:
-        for url, message in failed_urls.items():
-            log.error("%s: %s", url, message)
+        # If the thumbdrive is available and not cron mode...
+        details = ''
+        for path in THUMBDRIVE_PATHS:
+            if os.path.exists(path) and not cron_mode:
+                log.debug("Calling prepare_thumbdrive")
+                details = prepare_thumbdrive(path) or ''
+                break
+    finally:
+        os.chdir(old_cwd)
 
-# {{{ Getting the Young Turks Feed
+    return details
 
-def get_new_vids(channel_url):
-    """Retrieve the list of the 25 newest Young Turks videos from YouTube RSS
-
-    (To feed into C{download_vids})
-    """
-
-    response = cached_sess.get(channel_url, headers={
-        'User-Agent': 'Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:34.0) '
-                      'Gecko/20100101 Firefox/34.0'
-    })
-    if response.status_code == 200:
-        parsed = lxml.html.fromstring(response.text)
-    elif response.status_code == 410:
-        raise BadUrlError("He's Dead Jim! (Channel Feed returned "
-                          "HTTP 410 Gone)")
-    else:
-        # pylint: disable=bad-continuation
-        raise BadUrlError("Unexpected HTTP response: %s" %
-                          response.status_code)
-
-    # Return a list of non-stream video URLs
-    relevant_entries = set()
-    for entry in ENTRY_SELECTOR(parsed):  # pylint: disable=not-callable
-        vid_url = entry.get('href')
-        if not vid_url:
-            log.warn("Skipping entry without a URL: %r", entry)
-        else:
-            vid_url = urlparse.urljoin(channel_url, vid_url)
-            relevant_entries.add(vid_url)
-    return relevant_entries
-
-# }}}
-
-def migrate_from_shelve(target_dict,
-                        old_file=os.path.expanduser('~/.cache/tyt.shelf')):
-    """Migrate data from the old, corruption-prone bdb-backed shelve store to
-       the SQLite-backed DBDict."""
-    if not os.path.exists(old_file):
-        return
-
-    import shelve
-    old_dict = shelve.open(old_file)
-
-    # Only migrate keys not already present in the new dict
-    for key, value in old_dict.items():
-        if key not in target_dict:
-            target_dict[key] = value
-
-    old_dict.close()
-    os.remove(old_file)
 
 def prepare_thumbdrive(tgt_path):
     """Copy videos to the given path and then eject the device"""
     # Copy any new videos over
-    for fname in sorted(os.listdir('.')):
+    for fname in sorted(x for x in os.listdir('.')
+            if os.path.splitext(x)[1].lower() in ('.webm', '.mp4', '.edl')):
         if os.path.isdir(fname):
             continue
 
@@ -284,88 +157,63 @@ def prepare_thumbdrive(tgt_path):
     try:
         dev = mountpoint_to_devnode(tgt_path)
         unmount_and_eject(dev)
-    except (BadDeviceError, OSError), err:
+    except (BadDeviceError, OSError) as err:
         log.error(str(err))
         return '...could not eject the thumbdrive'
     else:
         return 'You may now remove the thumbdrive'
 
+
 def main():
     """The main entry point, compatible with setuptools entry points."""
     # pylint: disable=bad-continuation
-    from optparse import OptionParser
-    parser = OptionParser(version="%%prog v%s" % __version__,
-            usage="%prog [options] [feed url] ...",
-            description=__doc__.replace('\r\n', '\n').split('\n--snip--\n')[0])
-    parser.add_option('-v', '--verbose', action="count", dest="verbose",
-        default=3, help="Increase the verbosity.")
-    parser.add_option('-q', '--quiet', action="count", dest="quiet",
-        default=0, help="Decrease the verbosity. Use thrice for extra effect")
-    parser.add_option('-t', '--target', action="store", dest="target_dir",
-        default=TARGET_DIR, help="Set target directory (Default: %default)")
-    parser.add_option('--cron', action="store_true", dest="cron_mode",
+    from argparse import ArgumentParser
+    parser = ArgumentParser(description=__doc__)
+    parser.add_argument('--version', action='version',
+        version="%%(prog)s v%s" % __version__)
+    parser.add_argument('-v', '--verbose', action="count",
+        default=3, help="Increase the verbosity. Use twice for extra effect.")
+    parser.add_argument('-q', '--quiet', action="count",
+        default=0, help="Decrease the verbosity. Use twice for extra effect.")
+    parser.add_argument('-t', '--target', action="store", dest="target_dir",
+        default=TARGET_DIR, help="Set target directory (Default: %%default)")
+    parser.add_argument('--cron', action="store_true", dest="cron_mode",
         default=False, help="Fully non-interactive operation sans X11")
 
-    # Allow pre-formatted descriptions
-    parser.formatter.format_description = lambda description: description
-
-    opts, args = parser.parse_args()
+    args = parser.parse_args()
 
     # Adjust default noise level to only show warnings or worse in cron
-    if opts.cron_mode:
-        opts.quiet = max(opts.quiet, 1)
+    if args.cron_mode:
+        args.quiet = max(args.quiet, 1)
 
     # Set up clean logging to stderr
     log_levels = [logging.CRITICAL, logging.ERROR, logging.WARNING,
-                  logging.INFO, logging.DEBUG]
-    opts.verbose = min(opts.verbose - opts.quiet, len(log_levels) - 1)
-    opts.verbose = max(opts.verbose, 0)
-    logging.basicConfig(level=log_levels[opts.verbose],
-                        format='%(levelname)s: %(message)s')
+              logging.INFO, logging.DEBUG]
+    args.verbose = min(args.verbose - args.quiet, len(log_levels) - 1)
+    args.verbose = max(args.verbose, 0)
+    logging.basicConfig(level=log_levels[args.verbose],
+                format='%(levelname)s: %(message)s')
 
     # Random wait to disguise from possible bot catching algorithms
-    if opts.cron_mode:
+    if args.cron_mode:
         os.nice(19)
-        wait = random.randrange(0, 60 * 15)
+        wait = random.randrange(0, 60 * 15)  # nosec
         log.info("Waiting a randomly-chosen %s seconds in case of bot "
                  "catchers", wait)
         time.sleep(wait)
 
-    if not os.path.exists(opts.target_dir):
+    if not os.path.exists(args.target_dir):
         raise BadTargetError("Target directory does not exist")
-    if not os.access(opts.target_dir, os.W_OK):
+    if not os.access(args.target_dir, os.W_OK):
         # Reminder: This isn't the safety check. It's the friendly message.
         raise BadTargetError("Target directory is not writable")
 
-    # Set the target directory for youtube-dl and the source for copying
-    os.chdir(opts.target_dir)
-
-    state = DBDict(STATE_FILE)
-    migrate_from_shelve(state)
-
-    # Get the list of new videos
-    if args:
-        urls = args
-    else:
-        try:
-            urls = get_new_vids(YT_CHANNEL)
-        except BadUrlError, err:
-            log.critical(str(err))
-            return
-
-    # Retrieve any of those videos we haven't seen before
-    download_vids(urls, state, quiet=opts.cron_mode)
-
-    # If the thumbdrive is available and not cron mode...
-    details = ''
-    for path in THUMBDRIVE_PATHS:
-        if os.path.exists(path) and not opts.cron_mode:
-            log.debug("Calling prepare_thumbdrive")
-            details = prepare_thumbdrive(path) or ''
-            break
+    details = get_videos(args.verbose < 3, args.target_dir, args.cron_mode)
 
     # Display notification if not cron mode
-    if not opts.cron_mode:
+    if not args.cron_mode:
+        if len(os.listdir(OTHER_DEST)) == 0:
+            os.rmdir(OTHER_DEST)
         try:
             notify_argv = NOTIFY_CMD[:] + [NOTIFY_MSG, details]
             subprocess.call(notify_argv)
@@ -374,3 +222,5 @@ def main():
 
 if __name__ == '__main__':
     main()
+
+# vim: set sw=4 sts=4 expandtab :
