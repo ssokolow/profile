@@ -60,10 +60,15 @@ class EventHandler(pyinotify.ProcessEvent):
             else:
                 raise Exception("Python is broken")
 
-            # Skip header text
-            yobj_next()
+            text = yobj_next()
 
-            return yobj_next() or {}
+            try:
+                # Skip header text if there's more than one section
+                text = yobj_next()
+            except StopIteration:
+                pass
+
+            return text or {}
 
     def process_IN_MODIFY(self, event):
         # Workaround for race condition when using IN_MODIFY
