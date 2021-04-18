@@ -88,7 +88,11 @@ class EventHandler(pyinotify.ProcessEvent):
                      str(err)]
             print(err)
         else:
-            tasks = data.get('TODO', None)
+            if isinstance(data, dict):
+                tasks = data.get('TODO', None)
+            elif isinstance(data, list):
+                tasks = data
+
             if tasks:
                 lines = ["TODO:"] + [self.fmt_task(x) for x in tasks]
             else:
