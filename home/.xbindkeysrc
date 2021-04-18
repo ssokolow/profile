@@ -74,8 +74,8 @@
 "gmrun"
   Mod4 + space
 
-"keepass2 --auto-type"
-  Mod4 + p
+#"keepass2 --auto-type"
+#  Mod4 + p
 
 "(sleep 0.5; br --port=/dev/ttyS0 -F)& sleep 1; xset dpms force off"
   Mod4 + F7

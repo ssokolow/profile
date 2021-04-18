@@ -37,6 +37,7 @@
       - kcachegrind-converters
       - kcolorchooser
       - kdiff3
+      - keepassxc # NOTE: Requires PPA on xenial
       - kruler
       - krename
       - libnotify-bin
@@ -421,7 +422,6 @@
     - include: tasks/no_floppy.yml # Keep 'Floppy Drive' out of 'Places' menu
     - include: tasks/hddtemp.yml # Unprivileged querying of HDD temper.
     - include: tasks/planetfilter.yml # RSS/Atom feed filtering
-    - include: tasks/keepass2.yml # Password wallet with TrayTOTP
     - include: tasks/gcdemu.yml # Non-ISO CD/DVD image mounting
     - include: tasks/ufw.yml # Basic firewall setup with exceptions
     - include: tasks/hosts_file.yml # Basic system-wide ad-blocking
