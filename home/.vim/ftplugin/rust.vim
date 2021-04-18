@@ -14,11 +14,11 @@ let g:ale_rust_analyzer_config = {
 " ---- Set up information for F7 and :make ----
 let b:cargo_root_dir = fnamemodify(findfile('Cargo.toml', expand('%:p:h') . ';'), ':p:h')
 if filereadable(b:cargo_root_dir . '/justfile')
-    set makeprg=just
+    setlocal makeprg=just
     let b:f6_test_cmd = 'just test --'
     let b:f7_run_cmd = 'just run --'
 elseif filereadable(b:cargo_root_dir . '/Cargo.toml')
-    set makeprg=cargo
+    setlocal makeprg=cargo
     let b:f6_test_cmd = 'cargo test --'
     let b:f7_run_cmd = 'cargo run --'
 endif
