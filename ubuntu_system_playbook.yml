@@ -76,6 +76,7 @@
       - sqliteman # shell alias
       - tellico
       - thunderbird
+      - vbindiff
       - virtualbox
       - virtualbox-guest-additions-iso
       - winpdb
