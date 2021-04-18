@@ -75,7 +75,7 @@
         path: ~/snap
 
     - name: Check whether installed crontab differs
-      command: ./supplemental/helper_scripts/diff_crontab.py
+      command: ./helper_scripts/diff_crontab.py
       register: diff_crontab
       changed_when: "diff_crontab.stdout != ''"
 
