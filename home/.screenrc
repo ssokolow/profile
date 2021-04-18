@@ -91,6 +91,9 @@ altscreen on
 # tell screen that your term can scroll
 termcapinfo xterm* ti@:te@
 
+# Make the window list show more information
+windowlist string "%4n %t%030= | %h%=%f"
+
 # TODO: Enable these once I figure out how to get my choices for the basic
 # 16-color palette back.
 # https://bugs.launchpad.net/ubuntu/+source/screen/+bug/87966
