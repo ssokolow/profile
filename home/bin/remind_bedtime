@@ -103,8 +103,15 @@ class NotificationWrapper(object):
         if self.silent:
             return
 
-        tts_msg = (msg.replace(u'½', u' and a half')).encode('utf-8')
-        proc = subprocess.Popen(["festival", "--tts"],
+        tts_msg = (msg.replace(u'½', u' and a half')
+                      .replace(u' AM', ' A.M.')
+                      .replace(u' PM', ' P.M.')).lstrip()
+        if tts_msg.startswith('and a half'):
+            tts_msg = tts_msg[6:]
+
+        tts_msg = tts_msg.encode('utf-8')
+
+        proc = subprocess.Popen(["festival", "--tts"],  # nosec
                              stdin=subprocess.PIPE)
         proc.stdin.write(tts_msg)
         proc.stdin.close()
