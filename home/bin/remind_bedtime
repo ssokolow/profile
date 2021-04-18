@@ -10,6 +10,8 @@ __appname__ = "remind_bedtime"
 __version__ = "0.1"
 __license__ = "MIT"
 
+IDLE_THRESHOLD = 60 * 5  # 5 minutes
+
 NOTIFICATIONS = [
     (-3, 0, '3 hours to bedtime'),
     (-3, 30, '2½ hours to bedtime'),
@@ -37,12 +39,36 @@ NOTIFICATIONS = [
 ]
 NOTIFICATIONS.sort()  # Guard against human error
 
-import logging, subprocess, time
+import logging, random, subprocess, time  # nosec
 import dbus.exceptions
 import schedule
 import notify2 as notify
 
+import xcffib, xcffib.xproto
+import xcffib.screensaver
+
 log = logging.getLogger(__name__)
+
+conn = xcffib.connect()
+setup = conn.get_setup()
+ss_conn = conn(xcffib.screensaver.key)
+
+
+def get_idle_secs():
+    """Query how long since user input was seen from X11."""
+    try:
+        # (Don't use "while True" in case the xcb "NULL when no more"
+        #  behaviour occasionally happens)
+        while conn.poll_for_event():
+            pass
+    except IOError:
+        # In testing, IOError is raised when no events are available.
+        pass
+
+    idle_query = ss_conn.QueryInfo(setup.roots[0].root)
+    idle_secs = idle_query.reply().ms_since_user_input / 1000.0
+    return idle_secs
+
 
 def notifications_for(bedtime):
     """Resolve NOTIFICATIONS into a concrete set of times.
@@ -58,11 +84,18 @@ def notifications_for(bedtime):
              notification[2], after_bedtime))
     return results
 
+
 class NotificationWrapper(object):
     """Simple wrapper around desired notifications to keep code clean"""
     def __init__(self, silent=False):
         self.silent = silent
+        self._init_notification()
 
+    def _init_notification(self):
+        """Initialize the D-Bus notification object
+
+        (Split out so it can be re-called on D-Bus error)
+        """
         self.notification = notify.Notification(
             'remind_bedtime bug!', icon='appointment')
         self.notification.set_timeout(notify.EXPIRES_NEVER)
@@ -71,26 +104,43 @@ class NotificationWrapper(object):
 
     def notify(self, msg, silent):
         """Display all requested notifications"""
-        self.notification(msg)
-        self.osd(msg)
-        if not silent:
+        timestr = time.strftime('%I:%M...')
+
+        msg = msg.format(
+            timestr=timestr,
+            food_reminder=random.choice(FOOD_MESSAGES),  # nosec
+            teeth_reminder=random.choice(TEETH_MESSAGES),  # nosec
+            bed_reminder=random.choice(BED_MESSAGES))  # nosec
+
+        self.show_notification(msg.rstrip('.'))
+        self.show_osd(msg.rstrip('.'))
+
+        idle_secs = IDLE_THRESHOLD + 1
+        try:
+            idle_secs = get_idle_secs()
+        except Exception:
+            pass  # nosec
+
+        if not silent or idle_secs < IDLE_THRESHOLD:
             self.say(msg)
 
-    def notification(msg):
+    def show_notification(self, msg, retried=False):
         """Display the message using a system notification"""
         self.notification.update(msg)
         try:
             self.notification.show()
         except dbus.exceptions.DBusException as err:
-            log.critical("D-Bus Error: %s", err)
-            if not silent:
-                self.say("D-Bus Error")
-
+            try:
+                self._init_notification()
+                self.notification.update(msg)
+                self.notification.show()
+            except dbus.exceptions.DBusException as err:
+                log.critical("D-Bus Error: %s", err)
 
     @staticmethod
-    def osd(msg):
+    def show_osd(msg):
         """Display the message using aosd_cat"""
-        proc = subprocess.Popen([
+        proc = subprocess.Popen([  # nosec
             "aosd_cat", "-p", "4", "-R", "white", "-B", '#80A0FF',
             '-b', '127', '-d', '12', '--font=Bitstream Vera Sans Bold 36',
             '--fade-in=1000', '--fade-out=1000'
@@ -115,6 +165,7 @@ class NotificationWrapper(object):
                              stdin=subprocess.PIPE)
         proc.stdin.write(tts_msg)
         proc.stdin.close()
+
 
 def main():
     """The main entry point, compatible with setuptools entry points."""
