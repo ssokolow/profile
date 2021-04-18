@@ -1,0 +1,37 @@
+# BasKet profile
+seccomp
+netfilter
+net none
+
+read-only ~/.config/fontconfig
+read-only ~/.config/font-manager
+read-only ~/.config/menus
+read-only ~/.fonts.conf
+read-only ~/.fonts
+read-only ~/.icons
+read-only ~/.local/share/icons
+read-only ~/.local/share/pixmaps
+read-only ~/.profile_repo
+whitelist ~/.config/fontconfig
+whitelist ~/.config/font-manager
+whitelist ~/.config/menus
+whitelist ~/.fonts.conf
+whitelist ~/.fonts
+whitelist ~/.icons
+whitelist ~/.local/share/icons
+whitelist ~/.local/share/pixmaps
+whitelist ~/.profile_repo
+
+# Needed to keep BasKet from complaining about an invalid crypto engine once
+# for each basket being loaded
+noblacklist ${HOME}/.gnupg
+whitelist ~/.gnupg
+
+whitelist ~/.qt
+whitelist ~/.trinity
+whitelist /home/ssokolow/Documents/Critical/basket
+
+noblacklist /opt
+
+include /etc/firejail/whitelist-common.inc
+include /home/ssokolow/.config/firejail/ssokolow-common.inc
