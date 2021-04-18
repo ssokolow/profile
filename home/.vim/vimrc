@@ -193,16 +193,19 @@
 "               (http://vim.wikia.com/wiki/Sort_lines)
 "
 "  Insert Mode:
-"   <C-Space>     Omni-Completion
-"   <C-D>/<C-T>   Reduce/Increase indent of current line
-"   <C-U>         Revert an auto-inserted comment leader
-"   <C-V>         Type the following character literally
+"   <C-Space>      Omni-Completion
+"   <C-D>/<C-T>    Reduce/Increase indent of current line
+"   <C-U>          Revert an auto-inserted comment leader
+"   <C-V>          Type the following character literally
 "
-"   :VCoolor      Insert RGB or modify existing color
-"   :VCoolIns r   Insert RGB color
-"   :VCoolIns ra  Insert RGBA color
-"   :VCoolIns h   Insert HSL color
+"   :VCoolor       Insert RGB or modify existing color
+"   :VCoolIns r    Insert RGB color
+"   :VCoolIns ra   Insert RGBA color
+"   :VCoolIns h    Insert HSL color
 "   (See VCoolor manual for conversion commands)
+"
+"   lorem[#]<C-y>, Insert lorem ipsum using emmet
+"   (Currently only loaded for CSS, HTML, Django, and Jinja templates)
 "
 "  Visual Mode:
 "   ,x           Reindent using HTML Tidy
