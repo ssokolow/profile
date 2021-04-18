@@ -74,21 +74,6 @@
         state: absent
         path: ~/snap
 
-    - name: Change login shell to zsh for {{ my_username }} and add groups
-      become: true
-      user:
-        name: "{{ my_username }}"
-        append: true
-        groups: tty,dialout,video,lpadmin,vboxusers,family
-        shell: /bin/zsh
-
-    - name: Add {{ my_username }} to incron allowed users
-      become: true
-      lineinfile:
-        path: /etc/incron.allow
-        line: "{{ my_username }}"
-        create: true
-
     - name: Check whether installed crontab differs
       command: ./supplemental/helper_scripts/diff_crontab.py
       register: diff_crontab

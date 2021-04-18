@@ -485,6 +485,19 @@
         dest: /usr/share/virtualbox-ose
         state: link
 
+    - name: "Change login shell to zsh for {{ my_username }} and add groups"
+      user:
+        name: "{{ my_username }}"
+        append: true
+        groups: tty,dialout,video,lpadmin,vboxusers,family
+        shell: /bin/zsh
+
+    - name: "Add {{ my_username }} to incron allowed users"
+      lineinfile:
+        path: /etc/incron.allow
+        line: "{{ my_username }}"
+        create: true
+
     # ================== Install monolith-specific Packages ===================
 
     - include: tasks/wine.yml # Wine and PlayOnLinux, with 16-bit support
