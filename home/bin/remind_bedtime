@@ -154,6 +154,7 @@ def main():
         schedule.every().day.at(time_str).do(
             notifier.notify, msg, args.silent or silent)
 
+    notifier.notify("Bedtime notifier started", silent=True)
     while True:
         schedule.run_pending()
         time.sleep(1)
