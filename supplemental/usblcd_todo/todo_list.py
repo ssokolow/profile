@@ -23,6 +23,7 @@ BGCOLOR = BackgroundColours.BLACK
 FGCOLOR = TextColours.GREY
 log = logging.getLogger(__name__)
 
+
 class EventHandler(pyinotify.ProcessEvent):
     last_updated = 0
 
@@ -50,7 +51,6 @@ class EventHandler(pyinotify.ProcessEvent):
     def _parse_todos(path):
         with open(path, 'rU') as fobj:
             yobj = yaml.safe_load_all(fobj)
-
 
             # Python 2/3 adapter
             if hasattr(yobj, 'next'):
@@ -119,6 +119,7 @@ class EventHandler(pyinotify.ProcessEvent):
         # Only update this if we successfuly parsed and applied an update
         self.last_updated = this_stat.st_mtime
 
+
 def monitor_file(path):
     handler = EventHandler(path)
     handler.process_IN_MODIFY(None)
@@ -127,6 +128,7 @@ def monitor_file(path):
     _ = wm.add_watch(path, pyinotify.IN_MODIFY)
     notifier = pyinotify.Notifier(wm, handler)
     notifier.loop()
+
 
 def main():
     """The main entry point, compatible with setuptools entry points."""
