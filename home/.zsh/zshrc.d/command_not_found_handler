@@ -1,0 +1,56 @@
+command_not_found_handler() {
+    unset -f "command_not_found_handler"
+
+    # ==== Borrowed from ====
+    # https://github.com/ohmyzsh/ohmyzsh/blob/master/plugins/command-not-found/command-not-found.plugin.zsh
+
+    # Debian and derivatives: https://launchpad.net/ubuntu/+source/command-not-found
+    if [[ -x /usr/lib/command-not-found || -x /usr/share/command-not-found/command-not-found ]]; then
+    command_not_found_handler() {
+      if [[ -x /usr/lib/command-not-found ]]; then
+        /usr/lib/command-not-found -- "$1"
+        return $?
+      elif [[ -x /usr/share/command-not-found/command-not-found ]]; then
+        /usr/share/command-not-found/command-not-found -- "$1"
+        return $?
+      else
+        printf "zsh: command not found: %s\n" "$1" >&2
+        return 127
+      fi
+    }
+    fi
+
+    # Fedora: https://fedoraproject.org/wiki/Features/PackageKitCommandNotFound
+    if [[ -x /usr/libexec/pk-command-not-found ]]; then
+    command_not_found_handler() {
+      if [[ -S /var/run/dbus/system_bus_socket && -x /usr/libexec/packagekitd ]]; then
+        /usr/libexec/pk-command-not-found -- "$@"
+        return $?
+      else
+        printf "zsh: command not found: %s\n" "$1" >&2
+        return 127
+      fi
+    }
+    fi
+
+    # NixOS: https://github.com/NixOS/nixpkgs/tree/master/nixos/modules/programs/command-not-found
+    if [[ -x /run/current-system/sw/bin/command-not-found ]]; then
+    command_not_found_handler() {
+        /run/current-system/sw/bin/command-not-found -- "$@"
+    }
+    fi
+
+    # Termux: https://github.com/termux/command-not-found
+    if [[ -x /data/data/com.termux/files/usr/libexec/termux/command-not-found ]]; then
+    command_not_found_handler() {
+        /data/data/com.termux/files/usr/libexec/termux/command-not-found -- "$1"
+    }
+    fi
+
+    # ==== End Borrowed Code ====
+
+    command_not_found_handler "$@"
+    return $?
+}
+
+# vim: ft=zsh

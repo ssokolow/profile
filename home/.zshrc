@@ -419,6 +419,7 @@ unset "$RUN_IN_VENV"
 # Defer these until as late as possible to avoid running them unnecessarily
 source ~/.zsh/zshrc.d/prompt_gentoo_setup
 source ~/.zsh/zshrc.d/hardstatus
+source ~/.zsh/zshrc.d/command_not_found_handler
 
 # }}}
 # {{{ Finish gathering profiling data (if enabled)
