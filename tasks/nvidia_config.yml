@@ -1,12 +1,4 @@
 ---
-# NOTE: This requires python-apt and python-psutil to be installed
-#       for update_nvidia.py
-
-- name: Install nVidia binary video drivers
-  apt:
-    state: present
-    name: nvidia-current,nvidia-settings
-
 # TODO: Fix immutable-setting so it doesn't always report unchanged
 # See https://github.com/ansible/ansible/issues/48886
 - name: Temporarily unset immutable filesystem attribute on xorg.conf

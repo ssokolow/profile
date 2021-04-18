@@ -505,6 +505,6 @@
     # - include: tasks/pa_tsched_fix.yml
     #   when: ansible_hostname == my_hostname
 
-    - include: tasks/nvidia_drivers.yml # Driver and config for my TwinView
+    - include: tasks/nvidia_config.yml # Driver and config for my TwinView
       when: ansible_hostname == my_hostname
 # ==================== Apply monolith-specific Config =====================
