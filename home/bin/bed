@@ -21,10 +21,7 @@ __appname__ = "Bedtime Player"
 __version__ = "0.1"
 __license__ = "MIT"
 
-import itertools, logging, os, random, sys, time
-
-from pytimeparse import parse as parse_duration
-from mpv import MPV, MpvEventEndFile  # pylint: disable=import-error
+import os
 
 MPV_CONFIG = {
     'x11-name': 'bedtime-player',
@@ -41,9 +38,77 @@ MPV_CONFIG = {
     'input-conf': os.path.expanduser('~/.mpv/input.conf'),
 }
 
+import itertools, logging, random, sys, threading, time
+
+from pytimeparse import parse as parse_duration
+from mpv import MPV, MpvEventEndFile  # pylint: disable=import-error
+
+import dbus
+from dbus.service import BusName, Object, method
+from dbus.mainloop.glib import DBusGMainLoop
+from gi.repository import GLib
+DBusGMainLoop(set_as_default=True)
+
 log = logging.getLogger(__name__)
 
 # --== Core Components (playback) ==--
+
+class DBusObject(Object):
+    """D-Bus endpoint definition"""
+    def __init__(self, bus, player):
+        # type: (SessionBus, CommandRegistry, WindowManager) -> None
+        """
+        @param bus: The connection on which to export this object.
+            See the C{dbus.service.Object} documentation for details.
+        """
+        Object.__init__(self, bus, '/com/ssokolow/bin/bed')
+        self.player = player
+
+    @method(dbus_interface='com.ssokolow.bin.bed',
+            in_signature='', out_signature='')
+    def toggle_pause(self):
+        """Toggle the paused state of the currently playing video"""
+        self.player.mpv.pause = not self.player.mpv.pause
+
+    @method(dbus_interface='com.ssokolow.bin.bed',
+            in_signature='i', out_signature='')
+    def seek(self, increment):
+        """Seek relatively within the current video"""
+        self.player.mpv.seek(increment)
+
+    @method(dbus_interface='com.ssokolow.bin.bed',
+            in_signature='', out_signature='')
+    def skip(self):
+        """Skip the current video without recording it in the log"""
+        self.player.mpv.playlist_next('force')
+
+    @method(dbus_interface='com.ssokolow.bin.bed',
+            in_signature='', out_signature='')
+    def quit(self):
+        """Exit MPV without recording the current video in the log"""
+        self.player.stop()
+        self.player.mpv.terminate()
+
+class DBusThread(threading.Thread):
+    """Thread to allow remote control via D-Bus"""
+    def __init__(self, player):
+        super(DBusThread, self).__init__()
+        self.daemon = True
+
+        self.player = player
+        self.mainloop = GLib.MainLoop()
+
+    def run(self):
+        self.session_bus = dbus.SessionBus()
+
+        self.dbus_name = BusName("com.ssokolow.bin.bed", self.session_bus)
+        self.dbus_obj = DBusObject(self.session_bus, self.player)
+
+        try:
+            self.mainloop.run()
+        except KeyboardInterrupt:
+            print("Forcing an exit...")
+            os._exit(0)
 
 class Player(object):
     """Wrapper to extend libmpv with play logging and other desired features"""
@@ -206,11 +271,13 @@ def recency_sort(files, records, randomize=None):
 
 def playback_main(files, data_path, time_limit=None, no_log=False):
     player = Player()
+    dbus_thread = DBusThread(player)
     time_limit = parse_duration(time_limit or '156w')
 
     # Play the files
     with open(data_path, 'a') as fobj:
         player.play(playlist=files, log_fobj=(None if no_log else fobj))
+        dbus_thread.start()
 
         while player.mpv.playlist_pos is not None:
             player.mpv.wait_for_playback()
