@@ -278,7 +278,6 @@
       prettier: /usr/bin/prettier
       stylelint-config-recommended: /usr/bin/stylelint
       stylelint: /usr/bin/stylelint
-      swaglint: /usr/bin/swaglint
     py3_requirements: # TODO: Use pipx
       - restview
       # Dependencies for ALE save/format-on-check
