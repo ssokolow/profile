@@ -1,3 +1,4 @@
+*.py[co]
 .coverage
 
 # Vim stuff that shouldn't be replicated
@@ -15,6 +16,12 @@ home/.mc/filepos
 home/.mc/history
 home/.mc/hotlist
 home/.mc/hotlist.bak
+
+# Generated desktop-spanning background hack files for Plasma
+home/.local/share/images/background
+
+# MyPy cache
+home/.mypy_cache
 
 # Ubuntu puts a zsh cache in your homedir
 home/.zsh/cache
