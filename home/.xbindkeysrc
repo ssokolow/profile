@@ -111,6 +111,9 @@
 "~/bin/start_noise"
   XF86Launch1
 
+"~/bin/start_audacious"
+  XF86Launch2
+
 # Shim away mplayer's inability to bind SunFront to fullscreen toggle.
 "xdotool getactivewindow key f"
   SunFront

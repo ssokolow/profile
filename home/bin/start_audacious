@@ -1,0 +1,5 @@
+#!/bin/sh
+cd "$(dirname "$0")"
+
+pkill -f brownnoise
+(audtool playback-stopped || audtool playback-paused) && audtool playback-playpause
