@@ -36,6 +36,7 @@
       - cargo-asm
       - cargo-expand
       # Utilities for the system at large
+      - bat
       - fd-find
       - hyperfine
       - jsonfmt
