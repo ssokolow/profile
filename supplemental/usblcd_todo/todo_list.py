@@ -85,6 +85,7 @@ class EventHandler(pyinotify.ProcessEvent):
             lines = ["Error parsing TODO YAML",
                      "%d bytes" % this_stat.st_size,
                      "",
+                     str(err.__class__.__name__),
                      str(err)]
             print(err)
         else:
