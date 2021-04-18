@@ -40,7 +40,6 @@
       - fd-find
       - hyperfine
       - jsonfmt
-      - loc
       - procs
       - rust-script
       - skim
