@@ -17,6 +17,7 @@
       - cargo-make
       - just
       # Dependency inspection
+      - cargo-audit
       - cargo-outdated
       - cargo-geiger
       - cargo-graph
@@ -27,6 +28,8 @@
       - cargo-lichking
       # Dependency management
       - cargo-cache
+      - cargo-prune
+      - cargo-sweep
       - cargo-edit
       - cargo-update
       # Generated code inspection
@@ -38,6 +41,7 @@
       - jsonfmt
       - loc
       - procs
+      - rust-script
       - skim
       - tokei
       - xd
