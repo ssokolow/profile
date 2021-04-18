@@ -20,7 +20,6 @@
       - cargo-outdated
       - cargo-geiger
       - cargo-graph
-      - cargo-tree
       # Dependency license analysis
       - cargo-about
       - cargo-deny
