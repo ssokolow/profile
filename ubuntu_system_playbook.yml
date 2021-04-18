@@ -6,6 +6,18 @@
   connection: local
 
   vars:
+    # TODO: Install the following via flatpak:
+    # - io.github.antimicrox.antimicrox
+    # - org.chromium.Chromium (with flatseal tweaks, better this than snap)
+    #     or
+    #   com.github.Eloston.UngoogledChromium (with flatseal tweaks)
+    # - org.gottcode.FocusWriter
+    # - org.inkscape.Inkscape  (TODO: See if this works w/o filesystem=host)
+    # - org.jdownloader.JDownloader
+    # - com.github.tchx84.Flatseal (and incorporate changes into this script)
+    # - org.zealdocs.Zeal
+    # - ... a suitable org.gtk.Gtk3theme.*
+    #
     apt_install:
       # --== Dependencies for other parts of this playbook ==--
       - aptitude
@@ -346,7 +358,6 @@
         repo: "{{ item }}"
         update_cache: false # I'll do it just once later
       with_items:
-        - "ppa:jd-team/jdownloader"
         - "ppa:deadsnakes/ppa" # Various Python version for tox
 
     # TDE repository for a version of BasKet Note Pads that likes my data
@@ -379,7 +390,7 @@
         state: present
         name: "{{ apt_install }}"
 
-    # TODO: Install youtube-dl and JDownloader from the upstream source, with
+    # TODO: Install youtube-dl from the upstream source, with
     #       signature verification. (The PPA-provided versions have fatally
     #       flawed support for updating in one way or another.)
 
