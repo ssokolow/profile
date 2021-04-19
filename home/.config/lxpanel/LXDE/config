@@ -1,4 +1,0 @@
-[Command]
-FileManager=pcmanfm %s
-Terminal=urxvt -e
-Logout=lubuntu-logout
