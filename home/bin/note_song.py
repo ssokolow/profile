@@ -1,40 +1,29 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 
-import os, sys
-from xml.sax.saxutils import escape
+import os
+from subprocess import check_output  # nosec
 
-#TODO: Support using GDBus
-import dbus
-bus = dbus.Bus(dbus.Bus.TYPE_SESSION)
+import gi  # type: ignore
+gi.require_version('Notify', '0.7')
 
-try:
-    import pynotify
-    pynotify.init(__file__)
-    notification = pynotify.Notification
-except ImportError:
-    from gi.repository import Notify
-    Notify.init(__file__)
-    notification = Notify.Notification.new
-
-try:
-    aud = bus.get_object('org.atheme.audacious', '/org/atheme/audacious')
-except dbus.DBusException:
-    sys.exit("Either Audacious is not running or you have something wrong with"
-             " your D-Bus setup.")
+from gi.repository import Notify  # type: ignore
+Notify.init(__file__)
+notification = Notify.Notification.new
 
 # Get list of already-noted songs
 note_file = os.path.expanduser("~/noted_songs.txt")
 if os.path.exists(note_file):
-    with file(note_file, 'r') as fh:
-        noted_songs = [x.strip() for x in fh.read().strip().split('\n')]
+    with open(note_file, 'rb') as fh:
+        noted_songs = [x.strip() for x in fh.read().strip().split(b'\n')]
 else:
     noted_songs = []
 
-songURL = aud.SongFilename(aud.Position()).encode("utf8")
-songTitle = escape(aud.SongTitle(aud.Position()).strip())
-if songURL.strip() not in noted_songs:
-    with open(os.path.expanduser("~/noted_songs.txt"), 'a') as fh:
-        fh.write(aud.SongFilename(aud.Position()).encode("utf8") + '\n')
+songPath = check_output(['audtool', 'current-song-filename'])  # nosec
+songTitle = check_output(['audtool', 'current-song']).decode('utf8')  # nosec
+
+if songPath.strip() not in noted_songs:
+    with open(os.path.expanduser("~/noted_songs.txt"), 'ab') as fh:
+        fh.write(songPath + b'\n')
     msgTitle = "Song Noted"
 else:
     msgTitle = "Already Noted Song"
