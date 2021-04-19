@@ -1,5 +1,0 @@
-#!/bin/sh
-
-~/bin/task_skip_daily
-alias t=task
-task
