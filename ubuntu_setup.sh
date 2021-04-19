@@ -1,12 +1,5 @@
 #!/bin/bash
 
-# We can't cd until just before handing off to ansible because "$0" may
-# be relative to "$PWD" and this script re-calls itself as a subprocess
-ansible_prep() {
-    shift # Remove --system from "$@"
-    cd "$(dirname "$(readlink -f "$0")")"
-}
-
 is_installed() {
     type "$1" 1>/dev/null 2>&1
     return $?
@@ -40,7 +33,8 @@ if [ "$1" == "--system" ]; then # System-installation Subprocess Mode
         software-properties-common
 
     # Let Ansible handle the rest
-    ansible_prep
+    shift # Remove --system from "$@"
+    cd "$(dirname "$(readlink -f "$0")")"
     ansible-playbook ubuntu_system_playbook.yml "$@"
 
     # Performing deferred package configuration
@@ -50,7 +44,8 @@ if [ "$1" == "--system" ]; then # System-installation Subprocess Mode
 
 # ========================== User-level Installation =========================
 elif [ "$1" == "--user" ]; then # User-setup Subprocess Mode
-    ansible_prep
+    shift # Remove --system from "$@"
+    cd "$(dirname "$(readlink -f "$0")")"
     ansible-playbook ubuntu_user_playbook.yml "$@"
 
     # TODO: Adapt this code for updating Python virtualenvs
@@ -58,7 +53,8 @@ elif [ "$1" == "--user" ]; then # User-setup Subprocess Mode
 
 # =========================== Default Run Behaviour ==========================
 else # Primary Mode
-    # Run a subprocess of self to set up everything system-level
+    # Run a subprocess of self to set up everything system-level but don't run
+    # the user side of things under sudo.
     "$0" --system "$@"
     "$0" --user "$@"
 
