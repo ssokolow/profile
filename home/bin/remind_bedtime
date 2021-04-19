@@ -10,32 +10,88 @@ __appname__ = "remind_bedtime"
 __version__ = "0.1"
 __license__ = "MIT"
 
+# TODO:
+# - Randomize the style of notifications to also say things like "You already
+#   will sleep until <time> if you go to sleep now.
+
 IDLE_THRESHOLD = 60 * 5  # 5 minutes
 
+FOOD_MESSAGES = [
+    # "Dinner?",
+    "Make Food",
+    # "Feeling Hungry?",
+    # "Supper?",
+    # "Are you hungry?",
+    # "Have you eaten?",
+    # "Did you eat?",
+    # "Is food ready?",
+    # "Is food made?",
+    # "Have you had dinner?",
+    # "Have you had supper?",
+    # "What about food?",
+    # "What about supper?",
+    # "What about dinner?",
+]
+
+TEETH_MESSAGES = [
+    "Brush teeth"
+    # "Are your teeth brushed?",
+    # "Did you brush your teeth?",
+    # "Have you brushed your teeth?",
+    # "Have you brushed?",
+    # "How are your teeth?",
+    # "How's your breath?",
+]
+
+BED_MESSAGES = [
+    "Prepare for bed",
+    # "Procrastinating your bedtime plans again?",
+    # "How many times have you ignored bedtime now?",
+    # "How many days have you gone to bed late now?",
+    # "Will you ignore your bedtime plans tonight too?",
+    # "What will you think of your behaviour in the morning?",
+    # "You said \"I can stay up longer\" last time too",
+    # "You said \"Just one more thing\" last time too",
+    # "You said \"Just one more chapter\" last time too",
+    # "You're sleepier than you think",
+    # "You're more tired than you think",
+    # "Don't overestimate your wakefulness",
+    # "Sleepy? It'll be there tomorrow.",
+    # "Dozy? It'll be there tomorrow.",
+    # "If you lie down, you'll feel sleepy, remember?",
+    # "Don't jet-lag yourself.",
+    # "Think of all the things you could do if you weren't jet-lagged.",
+    # "Adjusting your sleep cycle takes time.",
+    # "No harm if you lie down and you really can't sleep.",
+    # "Falling asleep to a video you've never seen hasn't hurt before",
+]
+
 NOTIFICATIONS = [
-    (-3, 0, '3 hours to bedtime'),
-    (-3, 30, '2½ hours to bedtime'),
-    (-2, 0, '2 hours to bedtime'),
-    (-2, 30, '1½ hours to bedtime'),
-    (-1, 0, '1 hour to bedtime'),
-    (-1, 15, '45 minutes to bedtime'),
-    (-1, 30, '30 minutes to bedtime'),
-    (-1, 45, '15 minutes to bedtime'),
-    (0, 0, 'Start preparing for bed'),
-    (0, 15, '15 minutes left to prepare for bed'),
-    (0, 30, 'Get into bed'),
-    (0, 45, '15 minutes overdue for bed'),
-    (1, 0, 'You should be asleep now'),
-    (1, 30, '½ hour overdue for being asleep'),
-    (2, 0, '1 hour overdue for being asleep'),
-    (2, 30, '1½ hour overdue for being asleep'),
-    (3, 0, '2 hours overdue for being asleep'),
-    (3, 30, '2½ hours overdue for being asleep'),
-    (4, 0, '3 hours overdue for being asleep'),
-    (4, 30, '3½ hours overdue for being asleep'),
-    (5, 0, '4 hours overdue for being asleep'),
-    (5, 30, '4½ hours overdue for being asleep'),
-    (6, 0, '5 hours overdue for being asleep')
+    (-4, 0, '{timestr} {food_reminder}'),
+    (-4, 30, '{timestr}'),
+    (-3, 0, '{timestr} Eat food'),
+    (-3, 30, '{timestr}'),
+    (-2, 0, '{timestr} {teeth_reminder}'),
+    (-2, 15, '{timestr}'),
+    (-2, 30, '{timestr} {bed_reminder}'),
+    (-2, 45, '{timestr}'),
+    (-1, 0, '{timestr} Bedtime.'),
+    (-1, 15, '15 minutes left to prepare for bed'),
+    (-1, 30, 'Get into bed'),
+    (-1, 45, '15 minutes overdue for bed'),
+    (0, 0, 'You should be asleep now'),
+    (0, 30, '½ hour overdue for bed'),
+    (1, 0, '1 hour overdue for bed'),
+    (1, 30, '1½ hours overdue for bed'),
+    (2, 0, '2 hours overdue for bed'),
+    (2, 30, '2½ hours overdue for bed'),
+    (3, 0, '3 hours overdue for bed'),
+    (3, 30, '3½ hours overdue for bed'),
+    (4, 0, '4 hours overdue for bed'),
+    (4, 30, '4½ hours overdue for bed'),
+    (5, 0, '5 hours overdue for bed')
+    # TODO: Split out {bed_reminder} so the notifications can have a title/text
+    #       distinction for proper word-wrapping.
 ]
 NOTIFICATIONS.sort()  # Guard against human error
 
