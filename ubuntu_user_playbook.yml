@@ -1,12 +1,12 @@
 ---
-# NOTE: Requires 'curl' to be installed
+# NOTE: Requires 'libssl-dev' to be installed
 
 - hosts: localhost
   connection: local
 
   vars:
     rust_commands:
-      - cargo-afl
+      - afl
       - cargo-deadlinks
       - cargo-watch
       - flamegraph
@@ -20,7 +20,6 @@
       - cargo-audit
       - cargo-outdated
       - cargo-geiger
-      - cargo-graph
       # Dependency license analysis
       - cargo-about
       - cargo-deny
@@ -46,7 +45,6 @@
       - tokei
       - xd
     rust_commands_nightly:
-      - cargo-modules
       - miniserve
     rust_targets:
       # Default non-cross-compilation arch
@@ -99,26 +97,34 @@
     # TODO: Re-identify all the packages installed on my system that I want to
     #       reinstall.
 
-    - name: Install rustup
-      command: curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
+    - name: Download rustup.sh
+      get_url:
+        url: https://sh.rustup.rs
+        dest: /tmp/rustup.sh
+        mode: 0755
+        owner: "{{ my_username }}"
+        checksum: sha256:fa50ccf79c30ce9446cc45917e8ea10655674c2a9509221cb12bd865c60ab709
+
+    - name: Install rustup using rustup.sh
+      command: /tmp/rustup.sh -y
       args:
         creates: ~/.cargo/bin/rustup
 
     - name: Ensure existing rustup-managed components are up to date
-      command: rustup update
-      register: rustupupdate
-      changed_when: "'updated' in rustupupdate.stdout"
-
+      command: $HOME/.cargo/bin/rustup update
+      register: rustup_update
+      changed_when: "'updated' in rustup_update.stdout"
+      
     # Use "creates" to save time since `rustup update` will handle updates
     - name: Install rust toolchains
-      command: rustup toolchain install "{{ item }}"
+      command: ~/.cargo/bin/rustup toolchain install "{{ item }}"
       args:
         creates: "~/.rustup/toolchains/{{ item }}"
       with_items: "{{ rust_toolchains }}"
 
     # Use "creates" to save time since `rustup update` will handle updates
     - name: Install rust targets
-      command: rustup target add --toolchain "{{ item[0] }}" "{{ item[1] }}"
+      command: ~/.cargo/bin/rustup target add --toolchain "{{ item[0] }}" "{{ item[1] }}"
       args:
         creates: "~/.rustup/toolchains/{{ item[0] }}/lib/rustlib/{{ item[1] }}"
       with_nested:
@@ -128,7 +134,7 @@
     # NOTE: Doesn't use "creates" because `rustup update` doesn't update
     #       installed commands.
     - name: Install developer commands
-      command: cargo install {{ item }}
+      command: ~/.cargo/bin/cargo install {{ item }}
       register: cargoinstall
       changed_when: "'is already installed' not in cargoinstall.stderr"
       with_items: "{{ rust_commands }}"
@@ -138,7 +144,7 @@
     # NOTE: Doesn't use "creates" because `rustup update` doesn't update
     #       installed commands.
     - name: Install nightly-requiring developer commands
-      command: cargo +nightly install {{ item }}
+      command: ~/.cargo/bin/cargo +nightly install {{ item }}
       register: cargoinstallnightly
       changed_when: "'is already installed' not in cargoinstallnightly.stderr"
       with_items: "{{ rust_commands_nightly }}"
@@ -148,7 +154,7 @@
     # NOTE: Doesn't use "creates" because `rustup update` doesn't update
     #       installed commands.
     - name: Install ripgrep
-      command: cargo +nightly install ripgrep --features 'simd-accel'
+      command: ~/.cargo/bin/cargo +nightly install ripgrep --features 'simd-accel'
       register: cargoripgrep
       changed_when: "'is already installed' not in cargoripgrep.stderr"
       environment:
@@ -156,7 +162,7 @@
 
     # TODO: Is there a way to make this conditional on a repo update?
     - name: Install rustig
-      command: cargo install --git https://github.com/MichaelMauderer/rustig rustig
+      command: ~/.cargo/bin/cargo install --git https://github.com/MichaelMauderer/rustig rustig
       args:
         creates: "~/.cargo/bin/rustig"
 

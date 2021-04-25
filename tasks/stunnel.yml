@@ -26,7 +26,8 @@
   register: stunnel_c
 
 - name: Restart stunnel to apply config changes
-  service:
+  systemd:
     name: stunnel4
     state: restarted
+    daemon_reload: yes
   when: stunnel_d.changed or stunnel_c.changed

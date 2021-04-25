@@ -26,15 +26,15 @@ RECURSE = [
     '.virtualenvs',
     '.config',
     'env',
+    'flatpak',
     'geeqie',
     'lxpanel',
     'lxsession',
     'LXDE',
     'openbox',
-    'parcellite',
+    'plasma-workspace',
     '.kde',
     '.local',
-    '.trinity',
     'share'
 ]
 
@@ -128,6 +128,7 @@ def symlink_profile(root, home_root, dry_run=False, overwrite=False,
             symlink_profile(src, tgt, dry_run, overwrite, diff)
         else:
             symlink_path(src, tgt, dry_run, overwrite, diff)
+
 
 if __name__ == '__main__':
     from optparse import OptionParser

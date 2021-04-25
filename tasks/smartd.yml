@@ -14,7 +14,8 @@
   register: smartd_c
 
 - name: Restart smartd to apply config changes
-  service:
-    name: smartd
+  systemd:
+    name: smartmontools
     state: restarted
+    daemon_reload: yes
   when: smartd_c.changed

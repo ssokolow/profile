@@ -6,17 +6,19 @@
   connection: local
 
   vars:
-    # TODO: Install the following via flatpak:
+    # TODO: flatpak remote-add --if-not-exists flathub https://flathub.org/repo/flathub.flatpakrepo
+    # TODO: Install the following via `flatpak install flathub [...]`:
+    # - cc.arduino.arduinoide (TODO: See if this works if I narrow filesystem=home)
     # - io.github.antimicrox.antimicrox
     # - org.chromium.Chromium (with flatseal tweaks, better this than snap)
     #     or
     #   com.github.Eloston.UngoogledChromium (with flatseal tweaks)
-    # - org.gottcode.FocusWriter
+    # - org.gottcode.FocusWriter (TODO: Decide if I want to lock down the filesystem access)
     # - org.inkscape.Inkscape  (TODO: See if this works w/o filesystem=host)
     # - org.jdownloader.JDownloader
+    # - org.phoenicis.playonlinux
     # - com.github.tchx84.Flatseal (and incorporate changes into this script)
     # - org.zealdocs.Zeal
-    # - ... a suitable org.gtk.Gtk3theme.*
     #
     apt_install:
       # --== Dependencies for other parts of this playbook ==--
@@ -24,15 +26,20 @@
       - apt-file
       - build-essential
       - curl
+      - flatpak
       - git # shell alias
       - git-gui # file manager action
       - nodejs
+      - pipx # TODO: Actually install things through pipx
+      - libssl-dev # Needed for the user playbook
       - python-apt
       - python3-apt
       # --== Regular packages ==--
-      - arduino # TODO: Firejail or Flatpak to sandbox downloaded toolchains
       - audacious
+      - basket
       - comix
+      # TODO: Verify that https://moritzmolch.com/apps/mencfsm.html can import
+      # my Project4 cryptkeeper EncFS filesystem.
       - ddrescueview
       - deluge-gtk
       - easytag
@@ -41,45 +48,38 @@
       - filelight
       - firefox # shell alias
       - geeqie
-      - gextractwinicons
       - gimp
       - guvcview
+      - handbrake
+      - jekyll
       - k3b
       - kcachegrind
       - kcachegrind-converters
       - kcolorchooser
       - kdiff3
-      - keepassxc # NOTE: Requires PPA on xenial
+      - keepassxc
       - kruler
       - krename
       - libnotify-bin
       - libpurple-bin
       - libreoffice
       - libreoffice-nlpsolver
-      - libreoffice-ogltrans
-      - libreoffice-pdfimport
-      - libreoffice-presentation-minimizer
-      - libreoffice-presenter-console
       - libreoffice-wiki-publisher
       - libreoffice-writer2latex
       - libreoffice-writer2xhtml
       - lyx
       - okular
-      - phatch
       - pidgin # NOTE: flatpak doesn't have needed plugins
       - pidgin-bot-sentry
-      - pidgin-libnotify
       - pidgin-otr
       - pidgin-plugin-pack
       - retext
       - sigil
-      - sqliteman # shell alias
       - tellico
       - thunderbird
       - vbindiff
       - virtualbox
       - virtualbox-guest-additions-iso
-      - winpdb
       - workrave
       - wxhexeditor
       - xchm
@@ -93,31 +93,33 @@
       - python3-gi
       - python3-xlib
       # --== Vim with ALE ==--
+      - ansible-lint
       - cppcheck
+      - eslint
       - flawfinder
-      # - fzf  # TODO: post-xenial
       - jsonlint
       - php-codesniffer
       - pydocstyle
       - pylint
+      - python3-autopep8
       - python3-bandit
       - python3-flake8
       - python3-isort
       - shellcheck
       - sqlformat
+      - uglifyjs
       - valgrind
       - vim-doc
       - vim-gtk # shell alias
       - vulture
       - yamllint
-      # --== Stuff I use in scripts/terminal (not suitable for flatpak) ==--
+      # --== Infrastructural or stuff I use in scripts/terminal (not suitable for flatpak) ==--
       - advancecomp # shell alias
       - aosd-cat # shell alias
       - arduino-mk
       - bottlerocket # xbindkeys, fan_remote
       - calibre # Not flatpak because I always script it
       - checkinstall
-      - chm2pdf
       - cifs-utils
       - clang # for cargo-afl
       - colordiff # shell alias
@@ -127,18 +129,20 @@
       - encfs
       - expect
       - fbi # ~/bin/gqfbi
+      - featherpad
       - festival
       - firejail
-      # - firejail-profiles  # TODO: post-xenial
+      - firejail-profiles
       - fortune-mod
       - fuseiso
       - gaffitter
       - gdb
       - gddrescue
       - graphviz
+      - gtk3-nocsd
       - hddtemp
       - htop # shell alias
-      # - hub # shell alias, post-xenial
+      - hub # shell alias
       - imagemagick
       - incron
       - iotop
@@ -173,6 +177,8 @@
       - pandoc
       - pandoc-citeproc
       - pinfo # shell alias
+      - pipenv  
+      - plasma-discover-backend-flatpak
       - pngcrush # shell alias
       - postgresql
       - pv
@@ -185,6 +191,7 @@
       - sox
       - sqlite3
       - sshfs
+      - taskwarrior # TODO: Remove the need for this
       - tig
       - timelimit
       - timidity
@@ -203,6 +210,7 @@
       - xpra
       - xserver-xephyr
       - xvfb
+      - youtube-dl
       - zram-config
       - zsh
       - zsh-doc
@@ -215,23 +223,16 @@
       - gpm
       - konq-plugins
       - konqueror # shell alias
-      - mousepad
       - pavucontrol
       - pcmanfm # default file manager and shell alias
       - pypy
       - python-dbus # active_corners, lap, lgogd_uri, timeclock
       - python-dev
-      - python-gtk2 # lgogd_uri, pdf2..., timeclock
       - python-lxml # addventure_tools, fanfic2ebook, ffcms, ficfan
       - python-nose
-      - python-notify # lgogd_uri, timeclock
-      - python-pip
       - python-psutil # rdbackup_wrapper
       - python-setuptools
       - python-tz # ffcms
-      - python-unidecode # todo_list
-      - python-virtualenv
-      - python-xpyb # timeclock
       - python-yaml # addventure_tools, ffcms, ficfan, todo_list
       - python3
       - python3-coverage
@@ -248,32 +249,37 @@
       - python3-usb # escpos-cli?
       - python3-yaml # dos_installer
       - python3.8
-      - python3.8-venv
-      - redshift
-      - redshift-gtk
       - ruby
       - rxvt-unicode
       - ssh-askpass-gnome
       - texlive-xetex
       - ttf-mscorefonts-installer
       - xscreensaver
+      - xssproxy
+      - yakuake
     apt_remove:
       - ace-of-penguins
       - appmenu-*
+      - elisa
       - gpicview
       - gnome-exe-thumbnailer
       - gnumeric
       - gnumeric-common
+      - gwenview
       - indicator-applet-appmenu
       - indicator-appmenu
+      - kate
+      - ktorrent
       - liboverlay-scrollbar
       - light-locker
       - mtpaint
       - modemmanager
+      - skanlite
       - sylpheed
       - transmission*
       - unity-gtk2-module
       - unity-gtk3-module
+      - vlc
     npm_global_cmds: # TODO: Rework to use npx and then write npj and use that
       # Dependencies for ALE save/format-on-check
       prettier: /usr/bin/prettier
@@ -286,9 +292,7 @@
       - vim-vint
     ruby_gems:
       - travis-lint
-      # TODO: Need newer Ruby than Xenial's system version
-      # - jekyll
-      # - mdl
+      - mdl
     samba_family_users:
       - andre
       - beverly
@@ -304,7 +308,7 @@
 
     # =================== Remove Unwanted Preloaded Applications ==============
     # (before potentially wasting bandwidth on them with dist-upgrade)
-    - name: Purge undesired Lubuntu and Ubuntu package preloads
+    - name: Purge undesired Lubuntu/Kubuntu/Ubuntu package preloads
       apt:
         state: absent
         purge: true
@@ -360,9 +364,6 @@
       with_items:
         - "ppa:deadsnakes/ppa" # Various Python version for tox
 
-    # TDE repository for a version of BasKet Note Pads that likes my data
-    # (http://www.trinitydesktop.org/installation.php#ubuntu)
-    - include: tasks/tde_repo.yml
     - include: tasks/gcdemu_repo.yml
 
     # =========================== Update & Upgrade ============================
@@ -375,8 +376,6 @@
         upgrade: dist
 
     # ====================== Install Preferred Packages =======================
-    # TODO: Re-identify all the packages installed on my system that I want to
-    #       reinstall.
 
     - name: "Accept mscorefonts license"
       debconf:
@@ -400,36 +399,34 @@
         state: present
         name:
           # TODO: Move these to a tasks/deadsnakes.yml
-          - python3.1-complete
-          - python3.2-complete
-          - python3.3-complete
-          - python3.4-complete
           - python3.6
           - python3.7
+          - python3.8
           - python3.9
-          - python3.9-venv
+          - python3.10
 
       # REMINDER: Use of the `pip` module must come after `apt` installing pip.
-    - name: Install desired Python 3 packages
-      pip:
-        executable: pip3
-        name: "{{ py3_requirements | join(' ') }}"
+    # TODO: Use pipx
+    #- name: Install desired Python 3 packages
+    #  pip:
+    #    executable: pip3
+    #    name: "{{ py3_requirements | join(' ') }}"
     - name: Install desired ruby gems
       gem:
         name: "{{ item }}"
         user_install: false
       with_items: "{{ ruby_gems }}"
 
-    - name: Install desired global npm packages
-      command: npm install -g -- {{ item.key | quote }} # 'npm' is too slow
-      args:
-        creates: "{{ item.value }}" # ...and 'command' would be too
-      with_dict: "{{ npm_global_cmds }}"
+    # TODO: Use npx
+    #- name: Install desired global npm packages
+    #  command: npm install -g -- {{ item.key | quote }} # 'npm' is too slow
+    #  args:
+    #    creates: "{{ item.value }}" # ...and 'command' would be too
+    #  with_dict: "{{ npm_global_cmds }}"
 
     - include: tasks/earlyoom.yml
     - include: tasks/smartd.yml
     - include: tasks/stunnel.yml
-    - include: tasks/tde.yml
     - include: tasks/no_floppy.yml # Keep 'Floppy Drive' out of 'Places' menu
     - include: tasks/hddtemp.yml # Unprivileged querying of HDD temper.
     - include: tasks/planetfilter.yml # RSS/Atom feed filtering
@@ -484,6 +481,11 @@
         src: virtualbox
         dest: /usr/share/virtualbox-ose
         state: link
+
+    - name: "Create 'family' group"
+      group:
+        name: family
+        state: present
 
     - name: "Change login shell to zsh for {{ my_username }} and add groups"
       user:

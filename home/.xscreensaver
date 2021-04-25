@@ -1,6 +1,6 @@
 # XScreenSaver Preferences File
-# Written by xscreensaver-demo 5.15 for ssokolow on Thu Nov 15 22:17:14 2018.
-# http://www.jwz.org/xscreensaver/
+# Written by xscreensaver-demo 5.42 for ssokolow on Sun Apr 25 11:06:46 2021.
+# https://www.jwz.org/xscreensaver/
 
 timeout:	0:30:00
 cycle:		0:10:00
@@ -77,8 +77,8 @@ programs:								      \
 -				forest -root				    \n\
 -				galaxy -root				    \n\
 -				goop -root				    \n\
-				grav -root				    \n\
-				ifs -root				    \n\
+-				grav -root				    \n\
+-				ifs -root				    \n\
 -				julia -root				    \n\
 -				kaleidescope -root			    \n\
 -				laser -root				    \n\
@@ -107,10 +107,12 @@ programs:								      \
 -				xjack -root				    \n\
 -				xlyap -root				    \n\
 - GL: 				atlantis -root				    \n\
-				bsod -root -no-nt -no-2k -no-amiga	      \
-				  -no-apple2 -no-nvidia -no-os2		      \
-				  -no-macsbug -no-macx -no-os390 -no-vms      \
-				  -no-hvx -no-blitdamage -no-atm	      \
+				bsod -root -no-nt -no-2k -no-msdos	      \
+				  -no-amiga -no-glados -no-android	      \
+				  -no-apple2 -no-ransomware -no-nvidia	      \
+				  -no-os2 -no-vmware -no-macsbug -no-macx     \
+				  -no-os390 -no-encom -no-vms -no-hvx	      \
+				  -no-blitdamage -no-atm -no-dvd	      \
 				  -no-linux -no-hppalinux -no-solaris	      \
 				  -no-sco -no-hpux -no-tru64		    \n\
 - GL: 				bubble3d -root				    \n\
@@ -118,14 +120,14 @@ programs:								      \
 -				crystal -root				    \n\
 -				cynosure -root				    \n\
 -				discrete -root				    \n\
-				distort -root				    \n\
+-				distort -root				    \n\
 -				epicycle -root				    \n\
 -				flow -root				    \n\
 - GL: 				glplanet -root				    \n\
 -				interference -root			    \n\
 -				jigsaw -root				    \n\
 				kumppa -root				    \n\
-- GL: 				lament -root				    \n\
+  GL: 				lament -root				    \n\
 -				moire2 -root				    \n\
 -				sonar -root				    \n\
 - GL: 				stairs -root				    \n\
@@ -139,7 +141,7 @@ programs:								      \
 -				deluxe -root				    \n\
 -				demon -root				    \n\
 - GL: 				extrusion -root				    \n\
--				loop -root				    \n\
+				loop -root				    \n\
 -				penetrate -root				    \n\
 -				petri -root				    \n\
 -				phosphor -root				    \n\
@@ -154,10 +156,10 @@ programs:								      \
 -				webcollage -root			    \n\
 -				xflame -root				    \n\
 -				xmatrix -root				    \n\
-  GL: 				gflux -root				    \n\
+- GL: 				gflux -root				    \n\
 -				hyperball -root				    \n\
 -				nerverot -root				    \n\
-				xrayswarm -root				    \n\
+-				xrayswarm -root				    \n\
 -				xspirograph -root			    \n\
 - GL: 				circuit -root				    \n\
 - GL: 				dangerball -root			    \n\
@@ -171,7 +173,7 @@ programs:								      \
 -				speedmine -root				    \n\
 - GL: 				starwars -root				    \n\
 - GL: 				stonerview -root			    \n\
-				vermiculate -root			    \n\
+-				vermiculate -root			    \n\
 				whirlwindwarp -root			    \n\
 -				whirlygig -root				    \n\
 -				zoom -root				    \n\
@@ -179,8 +181,8 @@ programs:								      \
 -				apollonian -root			    \n\
 - GL: 				boxed -root				    \n\
 - GL: 				cubenetic -root				    \n\
-  GL: 				endgame -root				    \n\
--				euler2d -root				    \n\
+- GL: 				endgame -root				    \n\
+				euler2d -root				    \n\
 -				fluidballs -root			    \n\
   GL: 				flurry -root				    \n\
 - GL: 				glblur -root				    \n\
@@ -212,9 +214,9 @@ programs:								      \
 - GL: 				glknots -root				    \n\
   GL: 				glmatrix -root				    \n\
 - GL: 				glslideshow -root			    \n\
-  GL: 				hypertorus -root			    \n\
-  GL: 				jigglypuff -root			    \n\
-  GL: 				klein -root				    \n\
+- GL: 				hypertorus -root			    \n\
+- GL: 				jigglypuff -root			    \n\
+- GL: 				klein -root				    \n\
 -				metaballs -root				    \n\
   GL: 				mirrorblob -root			    \n\
 				piecewise -root				    \n\
@@ -230,10 +232,10 @@ programs:								      \
 				interaggregate -root			    \n\
 				intermomentary -root -draw-delay 9756	      \
 				  -num-discs 170			    \n\
--				memscroller -root			    \n\
+				memscroller -root			    \n\
 -				mismunch -root				    \n\
   GL: 				noof -root				    \n\
--				pacman -root				    \n\
+				pacman -root				    \n\
   GL: 				pinion -root				    \n\
   GL: 				polyhedra -root				    \n\
 - GL: 				providence -root			    \n\
@@ -246,32 +248,65 @@ programs:								      \
 -				celtic -root				    \n\
   GL: 				crackberg -root				    \n\
 - GL: 				cube21 -root				    \n\
-				fiberlamp -root				    \n\
+-				fiberlamp -root				    \n\
 - GL: 				fliptext -root				    \n\
-  GL: 				glhanoi -root				    \n\
+- GL: 				glhanoi -root				    \n\
 - GL: 				juggler3d -root				    \n\
   GL: 				tangram -root				    \n\
   GL: 				timetunnel -root			    \n\
-  GL: 				glschool -root				    \n\
+- GL: 				glschool -root				    \n\
 - GL: 				topblock -root				    \n\
   GL: 				cubicgrid -root				    \n\
-				cwaves -root				    \n\
+-				cwaves -root				    \n\
   GL: 				gears -root				    \n\
 - GL: 				glcells -root				    \n\
   GL: 				lockward -root				    \n\
-				m6502 -root				    \n\
+-				m6502 -root				    \n\
   GL: 				moebiusgears -root			    \n\
-  GL: 				voronoi -root				    \n\
-  GL: 				hypnowheel -root			    \n\
--				lcdscrub -root				    \n\
+- GL: 				voronoi -root				    \n\
+- GL: 				hypnowheel -root			    \n\
+				lcdscrub -root				    \n\
 - GL: 				skytentacles -root			    \n\
 - GL: 				surfaces -root				    \n\
 - GL: 				photopile -root				    \n\
 - GL: 				rubikblocks -root			    \n\
 				unicode -root				    \n\
-  GL: 				companioncube -root			    \n\
+- GL: 				companioncube -root			    \n\
 - GL: 				hilbert -root				    \n\
 - GL: 				tronbit -root				    \n\
+- GL: 				geodesic -root				    \n\
+-				hexadrop -root				    \n\
+- GL: 				kaleidocycle -root			    \n\
+- GL: 				quasicrystal -root			    \n\
+- GL: 				unknownpleasures -root			    \n\
+				binaryring -root			    \n\
+- GL: 				cityflow -root				    \n\
+  GL: 				geodesicgears -root			    \n\
+- GL: 				projectiveplane -root			    \n\
+- GL: 				romanboy -root				    \n\
+-				tessellimage -root			    \n\
+- GL: 				winduprobot -root			    \n\
+- GL: 				splitflap -root				    \n\
+- GL: 				cubestack -root				    \n\
+  GL: 				cubetwist -root				    \n\
+- GL: 				discoball -root				    \n\
+  GL: 				dymaxionmap -root			    \n\
+- GL: 				energystream -root			    \n\
+  GL: 				hexstrut -root				    \n\
+- GL: 				hydrostat -root				    \n\
+- GL: 				raverhoop -root				    \n\
+- GL: 				splodesic -root				    \n\
+- GL: 				unicrud -root				    \n\
+- GL: 				esper -root				    \n\
+- GL: 				vigilance -root				    \n\
+- GL: 				crumbler -root				    \n\
+				filmleader -root			    \n\
+-				glitchpeg -root				    \n\
+- GL: 				handsy -root				    \n\
+- GL: 				maze3d -root				    \n\
+- GL: 				peepers -root				    \n\
+- GL: 				razzledazzle -root			    \n\
+-				vfeedback -root				    \n\
 
 
 pointerPollTime:    0:00:05
@@ -282,4 +317,5 @@ GetViewPortIsFullOfLies:False
 procInterrupts:	True
 xinputExtensionDev: False
 overlayStderr:	True
+authWarningSlack:   20
 

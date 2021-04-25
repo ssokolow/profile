@@ -5,7 +5,7 @@
 # Set up some defaults I like
 alias colordiff="colordiff -u"
 alias dmesg="dmesg -H"
-alias ls="ls --color=auto -h"
+alias ls="ls --color=auto -h -N"
 alias dirs="dirs -v"
 alias less="less -R"
 alias vids="egrep '\.(flv|mp4|webm|avi|ogv|ogm|mkv|mov|rm|wmv)'"

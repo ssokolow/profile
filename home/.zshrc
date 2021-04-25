@@ -412,7 +412,7 @@ if [ -n "$VENV_TO_ACTIVATE" ]; then
         $RUN_IN_VENV
     fi
 fi
-unset "$RUN_IN_VENV"
+unset RUN_IN_VENV
 # }}}
 # {{{ Set prompt and hardstatus
 

@@ -4,9 +4,9 @@
 
 # Unify the bash and zsh hostname variables
 if [ -z "$HOSTNAME" ] && [ -n "$HOST" ]; then
-	export HOSTNAME="$HOST"
+    export HOSTNAME="$HOST"
 elif [ -z "$HOST" ] && [ -n "$HOSTNAME" ]; then
-	export HOST="$HOSTNAME"
+    export HOST="$HOSTNAME"
 fi
 
 # Set a few environment variables that the distro doesn't.
@@ -14,6 +14,10 @@ export BROWSER=firefox
 export EDITOR=vim
 export VISUAL="$EDITOR"
 export PAGER='/usr/bin/less -iR'
+
+# Workaround for bug in the GNU coreutils maintainers' brains
+# Source: https://unix.stackexchange.com/q/258679
+export QUOTING_STYLE=literal
 
 # Make these available to subshells
 export COLUMNS
@@ -71,12 +75,12 @@ export FZF_DEFAULT_OPTS='--ansi --color=bw'
 
 # Provide this for later scripts
 if [ -n "$DISPLAY" ]; then
-	export IMAGE_VIEWER=xdg-open
-	export MUSIC_PLAYER=xdg-open
+    export IMAGE_VIEWER=xdg-open
+    export MUSIC_PLAYER=xdg-open
 else
-	export IMAGE_VIEWER=${HOME}/bin/gqfbi
-	export MUSIC_PLAYER=mplayer
-	#TODO: Set MUSIC_PLAYER to a wrapper which can also call stuff like adplay
+    export IMAGE_VIEWER=${HOME}/bin/gqfbi
+    export MUSIC_PLAYER=mplayer
+    #TODO: Set MUSIC_PLAYER to a wrapper which can also call stuff like adplay
 fi
 
 # Make sure I can bring my Clearlooks Ttk theme everywhere I go.
@@ -88,6 +92,12 @@ export TCLLIBPATH=${HOME}/.local/share/tkthemes
 #   https://bugs.kde.org/show_bug.cgi?id=348270
 export GDK_CORE_DEVICE_EVENTS=1
 
+# Be as certain as possible that I don't want CSDs
+export GTK_CSD=0
+
+# Prefer XDG portal-provided file dialogs outside of Flatpak too
+export GTK_USE_PORTAL=1;
+
 # Prevent Chrome from using KDialog for open dialogs. The startup time for the
 # KDialog subprocess cuts the speed at which I can flip between Ctrl+W and
 # RightClick-SaveImage to 1/3rd of before and, when using Ctrl+W, Ctrl+S,
@@ -95,5 +105,8 @@ export GDK_CORE_DEVICE_EVENTS=1
 # (Also, KDialog doesn't ask for overwrite confirmation)
 # Source: https://forum.kde.org/viewtopic.php?t=100694
 export NO_CHROME_KDE_FILE_DIALOG=1
+
+# Where possible, disable GTK+ 3.x client-side window decorations
+export GTK_CSD=0
 
 # vim: ft=sh noexpandtab

@@ -26,10 +26,18 @@
     mode: 0644
   register: samba_c
 
-- name: "Restart samba to apply config changes"
-  service:
-    name: samba
+- name: "Restart smbd to apply config changes"
+  systemd:
+    name: smbd
     state: restarted
+    daemon_reload: yes
+  when: samba_c.changed
+
+- name: "Restart nmbd to apply config changes"
+  systemd:
+    name: nmbd
+    state: restarted
+    daemon_reload: yes
   when: samba_c.changed
 
 - name: "Ensure read-only existence of /srv/inbound"

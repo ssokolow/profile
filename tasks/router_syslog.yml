@@ -19,7 +19,8 @@
   register: rsyslog_p
 
 - name: "Restart rsyslog to apply config changes"
-  service:
+  systemd:
     name: rsyslog
     state: restarted
+    daemon_reload: yes
   when: rsyslog_m.changed or rsyslog_p.changed

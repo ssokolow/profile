@@ -26,13 +26,14 @@ from apt_pkg import CURSTATE_INSTALLED  # pylint: disable=no-name-in-module
 
 log = logging.getLogger(__name__)
 
+
 class NvidiaFilter(Filter):  # pylint: disable=too-few-public-methods
     """Filter for packages with an unstable kernel-userland ABI.
 
     (Packages that should only be updated when you're willing to reboot)
     """
     def apply(self, pkg):
-        if not ('nvidia' in pkg.name and 'restricted' in pkg.section):
+        if not ('nvidia' in pkg.name and 'restricted' in pkg.candidate.section):
             return False
 
         # Support both pre- and post-1.0 python-apt
@@ -41,6 +42,7 @@ class NvidiaFilter(Filter):  # pylint: disable=too-few-public-methods
         else:
             return pkg.is_installed
 
+
 def query_verbosity():
     """Get apt flags and python-apt progress object for current log verbosity.
     """
@@ -48,6 +50,7 @@ def query_verbosity():
         return [], OpProgress()
     else:
         return ['-qq'], None
+
 
 def logged_call(cmdline, fatal=False):
     """Run a subprocess and log failures. Optionally re-raise the error."""
@@ -58,6 +61,7 @@ def logged_call(cmdline, fatal=False):
         log.error("Could not call %r", cmdline)
         if fatal:
             raise
+
 
 @contextmanager
 def unhold(names, cache):
@@ -84,6 +88,7 @@ def unhold(names, cache):
             pass
         log.info("Re-holding nVidia drivers...")
         logged_call(['/usr/bin/apt-mark', 'hold'] + logopts + names)
+
 
 def do_update(mark_only):
     _, progress = query_verbosity()
@@ -125,6 +130,7 @@ def do_update(mark_only):
                 return True
         return False
 
+
 def main():
     """The main entry point, compatible with setuptools entry points."""
     from argparse import ArgumentParser
@@ -161,6 +167,7 @@ def main():
         else:
             log.info("Module removal failed. Triggering reboot.")
             subprocess.call(['/bin/reboot'])
+
 
 if __name__ == '__main__':
     main()

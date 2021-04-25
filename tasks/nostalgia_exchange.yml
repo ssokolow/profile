@@ -1,14 +1,13 @@
 ---
-- name: Install rssh as a fallback constraint mechanism for nostalgia-exchange
-  apt:
+- name: "Create 'nostalgia-exchange' group"
+  group:
+    name: nostalgia-exchange
     state: present
-    name: rssh
-  register: nexch_i
 
 - name: "Add 'nostalgia-exchange' user for chrooted SFTP drop box"
   user:
     name: "nostalgia-exchange"
-    shell: "/usr/bin/rssh"
+    shell: "/usr/bin/false"
     group: "nostalgia-exchange"
     groups: "{{ my_username }}"
     # TODO: Figure out the proper way for nostalgia-exchange to be able to

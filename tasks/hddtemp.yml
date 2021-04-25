@@ -10,7 +10,8 @@
   register: hddtemp_d
 
 - name: "Restart hddtemp to apply config changes"
-  service:
+  systemd:
     name: hddtemp
     state: restarted
+    daemon_reload: yes
   when: hddtemp_d.changed

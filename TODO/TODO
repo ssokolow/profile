@@ -21,7 +21,7 @@
     virtualenv arguments.
   - Decide on the most appropriate approach to automating the calling of said
     command on many projects.
-- https://github.com/lah7/gtk3-mushrooms
+- https://github.com/lah7/gtk3-classic
 - https://askubuntu.com/a/153970/23552
     sudo apt-get install libcap2-bin
     sudo setcap cap_sys_ptrace=eip /usr/bin/wineserver
