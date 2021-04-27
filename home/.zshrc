@@ -307,6 +307,7 @@ bindkey "\eOd"    backward-word # urxvt
 bindkey "\e[1;5D" backward-word # everything else
 bindkey "\e[3\^"  kill-word # urxvt (old)
 bindkey "\e[3;5~" kill-word # everything else
+bindkey '^H'      backward-kill-word # konsole
 bindkey "\e[Z"    reverse-menu-complete # urxvt
 bindkey "\er"     reverse-menu-complete # everything else
 
