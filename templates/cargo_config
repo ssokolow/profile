@@ -1,0 +1,2 @@
+[build]
+rustc-wrapper = "{{ ansible_user_dir }}/.cargo/bin/sccache"

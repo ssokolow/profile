@@ -10,6 +10,7 @@
       - cargo-deadlinks
       - cargo-watch
       - flamegraph
+      - sccache
       # Bloat analysis
       - cargo-bloat
       - cargo-llvm-lines
@@ -131,8 +132,20 @@
         - "{{ rust_toolchains }}"
         - "{{ rust_targets }}"
 
-    # NOTE: Doesn't use "creates" because `rustup update` doesn't update
-    #       installed commands.
+    # NOTE: Calls to `cargo install` don't use "creates" because cargo should
+    #       handle "no rebuild needed" detection.
+    - name: Install sccache with support for distributed compilation
+      command: ~/.cargo/bin/cargo install --features="dist-client dist-server" sccache
+      register: sccacheinstall
+      changed_when: "'is already installed' not in sccacheinstall.stderr"
+      environment:
+        RUSTFLAGS: "-C target-cpu=native"
+
+    - name: Install a cargo config that uses sccache by default
+      template:
+        src: cargo_config
+        dest: ~/.cargo/config
+
     - name: Install developer commands
       command: ~/.cargo/bin/cargo install {{ item }}
       register: cargoinstall
@@ -141,8 +154,6 @@
       environment:
         RUSTFLAGS: "-C target-cpu=native"
 
-    # NOTE: Doesn't use "creates" because `rustup update` doesn't update
-    #       installed commands.
     - name: Install nightly-requiring developer commands
       command: ~/.cargo/bin/cargo +nightly install {{ item }}
       register: cargoinstallnightly
@@ -151,8 +162,6 @@
       environment:
         RUSTFLAGS: "-C target-cpu=native"
 
-    # NOTE: Doesn't use "creates" because `rustup update` doesn't update
-    #       installed commands.
     - name: Install ripgrep
       command: ~/.cargo/bin/cargo +nightly install ripgrep --features 'simd-accel'
       register: cargoripgrep
