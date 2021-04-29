@@ -1,0 +1,30 @@
+[Desktop Action new-private-window]
+Exec=/usr/bin/flatpak run --branch=stable --arch=x86_64 --command=/app/bin/chromium com.github.Eloston.UngoogledChromium --incognito
+Name=New Incognito Window
+
+[Desktop Action new-window]
+Exec=/usr/bin/flatpak run --branch=stable --arch=x86_64 --command=/app/bin/chromium com.github.Eloston.UngoogledChromium
+Name=New Window
+
+[Desktop Entry]
+Actions=new-window;new-private-window;
+Categories=Network;WebBrowser;
+Comment=Access the Internet
+Exec=/usr/bin/flatpak run --branch=stable --arch=x86_64 --command=/app/bin/chromium --file-forwarding com.github.Eloston.UngoogledChromium --enable-easy-off-store-extension-install --incognito @@u %U @@
+GenericName=Web Browser
+Icon=com.github.Eloston.UngoogledChromium
+Keywords=chrome;internet;
+MimeType=application/pdf;application/rdf+xml;application/rss+xml;application/xhtml+xml;application/xhtml_xml;application/xml;image/gif;image/jpeg;image/png;image/webp;text/html;text/xml;x-scheme-handler/ftp;x-scheme-handler/http;x-scheme-handler/https;
+Name=Ungoogled Chromium
+NoDisplay=false
+Path[$e]=
+StartupNotify=true
+StartupWMClass=chromium-browser
+Terminal=0
+TerminalOptions=
+Type=Application
+Version=1.0
+X-Flatpak=com.github.Eloston.UngoogledChromium
+X-Flatpak-RenamedFrom=chromium-browser.desktop;
+X-KDE-SubstituteUID=false
+X-KDE-Username=

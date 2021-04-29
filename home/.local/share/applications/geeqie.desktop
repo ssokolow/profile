@@ -1,0 +1,23 @@
+#!/usr/bin/env xdg-open
+[Desktop Entry]
+Categories=Graphics;Viewer;
+Comment[en_CA]=View and manage images
+Comment=View and manage images
+Exec=geeqie %F
+GenericName[en_CA]=Image Viewer
+GenericName=Image Viewer
+Icon=/usr/share/pixmaps/geeqie.png
+MimeType=image/x-xpixmap;image/x-xbitmap;image/x-tga;image/x-portable-pixmap;image/x-portable-graymap;image/x-portable-bitmap;image/x-portable-anymap;image/vnd.microsoft.icon;image/vnd.microsoft.icon;image/tiff;image/svg+xml;image/png;image/jpeg;image/gif;image/bmp;image/bmp;image/bmp;application/x-navi-animation;
+Name[en_CA]=Geeqie
+Name=Geeqie
+NoDisplay=false
+NotShowIn=X-Geeqie;
+Path=
+StartupNotify=false
+Terminal=false
+TerminalOptions=
+Type=Application
+X-DBUS-ServiceName=
+X-DBUS-StartupType=
+X-KDE-SubstituteUID=false
+X-KDE-Username=
