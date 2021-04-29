@@ -4,6 +4,7 @@
 - name: Temporarily unset immutable filesystem attribute on xorg.conf
   command: chattr -i /etc/X11/xorg.conf
   changed_when: false
+  failed_when: false
 
 - name: Set preferred X.org configuration
   copy:
