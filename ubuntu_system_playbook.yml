@@ -8,13 +8,16 @@
   vars:
     # TODO: flatpak remote-add --if-not-exists flathub https://flathub.org/repo/flathub.flatpakrepo
     # TODO: Install the following via `flatpak install flathub [...]`:
-    # - cc.arduino.arduinoide (TODO: See if this works if I narrow filesystem=home)
+    # - cc.arduino.arduinoide
+    # - com.dosbox_x.DOSBox-X
+    # - com.orama_interactive.Pixelorama (Once #248 is fixed)
     # - io.github.antimicrox.antimicrox
     # - org.chromium.Chromium (with flatseal tweaks, better this than snap)
     #     or
     #   com.github.Eloston.UngoogledChromium (with flatseal tweaks)
-    # - org.gottcode.FocusWriter (TODO: Decide if I want to lock down the filesystem access)
-    # - org.inkscape.Inkscape  (TODO: See if this works w/o filesystem=host)
+    # - org.godotengine.Godot
+    # - org.gottcode.FocusWriter
+    # - org.inkscape.Inkscape
     # - org.jdownloader.JDownloader
     # - org.phoenicis.playonlinux
     # - com.github.tchx84.Flatseal (and incorporate changes into this script)
