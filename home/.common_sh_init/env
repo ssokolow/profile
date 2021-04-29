@@ -33,7 +33,7 @@ export LC_CTYPE="en_CA.utf8"
 export TZ="America/Toronto"
 
 # Configure the shell the way I like it
-export PATH="${PATH}:${HOME}/bin:$HOME/.cargo/bin"
+export PATH="${PATH}:${HOME}/bin:${HOME}/.cargo/bin:${HOME}/.local/bin:/var/lib/flatpak/exports/bin"
 export MAILPATH=${HOME}/.maildir:${HOME}/mbox:${HOME}/Mail:/var/spool/mail/$USER
 export MAILCHECK=60
 
