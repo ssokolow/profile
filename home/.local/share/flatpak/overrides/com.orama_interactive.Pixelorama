@@ -1,0 +1,2 @@
+[Context]
+filesystems=xdg-pictures:rw;xdg-documents:rw;~/src:rw;!home

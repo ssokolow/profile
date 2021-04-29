@@ -1,0 +1,2 @@
+[Context]
+filesystems=~/src/arduino:create;!home
