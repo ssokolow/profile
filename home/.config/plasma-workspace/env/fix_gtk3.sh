@@ -8,5 +8,9 @@ export GDK_CORE_DEVICE_EVENTS=1
 # Yes, I'm very sure that I want gtk3-nocsd to take effect
 export GTK_CSD=0
 
+# No overlay scrolling, please. Having a scroll handle just float over content
+# looks tacky and ugly without going full swipe-to-scroll Android/iOS UI.
+export GTK_OVERLAY_SCROLLING=0
+
 # Ask for non-Flatpak'd GTK apps to also use featureful file choosers, please
 export GTK_USE_PORTAL=1

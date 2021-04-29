@@ -96,7 +96,11 @@ export GDK_CORE_DEVICE_EVENTS=1
 export GTK_CSD=0
 
 # Prefer XDG portal-provided file dialogs outside of Flatpak too
-export GTK_USE_PORTAL=1;
+export GTK_USE_PORTAL=1
+
+# No overlay scrolling, please. Having a scroll handle just float over content
+# looks tacky and ugly without going full swipe-to-scroll Android/iOS UI.
+export GTK_OVERLAY_SCROLLING=0
 
 # Prevent Chrome from using KDialog for open dialogs. The startup time for the
 # KDialog subprocess cuts the speed at which I can flip between Ctrl+W and
