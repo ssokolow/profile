@@ -1,9 +1,0 @@
-[Desktop Entry]
-Name=NumlockX
-GenericName=Enable Numlock (sans LED)
-Comment=Turn on Numlock but turn off the LED
-Exec=sh -c 'numlockx off; xdotool key Num_Lock'
-Terminal=false
-Type=Application
-Categories=
-StartupNotify=false

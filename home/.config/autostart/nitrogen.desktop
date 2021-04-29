@@ -1,9 +1,0 @@
-[Desktop Entry]
-Name=Nitrogen
-GenericName=Desktop Background
-Comment=Set the desktop background selected via Nitrogen
-Exec=nitrogen --restore
-Terminal=false
-Type=Application
-Categories=
-StartupNotify=false

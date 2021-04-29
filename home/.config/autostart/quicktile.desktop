@@ -2,7 +2,7 @@
 Name=QuickTile
 GenericName=Window Tiling Helper
 Comment=Keyboard shortcuts to tile windows under non-tiling WMs
-Exec=sh -c "exec ~/src/quicktile/quicktile.py -b"
+Exec=sh -c "exec ~/src/quicktile/quicktile.sh -b"
 Terminal=false
 Type=Application
 Categories=

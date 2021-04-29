@@ -2,7 +2,7 @@
 Categories=
 Comment[en_US]=Crash-recovering launch wrapper for Conky
 Comment=Crash-recovering launch wrapper for Conky
-Exec=sh -c "until conky; do true; done"
+Exec=sh -c "until conky; do sleep 1; done"
 GenericName[en_US]=Desktop System Monitor
 GenericName=Desktop System Monitor
 MimeType=

@@ -1,8 +1,8 @@
 [Desktop Entry]
 Type=Application
 
-Exec=/opt/trinity/bin/basket -h %f
-MimeType=application/x-basket-archive;application/x-basket-template;
+Exec=basket --start-hidden %f
+MimeType=application/x-basket-archive;application/x-basket-template;application/x-basket-item;
 Icon=basket
 Categories=Qt;KDE;Office;
 
@@ -35,4 +35,3 @@ Comment[pt]=Cuidando das suas ideias.
 Comment[ru]=Заботимся о ваших идеях.
 Comment[tr]=Not Tutma Aracı
 Comment[xx]=xxTaking care of your ideas.xx
-Categories=KDE;Application;Utility;TextEditor;

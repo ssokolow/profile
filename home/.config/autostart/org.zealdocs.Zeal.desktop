@@ -1,0 +1,12 @@
+[Desktop Entry]
+Version=1.0
+Name=Zeal
+GenericName=Documentation Browser
+Comment=Simple API documentation browser
+Exec=/usr/bin/flatpak run --branch=stable --arch=x86_64 --command=zeal --file-forwarding org.zealdocs.Zeal @@u %u @@
+Icon=org.zealdocs.Zeal
+Terminal=false
+Type=Application
+Categories=Development;
+MimeType=x-scheme-handler/dash;x-scheme-handler/dash-plugin;
+X-Flatpak=org.zealdocs.Zeal
