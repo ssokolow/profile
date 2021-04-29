@@ -86,6 +86,13 @@
       - xkeycaps
       - xpad
       - xsane
+      # --== bed ==--
+      - libmpv1
+      - python3-pytimeparse
+      # --== bedtime notifier ==--
+      - python3-notify2
+      - python3-schedule
+      - python3-xcffib
       # --== QuickTile ==--
       - gir1.2-glib-2.0
       - gir1.2-gtk-3.0
@@ -177,7 +184,7 @@
       - pandoc
       - pandoc-citeproc
       - pinfo # shell alias
-      - pipenv  
+      - pipenv
       - plasma-discover-backend-flatpak
       - pngcrush # shell alias
       - postgresql
@@ -245,7 +252,9 @@
       - python3-pip
       - python3-setuptools
       - python3-sphinx
+      - python3-tasklib # tw-daily.py
       - python3-tidylib # Required to pull in .so dependencies for virtualenvs
+      - python3-tzlocal
       - python3-usb # escpos-cli?
       - python3-yaml # dos_installer
       - python3.8
