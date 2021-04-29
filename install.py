@@ -28,6 +28,7 @@ RECURSE = [
     'env',
     'flatpak',
     'geeqie',
+    'gtk-3.0',
     'lxpanel',
     'lxsession',
     'LXDE',

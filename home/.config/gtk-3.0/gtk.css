@@ -1,0 +1,8 @@
+@import 'colors.css';
+
+/* Workaround for [Breeze] [Bug 414763] */
+scrollbar trough { min-width: 6px; }
+scrollbar.horizontal trough { min-height: 6px; }
+scrollbar slider { min-width: 6px; }
+scrollbar.horizontal slider { min-height: 6px; }
+ 
