@@ -1,34 +1,30 @@
 # Per-user initscript equivalent
 @reboot sh -c 'exec screen -wipe' &> /dev/null
-@reboot rm -f ~/.config/audacious/lock
-@reboot rm -f /home/ssokolow/.DCOPserver_monolith__0
-@reboot rm -f /home/ssokolow/.ganttproject.d/* /home/ssokolow/java?.log
-@reboot rm -rf /home/ssokolow/.config/deluge/ipc
+@reboot rm -rf ~/.config/audacious/lock ~/.config/deluge/ipc
+@reboot rm -f ~/.DCOPserver_monolith__0 ~/.ganttproject.d/* ~/java?.log
 @reboot mkdir -p ~/.macromedia/Flash_Player/macromedia.com/support/flashplayer/sys/; cp ~/.profile_repo/supplemental/settings.sol ~/.macromedia/Flash_Player/macromedia.com/support/flashplayer/sys/settings.sol
 @reboot pkill gvfsd-metadata; rm -rf .local/share/gvfs-metadata
 @reboot balooctl disable &>/dev/null
 
 # Morning Housekeeping
-0       5       *       *       *       PATH=~/bin:"$PATH" ~/bin/tyt --cron
+0       5       *       *       *       PATH="$HOME/bin:$PATH" ~/bin/tyt --cron
 
 # Nightly housekeeping
 0       0       *       *       *       cp ~/.profile_repo/supplemental/settings.sol ~/.macromedia/Flash_Player/macromedia.com/support/flashplayer/sys/settings.sol
-0       0       *       *       *       rm -f ~/.local/share/applications/wine-extension-*
-0       0       *       *       *       rm -f ~/.local/share/icons/hicolor/*/apps/application-x-wine-extension-*
-0       0       *       *       *       rm -rf /home/ssokolow/.local/share/applications/wine/Programs
-0       0       *       *       *       rm -f /home/ssokolow/Desktop/*.torrent
+0       0       *       *       *       rm -f ~/.local/share/applications/wine-extension-* ~/.local/share/icons/hicolor/*/apps/application-x-wine-extension-* ~/.local/share/applications/wine/Programs
+0       0       *       *       *       rm -f ~/Desktop/\{EHT\ *
 0       0       *       *       *       ~/bin/purge_outbound.sh
 0       0       *       *       *       chmod 600 ~/Documents/*.kdbx
 0       0       *       *       *       ~/bin/task_skip_daily >/dev/null
 1       0       *       *       *       rm -f ~/.xsession-errors{,.old}
 2       0       *       *       *       rm -rf ~/incoming/gtk-gnutella-downloads/corrupt/*
-0       5       *       *       *       DISPLAY=:0 ~/bin/update_check.py
+#0       5       *       *       *       DISPLAY=:0 ~/bin/update_check.py
 0       5       *       *       *       DISPLAY=:0 timelimit -q -t 86000 ~/src/3_DOES_WHAT_I_WANT/tw-daily/tw-daily.py
 #0       5       *       *       *       DISPLAY=:0 timelimit -t 86000 urxvt -e bash --rcfile ~/bin/task_bashrc
 
-# Rust housekeeping
-0       4       *       *       0       PATH="/home/ssokolow/.cargo/bin:$PATH" cargo cache --autoclean
-30      4       *       *       *       PATH="/home/ssokolow/.cargo/bin:$PATH" cargo sweep -r -t 30 ~/src | grep -v '^\S*INFO'
+# Rust housekeeping (Monthly cleanup)
+0       4       1       *       *       PATH="$HOME/.cargo/bin:$PATH" cargo cache --autoclean
+30      4       *       *       *       PATH="$HOME/.cargo/bin:$PATH" cargo sweep -r -t 30 ~/src | grep -v '^\S*INFO'
 
 # Nightly backup for stuff that's too volatile for DVD-Rs.
 0       2       *       *       *       ionice -c3 ~/src/rdbackup_wrapper/backup.py 2>&1 | fgrep -v -f ~/.rdiff-backup_known_ok_failures | sed '/Deleting increment at time:/,/.*/d'
