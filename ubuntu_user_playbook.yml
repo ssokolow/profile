@@ -98,6 +98,11 @@
     # TODO: Re-identify all the packages installed on my system that I want to
     #       reinstall.
 
+    - name: Check if rustup is installed
+      stat:
+        path: ~/.cargo/bin/rustup
+      register: rustup_stat
+
     - name: Download rustup.sh
       get_url:
         url: https://sh.rustup.rs
@@ -105,17 +110,19 @@
         mode: 0755
         owner: "{{ my_username }}"
         checksum: sha256:fa50ccf79c30ce9446cc45917e8ea10655674c2a9509221cb12bd865c60ab709
+      when: not rustup_stat.stat.exists
 
     - name: Install rustup using rustup.sh
       command: /tmp/rustup.sh -y
       args:
         creates: ~/.cargo/bin/rustup
+      when: not rustup_stat.stat.exists
 
     - name: Ensure existing rustup-managed components are up to date
       command: $HOME/.cargo/bin/rustup update
       register: rustup_update
       changed_when: "'updated' in rustup_update.stdout"
-      
+
     # Use "creates" to save time since `rustup update` will handle updates
     - name: Install rust toolchains
       command: ~/.cargo/bin/rustup toolchain install "{{ item }}"
