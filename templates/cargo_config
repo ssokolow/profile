@@ -1,2 +1,27 @@
+# Default to using various methods to speed up builds
+# (I can turn them off on a case-by-case basis as needed)
+
 [build]
 rustc-wrapper = "{{ ansible_user_dir }}/.cargo/bin/sccache"
+
+# TODO: Figure out how to use LLD
+
+# -- Combine reasonable rebuild time and reasonable perf in debug builds --
+# (Thanks to https://www.reddit.com/r/rust/comments/gvrgca/)
+# See also https://doc.rust-lang.org/cargo/reference/profiles.html#overrides
+
+[profile.dev]
+# Build the project itself with just enough optimization to smooth out the
+# most egregious of the abstractions which are only zero-cost when optimized,
+# thus allowing me to avoid using --release for anything but release builds
+opt-level = 1
+# Don't generate debug info. 99%+ of the time, it just slows the build for
+# a feature (GDB support) that I won't be needing.
+# Source: https://lemmy.ml/post/50089
+debug = 0
+
+[profile.dev.package."*"]
+# Build dependencies with full release optimizations in debug builds.
+# (Since they won't change often and probably do most of the heavy lifting)
+# thus allowing me to avoid using --release for anything but release builds
+opt-level = 3

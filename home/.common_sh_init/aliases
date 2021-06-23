@@ -2,6 +2,11 @@
 # NOTE: The contents of this file may assume that the shell is connected to a
 # tty (unlike 'env') but shouldn't produce output. (use 'misc' for that)
 
+# Fix for Debian
+if command -v fdfind >/dev/null && ! command -v fd >/dev/null; then
+    alias fd="fdfind"
+fi
+
 # Set up some defaults I like
 alias colordiff="colordiff -u"
 alias dmesg="dmesg -H"

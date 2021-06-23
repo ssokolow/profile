@@ -1,0 +1,12 @@
+[Unit]
+Description=Play a beep to signal SSHd is ready to receive connections
+After=ssh.service
+Requires=ssh.service
+
+[Service]
+Type=simple
+User=beep
+ExecStart=beep -f 5000 -l 50 -r 2
+
+[Install]
+WantedBy=multi-user.target

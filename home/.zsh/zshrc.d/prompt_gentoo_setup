@@ -9,7 +9,12 @@
 # https://www.topbug.net/blog/2016/10/11/speed-test-check-the-existence-of-a-command-in-bash-and-zsh/
 
 # Assign these only once, then use them in PS1, PS2, and PS3
-base_prompt="%k%B%(!.%F{red}.%F{green}%n@)%m %B%F{blue}%1~"
+if [ "$HOST" = "builder1" ]; then
+    host_prompt="%F{magenta}%m"
+else
+    host_prompt="%m"
+fi
+base_prompt="%k%B%(!.%F{red}.%F{green}%n@)$host_prompt %B%F{blue}%1~"
 mid_prompt="%(0?..%F{yellow})%(1j.%%.)"
 post_prompt="%b%f%k"
 

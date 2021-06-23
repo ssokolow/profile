@@ -1,0 +1,7 @@
+# Save this in /etc/sudoers.d/ as "update_check" for password-less
+# high-reliability benchmarking
+ssokolow ALL = NOPASSWD: /usr/bin/cpupower frequency-set -g performance
+ssokolow ALL = NOPASSWD: /usr/bin/cpupower frequency-set -g ondemand
+ssokolow ALL = NOPASSWD: /sbin/sysctl vm.drop_caches=3 -q
+ssokolow ALL = NOPASSWD: /sbin/blockdev --flushbufs /dev/sda
+ssokolow ALL = NOPASSWD: /sbin/hdparm -qF /dev/sda

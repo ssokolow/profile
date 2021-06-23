@@ -1,0 +1,209 @@
+---
+# NOTE: Install aptitude and python-apt or python3-apt for the `apt` module
+
+- hosts: localhost
+  connection: local
+
+  vars:
+    apt_install:
+      - unattended-upgrades
+      # Lighter alternatives to default Debian setup
+      - chrony
+      - dropbear
+      - openssh-sftp-server
+      - udhcpc
+      - zram-tools  # ...not technically lighter, but saves on SSD wear
+      # Needed for build/benchmark server functionality
+      - bubblewrap
+      - build-essential
+      - curl
+      - git
+      - git-lfs
+      - libssl-dev
+      - linux-cpupower
+      - lm-sensors
+      - pkg-config
+      - rsync
+      # Utilities for when I shell in
+      - colordiff
+      - fd-find
+      - git-gui
+      - gitk
+      - htop
+      - iotop
+      - ncdu
+      - pinfo
+      - pydf
+      - ripgrep
+      - screen
+      - nethogs
+      - net-tools
+      - vim-gtk3
+      - zsh
+    apt_remove:
+      - cryptsetup-initramfs
+      - isc-dhcp-client
+      - openssh-server
+      - rsyslog
+
+  tasks:
+    - name: Abort if we are not running as root
+      fail:
+        msg: "This playbook must be run as root"
+      when: ansible_user_uid != 0
+
+    - name: Update the package repository cache
+      apt:
+        update_cache: true
+        cache_valid_time: 86400 # 24 hours
+    - name: Update all packages to the latest version
+      apt:
+        upgrade: dist
+
+    - name: Install packages available through APT
+      apt:
+        state: present
+        name: "{{ apt_install }}"
+
+    - name: Purge undesired Debian package preloads
+      apt:
+        state: absent
+        purge: true
+        autoremove: true
+        name: "{{ apt_remove }}"
+
+    - name: Add 'beep' group for using the PC speaker without /dev/console
+      group:
+        name: beep
+        state: present
+
+    - name: Create /var/log/journal for persistent journal storage
+      file:
+        path: /var/log/journal
+        state: directory
+        mode: '0755'
+        owner: root
+        group: root
+
+    - name: Create 'beep' user to run beep-on-ready service under
+      user:
+        create_home: no
+        group: beep
+        name: beep
+        password: '*'
+        state: present
+        system: yes
+
+    - name: Set udev permissions for PC Speaker devices
+      copy: 
+        content: 'ACTION=="add", SUBSYSTEM=="input", ATTRS{name}=="PC Speaker", ENV{DEVNAME}!="", GROUP="beep", MODE="0620"'
+        dest: /etc/udev/rules.d/99-beep.rules
+        mode: '0644'
+        group: root
+        owner: root
+
+    - name: Add service for beeping when startup is finished enough to SSH
+      copy:
+        src: beep-on-ready.service
+        dest: /etc/systemd/system/beep-on-ready.service
+        mode: '0644'
+        group: root
+        owner: root
+
+    - name: Enable beep-on-ready service
+      systemd:
+        enabled: yes
+        name: beep-on-ready.service
+
+    - name: Ensure UNdesired system services are stopped and disabled
+      systemd:
+        enabled: no
+        state: stopped
+        name: "{{ item }}"
+      loop:
+        - systemd-timesyncd.service
+        - keyboard-setup.service
+
+    - name: Ensure desired system services are started and enabled
+      systemd:
+        enabled: yes
+        state: started
+        name: "{{ item }}"
+      loop:
+        - chrony.service
+        - fstrim.timer
+
+    - name: Enable Dropbear SSH
+      lineinfile:
+        path: /etc/default/dropbear
+        regexp: '^NO_START='
+        line: NO_START=0
+        owner: root
+        group: root
+        mode: '0644'
+
+    - name: Disable root or password login via Dropbear
+      lineinfile:
+        path: /etc/default/dropbear
+        regexp: '^DROPBEAR_EXTRA_ARGS='
+        line: 'DROPBEAR_EXTRA_ARGS="-w -s"'
+        owner: root
+        group: root
+        mode: '0644'
+
+    - name: Disable Chrony command port
+      lineinfile:
+        path: /etc/chrony/chrony.conf
+        regexp: '^cmdport '
+        line: 'cmdport 0'
+        owner: root
+        group: root
+        mode: '0644'
+
+    - name: Set GRUB menu timeout to 0 for faster boot
+      lineinfile:
+        path: /etc/default/grub
+        regexp: '^GRUB_TIMEOUT='
+        line: GRUB_TIMEOUT=0
+        owner: root
+        group: root
+        mode: '0644'
+      register: grub_cfg
+
+    - name: Regenerate GRUB configuration after changes
+      command: update-grub
+      when: grub_cfg.changed
+
+    - name: Switch to lzop compression for initramfs for faster boot
+      lineinfile:
+        path: /etc/initramfs-tools/initramfs.conf
+        regexp: '^COMPRESS='
+        line: COMPRESS=lzop
+        owner: root
+        group: root
+        mode: '0644'
+      register: initramfs_cfg
+
+    - name: Regenerate initramfs after changes
+      command: update-initramfs -u
+      when: initramfs_cfg.changed
+
+    - name: "Change login shell to zsh for {{ my_username }} and add groups"
+      user:
+        name: "{{ my_username }}"
+        append: true
+        groups: adm,beep,dialout
+        shell: /bin/zsh
+
+    - name: "Add noatime to root in fstab"
+      replace:
+        dest: /etc/fstab
+        backup: yes
+        regexp: '(?m)^(\S+\s+/\s+\S+\s+)\S+(\s+\S+\s+\S+)'
+        replace: '\1noatime,errors=remount-ro\2'
+
+    - name: Allow changing CPU governors via cpupower without a sudo password
+      copy:
+        src: etc/sudoers.d/benchmarking
+        dest: /etc/sudoers.d/
+        validate: /usr/sbin/visudo -csf %s

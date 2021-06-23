@@ -1,0 +1,78 @@
+---
+# NOTE: Requires 'libssl-dev' to be installed
+
+- hosts: localhost
+  connection: local
+
+  vars:
+    rust_commands:
+      - cargo-watch
+      - afl
+      - cross
+      - cargo-geiger
+      - hyperfine
+      # Dependency management
+      - cargo-cache
+      - cargo-prune
+      - cargo-sweep
+      # Utilities for the system at large
+
+  tasks:
+    # ============================= Safety Checks =============================
+    - name: Verify that ansible_user_id isn't set to root
+      fail:
+        msg: "This playbook must be run as {{ my_username }}"
+      when: ansible_user_uid == my_username
+
+    # ===================== Install Preferred Packages ========================
+    # TODO: Re-identify all the packages installed on my system that I want to
+    #       reinstall.
+
+    - name: Check if rustup is installed
+      stat:
+        path: ~/.cargo/bin/rustup
+      register: rustup_stat
+
+    - name: Download rustup.sh
+      get_url:
+        url: https://sh.rustup.rs
+        dest: /tmp/rustup.sh
+        mode: 0755
+        owner: "{{ my_username }}"
+        checksum: sha256:fa50ccf79c30ce9446cc45917e8ea10655674c2a9509221cb12bd865c60ab709
+      when: not rustup_stat.stat.exists
+
+    - name: Install rustup using rustup.sh
+      command: /tmp/rustup.sh -y
+      args:
+        creates: ~/.cargo/bin/rustup
+      when: not rustup_stat.stat.exists
+
+    - name: Ensure existing rustup-managed components are up to date
+      command: $HOME/.cargo/bin/rustup update
+      register: rustup_update
+      changed_when: "'updated' in rustup_update.stdout"
+
+    # NOTE: Calls to `cargo install` don't use "creates" because cargo should
+    #       handle "no rebuild needed" detection.
+    - name: Install sccache with support for distributed compilation
+      command: ~/.cargo/bin/cargo install --features="dist-client dist-server" sccache
+      register: sccacheinstall
+      changed_when: "'is already installed' not in sccacheinstall.stderr"
+      environment:
+        RUSTFLAGS: "-C target-cpu=native"
+
+    - name: Install a cargo config that uses sccache by default
+      template:
+        src: cargo_config
+        dest: ~/.cargo/config
+
+    - name: Install developer commands
+      command: ~/.cargo/bin/cargo install {{ item }}
+      register: cargoinstall
+      changed_when: "'is already installed' not in cargoinstall.stderr"
+      with_items: "{{ rust_commands }}"
+      environment:
+        RUSTFLAGS: "-C target-cpu=native"
+
+    # yamllint disable-line rule:line-length rule:comments-indentation

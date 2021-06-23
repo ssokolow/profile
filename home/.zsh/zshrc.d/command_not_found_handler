@@ -49,7 +49,9 @@ command_not_found_handler() {
 
     # ==== End Borrowed Code ====
 
-    command_not_found_handler "$@"
+    if typeset -f command_not_found_handler >/dev/null; then
+        command_not_found_handler "$@"
+    fi
     return $?
 }
 
