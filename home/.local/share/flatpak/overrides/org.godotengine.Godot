@@ -1,2 +1,2 @@
 [Context]
-filesystems=~/src:rw;!host
+filesystems=~/src/godot_projects:rw;!host

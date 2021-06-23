@@ -18,13 +18,14 @@ let g:ale_python_pylint_options = '-m pylint'
 let g:ale_python_pylint_use_global = 0
 
 " Exclude vulture. It's too heavy to be run automatically.
-" Make bandit and autopep8 conditional on small files.
+" Make bandit conditional on small files.
 " Make Pylint conditional on small or medium files
 " Exclude PyLS because it gets buggy if you only lint on save
+" Exclude autopep8 because it breaks Sphinx doc comments and walrus operator
 let b:fsize_scratch = getfsize(expand(@%))
 if b:fsize_scratch <= 65535
     let b:ale_linters = ['flake8', 'mypy', 'pylint', 'bandit']
-    let b:ale_fixers = ['autopep8', 'remove_trailing_lines', 'trim_whitespace']
+    let b:ale_fixers = ['remove_trailing_lines', 'trim_whitespace']
 elseif b:fsize_scratch <= 131072
     let b:ale_linters = ['flake8', 'mypy', 'pylint']
     let b:ale_fixers = ['remove_trailing_lines', 'trim_whitespace']

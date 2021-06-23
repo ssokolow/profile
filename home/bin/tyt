@@ -25,6 +25,7 @@ YT_CHANNEL = 'https://www.youtube.com/user/TheYoungTurks/videos'
 TARGET_DIR = os.path.expanduser('~/Desktop/pandora')
 DOWNLOADER_CMD = ['youtube-dl',
     '-f', '44/35/43/18/34/(bestvideo+bestaudio/best)[height<=480]',
+    '--hls-prefer-native',
     '--ignore-errors',
     '--download-archive', STATE_FILE,
     '--playlist-end', '28',
@@ -219,6 +220,7 @@ def main():
             subprocess.call(notify_argv)
         except OSError:
             logging.error("Could not call subprocess: %r", notify_argv)
+
 
 if __name__ == '__main__':
     main()

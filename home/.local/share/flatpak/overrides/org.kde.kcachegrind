@@ -1,0 +1,2 @@
+[Context]
+filesystems=/usr/share/zsh/functions:ro;~/.zcompdump:ro;~/.zshrc:ro;~/.zsh:ro;~/.common_sh_init:ro;~/src:ro;!host

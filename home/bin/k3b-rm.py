@@ -23,6 +23,8 @@ been written to a disc. (Useful in concert with gaff-k3b)
 @todo: Refactor the test suite once I'm no longer burned out on this project.
 @todo: Redesign the tests to ensure that Unicode in Python 2.x doesn't cause
        errors with print().
+@todo: Resolve entities like #xde4a;#xdd10;
+
 """
 
 from __future__ import (absolute_import, division, print_function,

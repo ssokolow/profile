@@ -1242,6 +1242,12 @@ function! QFixToggle(forced)
   endif
 endfunction
 
+augroup QFixEnterFix
+    " In the quickfix window, <CR> is used to jump to the error under the
+    " cursor, so undefine the mapping there.
+    autocmd BufReadPost quickfix nnoremap <buffer> <CR> <CR>
+augroup END
+
 " used to track the quickfix window
 " TODO: Fix this to instead just detect whether a quickfix is visible directly
 " TODO: Fix this to open the quickfix window if it's non-empty

@@ -15,77 +15,96 @@
     # - org.chromium.Chromium (with flatseal tweaks, better this than snap)
     #     or
     #   com.github.Eloston.UngoogledChromium (with flatseal tweaks)
+    # - org.blender.Blender
+    # - org.deluge_torrent.deluge
     # - org.godotengine.Godot
     # - org.gottcode.FocusWriter
     # - org.inkscape.Inkscape
     # - org.jdownloader.JDownloader
+    # - org.kde.kcachegrind
     # - org.phoenicis.playonlinux
     # - com.github.tchx84.Flatseal (and incorporate changes into this script)
     # - org.zealdocs.Zeal
     #
+    # TODO: Try migrating more apps to Flatpak with Flatseal narrowing:
+    # - https://flathub.org/apps/details/org.kde.kcalc
+    # - https://flathub.org/apps/details/org.geeqie.Geeqie
+    # - https://flathub.org/apps/details/org.gnome.EasyTAG
+    # - https://flathub.org/apps/details/org.mozilla.firefox
+    # - https://flathub.org/apps/details/io.github.quodlibet.ExFalso
+    # - https://flathub.org/apps/details/fr.handbrake.ghb
+    #
+    # TODO: Decide which hex editor I'd prefer, now that I have a choice:
+    # - https://flathub.org/apps/details/org.kde.okteta
+    # - https://flathub.org/apps/details/org.wxhexeditor.wxHexEditor
+    # - https://flathub.org/apps/details/org.gnome.GHex
+    # - https://flathub.org/apps/details/com.github.afrantzis.Bless
+    #
+    # TODO: Explore running these via wax for sandboxing-by-default operation:
+    # - https://wapm.io/package/optipng
+    # - https://wapm.io/package/sqlite
     apt_install:
       # --== Dependencies for other parts of this playbook ==--
       - aptitude
       - apt-file
       - build-essential
-      - curl
+      - clang # for cargo-afl
       - flatpak
       - git # shell alias
       - git-gui # file manager action
+      - llvm # for cargo-afl
       - nodejs
+      - npm
       - pipx # TODO: Actually install things through pipx
       - libssl-dev # Needed for the user playbook
       - python-apt
       - python3-apt
       # --== Regular packages ==--
-      - audacious
-      - basket
-      - comix
       # TODO: Verify that https://moritzmolch.com/apps/mencfsm.html can import
       # my Project4 cryptkeeper EncFS filesystem.
-      - ddrescueview
-      - deluge-gtk
+      # --== TODO: Try the Flatpak versions ==--
       - easytag
-      - evince
       - exfalso
-      - filelight
       - firefox # shell alias
+      - handbrake
+      - wxhexeditor
+      # --== Waiting for Flatpak release to get issues resolved ==--
+      - audacious
+      - evince
       - geeqie
       - gimp
-      - guvcview
-      - handbrake
-      - jekyll
-      - k3b
-      - kcachegrind
-      - kcachegrind-converters
-      - kcolorchooser
-      - kdiff3
-      - keepassxc
-      - kruler
-      - krename
-      - libnotify-bin
+      - keepassxc # Not Flatpak: I'm waiting for it to become official
       - libpurple-bin
       - libreoffice
       - libreoffice-nlpsolver
       - libreoffice-wiki-publisher
       - libreoffice-writer2latex
       - libreoffice-writer2xhtml
-      - lyx
       - okular
       - pidgin # NOTE: flatpak doesn't have needed plugins
       - pidgin-bot-sentry
       - pidgin-otr
       - pidgin-plugin-pack
+      - thunderbird
+      # --== No Flatpak release last I checked ==--
+      - basket  # TODO: Firejail
+      - mcomix # TODO: Firejail
+      - ddrescueview
+      - filelight
+      - guvcview
+      - k3b
+      - kcolorchooser
+      - kdiff3
+      - kruler
+      - krename
+      - lyx
+      - qttools5-dev-tools # qdbusviewer
       - retext
       - sigil
       - tellico
-      - thunderbird
-      - vbindiff
       - virtualbox
       - virtualbox-guest-additions-iso
       - workrave
-      - wxhexeditor
-      - xchm
       - xkeycaps
       - xpad
       - xsane
@@ -96,6 +115,16 @@
       - python3-notify2
       - python3-schedule
       - python3-xcffib
+      # --== manga translating helper ==--
+      - tesseract-ocr
+      - tesseract-ocr-chi-sim
+      - tesseract-ocr-chi-sim-vert
+      - tesseract-ocr-chi-tra
+      - tesseract-ocr-chi-tra-vert
+      - tesseract-ocr-jpn
+      - tesseract-ocr-jpn-vert
+      - tesseract-ocr-kor
+      - tesseract-ocr-kor-vert
       # --== QuickTile ==--
       - gir1.2-glib-2.0
       - gir1.2-gtk-3.0
@@ -127,15 +156,19 @@
       - advancecomp # shell alias
       - aosd-cat # shell alias
       - arduino-mk
+      - arj # balloon_cd.py
       - bottlerocket # xbindkeys, fan_remote
       - calibre # Not flatpak because I always script it
       - checkinstall
       - cifs-utils
-      - clang # for cargo-afl
       - colordiff # shell alias
       - colortest
+      - curl
       - dhex
       - dosbox # Needs scriptable with arbitrary paths for dev so no flatpak
+      - doxygen
+      - doxygen-latex
+      - dvdisaster
       - encfs
       - expect
       - fbi # ~/bin/gqfbi
@@ -149,6 +182,7 @@
       - gdb
       - gddrescue
       - graphviz
+      - grip
       - gtk3-nocsd
       - hddtemp
       - htop # shell alias
@@ -157,19 +191,24 @@
       - incron
       - iotop
       - irssi
+      - jekyll
+      - jlha-utils # balloon_cd.py
       - jpegoptim
       - latencytop
+      - lzip # balloon_cd.py
+      - kcachegrind-converters  # For the Flatpak
       - less # pager, manpager, shell alias
       - lgogdownloader # shell alias
+      - libasound2-dev  # cpal for rust-ttspico projects
+      - libnotify-bin
       - links
       - links2
       - linux-tools-common
       - linux-tools-generic
-      - llvm # for cargo-afl
       - lm-sensors
       - lynx
+      - makeself
       - mc # shell alias
-      - mencoder
       - mplayer # MUSIC_PLAYER when DISPLAY is unset
       - mercurial
       - molly-guard
@@ -177,6 +216,7 @@
       - mpv
       - mutt
       - ncdu
+      - net-tools
       - node-typescript
       - normalize-audio
       - numlockx
@@ -186,6 +226,7 @@
       - p7zip-rar
       - pandoc
       - pandoc-citeproc
+      - par2
       - pinfo # shell alias
       - pipenv
       - plasma-discover-backend-flatpak
@@ -194,6 +235,7 @@
       - pv
       - pydf # shell alias
       - rdiff-backup
+      - rename
       - safecopy
       - screen
       - scrot
@@ -210,8 +252,11 @@
       - units # shell alias
       - unrar
       - uptimed
+      - upx
+      - vbindiff
       - virtualenvwrapper
       - wdiff # shell alias
+      - whois
       - wmctrl
       - xautomation
       - xbindkeys
@@ -221,9 +266,6 @@
       - xserver-xephyr
       - xvfb
       - youtube-dl
-      - zram-config
-      - zsh
-      - zsh-doc
       # --== Infrastructural Packages (not suitable for flatpak) ==--
       - apache2
       - ark
@@ -250,6 +292,7 @@
       - python3-doc
       - python3-examples
       - python3-lxml
+      - python3-mypy
       - python3-nose
       - python3-pil
       - python3-pip
@@ -264,11 +307,14 @@
       - ruby
       - rxvt-unicode
       - ssh-askpass-gnome
+      - tango-icon-theme
       - texlive-xetex
       - ttf-mscorefonts-installer
-      - xscreensaver
-      - xssproxy
+      - virtualenv
       - yakuake
+      - zram-config
+      - zsh
+      - zsh-doc
     apt_remove:
       - ace-of-penguins
       - appmenu-*
@@ -281,15 +327,22 @@
       - indicator-applet-appmenu
       - indicator-appmenu
       - kate
+      - kmahjongg
+      - kmines
       - konversation
+      - kpat
+      - ksudoku
       - ktorrent
       - liboverlay-scrollbar
       - light-locker
       - mtpaint
       - modemmanager
+      - plasma-browser-integration  # 100% CPU: WebScrapbook->kactivitymanager
+      - qlipper
       - skanlite
       - sylpheed
       - transmission*
+      - ubuntu-advantage-tools
       - unity-gtk2-module
       - unity-gtk3-module
       - vlc
@@ -546,4 +599,12 @@
 
     - include: tasks/nvidia_config.yml # Driver and config for my TwinView
       when: ansible_hostname == my_hostname
+
+    - name: Re-purge any undesired preloads that might have been suggested in
+      apt:
+        state: absent
+        purge: true
+        autoremove: true
+        name: "{{ apt_remove }}"
+
 # ==================== Apply monolith-specific Config =====================

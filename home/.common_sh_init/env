@@ -33,15 +33,24 @@ export LC_CTYPE="en_CA.utf8"
 export TZ="America/Toronto"
 
 # Configure the shell the way I like it
-export PATH="${PATH}:${HOME}/bin:${HOME}/.cargo/bin:${HOME}/.local/bin:/var/lib/flatpak/exports/bin"
+export PATH="${PATH}:${HOME}/bin:${HOME}/.cargo/bin:${HOME}/.local/bin:${HOME}/.local/bin/flatpak:/var/lib/flatpak/exports/bin"
 export MAILPATH=${HOME}/.maildir:${HOME}/mbox:${HOME}/Mail:/var/spool/mail/$USER
 export MAILCHECK=60
 
 # Python-related settings
-export PYTHONWARNINGS="default,ignore:Not importing directory:ImportWarning:pkgutil:186,ignore::DeprecationWarning:pyflakes.scripts.pyflakes,ignore::DeprecationWarning:nose.util:14,ignore::PendingDeprecationWarning:paste.request:131,ignore::PendingDeprecationWarning:django.views.generic.date_based:13,ignore::DeprecationWarning:rpdb2,ignore::DeprecationWarning:werkzeug.templates,ignore::ImportWarning:mercurial.demandimport,ignore::ImportWarning:aptsources.sourceslist,ignore::ImportWarning:gettext,ignore::ImportWarning:httplib,ignore::ImportWarning:optparse,ignore::ImportWarning:xmlrpclib,ignore::DeprecationWarning:flake8.mccabe,ignore::PendingDeprecationWarning:djcelery.models:217,ignore::PendingDeprecationWarning:djcelery.models:221,ignore::PendingDeprecationWarning:djcelery.models:354,ignore::PendingDeprecationWarning:kombu.transport.django.models:29,ignore::PendingDeprecationWarning:debug_toolbar.settings:220,ignore::PendingDeprecationWarning:kombu.transport.django.migrations.0001_initial:49,ignore::DeprecationWarning:django_extensions.management.email_notifications:63,ignore::Warning:PyQt5.uic.objcreator:91,ignore::DeprecationWarning:PyQt5.uic.objcreator:91,ignore::PendingDeprecationWarning:django.forms.widgets:153,ignore::PendingDeprecationWarning:imp:32,ignore::PendingDeprecationWarning:easy_thumbnails.models:,ignore::DeprecationWarning:pysqlite2.dbapi2:,ignore:'U' mode is deprecated:DeprecationWarning:site:165,ignore::PendingDeprecationWarning:nose.importer:12,ignore::DeprecationWarning:coverage:46,ignore::ResourceWarning:Xlib.xauth:42,ignore::ResourceWarning:Xlib.xauth:42,ignore::ResourceWarning:sys:1,ignore::DeprecationWarning:dbus.decorators:158,ignore::DeprecationWarning:nose.util:453"
+# DISABLED: Too many packages have started flooding me with warnings outside my
+# scope to fix.
+#export PYTHONWARNINGS="default,ignore:Not importing directory:ImportWarning:pkgutil:186,ignore::DeprecationWarning:pyflakes.scripts.pyflakes,ignore::DeprecationWarning:nose.util:14,ignore::PendingDeprecationWarning:paste.request:131,ignore::PendingDeprecationWarning:django.views.generic.date_based:13,ignore::DeprecationWarning:rpdb2,ignore::DeprecationWarning:werkzeug.templates,ignore::ImportWarning:mercurial.demandimport,ignore::ImportWarning:aptsources.sourceslist,ignore::ImportWarning:gettext,ignore::ImportWarning:httplib,ignore::ImportWarning:optparse,ignore::ImportWarning:xmlrpclib,ignore::DeprecationWarning:flake8.mccabe,ignore::PendingDeprecationWarning:djcelery.models:217,ignore::PendingDeprecationWarning:djcelery.models:221,ignore::PendingDeprecationWarning:djcelery.models:354,ignore::PendingDeprecationWarning:kombu.transport.django.models:29,ignore::PendingDeprecationWarning:debug_toolbar.settings:220,ignore::PendingDeprecationWarning:kombu.transport.django.migrations.0001_initial:49,ignore::DeprecationWarning:django_extensions.management.email_notifications:63,ignore::Warning:PyQt5.uic.objcreator:91,ignore::DeprecationWarning:PyQt5.uic.objcreator:91,ignore::PendingDeprecationWarning:django.forms.widgets:153,ignore::PendingDeprecationWarning:imp:32,ignore::PendingDeprecationWarning:easy_thumbnails.models:,ignore::DeprecationWarning:pysqlite2.dbapi2:,ignore:'U' mode is deprecated:DeprecationWarning:site:165,ignore::PendingDeprecationWarning:nose.importer:12,ignore::DeprecationWarning:coverage:46,ignore::ResourceWarning:Xlib.xauth:42,ignore::ResourceWarning:Xlib.xauth:42,ignore::ResourceWarning:sys:1,ignore::DeprecationWarning:dbus.decorators:158,ignore::DeprecationWarning:nose.util:453"
 
 # Set virtualenvwrapper to use Python 3 regardless of the system default
 export VIRTUALENVWRAPPER_PYTHON=/usr/bin/python3
+
+# Allow debug builds to be faster at the risk of running into an internal
+# compiler error that needs to be reported
+#
+# (May need to be removed if it turns out it's too easy to trigger. In which
+# case, I'll have to rely on sccache to keep things from being dog-slow.)
+export RUSTC_FORCE_INCREMENTAL=1
 
 # Disable start menu icon creation in Wine
 export WINEDLLOVERRIDES="winemenubuilder.exe=d"
@@ -92,13 +101,13 @@ export TCLLIBPATH=${HOME}/.local/share/tkthemes
 #   https://bugs.kde.org/show_bug.cgi?id=348270
 export GDK_CORE_DEVICE_EVENTS=1
 
-# Be as certain as possible that I don't want CSDs
+# Where possible, disable GTK+ 3.x client-side window decorations
 export GTK_CSD=0
 
 # Prefer XDG portal-provided file dialogs outside of Flatpak too
 export GTK_USE_PORTAL=1
 
-# No overlay scrolling, please. Having a scroll handle just float over content
+# No overlay scrolling please. Having a scroll handle just float over content
 # looks tacky and ugly without going full swipe-to-scroll Android/iOS UI.
 export GTK_OVERLAY_SCROLLING=0
 
@@ -110,7 +119,5 @@ export GTK_OVERLAY_SCROLLING=0
 # Source: https://forum.kde.org/viewtopic.php?t=100694
 export NO_CHROME_KDE_FILE_DIALOG=1
 
-# Where possible, disable GTK+ 3.x client-side window decorations
-export GTK_CSD=0
 
 # vim: ft=sh noexpandtab

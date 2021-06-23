@@ -44,7 +44,7 @@ if [ "$1" == "--system" ]; then # System-installation Subprocess Mode
 
 # ========================== User-level Installation =========================
 elif [ "$1" == "--user" ]; then # User-setup Subprocess Mode
-    shift # Remove --system from "$@"
+    shift                       # Remove --system from "$@"
     cd "$(dirname "$(readlink -f "$0")")"
     ansible-playbook ubuntu_user_playbook.yml "$@"
 
@@ -111,8 +111,11 @@ echo " - Re-setup Firejail"
 echo " - Use the 'template' action for anything containing my username"
 echo " - Verify that all the system services start correctly after a restart"
 echo " - Figure out how to report failed systemd services via e-mail"
+echo " - xdg-mime default pcmanfm.desktop inode/directory"
+echo "  ...and then copy the resulting line to the [Added Associations] section"
+echo "- Restore Samba password database"
+echo "- rm -rf $HOME/.local/share/kactivitymanagerd/"
 
-#
 # TODO: Look into using Vagrant to automatically set up all of my VMs:
 # - The Lubuntu ones shouldn't be difficult
 # - http://blog.syntaxc4.net/post/2014/09/03/windows-boxes-for-vagrant-courtesy-of-modern-ie.aspx

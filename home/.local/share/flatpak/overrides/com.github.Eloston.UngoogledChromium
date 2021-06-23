@@ -1,2 +1,2 @@
 [Context]
-filesystems=xdg-download:create;!home
+filesystems=/mnt/Seagate_10TB/flatpak-incoming/chromium:create;!home

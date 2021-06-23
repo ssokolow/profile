@@ -151,9 +151,9 @@ $color$stippled_hr
 ${template4 root /dev/sdb /}
 ${template4 home /dev/sdb /home}
 ${template5 seagate /dev/sda /mnt/Seagate_10TB}
-${template4 wd_10 /dev/sdc /mnt/WD_Red_10TB}
-${template5 external /dev/sdd /mnt/buffalo_ext}
-#${template4 red6 /dev/sdb /mnt/red6}
+${template4 wd_10 /dev/sdd /mnt/WD_Red_10TB}
+${template4 wd_6 /dev/sdc /mnt/WD_Red_6TB}
+${template5 external /dev/sdf /mnt/buffalo_ext}
  CPU: ${hwmon 0 temp 1}°C ${alignr 5} GPU: ${nvidia temp}°C
 # CPU ${goto 65}${hwmon 1 temp 1}°C | ${alignc}Sys ${hwmon 0 temp 1}°C ${hwmon 0 temp 3}°C ${alignr 5}| GPU ${nvidia temp}°C
 # vim: fenc=latin1

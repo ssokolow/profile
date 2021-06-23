@@ -216,9 +216,6 @@ man() { (
 # (Why couldn't they have a --logoutput option and no-logging default instead?)
 nohup() { command nohup "$@" >/dev/null & }
 
-# Wrap sqliteman to prevent it from leaving crud lying around
-sqliteman() { command sqliteman "$@" && rm -- -version; }
-
 # Given an egrep path filter, use git filter-branch to throw out all files
 # which don't match.
 git_filter_whitelist() {

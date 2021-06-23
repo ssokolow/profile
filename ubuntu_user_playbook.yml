@@ -7,10 +7,11 @@
   vars:
     rust_commands:
       - afl
+      - cross
       - cargo-deadlinks
       - cargo-watch
       - flamegraph
-      - sccache
+      - zbus_xmlgen
       # Bloat analysis
       - cargo-bloat
       - cargo-llvm-lines

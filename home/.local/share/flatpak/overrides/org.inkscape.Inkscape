@@ -1,2 +1,2 @@
 [Context]
-filesystems=xdg-documents:rw;!host
+filesystems=~/src/source_materials:ro;xdg-documents:rw;!host

@@ -259,7 +259,7 @@ def main():
                         format='%(levelname)s: %(message)s')
 
     # Initialize the notification which will be reused to avoid stacking up
-    notify.init('remind_bedtime')
+    notify.init('Bedtime Reminder')
     notifier = NotificationWrapper()
 
     # Register all of the notifications in the scheduler
@@ -272,6 +272,7 @@ def main():
     while True:
         schedule.run_pending()
         time.sleep(1)
+
 
 if __name__ == '__main__':
     main()

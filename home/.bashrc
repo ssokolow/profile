@@ -9,9 +9,9 @@
 # past this point for scp and rcp, and it's important to refrain from
 # outputting anything in those cases. (And I guard against sudo -s being too
 # clever for its own good)
-if [[ $- != *i* ]] || [ "$(id -u)" -eq 0 ] ; then
-	# Shell is non-interactive.  Be done now
-	return
+if [[ $- != *i* ]] || [ "$(id -u)" -eq 0 ]; then
+    # Shell is non-interactive.  Be done now
+    return
 fi
 
 # -- A copy of how Ubuntu does the above... just in case I need it. --
@@ -58,13 +58,13 @@ function do_debug() { export BASHRC_DEBUG="$BASHRC_DEBUG"$'\n'"${BASHRC_DEBUG_IN
 
 # Change the window title of X terminals (Customized from the Gentoo version)
 case $TERM in
-	xterm*|rxvt|Eterm|eterm)
-		PROMPT_COMMAND='echo -ne "\033]0;bash: ${PWD/$HOME/~}\007"'
-		;;
-	screen)
-		PROMPT_COMMAND='echo -ne "\033k"bash$"\033"\\; echo -ne "\033_${PWD/$HOME/~}\033\\"'
-		#PROMPT_COMMAND='echo -ne "\033_bash: ${PWD/$HOME/~} - Window: $WINDOW\033\\"'
-		;;
+    xterm* | rxvt | Eterm | eterm)
+        PROMPT_COMMAND='echo -ne "\033]0;bash: ${PWD/$HOME/~}\007"'
+        ;;
+    screen)
+        PROMPT_COMMAND='echo -ne "\033k"bash$"\033"\\; echo -ne "\033_${PWD/$HOME/~}\033\\"'
+        #PROMPT_COMMAND='echo -ne "\033_bash: ${PWD/$HOME/~} - Window: $WINDOW\033\\"'
+        ;;
 esac
 
 # uncomment the following to activate bash-completion:
@@ -73,19 +73,19 @@ esac
 source ~/.bash_completion
 
 # Configure the shell the way I like it
-shopt -s cdspell         # Enable typo correction for the cd command.
-shopt -s checkwinsize    # Make sure bash keeps the LINES and COLUMNS current as the term resizes.
-shopt -s extglob         # Enable more regex-like shell glob support
-set -b                   # Make status messages about terminated background jobs appear immediately
+shopt -s cdspell      # Enable typo correction for the cd command.
+shopt -s checkwinsize # Make sure bash keeps the LINES and COLUMNS current as the term resizes.
+shopt -s extglob      # Enable more regex-like shell glob support
+set -b                # Make status messages about terminated background jobs appear immediately
 
 # Set up comfortable history management.
 export CDPATH=".:~"
-export HISTFILESIZE=1000 # Default is 500 lines
-export HISTIGNORE="&"	 # Example: export HISTIGNORE="&:ls:ls *:mutt:[bf]g:exit"
+export HISTFILESIZE=1000                              # Default is 500 lines
+export HISTIGNORE="&"                                 # Example: export HISTIGNORE="&:ls:ls *:mutt:[bf]g:exit"
 export HISTCONTROL="ignoredups:ignorespace:erasedups" # Make sure a command only appears in the list once.
 export PROMPT_COMMAND="history -a; ${PROMPT_COMMAND}"
-shopt -s cmdhist         # Ensure multi-line commands are single-line history entries
-shopt -s histappend      # Append command history, don't overwrite
+shopt -s cmdhist    # Ensure multi-line commands are single-line history entries
+shopt -s histappend # Append command history, don't overwrite
 
 # Pull in the stuff common to both bash and zsh
 source ~/.common_sh_init/env

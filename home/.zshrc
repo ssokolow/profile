@@ -87,6 +87,7 @@
 #
 # }}}
 # {{{ TODO:
+# - https://obda.net/blog/zsh-glob-qualifiers/
 # - Decide how to alias Cd to cd to work around "finger race conditions"
 #   ...ideally, in a way which corrects the command I typed and waits for
 #   me to press Enter again so I notice and learn from it (but it has to
