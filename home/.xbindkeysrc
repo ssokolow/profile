@@ -118,6 +118,12 @@
 "xdotool getactivewindow key f"
   SunFront
 
+# Skip sponsor notice in a podcast
+"audtool playback-seek-relative 55"
+  Mod4 + s
+"audtool playback-seek-relative 55"
+  F14
+
 # Port my Openbox keybinds to KWin
 "~/bin/kwin_desktop.sh +1"
   b:8
