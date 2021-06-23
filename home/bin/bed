@@ -53,6 +53,7 @@ log = logging.getLogger(__name__)
 
 # --== Core Components (playback) ==--
 
+
 class DBusObject(Object):
     """D-Bus endpoint definition"""
     def __init__(self, bus, player):
@@ -89,6 +90,7 @@ class DBusObject(Object):
         self.player.stop()
         self.player.mpv.terminate()
 
+
 class DBusThread(threading.Thread):
     """Thread to allow remote control via D-Bus"""
     def __init__(self, player):
@@ -109,6 +111,7 @@ class DBusThread(threading.Thread):
         except KeyboardInterrupt:
             print("Forcing an exit...")
             os._exit(0)
+
 
 class Player(object):
     """Wrapper to extend libmpv with play logging and other desired features"""
@@ -132,9 +135,9 @@ class Player(object):
         # (The lambdas are required because python-mpv can't hang a custom
         #  attribute off a bound method and dies as a result)
         self.mpv.register_key_binding('q',
-                                      lambda x, y: self.cb_quit(x, y))
+            lambda *args: self.cb_quit(args[0], args[1]))
         self.mpv.register_key_binding('Ctrl+c',
-                                      lambda x, y: self.cb_skip(x, y))
+            lambda *args: self.cb_skip(args[0], args[1]))
         self.mpv.event_callback('end-file')(self.cb_end_file)
 
     def play(self, playlist, log_fobj=None, video='auto', loop=False):
@@ -176,7 +179,7 @@ class Player(object):
 
         # TODO: Figure out how to detect playback init failure
         if (self.log_fobj and
-          event['event']['reason'] == MpvEventEndFile.EOF_OR_INIT_FAILURE):
+          event['event']['reason'] == MpvEventEndFile.EOF):
             # playback ended naturally and should be noted
             self.log_fobj.write('%f\t%s\n' % (time.time(), just_finished))
             self.log_fobj.flush()
@@ -197,7 +200,7 @@ class Player(object):
         """Called when the Q key is pressed to exit w/o logging current file"""
         if state == 'd-':
             self.stop()
-            self.mpv.terminate()
+            self.mpv.quit()
 
     @staticmethod
     def parse_config(path=os.path.expanduser(b"~/.mpv/config")):
@@ -221,6 +224,7 @@ class Player(object):
 
 # --== Helper Functions (non-playback) ==--
 
+
 def walk_args(args):
     """Adapter to recursively resolve directory paths to file paths."""
     for root in args:
@@ -232,6 +236,7 @@ def walk_args(args):
                 dirs.sort()
                 for fname in sorted(files):
                     yield os.path.join(path, fname)
+
 
 def load_history(data_path, has_dates=True):
     """Load the contents of the playback history"""
@@ -245,6 +250,7 @@ def load_history(data_path, has_dates=True):
     data = [line for line in data if line]
 
     return data
+
 
 def recency_sort(files, records, randomize=None):
     """Sort `files` by recency according to `records`.
@@ -269,6 +275,7 @@ def recency_sort(files, records, randomize=None):
 
 # --== Main Routines ==--
 
+
 def playback_main(files, data_path, time_limit=None, no_log=False):
     player = Player()
     dbus_thread = DBusThread(player)
@@ -286,6 +293,7 @@ def playback_main(files, data_path, time_limit=None, no_log=False):
                 log.info("Time limit exceeded")
                 player.stop()
                 return
+
 
 def main():
     """The main entry point, compatible with setuptools entry points."""
