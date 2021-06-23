@@ -17,5 +17,5 @@
   register: grub_cfg_s
 
 - name: Regenerate GRUB configuration after changes
-  command: echo update-grub
+  command: update-grub
   when: grub_cfg_q.changed or grub_cfg_s.changed
