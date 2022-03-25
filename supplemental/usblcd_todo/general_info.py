@@ -11,7 +11,7 @@ __appname__ = "[application name here]"
 __version__ = "0.0pre0"
 __license__ = "GNU GPL 3.0 or later"
 
-import logging, os
+import logging, random
 from datetime import datetime
 
 #import yaml
@@ -26,6 +26,14 @@ import xcffib.screensaver
 BRIGHTNESS = 48
 BGCOLOR = BackgroundColours.BLACK
 FGCOLOR = TextColours.GREY
+
+REMINDERS = [
+    "NO ZERO DAYS",
+    "GET TO BED\nON TIME!",
+    "DON'T FIXATE\nON THE WHOLE",
+    "JUST DO ONE\nLITTLE BIT OF IT",
+    "CHANGING TRACKS:\nTHE HARDEST PART",
+]
 
 log = logging.getLogger(__name__)
 
@@ -87,6 +95,7 @@ lcd.display_icon(0, 13)
 
 import time
 last_time = datetime.fromtimestamp(0)
+steps = 0
 while True:
     this_time = datetime.now()
     if 8 <= this_time.hour <= 18:
@@ -106,7 +115,21 @@ while True:
     lcd.display_text_on_line(3,
         '|{}'.format(pformat_idle(get_idle_secs())),
         True, TextAlignment.LEFT, FGCOLOR)
+
+    if steps == 0:
+        choice = random.choice(REMINDERS).split('\n')
+        lcd.display_text_on_line(5,
+            '|{}'.format(choice[0]),
+            True,
+            TextAlignment.LEFT, FGCOLOR)
+        lcd.display_text_on_line(6,
+            '|{}'.format(choice[1] if len(choice) > 1 else ''),
+            True,
+            TextAlignment.LEFT, FGCOLOR)
+
     time.sleep(1)
+    steps = (steps + 1) % 60
+
 
 # TODO: Consider parsing https://weather.gc.ca/rss/city/on-13_e.xml
 #       and displaying the current temperature and icons for the 7-day forecast
