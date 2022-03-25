@@ -271,6 +271,7 @@
       - gpm
       - konq-plugins
       - konqueror # shell alias
+      - mypy
       - pavucontrol
       - pcmanfm # default file manager and shell alias
       - pypy
@@ -294,6 +295,7 @@
       - python3-pip
       - python3-setuptools
       - python3-sphinx
+      - python3-sphinx-autodoc-typehints
       - python3-tasklib # tw-daily.py
       - python3-tidylib # Required to pull in .so dependencies for virtualenvs
       - python3-tzlocal
