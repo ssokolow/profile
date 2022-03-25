@@ -15,6 +15,9 @@ export EDITOR=vim
 export VISUAL="$EDITOR"
 export PAGER='/usr/bin/less -iR'
 
+# Share settings between libmpv and Flatpak mpv
+export MPV_HOME="$HOME/.mpv"
+
 # Workaround for bug in the GNU coreutils maintainers' brains
 # Source: https://unix.stackexchange.com/q/258679
 export QUOTING_STYLE=literal
