@@ -1,0 +1,5 @@
+# Allow KeepassXC to connect to the SSH agent without having to completely
+# rework how Ubuntu automatically sets up an SSH agent for you so the socket is
+# outside /tmp
+noblacklist /tmp/ssh-*
+ignore private-tmp
