@@ -6,39 +6,6 @@
   connection: local
 
   vars:
-    # TODO: flatpak remote-add --if-not-exists flathub https://flathub.org/repo/flathub.flatpakrepo
-    # TODO: Install the following via `flatpak install flathub [...]`:
-    # - cc.arduino.arduinoide
-    # - com.calibre_ebook.calibre
-    # - com.dosbox.DOSBox
-    # - com.github.Eloston.UngoogledChromium
-    # - com.github.libresprite.LibreSprite
-    # - com.github.micahflee.torbrowser-launcher
-    # - com.github.tchx84.Flatseal (and incorporate changes into this script)
-    # - com.orama_interactive.Pixelorama (Once #248 is fixed)
-    # - fr.handbrake.ghb
-    # - io.github.antimicrox.antimicrox
-    # - io.gitlab.jstest_gtk.jstest_gtk
-    # - io.mpv.Mpv
-    # - org.atheme.audacious
-    # - org.blender.Blender
-    # - org.deluge_torrent.deluge
-    # - org.freedesktop.Bustle
-    # - org.godotengine.Godot
-    # - org.gottcode.FocusWriter
-    # - org.inkscape.Inkscape
-    # - org.jdownloader.JDownloader
-    # - org.kde.kcachegrind
-    # - org.kde.okteta
-    # - org.mozilla.firefox
-    # - org.mozilla.Thunderbird
-    # - org.phoenicis.playonlinux
-    # - org.zealdocs.Zeal
-    #
-    # TODO: Try migrating more apps to Flatpak with Flatseal narrowing:
-    # - https://flathub.org/apps/details/org.geeqie.Geeqie
-    # - https://flathub.org/apps/details/org.gnome.EasyTAG
-    #
     # TODO: Try these Flatpak apps:
     # - https://flathub.org/apps/details/vn.hoabinh.quan.CoBang
     # - https://flathub.org/apps/details/org.dust3d.dust3d
@@ -53,7 +20,6 @@
       - apt-file
       - build-essential
       - clang # for cargo-afl
-      - flatpak
       - gamemode
       - git # shell alias
       - git-gui # file manager action
@@ -67,15 +33,12 @@
       - python-apt
       - python3-apt
       - vulkan-utils # DXVK
-      # --== Regular packages ==--
       # TODO: Verify that https://moritzmolch.com/apps/mencfsm.html can import
       # my Project4 cryptkeeper EncFS filesystem.
-      # --== TODO: Try the Flatpak versions ==--
-      - easytag
       # --== Waiting for Flatpak release to get issues resolved ==--
-      - ark # Need folder picker portal support and @...@ wrapper. Also #17
+      - ark # Need folder picker portal support from 22.04 LTS. Also #17
       - evince
-      - geeqie
+      - geeqie # Waiting for a fix to the broken theming
       - gimp
       - keepassxc # Not Flatpak: I'm waiting for it to become official
       - libpurple-bin
@@ -85,7 +48,7 @@
       - libreoffice-writer2latex
       - libreoffice-writer2xhtml
       - okular
-      - pidgin # NOTE: flatpak doesn't have needed plugins
+      - pidgin # NOTE: Flatpak doesn't have needed plugins
       - pidgin-bot-sentry
       - pidgin-otr
       - pidgin-plugin-pack
@@ -226,7 +189,6 @@
       - par2
       - pinfo # shell alias
       - pipenv
-      - plasma-discover-backend-flatpak
       - pngcrush # shell alias
       - postgresql
       - pv
@@ -346,17 +308,45 @@
       - unity-gtk2-module
       - unity-gtk3-module
       - vlc
-    npm_global_cmds: # TODO: Rework to use npx and then write npj and use that
+    flatpak_install:
+      - cc.arduino.arduinoide
+      - com.calibre_ebook.calibre
+      - com.dosbox.DOSBox
+      - com.github.Eloston.UngoogledChromium
+      - com.github.libresprite.LibreSprite
+      - com.github.micahflee.torbrowser-launcher
+      - com.github.tchx84.Flatseal
+      - com.orama_interactive.Pixelorama
+      - fr.handbrake.ghb
+      - io.github.antimicrox.antimicrox
+      - io.gitlab.jstest_gtk.jstest_gtk
+      - io.mpv.Mpv
+      - org.atheme.audacious
+      - org.blender.Blender
+      - org.deluge_torrent.deluge
+      - org.freedesktop.Bustle
+      - org.gnome.EasyTAG
+      - org.godotengine.Godot
+      - org.gottcode.FocusWriter
+      - org.inkscape.Inkscape
+      - org.jdownloader.JDownloader
+      - org.kde.kcachegrind
+      - org.kde.okteta
+      - org.mozilla.firefox
+      - org.mozilla.Thunderbird
+      - org.phoenicis.playonlinux
+      - org.zealdocs.Zeal
+    npm_global_cmds: # TODO: Rework to use npx and then write nodo and use that
       # Dependencies for ALE save/format-on-check
       prettier: /usr/bin/prettier
       stylelint-config-recommended: /usr/bin/stylelint
       stylelint: /usr/bin/stylelint
-    py3_requirements: # TODO: Use pipx
+    py3_requirements: # TODO: Use pipx and then write nodo and use that
       - restview
       # Dependencies for ALE save/format-on-check
       - rstcheck
       - vim-vint
-    ruby_gems:
+    ruby_gems: # TODO: write nodo and use that
       - travis-lint
       - mdl
     samba_family_users:
@@ -441,6 +431,9 @@
         update_cache: false # I'll do it just once later
       with_items:
         - "ppa:deadsnakes/ppa" # Various Python version for tox
+        - "ppa:flatpak/stable" # Keep Flatpak up to date on Ubuntu
+      tags:
+        - flatpak
 
     - include: tasks/gcdemu_repo.yml
 
@@ -449,9 +442,14 @@
       apt:
         update_cache: true
         cache_valid_time: 86400 # 24 hours
+      tags:
+        - flatpak
+
     - name: Update all packages to the latest version
       apt:
         upgrade: dist
+      tags:
+        - flatpak
 
     # ====================== Install Preferred Packages =======================
 
@@ -514,6 +512,32 @@
     - include: tasks/hosts_file.yml # Basic system-wide ad-blocking
     - include: tasks/firejail.yml # Enable sandboxing for non-Flatpak apps
     - include: tasks/u2f.yml # Set up for password+U2F system auth
+
+    # ======================= Install Flatpak Packages ========================
+
+    - name: Install Flatpak
+      apt:
+        state: present
+        name:
+          - flatpak
+          - plasma-discover-backend-flatpak
+      tags:
+        - flatpak
+
+    - name: Add flathub as a remote
+      community.general.flatpak_remote:
+        name: flathub
+        state: present
+        flatpakrepo_url: https://flathub.org/repo/flathub.flatpakrepo
+      tags:
+        - flatpak
+
+    - name: Install packages available through flathub
+      community.general.flatpak:
+        state: present
+        name: "{{ flatpak_install }}"
+      tags:
+        - flatpak
 
     # ====================== Apply General Config Fixes =======================
 
