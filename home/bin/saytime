@@ -1,6 +1,10 @@
 #!/bin/bash
 
-TEMP=$(sed 's@AM@A.M.@' <<< "$(date "+%p")")
+TEMP=$(sed 's@AM@A.M.@' <<<"$(date "+%p")")
 DATESTRING="+The time is %H:%M... That's %l:%M $TEMP"
 
+# TODO: Do this properly to prevent a festival pseudo-forkbomb if holding down
+# the remote button
+pkill festival
+pkill -f 'festival/audsp'
 date "$DATESTRING" | festival --tts
