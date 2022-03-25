@@ -1,0 +1,2 @@
+include needs-mnt-write.inc
+whitelist /mnt/Seagate_10TB/tier3/PlayOnLinux

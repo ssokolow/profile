@@ -1,0 +1,9 @@
+include needs-mnt-write.inc
+whitelist /mnt/Seagate_10TB/VirtualBox
+
+whitelist /mnt/Seagate_10TB/flatpak-incoming/chromium
+whitelist /mnt/Seagate_10TB/flatpak-incoming/deluge
+whitelist /mnt/Seagate_10TB/flatpak-incoming/firefox
+read-only /mnt/Seagate_10TB/flatpak-incoming/chromium
+read-only /mnt/Seagate_10TB/flatpak-incoming/deluge
+read-only /mnt/Seagate_10TB/flatpak-incoming/firefox

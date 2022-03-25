@@ -1,0 +1,3 @@
+include needs-mnt-write.inc
+whitelist ${HOME}/.wine
+whitelist /mnt/Seagate_10TB/tier3/PlayOnLinux

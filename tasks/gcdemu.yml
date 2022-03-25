@@ -3,6 +3,7 @@
   apt:
     state: present
     name: cdemu-daemon,cdemu-client,gcdemu
+    # TODO: Firejail profiles for denying cdemu unnecessary network access
 
 - name: Override gcdemu tray icon with something that stands out less
   copy:

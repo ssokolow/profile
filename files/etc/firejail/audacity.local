@@ -1,0 +1,6 @@
+whitelist ${HOME}/Desktop
+whitelist ${HOME}/Documents
+whitelist ${HOME}/src
+whitelist ${HOME}/tmp
+whitelist ${HOME}/incoming
+read-only ${HOME}/incoming

@@ -1,12 +1,22 @@
 [Desktop Entry]
-Name=Pidgin Internet Messenger
-GenericName=Internet Messenger
+Categories=Network;InstantMessaging;
+Comment[en_CA]=Chat over IM.  Supports AIM, Google Talk, Jabber/XMPP, and more
 Comment=Chat over IM.  Supports AIM, Google Talk, Jabber/XMPP, and more
-Exec=pidgin
+Exec=sh -c 'while true; do /usr/local/bin/pidgin; sleep 1; done'
+GenericName[en_CA]=Internet Messenger
+GenericName=Internet Messenger
 Icon=pidgin
+MimeType=
+Name[en_CA]=Pidgin Internet Messenger
+Name=Pidgin Internet Messenger
+Path=
 StartupNotify=true
 Terminal=false
+TerminalOptions=
 Type=Application
-Categories=Network;InstantMessaging;
+X-DBUS-ServiceName=
+X-DBUS-StartupType=
+X-KDE-SubstituteUID=false
+X-KDE-Username=
 X-MessagingMenu-UsesChatSection=true
 X-Ubuntu-Gettext-Domain=pidgin

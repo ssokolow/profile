@@ -1,0 +1,6 @@
+read-only /srv
+read-only /mnt
+blacklist /mnt/buffalo_ext/backups
+blacklist /mnt/Seagate_10TB/buffalo_ext/backups
+blacklist /mnt/WD_Red_10TB/buffalo_ext/backups
+blacklist /mnt/WD_Red_6TB/buffalo_ext/backups

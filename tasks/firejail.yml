@@ -1,0 +1,25 @@
+---
+- name: Install firejail
+  apt:
+    state: present
+    name:
+      - firejail
+      - firejail-profiles
+  tags:
+    - firejail
+
+- name: Install custom firejail policy tweaks
+  copy:
+    src: "etc/firejail/"
+    dest: "/etc/firejail/"
+    owner: root
+    group: root
+    mode: 0644
+  tags:
+    - firejail
+
+- name: Install firejail wrapper symlinks
+  command: firecfg
+  changed_when: false
+  tags:
+    - firejail

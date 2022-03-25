@@ -175,8 +175,6 @@
       - fbi # ~/bin/gqfbi
       - featherpad
       - festival
-      - firejail
-      - firejail-profiles
       - fortune-mod
       - fuseiso
       - gaffitter
@@ -511,6 +509,7 @@
     - include: tasks/gcdemu.yml # Non-ISO CD/DVD image mounting
     - include: tasks/ufw.yml # Basic firewall setup with exceptions
     - include: tasks/hosts_file.yml # Basic system-wide ad-blocking
+    - include: tasks/firejail.yml # Enable sandboxing for non-Flatpak apps
 
     # ====================== Apply General Config Fixes =======================
 
