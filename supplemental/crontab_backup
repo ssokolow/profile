@@ -7,13 +7,13 @@
 @reboot balooctl disable &>/dev/null
 
 # Morning Housekeeping
-0       5       *       *       *       PATH="$HOME/bin:$PATH" ~/bin/tyt --cron
+30      4       *       *       *       PATH="$HOME/bin:$PATH" ~/bin/tyt --cron
 0       6       *       *       *       truncate -s 0  ~/.xsession-errors
 
 # Nightly housekeeping
 0       0       *       *       *       cp ~/.profile_repo/supplemental/settings.sol ~/.macromedia/Flash_Player/macromedia.com/support/flashplayer/sys/settings.sol
 0       0       *       *       *       rm -f ~/.local/share/applications/wine-extension-* ~/.local/share/icons/hicolor/*/apps/application-x-wine-extension-* ~/.local/share/applications/wine/Programs
-0       0       *       *       *       rm -f ~/Desktop/\{EHT\ *
+0       0       *       *       *       rm -f /mnt/Seagate_10TB/flatpak-incoming/chromium/*.torrent
 0       0       *       *       *       ~/bin/purge_outbound.sh
 0       0       *       *       *       chmod 600 ~/Documents/*.kdbx
 1       0       *       *       *       rm -f ~/.xsession-errors{,.old}
@@ -24,8 +24,8 @@
 
 # Rust housekeeping (Monthly cleanup)
 # TODO: Exempt the cargo caches from backups and then use something like `cargo cache trim --limit 10G`
-0       4       1       *       *       PATH="$HOME/.cargo/bin:$PATH" cargo cache --autoclean
-30      4       *       *       *       PATH="$HOME/.cargo/bin:$PATH" cargo sweep -i -r ~/src | grep -v '^\S*INFO'
+30      3       1       *       *       PATH="$HOME/.cargo/bin:$PATH" cargo cache --autoclean
+0       4       *       *       *       PATH="$HOME/.cargo/bin:$PATH" cargo sweep -i -r ~/src | grep -v '^\S*INFO'
 #30      4       *       *       *       PATH="$HOME/.cargo/bin:$PATH" cargo sweep -r -t 30 ~/src | grep -v '^\S*INFO'
 
 # Nightly backup for stuff that's too volatile for DVD-Rs.
