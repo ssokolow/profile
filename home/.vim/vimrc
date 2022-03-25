@@ -805,6 +805,7 @@ Plug 'vim-scripts/html_FileCompletion', { 'for':
 
 " -- Commands I still need to memorize more --
 Plug 'roxma/vim-encode'                             " \e to encode selection
+Plug 'vim-voom/VOoM', { 'on': 'Voom' }              " `:Voom` for outliner
 Plug 'godlygeek/tabular', { 'on': 'Tab' }           " `:Tab /re` for alignment
 Plug 'olical/vim-expand', { 'on': 'Expand' }        " :Expand selected extglobs
 Plug 'drmikehenry/vim-extline', { 'for': 'rst' }    " Underline helpers for rst
