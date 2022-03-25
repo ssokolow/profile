@@ -9,8 +9,10 @@
       - afl
       - cross
       - cargo-deadlinks
+      - cargo-spellcheck
       - cargo-watch
       - flamegraph
+      - typos-cli
       - zbus_xmlgen
       # Bloat analysis
       - cargo-bloat
@@ -21,6 +23,7 @@
       # Dependency inspection
       - cargo-audit
       - cargo-outdated
+      - cargo-feature-set
       - cargo-geiger
       # Dependency license analysis
       - cargo-about
@@ -47,6 +50,7 @@
       - tokei
       - xd
     rust_commands_nightly:
+      - cargo-fuzz
       - miniserve
     rust_targets:
       # Default non-cross-compilation arch
