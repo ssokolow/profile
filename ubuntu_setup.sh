@@ -34,7 +34,7 @@ if [ "$1" == "--system" ]; then # System-installation Subprocess Mode
 
     # Let Ansible handle the rest
     shift # Remove --system from "$@"
-    cd "$(dirname "$(readlink -f "$0")")"
+    cd "$(dirname "$(readlink -f "$0")")" || exit
     ansible-playbook ubuntu_system_playbook.yml "$@"
 
     # Performing deferred package configuration
@@ -45,7 +45,7 @@ if [ "$1" == "--system" ]; then # System-installation Subprocess Mode
 # ========================== User-level Installation =========================
 elif [ "$1" == "--user" ]; then # User-setup Subprocess Mode
     shift                       # Remove --system from "$@"
-    cd "$(dirname "$(readlink -f "$0")")"
+    cd "$(dirname "$(readlink -f "$0")")" || exit
     ansible-playbook ubuntu_user_playbook.yml "$@"
 
     # TODO: Adapt this code for updating Python virtualenvs
@@ -59,10 +59,10 @@ else # Primary Mode
     "$0" --user "$@"
 
     # TODO: Handle short args properly
-    cd "$(dirname "$(readlink -f "$0")")"
+    cd "$(dirname "$(readlink -f "$0")")" || exit
     check_mode=0
     for arg in "$@"; do
-        if [ "$arg" = "--check" -o "$arg" = "-C" ]; then
+        if [ "$arg" = "--check" ] || [ "$arg" = "-C" ]; then
             check_mode=1
         fi
     done

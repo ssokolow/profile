@@ -95,7 +95,7 @@ fi
 # Make sure I can bring my Clearlooks Ttk theme everywhere I go.
 export TCLLIBPATH=${HOME}/.local/share/tkthemes
 
-# Workaround for GTK+ 3.x bug
+# Workaround for GTK+ 3.x scroll-wheel-on-unfocused-window bug
 # Source:
 #   https://bugs.launchpad.net/ubuntu/+source/gtk+3.0/+bug/1240957
 #   https://bugs.kde.org/show_bug.cgi?id=348270

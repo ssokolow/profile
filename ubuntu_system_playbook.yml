@@ -155,7 +155,7 @@
       - vim-gtk # shell alias
       - vulture
       - yamllint
-      # --== Infrastructural or stuff I use in scripts/terminal (not suitable for flatpak) ==--
+      # --== Infra./used in scripts/term (not suitable for flatpak) ==--
       - advancecomp # shell alias
       - aosd-cat # shell alias
       - arduino-mk
@@ -383,12 +383,12 @@
       copy:
         src: ubuntu-advantage-tools_9999_all.deb
         dest: /var/cache/apt/archives/ubuntu-advantage-tools_9999_all.deb
-      check_mode: no # Needed to get useful --check out of next tast
+      check_mode: false # Needed to get useful --check out of next task
 
     - name: Install dummy ubuntu-advantage-tools
       apt:
-        allow_unauthenticated: yes
-        autoremove: yes
+        allow_unauthenticated: true
+        autoremove: true
         deb: /var/cache/apt/archives/ubuntu-advantage-tools_9999_all.deb
 
     # Remove snaps and block Canonical from slipping them back in
@@ -468,7 +468,7 @@
     # TODO: Install youtube-dl from the upstream source, with
     #       signature verification. (The PPA-provided versions have fatally
     #       flawed support for updating in one way or another.)
-
+    #
     # TODO: Decide which of these should get their own taskfiles
     - name: Install packages from 3rd-party repos
       apt:
@@ -481,7 +481,8 @@
           - python3.9
           - python3.10
 
-      # REMINDER: Use of the `pip` module must come after `apt` installing pip.
+    # REMINDER: Use of the `pip` module must come after `apt` installing pip.
+    #
     # TODO: Use pipx
     #- name: Install desired Python 3 packages
     #  pip:
@@ -605,10 +606,6 @@
     - include: tasks/truerng.yml # TrueRNG hardware RNG driver
       when: ansible_hostname == my_hostname
 
-    # TODO: Is this still necessary for *buntu 20.04 LTS?
-    # - include: tasks/pa_tsched_fix.yml
-    #   when: ansible_hostname == my_hostname
-
     - include: tasks/nvidia_config.yml # Driver and config for my TwinView
       when: ansible_hostname == my_hostname
 
@@ -618,5 +615,4 @@
         purge: true
         autoremove: true
         name: "{{ apt_remove }}"
-
 # ==================== Apply monolith-specific Config =====================
