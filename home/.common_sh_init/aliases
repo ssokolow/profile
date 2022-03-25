@@ -117,20 +117,20 @@ osd() {
 # Alias for more comfortable gog downloader argv syntax
 gogd() {
     local IFS=\|
-    lgogdownloader --download --game "^($*)\$"
+    lgogdownloader --retries=7 --download --game "^($*)\$"
 }
 gogu() {
     local IFS=\|
-    lgogdownloader --download --exclude=extras --game "^($*)\$"
+    lgogdownloader --retries=7 --download --exclude=extras --game "^($*)\$"
 }
 
 lgogd() {
     local IFS=\|
-    lgogdownloader --download --platform=linux --game "^($*)\$"
+    lgogdownloader --retries=7 --download --platform=linux --game "^($*)\$"
 }
 lgogu() {
     local IFS=\|
-    lgogdownloader --download ----exclude=extras --platform=linux --game "^($*)\$"
+    lgogdownloader --retries=7 --download ----exclude=extras --platform=linux --game "^($*)\$"
 }
 # }}}
 # {{{ youtube-dl wrappers
