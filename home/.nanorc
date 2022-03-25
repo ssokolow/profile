@@ -1,6 +1,5 @@
 # Easier to put these here than to keep uncommenting them in dispatch-conf
 #set autoindent
-set const
 set nowrap
 set smarthome
 set smooth
