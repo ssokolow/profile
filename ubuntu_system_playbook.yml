@@ -568,7 +568,7 @@
       user:
         name: "{{ my_username }}"
         append: true
-        groups: tty,dialout,video,lpadmin,vboxusers,family
+        groups: tty,dialout,video,lpadmin,vboxusers,family,floppy
         shell: /bin/zsh
 
     - name: "Add {{ my_username }} to incron allowed users"
