@@ -1,10 +1,8 @@
 # vo=vdpau likes to freeze the player when KWin toggles fullscreen window
 # redirection to overlay something like AFK enforcer or a stupidly-placed
 # new window.
-vo=opengl,xv,
+vo=gpu,xv,
 hwdec=no
-#vo=vdpau,opengl,xv,
-#hwdec=auto
 
 ao=pulse,alsa,openal,oss
 
