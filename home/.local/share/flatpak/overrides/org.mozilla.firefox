@@ -1,0 +1,7 @@
+[Context]
+sockets=cups
+devices=dri
+filesystems=!xdg-download;home/Documents/Fanfiction:rw;home/Documents/4570376/Unsaved:rw;home/src/1_NON-URGENT/ssokolow.com:rw;/mnt/buffalo_ext/temporary_manual_backups:ro;/mnt/Seagate_10TB/flatpak-incoming/firefox:create;home/incoming/tiddlywikis:rw;xdg-documents:ro;xdg-desktop:ro;home/src:ro;home/reference:ro;home/tmp:ro;/usr/share/doc:ro
+
+[Session Bus Policy]
+org.mpris.MediaPlayer2.firefox.*=none

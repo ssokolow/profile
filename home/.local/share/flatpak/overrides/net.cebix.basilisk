@@ -1,0 +1,6 @@
+[Context]
+shared=!network
+filesystems=!home
+
+[Environment]
+HOME=/home/ssokolow/.var/app/net.cebix.basilisk

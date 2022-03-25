@@ -1,2 +1,2 @@
 [Context]
-filesystems=~/src/godot_projects:rw;!host
+filesystems=home/.gitconfig:ro;~/src/godot_projects:rw;home/src/procedural_platformer:rw;!host

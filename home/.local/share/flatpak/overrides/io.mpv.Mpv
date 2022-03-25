@@ -1,0 +1,4 @@
+[Context]
+shared=!network
+devices=!all;dri
+filesystems=xdg-pictures:ro;xdg-videos:ro

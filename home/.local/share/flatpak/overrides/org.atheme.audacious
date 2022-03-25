@@ -1,0 +1,6 @@
+[Context]
+shared=!network
+filesystems=/mnt/Seagate_10TB/tier3/PlayOnLinux:ro;home/tmp:ro;home/src:ro;/mnt/Seagate_10TB/incoming:ro;xdg-documents/Fanfiction:ro;xdg-download:ro;/srv:ro;/mnt/buffalo_ext/incoming:ro;/mnt/buffalo_ext/stuff_to_examine:ro;/mnt/buffalo_ext/stuff_to_listen_to:ro;/mnt/buffalo_ext/temporary_manual_backups:ro;/mnt/Seagate_10TB/red6:ro;/mnt/Seagate_10TB/srv:ro;/mnt/Seagate_10TB/tier3:ro
+
+[Session Bus Policy]
+org.atheme.audacious=own

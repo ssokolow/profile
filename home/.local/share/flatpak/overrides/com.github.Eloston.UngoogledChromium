@@ -1,2 +1,2 @@
 [Context]
-filesystems=/mnt/Seagate_10TB/flatpak-incoming/chromium:create;!home
+filesystems=home/Documents/4570376/Unsaved:rw;/home/ssokolow/Documents/Original Fiction:ro;/home/ssokolow/Documents/Fanfiction:ro;/mnt/Seagate_10TB/flatpak-incoming/chromium:create;/home/ssokolow/Documents/4570376/stories:ro;/usr/share/doc:ro;!home

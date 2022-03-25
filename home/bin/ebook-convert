@@ -1,0 +1,3 @@
+#!/bin/sh
+unset LD_PRELOAD
+exec flatpak run --file-forwarding --command=ebook-convert com.calibre_ebook.calibre @@u "$@" @@

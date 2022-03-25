@@ -1,3 +1,6 @@
 [Context]
 shared=!network
 filesystems=!host:ro;/srv/fservroot/games/PlayStation Portable (Legally Dumped ISOs)
+
+[Environment]
+PULSE_LATENCY_MSEC=60

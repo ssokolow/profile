@@ -1,0 +1,4 @@
+[Context]
+sockets=cups
+filesystems=!xdg-download;/mnt/Seagate_10TB/flatpak-incoming/thunderbird
+persistent=TODO/images TODO
