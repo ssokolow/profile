@@ -54,6 +54,7 @@
       - build-essential
       - clang # for cargo-afl
       - flatpak
+      - gamemode
       - git # shell alias
       - git-gui # file manager action
       - llvm # for cargo-afl
@@ -61,8 +62,11 @@
       - npm
       - pipx # TODO: Actually install things through pipx
       - libssl-dev # Needed for the user playbook
+      - libvulkan1 # DXVK
+      - libvulkan-dev # DXVK
       - python-apt
       - python3-apt
+      - vulkan-utils # DXVK
       # --== Regular packages ==--
       # TODO: Verify that https://moritzmolch.com/apps/mencfsm.html can import
       # my Project4 cryptkeeper EncFS filesystem.
