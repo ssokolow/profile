@@ -343,7 +343,6 @@
       - sylpheed
       - thunderbird # Installed via Flatpak for more sandboxing
       - transmission*
-      - ubuntu-advantage-tools
       - unity-gtk2-module
       - unity-gtk3-module
       - vlc
@@ -381,6 +380,18 @@
         purge: true
         autoremove: true
         name: "{{ apt_remove }}"
+
+    - name: Copy dummy ubuntu-advantage-tools to package cache
+      copy:
+        src: ubuntu-advantage-tools_9999_all.deb
+        dest: /var/cache/apt/archives/ubuntu-advantage-tools_9999_all.deb
+      check_mode: no # Needed to get useful --check out of next tast
+
+    - name: Install dummy ubuntu-advantage-tools
+      apt:
+        allow_unauthenticated: yes
+        autoremove: yes
+        deb: /var/cache/apt/archives/ubuntu-advantage-tools_9999_all.deb
 
     # Remove snaps and block Canonical from slipping them back in
     # TODO: Finish implementing this
