@@ -510,6 +510,7 @@
     - include: tasks/ufw.yml # Basic firewall setup with exceptions
     - include: tasks/hosts_file.yml # Basic system-wide ad-blocking
     - include: tasks/firejail.yml # Enable sandboxing for non-Flatpak apps
+    - include: tasks/u2f.yml # Set up for password+U2F system auth
 
     # ====================== Apply General Config Fixes =======================
 

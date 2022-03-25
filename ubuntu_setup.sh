@@ -115,6 +115,8 @@ echo " - xdg-mime default pcmanfm.desktop inode/directory"
 echo "  ...and then copy the resulting line to the [Added Associations] section"
 echo "- Restore Samba password database"
 echo "- rm -rf $HOME/.local/share/kactivitymanagerd/"
+echo "- Follow the instructions at the following URL to re-register U2F keys:"
+echo "  https://support.yubico.com/hc/en-us/articles/360016649099-Ubuntu-Linux-Login-Guide-U2F"
 
 # TODO: Look into using Vagrant to automatically set up all of my VMs:
 # - The Lubuntu ones shouldn't be difficult

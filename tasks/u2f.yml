@@ -1,0 +1,29 @@
+---
+- name: Install pam-u2f and pamu2fcfg
+  apt:
+    state: present
+    name:
+      - libpam-u2f
+      - pamu2fcfg
+  tags:
+    - u2f
+
+- name: Add PAM rule to gate ALL auth for U2F-enabled users through U2F
+  # Yes, including SSH. This is more a "press the out-of-band auth button to
+  # prove you're sitting at the console" thing, to be honest.
+  lineinfile:
+    path: /etc/pam.d/common-auth
+    regexp: "\\spam_u2f\\.so\\s"
+    line: "auth\trequired\tpam_u2f.so nouserok authfile=/etc/u2f_keys cue"
+  tags:
+    - u2f
+
+- name: Set root:root with mode 600 on /etc/u2f_keys if it exists
+  ansible.builtin.file:
+    path: /etc/u2f_keys
+    state: file
+    owner: root
+    group: root
+    mode: "0600"
+  tags:
+    - u2f
