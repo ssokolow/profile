@@ -1,0 +1,7 @@
+include needs-mnt-write.inc
+ignore read-only /media
+
+ignore read-only /srv
+blacklist /srv/fservroot
+blacklist /srv/Burned
+blacklist /srv/Burned_todo
