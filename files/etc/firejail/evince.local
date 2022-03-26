@@ -1,0 +1,2 @@
+env LD_PRELOAD=libgtk3-nocsd.so.0
+private-lib libgtk3-nocsd.so.0
