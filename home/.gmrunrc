@@ -12,7 +12,7 @@ AlwaysInTerm = ftp info less links links2 lynx man mc mutt nano ncftp perldoc pi
 # Set window geometry (except height)
 Width = 400
 Top = 500
-Left = 440
+Left = 2040
 
 # History size
 History = 256
