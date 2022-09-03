@@ -1,2 +1,13 @@
+
+
 include needs-mnt-write.inc
+whitelist ${HOME}/.wine
+whitelist ${HOME}/.PlayOnLinux
 whitelist /mnt/Seagate_10TB/tier3/PlayOnLinux
+whitelist /mnt/Seagate_10TB/incoming/Games/GOG Games
+whitelist /mnt/Seagate_10TB/tier3/games_todo
+read-only /mnt/Seagate_10TB/incoming/Games/GOG Games
+read-only /mnt/Seagate_10TB/tier3/games_todo
+
+whitelist /mnt/Seagate_10TB/srv/fservroot/games
+read-only /mnt/Seagate_10TB/srv/fservroot/games
