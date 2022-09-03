@@ -74,32 +74,27 @@
 "gmrun"
   Mod4 + space
 
-#"keepass2 --auto-type"
-#  Mod4 + p
-
 "(sleep 0.5; br --port=/dev/ttyS0 -F)& sleep 1; xset dpms force off"
   Mod4 + F7
 
-"audtool playlist-jump 1; audtool playback-stopped || audtool playback-paused && audtool playback-play"
+"qdbus org.atheme.audacious /org/atheme/audacious org.atheme.audacious.Jump 0; [ $(qdbus org.atheme.audacious /org/mpris/MediaPlayer2 org.mpris.MediaPlayer2.Player.PlaybackStatus) = 'Playing' ] || qdbus org.atheme.audacious /org/mpris/MediaPlayer2 org.mpris.MediaPlayer2.Player.PlayPause"
   Mod4 + Up
 
-"audtool playlist-jump `audtool playlist-length`; audtool playback-stopped || audtool playback-paused && audtool playback-play"
+"qdbus org.atheme.audacious /org/atheme/audacious org.atheme.audacious.Jump $(($(qdbus org.atheme.audacious /org/atheme/audacious org.atheme.audacious.Length) - 1)); [ $(qdbus org.atheme.audacious /org/mpris/MediaPlayer2 org.mpris.MediaPlayer2.Player.PlaybackStatus) = 'Playing' ] || qdbus org.atheme.audacious /org/mpris/MediaPlayer2 org.mpris.MediaPlayer2.Player.PlayPause"
   Mod4 + Down
 
-"audtool playback-stopped || audtool playback-paused && audtool playback-play; [ `audtool playlist-stop-after-status` = 'off' ] && audtool playlist-stop-after-toggle"
+"[ $(qdbus org.atheme.audacious /org/mpris/MediaPlayer2 org.mpris.MediaPlayer2.Player.PlaybackStatus) = 'Playing' ] || qdbus org.atheme.audacious /org/mpris/MediaPlayer2 org.mpris.MediaPlayer2.Player.PlayPause; [ `qdbus org.atheme.audacious /org/atheme/audacious org.atheme.audacious.StopAfter` = 'false' ] && qdbus org.atheme.audacious /org/atheme/audacious org.atheme.audacious.ToggleStopAfter"
   Mod4 + o
 
-# Force the flash plugin to release keyboard focus
-# http://awesome.naquadah.org/wiki/Workaround_plugins_that_steal_the_keyboard_focus
-"xdotool getactivewindow mousemove --window %1 0 0 click --clearmodifiers 2"
-  Mod4 + f
+"qdbus org.atheme.audacious /org/mpris/MediaPlayer2 org.mpris.MediaPlayer2.Player.Seek 55000000"
+  Mod4 + s
 
 # --== Bindings for ATi Remote Wonder II ==--
 
 "(sleep 0.5; br --port=/dev/ttyS0 -F)& sleep 1; xset dpms force off"
   XF86PowerOff
 
-"audtool playlist-jump `audtool playlist-length`; audtool playback-stopped || audtool playback-paused && audtool playback-play"
+"qdbus org.atheme.audacious /org/atheme/audacious org.atheme.audacious.Jump $(($(qdbus org.atheme.audacious /org/atheme/audacious org.atheme.audacious.Length) - 1)); [ $(qdbus org.atheme.audacious /org/mpris/MediaPlayer2 org.mpris.MediaPlayer2.Player.PlaybackStatus) = 'Playing' ] || qdbus org.atheme.audacious /org/mpris/MediaPlayer2 org.mpris.MediaPlayer2.Player.PlayPause"
   XF86AudioMute
 
 "~/bin/note_song.py"
@@ -119,9 +114,7 @@
   SunFront
 
 # Skip sponsor notice in a podcast
-"audtool playback-seek-relative 55"
-  Mod4 + s
-"audtool playback-seek-relative 55"
+"qdbus org.atheme.audacious /org/mpris/MediaPlayer2 org.mpris.MediaPlayer2.Player.Seek 55000000"
   F14
 
 # Port my Openbox keybinds to KWin
@@ -130,18 +123,10 @@
 "~/bin/kwin_desktop.sh -1"
   b:9
 
-# TODO: Somehow make this happen only when Firefox is focused
-## Add horizontal scrolling to Firefox
-## Source: http://askubuntu.com/a/407233/23552
-#"xte 'mouseclick 6'"
-#  Shift + b:4
-#"xte 'mouseclick 7'"
-#  Shift + b:5
-
 # --== Special Keyboard Key Bindings (TODO: rework) ==--
 
 # TODO: Decide how to bind these with my new keyboard
-#"audtool playlist-shuffle-toggle"
+#"qdbus org.atheme.audacious /org/atheme/audacious org.atheme.audacious.ToggleShuffle"
 #  XF86CD
 #
 #"~/bin/rand_enqueue.py"
