@@ -1,0 +1,3 @@
+[Context]
+shared=!network
+filesystems=home/tmp;/mnt/buffalo_ext/incoming;/mnt/buffalo_ext/stuff_to_examine;/mnt/buffalo_ext/stuff_to_listen_to;/mnt/buffalo_ext/temporary_manual_backups;/mnt/Seagate_10TB/incoming;/mnt/Seagate_10TB/red6;/mnt/Seagate_10TB/srv;/mnt/Seagate_10TB/tier3;/srv
