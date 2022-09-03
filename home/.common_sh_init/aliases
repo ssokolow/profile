@@ -130,7 +130,7 @@ lgogd() {
 }
 lgogu() {
     local IFS=\|
-    lgogdownloader --retries=7 --download ----exclude=extras --platform=linux --game "^($*)\$"
+    lgogdownloader --retries=7 --download --exclude=extras --platform=linux --game "^($*)\$"
 }
 # }}}
 # {{{ youtube-dl wrappers
