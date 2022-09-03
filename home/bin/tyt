@@ -17,20 +17,21 @@ import logging, random, time
 log = logging.getLogger(__name__)
 
 import os, shutil, subprocess, tempfile  # nosec
+from argparse import ArgumentParser
 
 STATE_FILE = os.path.expanduser('~/.cache/tyt_seen.log')
 
 YT_CHANNEL = 'https://www.youtube.com/user/TheYoungTurks/videos'
 
 TARGET_DIR = os.path.expanduser('~/Desktop/pandora')
-DOWNLOADER_CMD = ['youtube-dl',
+DOWNLOADER_CMD = ['/usr/local/bin/yt-dlp',
     '-f', '44/35/43/18/34/(bestvideo+bestaudio/best)[height<=480]',
     '--hls-prefer-native',
     '--ignore-errors',
     '--download-archive', STATE_FILE,
     '--playlist-end', '28',
     YT_CHANNEL]
-OTHER_DEST = time.strftime("/srv/inbound/TYT - %A %Y-%m-%d")
+OTHER_DEST = time.strftime("/srv/inbound/FOR_MOM/TYT - %A %Y-%m-%d")
 
 THUMBDRIVE_PATHS = (
     '/media/ssokolow/16GB_Flash',
@@ -113,20 +114,24 @@ def get_videos(quiet=False, target_dir='.', cron_mode=False):
         dld_cmd = DOWNLOADER_CMD
         if quiet:
             dld_cmd.append('-q')
-        subprocess.check_call(dld_cmd)  # nosec
+
+        # NOTE: Not check_call because youtube_dl still errors out when
+        # a single video was in a state like "not yet accessible"
+        subprocess.call(dld_cmd)  # nosec
 
         # Send the files to other dest and merge them into my target directory
-        if not os.path.exists(OTHER_DEST):
+        src_files = os.listdir(temp_dir)
+        if src_files and not os.path.exists(OTHER_DEST):
             os.makedirs(OTHER_DEST)
             os.chmod(OTHER_DEST, 0o777)  # nosec
-        for fname in os.listdir(temp_dir):
+        for fname in src_files:
             src_fpath = os.path.join(temp_dir, fname)
             for dest_fpath in (os.path.join(x, fname) for x
                             in (target_dir, OTHER_DEST)):
                 shutil.copy(src_fpath, dest_fpath)
                 os.chmod(dest_fpath, 0o666)  # nosec
             os.remove(src_fpath)
-        assert len(os.listdir(temp_dir)) == 0
+        assert len(os.listdir(temp_dir)) == 0  # nosec
         os.rmdir(temp_dir)
 
         # If the thumbdrive is available and not cron mode...
@@ -168,7 +173,6 @@ def prepare_thumbdrive(tgt_path):
 def main():
     """The main entry point, compatible with setuptools entry points."""
     # pylint: disable=bad-continuation
-    from argparse import ArgumentParser
     parser = ArgumentParser(description=__doc__)
     parser.add_argument('--version', action='version',
         version="%%(prog)s v%s" % __version__)
@@ -217,7 +221,7 @@ def main():
             os.rmdir(OTHER_DEST)
         try:
             notify_argv = NOTIFY_CMD[:] + [NOTIFY_MSG, details]
-            subprocess.call(notify_argv)
+            subprocess.call(notify_argv)  # nosec
         except OSError:
             logging.error("Could not call subprocess: %r", notify_argv)
 
