@@ -53,7 +53,7 @@
 	smtpssl = true
 [user]
 	name = Stephan Sokolow
-	email = http://www.ssokolow.com/ContactMe
+	email = ssokolow@users.noreply.github.com
 [include]
 	path = .gitconfig.credentials
 
