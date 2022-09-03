@@ -8,6 +8,7 @@
 
 # Morning Housekeeping
 30      4       *       *       *       PATH="$HOME/bin:$PATH" ~/bin/tyt --cron
+0       5       *       *       *       cd ~/Documents && $HOME/.local/bin/dosage --adult --continue @ | egrep -v 'Retrieving|Saved|Skipping|already exists'
 0       6       *       *       *       truncate -s 0  ~/.xsession-errors
 
 # Nightly housekeeping
