@@ -1,0 +1,6 @@
+{
+    //"suggest.autoTrigger": "trigger",
+    "suggest.noselect": false,
+    "rust-analyzer.checkOnSave.enable": false,
+    "rust-analyzer.diagnostics.disabled": ["inactive-code"]
+}

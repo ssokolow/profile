@@ -1,6 +1,9 @@
 " Hook up :make to preview Sphinx docs
 setlocal makeprg=make\ html
 
+" Prevent CoC from bogging things down unnecessarily
+let b:coc_suggest_disable = 1
+
 " This isn't code, so set up automatic indent helping and rewrap
 setlocal formatoptions+=tr
 setlocal autoindent

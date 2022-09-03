@@ -1,0 +1,8 @@
+{
+  "dependencies": {
+    "coc-rust-analyzer": ">=0.64.0",
+    "coc-snippets": ">=3.0.14",
+    "coc-tsserver": ">=1.10.5",
+    "coc-vimlsp": ">=0.12.8"
+  }
+}

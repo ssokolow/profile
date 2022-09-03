@@ -2,6 +2,9 @@ let g:ale_markdown_mdl_options = '-s ~/.vim/mdl_style'
 let b:ale_fixers = ['prettier', 'remove_trailing_lines', 'trim_whitespace']
 let b:ale_javascript_prettier_options = '--prose-wrap always'
 
+" Prevent CoC from bogging things down unnecessarily
+let b:coc_suggest_disable = 1
+
 " Harmonize <Tab> behaviour with Prettier
 setlocal softtabstop=2 shiftwidth=2
 

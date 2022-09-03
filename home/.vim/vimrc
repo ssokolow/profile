@@ -319,7 +319,7 @@
 "   containing a quick {motion} reference and maybe some common actions.
 " * Explore :help ins-completion
 " * Audit vim-snippets to see if they're worthwhile or whether I should just
-"   make my own as needed using :UltiSnipsEdit
+"   make my own as needed
 " * Experiment with 'complete'
 "   * complete-=i is a performance optimization
 "   * complete+=kspell and/or complete+=s could be useful for Markdown and rST
@@ -338,10 +338,6 @@
 "   (https://www.reddit.com/r/vim/comments/dndnpq/what_git_for_windows_developers_think_of_our/f5cb0bu/)
 " * Get familiar with the keybinds and configuration options surrounding
 "   marker-based folding support.
-" * Make better use of UltiSnips's advanced syntax
-" * Look into the plugins listed under |UltiSnips-extending| to see if any
-"   provide the "Tab means 'do what I mean'" experience I'd want in order to
-"   accept IDE-style Tab behaviour.
 " * Explore options for only auto-closing folds sometimes
 " * Find a use for K and 'keywordprg'
 " * Experiment with the 'linebreak' option
@@ -438,17 +434,24 @@
 
 set nocompatible | filetype plugin indent on | syn on
 set modeline
-set hidden
+set hidden  " My preference and coc.nvim's
 
 " It seems Ubuntu's defaults are less agreeable than Gentoo's.
+" (Also, some language servers don't like them)
 set nobackup
 set nowritebackup
+
+" Stuff recommended by the example coc.nvim configuration that I'm testing
+set updatetime=300
+set shortmess+=c
+set signcolumn=yes
+set cmdheight=2
 
 " Let the loaded copy serve as the backup in the one case where I need one
 " (Accidentally modifying the same file without mutexing)
 set noautoread
 
-set encoding=utf-8
+set encoding=utf-8  " My preference and needed for coc.nvim
 scriptencoding utf-8
 lang en_US.utf8 " ...because apparently en_CA.utf8 falls back to French
 if has('gui_running')
@@ -605,6 +608,8 @@ let g:netrw_winsize=-32
 " }}}
 " {{{ Configuration (Plugins)
 
+let g:coc_global_extensions = ['coc-rust-analyzer', 'coc-snippets', 'coc-tsserver', 'coc-vimlsp']
+
 " Don't crunch Codi off in the right-hand side of my Quake-style terminal
 let g:codi#width = 50.0
 let g:codi#rightalign = 0
@@ -670,11 +675,6 @@ let g:pear_tree_pairs = {
 " Use a more intuitive symbol to denote changed lines
 let g:signify_sign_change = '~'
 
-" Use \c for to trigger snippet expansion so it doesn't collide/conflict
-let g:UltiSnipsExpandTrigger='<Leader>c'
-let g:UltiSnipsJumpForwardTrigger='<tab>'
-let g:UltiSnipsJumpBackwardTrigger='<s-tab>'
-
 " Don't map VCoolor keybinds. Use :Commands and on-demand loading instead
 let g:vcoolor_disable_mappings = 1
 
@@ -684,7 +684,7 @@ let g:vcoolor_disable_mappings = 1
 let g:ale_open_list = 1
 let g:ale_set_loclist = 0
 let g:ale_set_quickfix = 1
-let g:ale_completion_tsserver_autoimport = 1
+let g:ale_disable_lsp = 1  " To avoid conflicts with coc-nvim
 if has('gui_running')
     let g:ale_set_balloons = 1
 endif
@@ -706,9 +706,6 @@ let g:ale_sign_warning = '‼'
 " only re-lint on save, even if it *is* async now.
 let g:ale_lint_on_text_changed = 'never'
 let g:ale_lint_on_insert_leave = 0
-
-" Enable completion where available.
-set omnifunc=ale#completion#OmniFunc
 
 " TODO: Install more ALE linters and fixers for AsciiDoc, Elm, gitlint,
 "       Handlebars, HTML, JavaScript, JSON, languagetool, Lua, PHP,
@@ -750,7 +747,8 @@ Plug 'DNSGeek/vim-cbmbasic', { 'for': 'cbmbasic' } " I'll do my own ftdetecting
 
 " Stuff which doesn't require being triggered by commands
 Plug 'editorconfig/editorconfig-vim'  " Obey .editorconfig files
-Plug 'dense-analysis/ale'             " Linting and LSP support
+Plug 'dense-analysis/ale'             " Linting support (except Rust)
+Plug 'neoclide/coc.nvim', {'branch': 'release'}  " LSP support
 Plug 'mhinz/vim-signify'              " Show git diff in the gutter
 Plug 'vim-scripts/LargeFile'          " Turn off some functions in big files
 Plug 'Yggdroot/indentLine'            " Visualize indent levels
@@ -791,8 +789,7 @@ Plug 'junegunn/fzf', { 'on': ['Files', 'GFiles', 'Buffers', 'Colors', 'Ag', 'Rg'
 Plug 'junegunn/fzf.vim', { 'on': ['Files', 'GFiles', 'Buffers', 'Colors', 'Ag', 'Rg', 'Lines', 'BLines', 'Tags', 'BTags', 'Marks', 'Windows', 'Locate', 'History', 'Snippets', 'Commits', 'BCommits', 'Commands', 'Maps', 'Helptags', 'Filetypes'] }
 Plug 'KabbAmine/vCoolor.vim', { 'on': ['VCoolor', 'VCoolIns'] }
 " Code Snippets
-if has('python3')
-  Plug 'SirVer/ultisnips'
+if has('pythonx')
   Plug 'honza/vim-snippets'
   " TODO: Fix `au` snippet to use better internal content
 endif
@@ -850,9 +847,6 @@ call plug#end()
 "   ... or use a new one from:
 "       * https://vimcolors.com/
 "       * https://github.com/rafi/awesome-vim-colorschemes
-
-" TODO: Find a way to merge file paths and UltiSnips#SnippetsInCurrentScope(1))
-"       into my completion options
 
 " {{{ Define Autocommands
 
@@ -964,12 +958,89 @@ inoremap <C-BS> <C-W>
 "       change to a different one in .Xresources and update .zshrc and .inputrc
 
 " Add more "standard GUI"-style bindings for completion popups
-inoremap <C-Space> <C-x><C-o>
-inoremap <expr> <Tab>   pumvisible() ? "\<C-n>" : "\<Tab>"
-inoremap <expr> <S-Tab> pumvisible() ? "\<C-p>" : "\<S-Tab>"
-inoremap <expr> <Up>    pumvisible() ? "\<C-p>" : "\<Up>"
-inoremap <expr> <Down>  pumvisible() ? "\<C-n>" : "\<Down>"
-inoremap <expr> <cr>    pumvisible() ? "\<C-y>\<C-o>:pclose\<cr>" : "\<cr>"
+if has('nvim')
+  inoremap <silent><expr> <c-space> coc#refresh()
+else
+  inoremap <silent><expr> <c-@> coc#refresh()
+endif
+inoremap <silent><expr> <TAB>
+      \ pumvisible() ? coc#_select_confirm() :
+      \ coc#expandableOrJumpable() ? "\<C-r>=coc#rpc#request('doKeymap', ['snippets-expand-jump',''])\<CR>" :
+      \ <SID>check_back_space() ? "\<TAB>" :
+      \ coc#refresh()
+inoremap <silent><expr><S-TAB>  pumvisible() ? "\<C-p>" : "\<C-h>"
+inoremap <silent><expr> <Up>    pumvisible() ? "\<C-p>" : "\<Up>"
+inoremap <silent><expr> <Down>  pumvisible() ? "\<C-n>" : "\<Down>"
+inoremap <silent><expr> <CR> pumvisible() ? coc#_select_confirm()
+                              \: "\<C-g>u\<CR>\<c-r>=coc#on_enter()\<CR>"
+
+function! s:check_back_space() abort
+  let col = col('.') - 1
+  return !col || getline('.')[col - 1]  =~# '\s'
+endfunction
+
+let g:coc_snippet_next = '<tab>'
+let g:coc_snippet_prev = '<c-k>'
+
+" Use `[g` and `]g` to navigate diagnostics
+" Use `:CocDiagnostics` to get all diagnostics of current buffer in location list.
+nmap <silent> [g <Plug>(coc-diagnostic-prev)
+nmap <silent> ]g <Plug>(coc-diagnostic-next)
+
+" GoTo code navigation.
+nmap <silent> gd <Plug>(coc-definition)
+nmap <silent> gy <Plug>(coc-type-definition)
+nmap <silent> gi <Plug>(coc-implementation)
+nmap <silent> gr <Plug>(coc-references)
+
+" Smart selection motions for functions and classes/structs
+" NOTE: Requires 'textDocument.documentSymbol' support from language server.
+xmap if <Plug>(coc-funcobj-i)
+omap if <Plug>(coc-funcobj-i)
+xmap af <Plug>(coc-funcobj-a)
+omap af <Plug>(coc-funcobj-a)
+xmap ic <Plug>(coc-classobj-i)
+omap ic <Plug>(coc-classobj-i)
+xmap ac <Plug>(coc-classobj-a)
+omap ac <Plug>(coc-classobj-a)
+
+" Use K to show documentation in preview window.
+nnoremap <silent> K :call ShowDocumentation()<CR>
+
+function! ShowDocumentation()
+  if CocAction('hasProvider', 'hover')
+    call CocActionAsync('doHover')
+  else
+    call feedkeys('K', 'in')
+  endif
+endfunction
+
+" Highlight the symbol and its references when holding the cursor.
+autocmd CursorHold * silent call CocActionAsync('highlight')
+
+" Symbol renaming.
+nmap <leader>rn <Plug>(coc-rename)
+
+" Applying codeAction to the selected region.
+" Example: `<leader>aap` for current paragraph or `<leader>aiw` for word
+xmap <leader>a  <Plug>(coc-codeaction-selected)
+nmap <leader>a  <Plug>(coc-codeaction-selected)
+
+" Remap keys for applying codeAction to the current buffer.
+nmap <leader>ac  <Plug>(coc-codeaction)
+" Apply AutoFix to problem on the current line.
+nmap <leader>qf  <Plug>(coc-fix-current)
+
+" Run the Code Lens action on the current line.
+" TODO: Disable NERDCommenter's \cl and use lowercase
+nmap <leader>CL  <Plug>(coc-codelens-action)
+
+" Search available commands
+nnoremap <silent><nowait> <space>c  :<C-u>CocList commands<cr>
+" Show identifiers in file
+nnoremap <silent><nowait> <space>o  :<C-u>CocList outline<cr>
+" Search symbols in workspace
+nnoremap <silent><nowait> <space>s  :<C-u>CocList -I symbols<cr>
 
 " Map Ctrl+End to pear-tree's "Jump over inserted closer" (Useful for HTML)
 " NOTE: Ctrl+End currently only fires in gVim
@@ -1029,49 +1100,55 @@ cmap w!! w !sudo tee % >/dev/null
 amenu 10.355 &File.Save\ via\ Sudo\.\.\. :w!!<CR>
 
 " -- LSP Functions --
-noremap <silent> H :ALEHover<CR>
-noremap <silent> F :ALEFindReferences<CR>
-noremap <silent> Z :ALEGoToDefinition -split<CR>
 noremap <silent> R :ALERename<CR>
-nmap <silent> <C-k> <Plug>(ale_previous_wrap)
-nmap <silent> <C-j> <Plug>(ale_next_wrap)
 
 " If we can distinguish <CR> from <CTRL-M>, use Ctrl-M for :ALEDetail
 if has('gui_running')
     noremap <silent> <C-m> :ALEDetail<CR>
 endif
 
-amenu 500.140.100 &Plugin.&ALE.&Previous\ Issue<Tab>^k              :ALEPreviousWrap<CR>
-amenu 500.140.110 &Plugin.&ALE.&Next\ Issue<Tab>^j                  :ALENextWrap<CR>
+amenu 500.140.100 &Plugin.&ALE.&Previous\ Issue<Tab>                :ALEPreviousWrap<CR>
+amenu 500.140.110 &Plugin.&ALE.&Next\ Issue<Tab>                    :ALENextWrap<CR>
 amenu 500.140.120 &Plugin.&ALE.Show\ Full\ &Message<Tab>^m          :ALEDetail<CR>
 amenu 500.140.130 &Plugin.&ALE.Show\ &Hover\ Info<Tab>H             :ALEHover<CR>
 amenu 500.140.200 &Plugin.&ALE.-SepForModifying-                    :
-" TODO: amenu 500.140.210 &Plugin.&ALE.&Complete\.\.\.<Tab>^Space           <C-Space>
 amenu 500.140.220 &Plugin.&ALE.&Rename<Tab>R                        :ALERename<CR>
 amenu 500.140.230 &Plugin.&ALE.Run\ Fi&xers<Tab>:ALEFix             :ALEFix<CR>
-amenu 500.140.300 &Plugin.&ALE.-SepForSearch-                       :
-amenu 500.140.310 &Plugin.&ALE.&Find\ References<Tab>F              :ALEFindReferences<CR>
-amenu 500.140.320 &Plugin.&ALE.Go\ To\ &Definition                  :ALEGoToDefinition<CR>
-amenu 500.140.330 &Plugin.&ALE.Go\ To\ &Definition\ In\ Split<Tab>Z :ALEGoToDefinition -split<CR>
-amenu 500.140.340 &Plugin.&ALE.Go\ To\ T&ype\ Definition            :ALEGoToTypeDefinition<CR>
-amenu 500.140.350 &Plugin.&ALE.Go\ To\ T&ype\ Definition\ In\ Split :ALEGoToTypeDefinition -split<CR>
-amenu 500.140.370 &Plugin.&ALE.Symbol\ &Search\.\.\.                :ALESymbolSearch<Space>
 amenu 500.140.400 &Plugin.&ALE.-SepForTroubleshooting-              :
 amenu 500.140.410 &Plugin.&ALE.&Troubleshooting.&Enable/Disable\ ALE<Tab>:ALEToggle      :ALEToggle<CR>
 amenu 500.140.410.10 &Plugin.&ALE.&Troubleshooting.View\ &Configuration<Tab>:ALEInfo     :ALEInfo<CR>
 amenu 500.140.410.20 &Plugin.&ALE.&Troubleshooting.&Reset\ Issue\ List<Tab>:ALEReset     :ALEReset<CR>
 amenu 500.140.410.30 &Plugin.&ALE.&Troubleshooting.Reset\ All\ &LSPs<Tab>:ALEStopAllLSPs :ALEStopAllLSPs<CR>
 
+amenu 500.145.100 &Plugin.&CoC.&Previous\ Issue<Tab>[g       <Plug>(coc-diagnostic-prev)<CR>
+amenu 500.145.110 &Plugin.&CoC.&Next\ Issue<Tab>]g           <Plug>(coc-diagnostic-next)<CR>
+amenu 500.145.150 &Plugin.&CoC.-Sep-                         :
+amenu 500.145.160 &Plugin.&CoC.&Search\ Identifiers\ in\ File<Tab><Space>o       :<C-u>CocList outline<cr>
+amenu 500.145.170 &Plugin.&CoC.&Search\ Symbols\ in\ Workspace<Tab><Space>s       :<C-u>CocList -I symbols<cr>
+amenu 500.145.180 &Plugin.&CoC.&Search\ CoC\ Commands<Tab><Space>c    :<C-u>CocList commands<CR>
+amenu 500.145.200 &Plugin.&CoC.-Sep2-                         :
+amenu 500.145.205 &Plugin.&CoC.Show\ &Documentation\ in\ Popup<Tab>K :call ShowDocumentation()<CR>
+amenu 500.145.210 &Plugin.&CoC.&Go\ to\ Definition<Tab>gd         <Plug>(coc-definition)<CR>
+amenu 500.145.220 &Plugin.&CoC.Go\ to\ &Type\ Definition<Tab>gt   <Plug>(coc-type-definition)<CR>
+amenu 500.145.230 &Plugin.&CoC.Go\ to\ &Implementation<Tab>gi     <Plug>(coc-implementation)<CR>
+amenu 500.145.240 &Plugin.&CoC.Go\ to\ Re&ferences<Tab>gr         <Plug>(coc-references)<CR>
+amenu 500.145.300 &Plugin.&CoC.-Sep3-                         :
+amenu 500.145.310 &Plugin.&CoC.Rename\ identifier\ under\ cursor<Tab>\\rn    <Plug>(coc-rename)<CR>
+amenu 500.145.400 &Plugin.&CoC.-Sep4-                         :
+amenu 500.145.410 &Plugin.&CoC.Edit\ &Snippets\ for\ this\ Filetype :CocCommand snippets.editSnippets<CR>
+
+amenu 500.40 Plugin.Switch\ Buffer<TAB>\\' <leader>'
+
 " Provide a convenient, concise way to work beyond single files
 map <Leader>[ <C-Tab>
 map <Leader>] :Buffers<CR>
 amenu 500.10 Plugin.Browse\ Files\ with\ NetRW<Tab>\\[ <C-Tab>
-amenu 500.10 Plugin.Browse\ Buffers\ with\ FZF<Tab>\\] <C-Tab>
+amenu 500.20 Plugin.Browse\ Buffers\ with\ FZF<Tab>\\] <C-Tab>
 
 " CtrlSF and Codi aliases
 nmap <Leader>S :CtrlSF<Space>
-amenu 500.10 Plugin.Search\ with\ CtrlSF<Tab>\\S    <Leader>S
-amenu 500.20 Plugin.Toggle\ REPL\ Split<Tab>:Codi!! :Codi!!<CR>
+amenu 500.30 Plugin.Search\ with\ CtrlSF<Tab>\\S    <Leader>S
+amenu 500.50 Plugin.Toggle\ REPL\ Split<Tab>:Codi!! :Codi!!<CR>
 
 " FZF quick aliases
 nmap <Leader>; :Buffers<CR>
@@ -1112,6 +1189,8 @@ silent! aunmenu &Tools.&Next\ Error
 silent! aunmenu &Tools.&Previous\ Error
 silent! aunmenu &Tools.&Older\ List
 silent! aunmenu &Tools.N&ewer\ List
+
+amenu 40.200 Tools.Jump\ over\ inserted\ pair\ closer<Tab><C-End> <Plug>(PearTreeJump)<CR>
 
 anoremenu 40.370 &Tools.Error\ List.&List\ Errors<Tab>:cl	:cl<CR>
 anoremenu 40.380 &Tools.Error\ List.L&ist\ Messages<Tab>:cl!	:cl!<CR>
@@ -1242,6 +1321,14 @@ function! QFixToggle(forced)
     let t:qfix_win = bufnr('$')
   endif
 endfunction
+
+augroup CoC
+  autocmd!
+  " Setup formatexpr specified filetype(s).
+  autocmd FileType typescript,json setl formatexpr=CocAction('formatSelected')
+  " Update signature help on jump placeholder.
+  autocmd User CocJumpPlaceholder call CocActionAsync('showSignatureHelp')
+augroup end
 
 augroup QFixEnterFix
     " In the quickfix window, <CR> is used to jump to the error under the

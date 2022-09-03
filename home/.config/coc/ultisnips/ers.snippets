@@ -1,0 +1,143 @@
+extends rust
+
+global !p
+AFTER_USE_KEYWORDS = ['const', 'enum', 'fn', 'static', 'struct', 'type']
+
+import re
+
+def insert_dependency(dep_string):
+    seen_fence, seen_deps = False, False
+    for idx, line in enumerate(snip.buffer):
+        if idx == 0:
+            continue # Skip shebang
+        if not line.startswith("//!"):
+            break
+
+        trimmed = line[4:].strip()
+        if not seen_fence and trimmed == '```cargo':
+            seen_fence = True
+        elif seen_fence and not seen_deps and trimmed == '[dependencies]':
+            seen_deps = True
+        elif seen_fence and seen_deps:
+            if trimmed > dep_string or trimmed == '```':
+                snip.buffer.append('//! ' + dep_string, idx)
+                break
+
+def insert_use(use_string):
+    last_nonempty_idx = 0
+    seen_use, too_fardeps = False, False
+    for idx, line in enumerate(snip.buffer):
+        if line.startswith('use '):
+            seen_use = True
+            cmp_key = line
+            if line.startswith('use std::'):
+                cmp_key = '1' + cmp_key
+
+            if line == use_string:
+                break
+            elif cmp_key > use_string:
+                snip.buffer.append(use_string, idx)
+                break
+
+        if line.startswith('#[') or (line.split() or [''])[0] in AFTER_USE_KEYWORDS:
+            if not seen_use:
+                snip.buffer.append("", idx)
+                snip.buffer.append(use_string, idx)
+                snip.buffer.append("", idx)
+            else:
+                snip.buffer.append(use_string, idx)
+            break
+
+def insert_after(in_string, regex):
+    regex = re.compile(regex)
+    for idx, line in enumerate(snip.buffer):
+        if regex.match(line):
+            snip.buffer.append(in_string, idx + 1)
+            break
+endglobal
+
+snippet boiler "rust-script boilerplate" b
+#!/usr/bin/env rust-script
+//! ${2:TODO: Description here}
+//!
+//! Copyright `date +%Y`, `git config user.name`
+//!
+//! \`\`\`cargo
+//! [package]
+//! authors = ["`git config user.name`"]
+//! license = "MIT OR Apache-2.0"
+//! edition = "2018"
+//!
+//! [dependencies]
+//! gumdrop = "0.8"
+//! \`\`\`
+#![forbid(unsafe_code)]
+
+use std::path::PathBuf;
+use gumdrop::Options;
+
+#[derive(Debug, Options)]
+struct MyOptions \{
+    // NOTE: This will panic on paths containing invalid UTF-8
+    #[options(free)]
+    inpath: Vec<PathBuf>,
+
+    #[options(help = "print help message")]
+    help: bool,
+}
+
+${1}
+fn main() -> Result<(), Box<dyn std::error::Error>> \{
+    let opts = MyOptions::parse_args_default_or_exit();
+
+    ${0:todo!();}
+}
+
+// vim: set ft=rust sw=4 sts=4 expandtab :
+endsnippet
+
+post_expand "insert_use('use std::process::{Command, Stdio};')"
+snippet cmd "std::process::Command (status)" i
+let status = Command::new("${1}")
+    .args(&["${2}"])
+    .status()
+    .expect("${3:executed process}");
+${0}
+endsnippet
+
+post_expand "insert_use('use std::process::{Command, Stdio};')"
+snippet cmdo "std::process::Command (output)" i
+let output = Command::new("${1}")
+    .args(&["${2}"])
+    .stderr(Stdio::inherit())
+    .output()
+    .expect("${3:executed process}");
+${0}
+endsnippet
+
+
+pre_expand "insert_dependency('serde = \"1.0.123\"')"
+post_expand "insert_use('use serde::{Serialize, Deserialize};')"
+snippet serde "Serde boilerplate" b
+
+#[derive(Serialize, Deserialize, Debug)]
+struct ${1:Config}  \{
+    ${2}
+}
+
+endsnippet
+
+snippet tests "mod tests" b
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn test_something() {
+        panic!("TODO: Test something");
+    }
+}
+endsnippet
+
+# vim: set expandtab :

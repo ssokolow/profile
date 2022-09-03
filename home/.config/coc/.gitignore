@@ -1,0 +1,6 @@
+commands
+db.json
+extensions/coc-rust-analyzer-data/rust-analyzer
+extensions/node_modules
+list-*-history.json
+memos.json
