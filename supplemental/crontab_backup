@@ -5,6 +5,9 @@
 @reboot mkdir -p ~/.macromedia/Flash_Player/macromedia.com/support/flashplayer/sys/; cp ~/.profile_repo/supplemental/settings.sol ~/.macromedia/Flash_Player/macromedia.com/support/flashplayer/sys/settings.sol
 @reboot pkill gvfsd-metadata; rm -rf .local/share/gvfs-metadata
 @reboot balooctl disable &>/dev/null
+# Hack to ensure the correct keymap is set for F14 on the ATi Remote Wonder II
+# so "skip ad in podcast" works reliably when I'm in bed
+0,15,30,45 *    *       *       *       DISPLAY=:0 xmodmap ~/.xmodmaprc 2>/dev/null
 
 # Morning Housekeeping
 30      4       *       *       *       PATH="$HOME/bin:$PATH" ~/bin/tyt --cron
