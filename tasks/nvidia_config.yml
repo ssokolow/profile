@@ -20,22 +20,26 @@
 
 - name: Copy deferred nVidia driver update helper into place
   copy:
-    src: usr/local/sbin/update_nvidia.py
-    dest: /usr/local/sbin/update_nvidia.py
+    src: usr/local/sbin/update_nvidia
+    dest: /usr/local/sbin/update_nvidia
     owner: root
     group: root
     mode: 0755
 
-# TODO: Redo this for systemd (possibly with WantedBy=)
-- name: Set deferred nVidia driver update helper to run on startup (Upstart)
+- name: Install systemd service for deferred nVidia driver update helper
   copy:
-    src: update_nvidia.conf
-    dest: /etc/init/update_nvidia.conf
+    src: etc/systemd/system/update_nvidia.service
+    dest: /etc/systemd/system/update_nvidia.service
     owner: root
     group: root
     mode: 0644
-  when: ansible_distribution_release == 'trusty'
 
-- name: Run update_nvidia.py once to set up initial package pins
-  command: /usr/local/sbin/update_nvidia.py --mark-only
+- name: Enable systemd service for deferred nVidia driver update helper
+  ansible.builtin.systemd:
+    name: update_nvidia
+    enabled: yes
+    masked: no
+
+- name: Run update_nvidia once to set up initial package pins
+  command: /usr/local/sbin/update_nvidia --mark-only
   changed_when: false

@@ -1,0 +1,15 @@
+[Unit]
+Description=Update nvidia drivers only when the kernel module can be reloaded
+ConditionACPower=true
+Requires=network-online.target
+After=network.target network-online.target systemd-networkd.service NetworkManager.service connman.service
+Before=display-manager.service
+
+[Service]
+Type=oneshot
+RemainAfterExit=yes
+ExecStartPre=-/usr/lib/apt/apt-helper wait-online
+ExecStart=/usr/local/sbin/update_nvidia
+
+[Install]
+WantedBy=multi-user.target
