@@ -1,11 +1,9 @@
 [Desktop Entry]
-Categories=
-Comment=Start xbindkeys
-Encoding=UTF-8
-Exec=xbindkeys_autostart
-GenericName=
-Hidden=true
-Name=xbindkeys
+Name=XBindKeys
+GenericName=Enable Custom Keybindings
+Comment=Enable keybindings defined in ~/.xbindkeysrc
+Exec=sh -c 'xmodmap ~/.xmodmaprc; exec xbindkeys'
 Terminal=false
 Type=Application
-Version=1.0
+Categories=
+StartupNotify=false

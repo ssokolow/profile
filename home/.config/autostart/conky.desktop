@@ -1,13 +1,16 @@
 [Desktop Entry]
 Categories=
-Comment[en_US]=Crash-recovering launch wrapper for Conky
+Comment[en_CA]=Crash-recovering launch wrapper for Conky
 Comment=Crash-recovering launch wrapper for Conky
-Exec=sh -c "until conky; do sleep 1; done"
-GenericName[en_US]=Desktop System Monitor
+Comment[en_US]=Crash-recovering launch wrapper for Conky
+Exec=sh -c "until /usr/bin/conky; do sleep 1; done"
+GenericName[en_CA]=Desktop System Monitor
 GenericName=Desktop System Monitor
+GenericName[en_US]=Desktop System Monitor
 MimeType=
-Name[en_US]=Conky
+Name[en_CA]=Conky
 Name=Conky
+Name[en_US]=Conky
 Path=
 StartupNotify=false
 Terminal=false
