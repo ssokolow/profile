@@ -1,6 +1,6 @@
 let b:ale_lint_on_save = 0  " Don't let it block the Cargo lock at inopportune times
 let b:ale_linters = ['analyzer']
-let b:ale_fixers = ['remove_trailing_lines', 'trim_whitespace']
+let b:ale_fixers = ['rustfmt', 'trim_whitespace', 'remove_trailing_lines']
 let g:ale_rust_cargo_use_clippy = executable('cargo-clippy')
 let g:ale_rust_rls_config = {
       \   'rust': {

@@ -21,17 +21,17 @@ let g:ale_python_pylint_use_global = 0
 " Make bandit conditional on small files.
 " Make Pylint conditional on small or medium files
 " Exclude PyLS because it gets buggy if you only lint on save
-" Exclude autopep8 because it breaks Sphinx doc comments and walrus operator
+" NOTE: autopep8 breaks the walrus operator on *buntu 20.04 LTS
 let b:fsize_scratch = getfsize(expand(@%))
 if b:fsize_scratch <= 65535
     let b:ale_linters = ['flake8', 'mypy', 'pylint', 'bandit']
-    let b:ale_fixers = ['remove_trailing_lines', 'trim_whitespace']
+    let b:ale_fixers = ['autopep8', 'remove_trailing_lines', 'trim_whitespace']
 elseif b:fsize_scratch <= 131072
     let b:ale_linters = ['flake8', 'mypy', 'pylint']
-    let b:ale_fixers = ['remove_trailing_lines', 'trim_whitespace']
+    let b:ale_fixers = ['autopep8', 'remove_trailing_lines', 'trim_whitespace']
 else
     let b:ale_linters = ['flake8', 'mypy']
-    let b:ale_fixers = ['remove_trailing_lines', 'trim_whitespace']
+    let b:ale_fixers = ['autopep8', 'remove_trailing_lines', 'trim_whitespace']
 endif
 
 " TODO: Once I've got Python 3.6, try making it choose Pyre over MyPy when
