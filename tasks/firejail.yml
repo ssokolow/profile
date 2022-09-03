@@ -18,6 +18,15 @@
   tags:
     - firejail
 
+- name: Disable Firejail sandboxing of Dolphin
+  # ... so invoking Flatpak apps by double-clicking works
+  lineinfile:
+    path: /usr/lib/x86_64-linux-gnu/firejail/firecfg.config
+    regexp: "^\\s*dolphin\\s*$"
+    line: "# dolphin"
+  tags:
+    - firejail
+
 - name: Install firejail wrapper symlinks
   command: firecfg
   changed_when: false

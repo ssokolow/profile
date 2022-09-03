@@ -2,5 +2,20 @@ ignore read-only /srv
 ignore read-only /mnt
 ignore read-only /media
 
+# -- MPV Stuff for double-clicking videos --
+
+noblacklist ${HOME}/.config/mpv
+noblacklist ${HOME}/.config/youtube-dl
+noblacklist ${HOME}/.netrc
+
+# Allow python (blacklisted by disable-interpreters.inc)
+include allow-python2.inc
+include allow-python3.inc
+
+include whitelist-usr-share-common.inc
+include whitelist-var-common.inc
+
+ignore novideo
+
 # put 'ignore noroot' in your dolphin.local if you use MPV+Vulkan (see issue #3012)
 ignore noroot
