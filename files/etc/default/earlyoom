@@ -3,7 +3,7 @@
 
 # Options to pass to earlyoom
 # TODO: https://unix.stackexchange.com/questions/111188/using-notify-send-with-cronhttps://unix.stackexchange.com/questions/111188/using-notify-send-with-cron
-EARLYOOM_ARGS="-r 0 -m 10 --avoid '(^|/)(init|X|sshd|plasmashell|kwin_x11|kded5|featherpad|python(\d(.\d)?)?)$' --prefer '(^|/)(firefox .*-contentproc|festival)( |$)'"
+EARLYOOM_ARGS="-r 0 -m 10 --avoid '(^|/)(init|X|sshd|plasmashell|kwin_x11|kded5|featherpad|python(\d(.\d)?)?)$' --prefer '(^|/)(firefox .*-contentproc|festival|\\wineboot.exe)( |$)'"
 
 # Examples:
 
