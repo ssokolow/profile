@@ -57,8 +57,6 @@
       - python-apt
       - python3-apt
       - vulkan-utils # DXVK
-      # TODO: Verify that https://moritzmolch.com/apps/mencfsm.html can import
-      # my Project4 cryptkeeper EncFS filesystem.
       # --== Waiting for Flatpak release to get issues resolved ==--
       - ark # Need folder picker portal support from 22.04 LTS. Also #17
       - evince
@@ -87,6 +85,7 @@
       - kruler
       - krename
       - lyx
+      - mednafen
       - qttools5-dev-tools # qdbusviewer
       - retext
       - sigil
@@ -97,6 +96,9 @@
       - xkeycaps
       - xpad
       - xsane
+      # https://moritzmolch.com/apps/mencfsm.html
+      - encfs
+      - libxkbcommon-x11-0
       # --== bed ==--
       - libmpv1
       - python3-pytimeparse
@@ -156,11 +158,11 @@
       - doxygen
       - doxygen-latex
       - dvdisaster
-      - encfs
       - expect
       - fbi # ~/bin/gqfbi
       - featherpad
       - festival
+      - fonts-tlwg-typewriter-otf # Some Inkscape SVGs
       - fortune-mod
       - fuseiso
       - gaffitter
@@ -174,6 +176,7 @@
       - hub # shell alias
       - imagemagick
       - incron
+      - innoextract
       - iotop
       - irssi
       - jekyll
@@ -184,7 +187,7 @@
       - kcachegrind-converters # For the Flatpak
       - less # pager, manpager, shell alias
       - lgogdownloader # shell alias
-      - libasound2-dev  # cpal for rust-ttspico projects
+      - libasound2-dev # cpal for rust-ttspico projects
       - libnotify-bin
       - links
       - links2
@@ -210,6 +213,7 @@
       - pandoc
       - pandoc-citeproc
       - par2
+      - phantomjs # yt-dlp
       - pinfo # shell alias
       - pipenv
       - pngcrush # shell alias
@@ -229,6 +233,7 @@
       - tig
       - timelimit
       - timidity
+      - ttf-mscorefonts-installer
       - tox
       - ufw
       - units # shell alias
@@ -236,7 +241,7 @@
       - uptimed
       - upx
       - vbindiff
-      - virtualenvwrapper
+      - virtualenvwrapper # TODO: migrate projects to pipenv
       - wdiff # shell alias
       - whois
       - wmctrl
@@ -247,7 +252,7 @@
       - xpra
       - xserver-xephyr
       - xvfb
-      - youtube-dl
+      - youtube-dl # TODO: Do I still need this?  # TODO: Firejail yt-dlp
       # --== Infrastructural Packages (not suitable for flatpak) ==--
       - apache2
       - conky-all
@@ -349,6 +354,7 @@
       - org.deluge_torrent.deluge
       - org.freedesktop.Bustle
       - org.gnome.EasyTAG
+      - org.gnome.glabels-3
       - org.godotengine.Godot
       - org.gottcode.FocusWriter
       - org.inkscape.Inkscape
