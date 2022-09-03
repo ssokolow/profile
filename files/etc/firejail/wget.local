@@ -1,3 +1,4 @@
+noblacklist /mnt/buffalo_ext
 include needs-mnt-write.inc
 ignore read-only /media
 
