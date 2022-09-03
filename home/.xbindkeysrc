@@ -103,11 +103,17 @@
 "~/bin/saytime"
   F13
 
-"~/bin/start_noise"
+"~/bin/start_bedtime noise"
   XF86Launch1
 
-"~/bin/start_audacious"
+"~/bin/start_bedtime audacious"
   XF86Launch2
+
+"~/bin/start_bedtime mpv"
+  XF86Launch3
+
+"~/bin/start_bedtime stop"
+  XF86Launch4
 
 # Shim away mplayer's inability to bind SunFront to fullscreen toggle.
 "xdotool getactivewindow key f"

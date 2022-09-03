@@ -25,12 +25,12 @@ import os
 
 MPV_CONFIG = {
     'x11-name': 'bedtime-player',
-    'screen': 1,
-    'fs-screen': 1,
+    'screen': 0,
+    'fs-screen': 0,
     'ontop': True,
     'border': False,
     'autofit': '100%',
-    # 'fullscreen': True,  # Currently relying on kwin's force-maximize
+    'fullscreen': True,
     'osd_level': 3,
     'stop_screensaver': False,
     'input-default-bindings': True,

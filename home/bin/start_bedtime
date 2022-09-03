@@ -1,0 +1,32 @@
+#!/bin/sh
+cd "$(dirname "$(readlink -f "$0")")" || exit
+
+# Unconditionally stop/pause anything that's easy to recover from
+pkill -f brownnoise
+[ $(qdbus org.atheme.audacious /org/mpris/MediaPlayer2 org.mpris.MediaPlayer2.Player.PlaybackStatus) = 'Playing' ] && qdbus org.atheme.audacious /org/mpris/MediaPlayer2 org.mpris.MediaPlayer2.Player.PlayPause
+
+# NOTE: Use the following to force-disable shuffle
+# [ $(qdbus org.atheme.audacious /org/atheme/audacious org.atheme.audacious.Shuffle) = 'false' ] || qdbus org.atheme.audacious /org/atheme/audacious org.atheme.audacious.ToggleShuffle
+
+# TODO: Set a timeout to stop Audacious after X amount of time
+
+# TODO: Adapt `bed` to limit time based on runtime, not time since start, and
+#       then arrange to pause it rather than quitting it.
+case $1 in
+    audacious)
+        pkill -f 'python3.*bed'
+        [ $(qdbus org.atheme.audacious /org/mpris/MediaPlayer2 org.mpris.MediaPlayer2.Player.PlaybackStatus) = 'Playing' ] || qdbus org.atheme.audacious /org/mpris/MediaPlayer2 org.mpris.MediaPlayer2.Player.PlayPause
+        ;;
+    mpv)
+        ./bed -t3h --from-file ~/bedtime_queue.txt
+        ;;
+    noise)
+        pkill -f 'python3.*bed'
+        ./noise.sh
+        ;;
+    stop)
+        pkill -f 'python3.*bed'
+        echo "Off" | festival --tts
+        ;;
+    *) echo "Usage: $0 <audacious|mpv|noise>" ;;
+esac
