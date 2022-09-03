@@ -20,7 +20,7 @@
     group: root
     mode: 0755
     timeout: 5
-    checksum: "sha256:74be4cbb0d08dea20f206d4ead61e7c376bc60580003e4583f62ecd894318a58"
+    checksum: "sha256:da272587722e7e338aca9753423853df1d8c69e78fce37f6177f2be30f43ffdf"
   register: hosts_u
 
 - name: Download updated MVPS HOSTS file and merge in local amendments
