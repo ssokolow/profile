@@ -1,0 +1,2 @@
+# Remap OK -> Enter so X11 apps can use it
+SUBSYSTEMS=="usb", ATTRS{idVendor}=="0471", ATTRS{idProduct}=="0602", RUN+="/usr/bin/setkeycodes 0x005C 28 0x015C 28 0x025C 28 0x035C 28 0x045C 28"
