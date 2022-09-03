@@ -1,2 +1,2 @@
 [Context]
-filesystems=!xdg-documents;!xdg-download
+filesystems=!xdg-documents;!xdg-download;/media:ro
