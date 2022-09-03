@@ -85,7 +85,6 @@
       - kruler
       - krename
       - lyx
-      - mednafen
       - qttools5-dev-tools # qdbusviewer
       - virtualbox
       - virtualbox-guest-additions-iso
@@ -338,6 +337,7 @@
       - cc.arduino.arduinoide
       - com.calibre_ebook.calibre
       - com.dosbox.DOSBox
+      - com.github.AmatCoder.mednaffe
       - com.github.Eloston.UngoogledChromium
       - com.github.libresprite.LibreSprite
       - com.github.micahflee.torbrowser-launcher
