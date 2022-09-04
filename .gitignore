@@ -1,6 +1,9 @@
 *.py[co]
 .coverage
 
+# Data that shouldn't be replicated
+home/bin/bed.records
+
 # Vim stuff that shouldn't be replicated
 home/.vim/.netrwhist
 home/.vim/view
