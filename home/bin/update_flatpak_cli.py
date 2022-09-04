@@ -20,8 +20,8 @@ Dependencies:
 
 Known shortcomings:
 
-* Still need to look into the best way to query the set of `.desktop` files 
-  installed by Things like OpenRA so I don't need to *manually* amend the 
+* Still need to look into the best way to query the set of `.desktop` files
+  installed by Things like OpenRA so I don't need to *manually* amend the
   `EXTRA_COMMANDS` list in cases involving secondary GUI apps.
 * Uses the sledgehammer approach of just removing all non-folders from the
   target directory before generating new launchers to clear out stale entries.
@@ -74,6 +74,7 @@ CMD_REMAPPINGS = {
     'com.github.tchx84.Flatseal': 'flatseal',
     'com.sweethome3d.Sweethome3d': 'sweethome3d',
     'io.github.simple64.simple64': 'simple64',
+    'net._86box._86Box': '86box',
     'net.cebix.basilisk': 'basilikii',
     'org.fritzing.Fritzing': 'fritzing',
     'org.jdownloader.JDownloader': 'jdownloader',
