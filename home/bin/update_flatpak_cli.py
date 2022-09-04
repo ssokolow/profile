@@ -68,12 +68,14 @@ BIN_DIR = os.path.expanduser("~/.local/bin/flatpak")
 
 #: Remappings for flatpak packages that use less-than-ideal command names
 CMD_REMAPPINGS = {
-    'BasiliskII': 'basilikii',
     'com.github.tchx84.Flatseal': 'flatseal',
-    'Fritzing': 'fritzing',
-    'scummvm_wrapper': 'scummvm',
-    'PPSSPPSDL': 'ppsspp',
-    'SweetHome3D': 'sweethome3d',
+    'com.sweethome3d.Sweethome3d': 'sweethome3d',
+    'io.github.simple64.simple64': 'simple64',
+    'net.cebix.basilisk': 'basilikii',
+    'org.fritzing.Fritzing': 'fritzing',
+    'org.jdownloader.JDownloader': 'jdownloader',
+    'org.ppsspp.PPSSPP': 'ppsspp',
+    'org.scummvm.ScummVM': 'scummvm',
 }
 
 #: Secondary commands to expose
@@ -232,7 +234,7 @@ def main():
     for (ref, command) in get_installed_packages().items():
         print(f"Generating wrapper for {ref}...")
 
-        command = CMD_REMAPPINGS.get(command, command)
+        command = CMD_REMAPPINGS.get(ref, command)
         make_wrapper(get_flatpak_cmd(ref), command, BIN_DIR, seen=added)
 
         if ref in EXTRA_CMDS:
