@@ -7,35 +7,46 @@
 
   vars:
     # TODO: Try these Flatpak apps:
-    # - https://flathub.org/apps/details/io.github.simple64.simple64
-    # - https://flathub.org/apps/details/com.github.Rosalie241.RMG
-    # - https://flathub.org/apps/details/com.corsixth.corsixth
-    # - https://flathub.org/apps/details/org.naev.Naev
+    # - https://flathub.org/apps/details/org.libretro.RetroArch
+    # - https://flathub.org/apps/details/ca.parallel_launcher.ParallelLauncher
+    # - https://flathub.org/apps/details/net.davidotek.pupgui2
+    # - https://flathub.org/apps/details/ua.org.brezblock.q4wine
+    # - https://flathub.org/apps/details/com.usebottles.bottles
+    # - https://flathub.org/apps/details/net.lutris.Lutris
+    # - https://flathub.org/apps/details/com.heroicgameslauncher.hgl
     # - https://flathub.org/apps/details/org.openmw.OpenMW
     # - https://flathub.org/apps/details/net.sourceforge.fretsonfire
-    # - https://flathub.org/apps/details/net.openra.OpenRA
-    # - https://flathub.org/apps/details/io.gitlab.construo.construo
     # - https://flathub.org/apps/details/io.openrct2.OpenRCT2
-    # - https://flathub.org/apps/details/org.widelands.Widelands
-    # - https://flathub.org/apps/details/org.wesnoth.Wesnoth
+    # - https://flathub.org/apps/details/com.github.dariasteam.cowsrevenge
+    # - https://flathub.org/apps/details/com.shatteredpixel.shatteredpixeldungeon
+    # - https://flathub.org/apps/details/info.beyondallreason.bar
+    # - https://flathub.org/apps/details/com.github.Anuken.Mindustry
+    # - https://flathub.org/apps/details/org.openclonk.OpenClonk
+    # - https://flathub.org/apps/details/io.github.openhv.OpenHV
+    # - https://flathub.org/apps/details/io.gitlab.construo.construo
     # - https://flathub.org/apps/details/com.play0ad.zeroad
-    # - https://flathub.org/apps/details/com.gitlab.JakobDev.jdAppdataEdit
-    # - https://flathub.org/apps/details/vn.hoabinh.quan.CoBang
-    # - https://flathub.org/apps/details/org.dust3d.dust3d
-    # - https://flathub.org/apps/details/org.jamovi.jamovi
-    # - https://flathub.org/apps/details/net.sf.VICE
     # - https://flathub.org/apps/details/org.opensurge2d.OpenSurge
-    # - https://flathub.org/apps/details/com.github.bvschaik.julius
+    # - https://flathub.org/apps/details/org.sonic3air.Sonic3AIR
+    # - https://flathub.org/apps/details/org.srb2.SRB2
+    # - https://flathub.org/apps/details/org.srb2.SRB2Kart
+    # - https://flathub.org/apps/details/org.naev.Naev
+    # - https://flathub.org/apps/details/io.github.naikari.Naikari
+    # - https://flathub.org/apps/details/com.remnantsoftheprecursors.ROTP
     # - https://flathub.org/apps/details/org.freeorion.FreeOrion
-    # - https://flathub.org/apps/details/org.upnproutercontrol.UPnPRouterControl
+    # - https://flathub.org/apps/details/com.roguetemple.HyperRogue
+    # - https://flathub.org/apps/details/net.sf.VICE
+    # - https://flathub.org/apps/details/org.dust3d.dust3d
     # - https://flathub.org/apps/details/io.github.cloose.CuteMarkEd
     # - https://flathub.org/apps/details/io.github.leonardschardijn.Chirurgien
-    # - https://flathub.org/apps/details/io.gitlab.evtest_qt.evtest_qt
+    # - https://flathub.org/apps/details/org.jamovi.jamovi
+    # - https://flathub.org/apps/details/vn.hoabinh.quan.CoBang
+    # - https://flathub.org/apps/details/org.upnproutercontrol.UPnPRouterControl
     # - https://flathub.org/apps/details/org.freefilesync.FreeFileSync
+    # - https://flathub.org/apps/details/com.github.debauchee.barrier
+    # - https://flathub.org/apps/details/com.gitlab.JakobDev.jdAppdataEdit
     # - https://flathub.org/apps/details/com.georgefb.quickaccess
     # - https://flathub.org/apps/details/fyi.zoey.Boop-GTK
-    # - https://flathub.org/apps/details/com.giuspen.cherrytree
-    # - https://flathub.org/apps/details/com.github.debauchee.barrier
+    # - https://flathub.org/apps/details/net.giuspen.cherrytree
     #
     # TODO: Explore running these via wax for sandboxing-by-default operation:
     # - https://wapm.io/package/optipng
@@ -336,24 +347,35 @@
     flatpak_install:
       - cc.arduino.arduinoide
       - com.calibre_ebook.calibre
+      - com.corsixth.corsixth
       - com.dosbox.DOSBox
+      - com.dosbox_x.DOSBox-X
       - com.github.AmatCoder.mednaffe
       - com.github.Eloston.UngoogledChromium
       - com.github.libresprite.LibreSprite
       - com.github.micahflee.torbrowser-launcher
       - com.github.tchx84.Flatseal
+      - com.github.tmewett.BrogueCE
+      - com.gitlab.coringao.cavestory-nx
       - com.orama_interactive.Pixelorama
+      - com.play0ad.zeroad
       - com.sigil_ebook.Sigil
+      - com.stepmania.StepMania
       - fr.free.hxc2001.HxCFloppyEmulator
       - fr.handbrake.ghb
       - io.github.antimicrox.antimicrox
       - io.gitlab.jstest_gtk.jstest_gtk
       - io.mpv.Mpv
       - me.mitya57.ReText
+      - net._86box._86Box
+      - net.openra.OpenRA
+      - net.sourceforge.DuneLegacy
+      - net.sourceforge.Fillets
       - org.atheme.audacious
       - org.blender.Blender
       - org.deluge_torrent.deluge
       - org.freedesktop.Bustle
+      - org.freedesktop.appstream-glib
       - org.gnome.EasyTAG
       - org.gnome.glabels-3
       - org.godotengine.Godot
@@ -369,7 +391,10 @@
       - org.kde.tellico
       - org.mozilla.firefox
       - org.mozilla.Thunderbird
+      - org.openttd.OpenTTD
       - org.phoenicis.playonlinux
+      - org.ppsspp.PPSSPP
+      - org.scummvm.ScummVM
       - org.zealdocs.Zeal
     npm_global_cmds: # TODO: Rework to use npx and then write nodo and use that
       # Dependencies for ALE save/format-on-check

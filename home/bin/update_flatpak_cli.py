@@ -20,6 +20,9 @@ Dependencies:
 
 Known shortcomings:
 
+* Still need to look into the best way to query the set of `.desktop` files 
+  installed by Things like OpenRA so I don't need to *manually* amend the 
+  `EXTRA_COMMANDS` list in cases involving secondary GUI apps.
 * Uses the sledgehammer approach of just removing all non-folders from the
   target directory before generating new launchers to clear out stale entries.
   (A proper solution would keep track of which ones it created, but that'd
@@ -81,6 +84,7 @@ CMD_REMAPPINGS = {
 #: Secondary commands to expose
 EXTRA_CMDS = {
     "com.github.AmatCoder.mednaffe": ['mednafen'],
+    'net.openra.OpenRA': ['openra-cnc', 'openra-d2k'],
     "org.atheme.audacious": ['audtool'],
 }
 

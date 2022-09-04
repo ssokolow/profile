@@ -1,2 +1,2 @@
 [Context]
-filesystems=!xdg-documents;/srv/DVD-bound/Games/Ripped_CDs:ro;~/opt/kryoflux-2.6-linux/dtc/output:ro
+filesystems=!xdg-documents;/srv/DVD-bound/Games/Ripped_CDs:ro;~/opt/kryoflux_2.6_linux/dtc:ro
